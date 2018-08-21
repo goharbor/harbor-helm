@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](http://vmware.github.io/harbor/) in a Kubernetes cluster. Welcome to [contribute](CONTRIBUTING.md) to Helm Chart for Harbor.
+This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://github.com/goharbor/harbor) in a Kubernetes cluster. Welcome to [contribute](CONTRIBUTING.md) to Helm Chart for Harbor.
 
 ## Prerequisites
 
@@ -28,8 +28,8 @@ helm init
 ```
 Download Harbor helm chart code.
 ```bash
-git clone https://github.com/vmware/harbor
-cd harbor/contrib/helm/harbor
+git clone https://github.com/goharbor/harbor-helm
+cd harbor-helm
 ```
 Download external dependent charts required by Harbor chart.
 ```bash
@@ -92,7 +92,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `ingress.enabled` | Enable ingress objects | `true` |
 | `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty | |
 | **Adminserver** |
-| `adminserver.image.repository` | Repository for adminserver image | `vmware/harbor-adminserver` |
+| `adminserver.image.repository` | Repository for adminserver image | `goharbor/harbor-adminserver` |
 | `adminserver.image.tag` | Tag for adminserver image | `dev` |
 | `adminserver.image.pullPolicy` | Pull Policy for adminserver image | `IfNotPresent` |
 | `adminserver.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
@@ -101,7 +101,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `adminserver.tolerations` | Tolerations for pod assignment | `[]` |
 | `adminserver.affinity` | Node/Pod affinities | `{}` |
 | **Jobservice** |
-| `jobservice.image.repository` | Repository for jobservice image | `vmware/harbor-jobservice` |
+| `jobservice.image.repository` | Repository for jobservice image | `goharbor/harbor-jobservice` |
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
 | `jobservice.image.pullPolicy` | Pull Policy for jobservice image | `IfNotPresent` |
 | `jobservice.secret` | jobservice secret | `not-a-secure-secret` |
@@ -110,7 +110,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
 | `jobservice.affinity` | Node/Pod affinities | `{}` |
 | **UI** |
-| `ui.image.repository` | Repository for ui image | `vmware/harbor-ui` |
+| `ui.image.repository` | Repository for ui image | `goharbor/harbor-ui` |
 | `ui.image.tag` | Tag for ui image | `dev` |
 | `ui.image.pullPolicy` | Pull Policy for ui image | `IfNotPresent` |
 | `ui.secret` | ui secret | `not-a-secure-secret` |
@@ -120,7 +120,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `ui.affinity` | Node/Pod affinities | `{}` |
 | **Database** |
 | `database.type` | If external database is used, set it to `external` | `internal` |
-| `database.internal.image.repository` | Repository for database image | `vmware/harbor-db` |
+| `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |
 | `database.internal.image.tag` | Tag for database image | `dev` |
 | `database.internal.image.pullPolicy` | Pull Policy for database image | `IfNotPresent` |
 | `database.internal.password` | The password for database | `changeit` |
@@ -138,7 +138,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `database.external.notaryServerDatabase` | The database used by Notary server | `notary_server` |
 | `database.external.notarySignerDatabase` | The database used by Notary signer | `notary_signer` |
 | **Registry** |
-| `registry.image.repository` | Repository for registry image | `vmware/registry-photon` |
+| `registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
 | `registry.image.tag` | Tag for registry image | `dev` |
 | `registry.image.pullPolicy` | Pull Policy for registry image | `IfNotPresent` |
 | `registry.httpSecret` | registry secret | `not-a-secure-secret` |
@@ -151,7 +151,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `registry.affinity` | Node/Pod affinities | `{}` |
 | **Chartmuseum** |
 | `chartmuseum.enabled` | Enable chartmusuem to store chart | `true` |
-| `chartmuseum.image.repository` | Repository for chartmuseum image | `vmware/chartmuseum-photon` |
+| `chartmuseum.image.repository` | Repository for chartmuseum image | `goharbor/chartmuseum-photon` |
 | `chartmuseum.image.tag` | Tag for chartmuseum image | `dev` |
 | `chartmuseum.image.pullPolicy` | Pull Policy for chartmuseum image | `IfNotPresent` |
 | `chartmuseum.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
@@ -161,7 +161,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `chartmuseum.affinity` | Node/Pod affinities | `{}` |
 | **Clair** |
 | `clair.enabled` | Enable Clair? | `true` |
-| `clair.image.repository` | Repository for clair image | `vmware/clair-photon` |
+| `clair.image.repository` | Repository for clair image | `goharbor/clair-photon` |
 | `clair.image.tag` | Tag for clair image | `dev`
 | `clair.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined
 | `clair.nodeSelector` | Node labels for pod assignment | `{}` |
@@ -180,9 +180,9 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `redis.external.password` | The password of external Redis | `changeit` |
 | **Notary** |
 | `notary.enabled` | Enable Notary? | `true` |
-| `notary.server.image.repository` | Repository for notary server image | `vmware/notary-server-photon` |
+| `notary.server.image.repository` | Repository for notary server image | `goharbor/notary-server-photon` |
 | `notary.server.image.tag` | Tag for notary server image | `dev`
-| `notary.signer.image.repository` | Repository for notary signer image | `vmware/notary-signer-photon` |
+| `notary.signer.image.repository` | Repository for notary signer image | `goharbor/notary-signer-photon` |
 | `notary.signer.image.tag` | Tag for notary signer image | `dev`
 | `notary.nodeSelector` | Node labels for pod assignment | `{}` |
 | `notary.tolerations` | Tolerations for pod assignment | `[]` |
