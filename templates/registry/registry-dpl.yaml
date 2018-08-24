@@ -1,5 +1,5 @@
-apiVersion: apps/v1beta2
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: "{{ template "harbor.fullname" . }}-registry"
   labels:
@@ -7,7 +7,6 @@ metadata:
     component: registry
 spec:
   replicas: 1
-  serviceName: "{{ template "harbor.fullname" . }}-registry"
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -102,6 +101,11 @@ spec:
       - name: registry-config
         configMap:
           name: "{{ template "harbor.fullname" . }}-registry"
+      {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
+      - name: registry-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.registry.volumes.data.existingClaim | default (printf "%s-registry" (include "harbor.fullname" .)) }}  
+      {{- end }}
     {{- with .Values.registry.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -114,22 +118,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
-  volumeClaimTemplates:
-  - metadata:
-      name: registry-data
-      labels:
-{{ include "harbor.labels" . | indent 8 }}
-    spec:
-      accessModes: [{{ .Values.registry.volumes.data.accessMode | quote }}]
-      {{- if .Values.registry.volumes.data.storageClass }}
-      {{- if (eq "-" .Values.registry.volumes.data.storageClass) }}
-      storageClassName: ""
-      {{- else }}
-      storageClassName: "{{ .Values.registry.volumes.data.storageClass }}"
-      {{- end }}
-      {{- end }}
-      resources:
-        requests:
-          storage: {{ .Values.registry.volumes.data.size | quote }}
-  {{- end }}

@@ -1,0 +1,26 @@
+{{- if .Values.persistence.enabled }}
+{{- if not .Values.registry.volumes.data.existingClaim }}
+{{- if eq .Values.registry.storage.type "filesystem" }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "harbor.fullname" . }}-registry
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: registry
+spec:
+  accessModes: 
+    - {{ .Values.registry.volumes.data.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.registry.volumes.data.size }}
+  {{- if .Values.registry.volumes.data.storageClass }}
+    {{- if eq "-" .Values.registry.volumes.data.storageClass }}
+  storageClassName: ""
+    {{- else }}
+  storageClassName: {{ .Values.registry.volumes.data.storageClass }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
