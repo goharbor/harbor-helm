@@ -1,6 +1,6 @@
 {{- if .Values.chartmuseum.enabled }}
-apiVersion: apps/v1beta2
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: "{{ template "harbor.fullname" . }}-chartmuseum"
   labels:
@@ -8,7 +8,6 @@ metadata:
     component: chartmuseum
 spec:
   replicas: 1
-  serviceName: "{{ template "harbor.fullname" . }}-chartmuseum"
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -33,11 +32,15 @@ spec:
         ports:
         - containerPort: 9999
         # TODO: update it after moving the storage out of registry scope
-        {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
+      {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
         volumeMounts:
         - name: chartmuseum-data
           mountPath: /chart_storage
-        {{- end }}
+      volumes:
+      - name: chartmuseum-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.chartmuseum.volumes.data.existingClaim | default (printf "%s-chartmuseum" (include "harbor.fullname" .)) }}
+      {{- end }}
       {{- with .Values.chartmuseum.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -50,23 +53,4 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
-  {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
-  volumeClaimTemplates:
-  - metadata:
-      name: chartmuseum-data
-      labels:
-{{ include "harbor.labels" . | indent 8 }}
-    spec:
-      accessModes: [{{ .Values.chartmuseum.volumes.data.accessMode | quote }}]
-      {{- if .Values.chartmuseum.volumes.data.storageClass }}
-      {{- if (eq "-" .Values.chartmuseum.volumes.data.storageClass) }}
-      storageClassName: ""
-      {{- else }}
-      storageClassName: "{{ .Values.chartmuseum.volumes.data.storageClass }}"
-      {{- end }}
-      {{- end }}
-      resources:
-        requests:
-          storage: {{ .Values.chartmuseum.volumes.data.size | quote }}
-  {{- end -}}
 {{- end }}

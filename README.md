@@ -96,7 +96,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `adminserver.image.tag` | Tag for adminserver image | `dev` |
 | `adminserver.image.pullPolicy` | Pull Policy for adminserver image | `IfNotPresent` |
 | `adminserver.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
-| `adminserver.volumes` | used to create PVCs if persistence is enabled (see instructions in values.yaml) | see values.yaml |
 | `adminserver.nodeSelector` | Node labels for pod assignment | `{}` |
 | `adminserver.tolerations` | Tolerations for pod assignment | `[]` |
 | `adminserver.affinity` | Node/Pod affinities | `{}` |

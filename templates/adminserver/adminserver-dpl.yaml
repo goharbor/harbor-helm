@@ -1,5 +1,5 @@
-apiVersion: apps/v1beta2
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: "{{ template "harbor.fullname" . }}-adminserver"
   labels:
@@ -7,7 +7,6 @@ metadata:
     component: adminserver
 spec:
   replicas: 1
-  serviceName: "{{ template "harbor.fullname" . }}-adminserver"
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -39,16 +38,10 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-        - name: adminserver-config
-          mountPath: /etc/adminserver/config
         - name: adminserver-key
           mountPath: /etc/adminserver/key
           subPath: key
       volumes:
-      {{- if not .Values.persistence.enabled }}
-      - name: adminserver-config
-        emptyDir: {}
-      {{- end }}
       - name: adminserver-key
         secret:
           secretName: "{{ template "harbor.fullname" . }}-adminserver"
@@ -67,20 +60,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if .Values.persistence.enabled }}
-  volumeClaimTemplates:
-  - metadata:
-      name: adminserver-config
-    spec:
-      accessModes: [{{ .Values.adminserver.volumes.config.accessMode | quote }}]
-      {{- if .Values.adminserver.volumes.config.storageClass }}
-      {{- if (eq "-" .Values.adminserver.volumes.config.storageClass) }}
-      storageClassName: ""
-      {{- else }}
-      storageClassName: "{{ .Values.adminserver.volumes.config.storageClass }}"
-      {{- end }}
-      {{- end }}
-      resources:
-        requests:
-          storage: {{ .Values.adminserver.volumes.config.size | quote }}
-  {{- end -}}

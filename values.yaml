@@ -55,11 +55,6 @@ adminserver:
     repository: goharbor/harbor-adminserver
     tag: *harbor_image_tag
     pullPolicy: IfNotPresent
-  volumes:
-    config:
-      # storageClass: "-"
-      accessMode: ReadWriteOnce
-      size: 1Gi
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -203,6 +198,7 @@ registry:
   ## Persist data to a persistent volume
   volumes:
     data:
+      # existingClaim: ""
       # storageClass: "-"
       accessMode: ReadWriteOnce
       size: 5Gi
@@ -222,6 +218,7 @@ chartmuseum:
     pullPolicy: IfNotPresent
   volumes:
     data:
+      # existingClaim: ""
       # storageClass: "-"
       accessMode: ReadWriteOnce
       size: 5Gi
@@ -239,11 +236,6 @@ clair:
     repository: goharbor/clair-photon
     tag: dev
     pullPolicy: IfNotPresent
-  volumes:
-    pgData:
-      # storageClass: "-"
-      accessMode: ReadWriteOnce
-      size: 1Gi
   # resources:
   #  requests:
   #    memory: 256Mi
