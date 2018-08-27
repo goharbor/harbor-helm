@@ -27,6 +27,7 @@ spec:
         backend:
           serviceName: {{ template "harbor.fullname" . }}-ui
           servicePort: 80
+  {{ if .Values.notary.enabled }}
   - host: "{{ template "harbor.notaryFQDN" . }}"
     http:
       paths:
@@ -34,4 +35,5 @@ spec:
         backend:
           serviceName: {{ template "harbor.notaryServiceName" . }}
           servicePort: 4443
+  {{ end }}
 {{ end }}
