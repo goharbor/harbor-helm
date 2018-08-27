@@ -1,11 +1,32 @@
 persistence:
   enabled: true
-externalProtocol: https
-# The FQDN for Harbor service
-externalDomain: harbor.my.domain
-# The Port for Harbor service, leave empty if the service 
-# is to be bound to port 80/443
-externalPort: 32700
+# Ther external URL for Harbor core service. It is used to
+# 1) populate the docker/helm commands showed on portal
+# 2) populate the token service URL returned to docker/notary client
+# 
+# Format: protocol://domain[:port]
+# Usually, if ingress is enabled, the domain should be the value of
+# ingress.hosts.core .
+# If Harbor is deployed behind the proxy, set it as the URL of proxy
+externalURL: https://core.harbor.domain
+
+ingress:
+  enabled: true
+  hosts:
+    core: core.harbor.domain
+    notary: notary.harbor.domain
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  tls:
+    enabled: true
+    # Fill the secretName if you want to use the certificate of 
+    # yourself when Harbor serves with HTTPS. A certificate will 
+    # be generated automatically by the chart if leave it empty
+    secretName: ""
+
 harborAdminPassword: Harbor12345
 authenticationMode: "db_auth"
 selfRegistration: "on"
@@ -31,21 +52,6 @@ email:
 
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: not-a-secure-key
-
-# These annotations allow the registry to work behind the nginx
-# ingress controller.
-ingress:
-  enabled: true
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-  tls:
-    # Fill the secretName if you want to use the certificate of 
-    # yourself when Harbor serves with HTTPS. A certificate will 
-    # be generated automatically by the chart if leave it empty
-    secretName: ""
 
 # The tag for Harbor docker images.
 harborImageTag: &harbor_image_tag dev

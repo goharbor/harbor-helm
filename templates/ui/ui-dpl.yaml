@@ -54,14 +54,10 @@ spec:
         - name: ui-secrets-private-key
           mountPath: /etc/ui/private_key.pem
           subPath: tokenServicePrivateKey
-        {{- if eq .Values.externalProtocol "https" }}
-        {{- if .Values.ingress.enabled }}
-        {{- if eq .Values.ingress.tls.secretName "" }}
+        {{- if eq (include "harbor.isAutoGenedCertNeeded" .) "true" }}
         - name: ca-download
           mountPath: /etc/ui/ca/ca.crt
           subPath: ca.crt
-        {{- end }}
-        {{- end }}
         {{- end }}
         - name: psc
           mountPath: /etc/ui/token
@@ -78,17 +74,13 @@ spec:
       - name: ui-secrets-private-key
         secret:
           secretName: "{{ template "harbor.fullname" . }}-ui"
-      {{- if eq .Values.externalProtocol "https" }}
-      {{- if .Values.ingress.enabled }}
-      {{- if eq .Values.ingress.tls.secretName "" }}
+      {{- if eq (include "harbor.isAutoGenedCertNeeded" .) "true" }}
       - name: ca-download
         secret:
           secretName: "{{ template "harbor.fullname" . }}-ingress"
           items:
             - key: ca.crt
               path: ca.crt
-      {{- end }}
-      {{- end }}
       {{- end }}
       - name: psc
         emptyDir: {}
