@@ -8,24 +8,10 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://
 
 - Kubernetes cluster 1.8+ with Beta APIs enabled
 - Kubernetes Ingress Controller is enabled
-- Helm CLI 2.8.0+
+- Helm 2.8.0+
 
-## Setup a Kubernetes cluster
-
-You can use any tools to setup a K8s cluster.
-In this guide, we use [minikube](https://github.com/kubernetes/minikube) 0.25.0 to setup a K8s cluster as the dev/test env.
-```bash
-# Start minikube
-minikube start --vm-driver=none
-# Enable Ingress Controller
-minikube addons enable ingress
-```
 ## Installing the Chart
 
-First install [Helm CLI](https://github.com/kubernetes/helm#install), then initialize Helm.
-```bash
-helm init
-```
 Download Harbor helm chart code.
 ```bash
 git clone https://github.com/goharbor/harbor-helm
@@ -37,10 +23,8 @@ helm dependency update
 ```
 Install the Harbor helm chart with a release name `my-release`:
 ```bash
-helm install --debug --name my-release --set externalDomain=harbor.my.domain,externalPort=443 .
+helm install --name my-release .
 ```
-**Note:** Make sure `harbor.my.domain` can be resolved to the K8s Ingress Controller IP on the machines where you run docker or access Harbor UI.
-You can add `harbor.my.domain` and IP mapping in the DNS server, or in /etc/hosts, or use the FQDN `harbor.<IP>.xip.io`.
 
 The command deploys Harbor on the Kubernetes cluster with the default configuration.
 The [configuration](#configuration) section lists the parameters that can be configured in values.yaml or via '--set' flag during installation.
@@ -50,7 +34,7 @@ The [configuration](#configuration) section lists the parameters that can be con
 To uninstall/delete the `my-release` deployment:
 
 ```bash
-helm delete my-release
+helm delete --purge my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -63,9 +47,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | -----------------------    | ---------------------------------- | ----------------------- |
 | **Harbor** |
 | `persistence.enabled`     | Persistent data | `true` |
-| `externalProtocol`     | The protocol Harbor serves with | `https` |
-| `externalDomain`       | Harbor will run on (https://`externalDomain`/). Recommend using K8s Ingress Controller FQDN as `externalDomain`, or make sure this FQDN resolves to the K8s Ingress Controller IP. | `harbor.my.domain` |
-| `externalPort`     | The external port Harbor serves on. Configure it with the port of Ingress controller if it is enabled | `32700` |
+| `externalURL`       | Ther external URL for Harbor core service | `https://core.harbor.domain` |
 | `harborAdminPassword`  | The password of system admin | `Harbor12345` |
 | `authenticationMode` | The authentication mode: `db_auth` for local database, `ldap_auth` for LDAP | `db_auth` |
 | `selfRegistration`               | Allows users to register by themselves, otherwise only system administrators can add users | `on` |
@@ -90,6 +72,10 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `harborImageTag` | The tag of Harbor images | `dev` |
 | **Ingress** |
 | `ingress.enabled` | Enable ingress objects | `true` |
+| `ingress.hosts.core` | The host of Harbor core service in ingress rule | `core.harbor.domain` |
+| `ingress.hosts.notary` | The host of Harbor notary service in ingress rule | `notary.harbor.domain` |
+| `ingress.annotations` | The annotations used in ingress | `true` |
+| `ingress.tls.enabled` | Enable TLS | `true` |
 | `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty | |
 | **Adminserver** |
 | `adminserver.image.repository` | Repository for adminserver image | `goharbor/harbor-adminserver` |

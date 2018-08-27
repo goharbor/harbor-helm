@@ -30,28 +30,12 @@ release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
-{{- define "harbor.externalURL" -}}
-{{- if .Values.externalPort -}}
-{{- printf "%s://%s:%s" .Values.externalProtocol .Values.externalDomain (toString .Values.externalPort) -}}
-{{- else -}}
-{{- printf "%s://%s" .Values.externalProtocol .Values.externalDomain -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Use *.domain.com as the Common Name in the certificate,
-so it can match Harbor service FQDN and Notary service FQDN.
-*/}}
-{{- define "harbor.certCommonName" -}}
-{{- $list := splitList "." .Values.externalDomain -}}
-{{- $list := prepend (rest $list) "*" -}}
-{{- $cn := join "." $list -}}
-{{- printf "%s" $cn -}}
-{{- end -}}
-
-{{/* The external FQDN of Notary server. */}}
-{{- define "harbor.notaryFQDN" -}}
-{{- printf "notary-%s" .Values.externalDomain -}}
+{{- define "harbor.isAutoGenedCertNeeded" -}}
+  {{- if and (and .Values.ingress.enabled .Values.ingress.tls.enabled) (not .Values.ingress.tls.secretName) -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.notaryServiceName" -}}

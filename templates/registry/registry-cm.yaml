@@ -149,7 +149,7 @@ data:
     auth:
       token:
         issuer: harbor-token-issuer
-        realm: "{{ template "harbor.externalURL" . }}/service/token"
+        realm: "{{ .Values.externalURL }}/service/token"
         rootcertbundle: /etc/registry/root.crt
         service: harbor-registry
     notifications:
