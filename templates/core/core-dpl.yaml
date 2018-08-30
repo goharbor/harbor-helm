@@ -56,7 +56,7 @@ spec:
         - name: token-service-private-key
           mountPath: /etc/core/private_key.pem
           subPath: tokenServicePrivateKey
-        {{- if eq (include "harbor.isAutoGenedCertNeeded" .) "true" }}
+        {{- if eq (include "harbor.autoGenCert" .) "true" }}
         - name: ca-download
           mountPath: /etc/core/ca/ca.crt
           subPath: ca.crt
@@ -76,10 +76,14 @@ spec:
       - name: token-service-private-key
         secret:
           secretName: {{ template "harbor.core" . }}
-      {{- if eq (include "harbor.isAutoGenedCertNeeded" .) "true" }}
+      {{- if eq (include "harbor.autoGenCert" .) "true" }}
       - name: ca-download
         secret:
+        {{- if eq (include "harbor.autoGenCertForIngress" .) "true" }}
           secretName: "{{ template "harbor.fullname" . }}-ingress"
+        {{- else }}
+          secretName: {{ template "harbor.nginx" . }}
+        {{- end }}
           items:
             - key: ca.crt
               path: ca.crt
