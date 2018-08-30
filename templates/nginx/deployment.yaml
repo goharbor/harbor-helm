@@ -1,0 +1,60 @@
+{{- if not .Values.ingress.enabled}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "harbor.nginx" . }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: nginx
+  template:
+    metadata:
+      labels:
+{{ include "harbor.labels" . | indent 8 }}
+        component: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        - containerPort: 4443
+        volumeMounts:
+        - name: config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        {{- if .Values.nginx.tls.enabled }}
+        - name: certificate
+          mountPath: /etc/nginx/cert
+        {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "harbor.nginx" . }}
+      {{- if .Values.nginx.tls.enabled }}
+      - name: certificate
+        secret:
+          secretName: {{ template "harbor.nginx" . }}
+      {{- end }}
+    {{- with .Values.nginx.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

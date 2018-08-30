@@ -1,0 +1,36 @@
+{{- if not .Values.ingress.enabled}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.ports.http.port }}
+      targetPort: 80
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.ports.http.nodePort }}
+      nodePort: {{ .Values.service.ports.http.nodePort }}
+      {{- end }}
+    {{- if .Values.nginx.tls.enabled }}
+    - name: https
+      port: {{ .Values.service.ports.https.port }}
+      targetPort: 443
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.ports.https.nodePort }}
+      nodePort: {{ .Values.service.ports.https.nodePort }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.notary.enabled }}
+    - name: notary
+      port: {{ .Values.service.ports.notary.port }}
+      targetPort: 4443
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.ports.notary.nodePort }}
+      nodePort: {{ .Values.service.ports.notary.nodePort }}
+      {{- end }}
+    {{- end }}
+  selector:
+{{ include "harbor.matchLabels" . | indent 4 }}
+    component: nginx
+{{- end }}
