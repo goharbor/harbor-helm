@@ -25,7 +25,7 @@ data:
         # Deadline before an API request will respond with a 503
         timeout: 300s
       updater:
-        interval: 12h
+        interval: {{ .Values.clair.updatersInterval }}h
 
       notifier:
         attempts: 3
