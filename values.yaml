@@ -236,6 +236,9 @@ clair:
     repository: goharbor/clair-photon
     tag: dev
     pullPolicy: IfNotPresent
+  # The interval of clair updaters, the unit is hour, 
+  # set to 0 to disable the updaters
+  updatersInterval: 12
   # resources:
   #  requests:
   #    memory: 256Mi
