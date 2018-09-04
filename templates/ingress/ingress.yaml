@@ -1,4 +1,4 @@
-{{ if .Values.ingress.enabled }}
+{{- if .Values.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -8,32 +8,29 @@ metadata:
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:
-{{ if eq .Values.externalProtocol "https" }}
+  {{- if .Values.ingress.tls.enabled }}
   tls:
-  - hosts:
-    - "{{ .Values.externalDomain }}"
-    - "{{ template "harbor.notaryFQDN" . }}"
-    {{ if eq .Values.ingress.tls.secretName "" }}
-    secretName: "{{ template "harbor.fullname" . }}-ingress"
-    {{ else }}
-    secretName: {{ .Values.ingress.tls.secretName }}
-    {{ end }}
-{{ end }}
+  {{- if .Values.ingress.tls.secretName }}
+  - secretName: {{ .Values.ingress.tls.secretName }}
+  {{- else }}
+  - secretName: "{{ template "harbor.fullname" . }}-ingress"
+  {{- end }}
+  {{- end }}
   rules:
-  - host: "{{ .Values.externalDomain }}"
+  - host: {{ .Values.ingress.hosts.core }}
     http:
       paths:
       - path: /
         backend:
           serviceName: {{ template "harbor.fullname" . }}-ui
           servicePort: 80
-  {{ if .Values.notary.enabled }}
-  - host: "{{ template "harbor.notaryFQDN" . }}"
+  {{- if .Values.notary.enabled }}
+  - host: {{ .Values.ingress.hosts.notary }}
     http:
       paths:
       - path: /
         backend:
           serviceName: {{ template "harbor.notaryServiceName" . }}
           servicePort: 4443
-  {{ end }}
-{{ end }}
+  {{- end }}
+{{- end }}
