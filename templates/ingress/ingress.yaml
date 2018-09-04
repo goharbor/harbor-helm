@@ -13,11 +13,11 @@ spec:
   - hosts:
     - {{ .Values.ingress.hosts.core }}
     - {{ .Values.ingress.hosts.notary }}
-  {{- if .Values.ingress.tls.secretName }}
-  - secretName: {{ .Values.ingress.tls.secretName }}
-  {{- else }}
-  - secretName: "{{ template "harbor.fullname" . }}-ingress"
-  {{- end }}
+    {{- if .Values.ingress.tls.secretName }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+    {{- else }}
+    secretName: "{{ template "harbor.fullname" . }}-ingress"
+    {{- end }}
   {{- end }}
   rules:
   - host: {{ .Values.ingress.hosts.core }}
