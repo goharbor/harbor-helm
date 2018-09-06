@@ -30,7 +30,7 @@ spec:
         - name: DB_URL
           value: {{ template "harbor.database.notarySigner" . }}
         - name: NOTARY_SIGNER_DEFAULTALIAS
-          value: {{ .Values.notary.signer.env.NOTARY_SIGNER_DEFAULTALIAS }}
+          value: defaultalias
         volumeMounts:
         - name: notary-config
           mountPath: /etc/notary
