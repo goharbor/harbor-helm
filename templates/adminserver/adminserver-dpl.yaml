@@ -35,6 +35,16 @@ spec:
             value: /etc/adminserver/config/config.json
           - name: KEY_PATH
             value: /etc/adminserver/key
+          - name: UI_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-ui"
+                key: secret
+          - name: JOBSERVICE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-jobservice"
+                key: secret
         ports:
         - containerPort: 8080
         volumeMounts:
