@@ -131,6 +131,7 @@ database:
     clairDatabase: "clair"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
+    sslmode: "prefer"
 
 registry:
   image:

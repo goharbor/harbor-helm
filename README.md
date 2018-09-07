@@ -119,6 +119,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `database.external.username` | The username of external database | `user` |
 | `database.external.password` | The password of external database | `password` |
 | `database.external.coreDatabase` | The database used by core service | `registry` |
+| `database.external.sslmode` | Connection method of external database (require|prefer|disable) | `disable`|
 | `database.external.clairDatabase` | The database used by clair | `clair` |
 | `database.external.notaryServerDatabase` | The database used by Notary server | `notary_server` |
 | `database.external.notarySignerDatabase` | The database used by Notary signer | `notary_signer` |

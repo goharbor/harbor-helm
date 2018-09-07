@@ -114,16 +114,24 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.database.sslmode" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- printf "%s" "disable" -}}
+  {{- else -}}
+    {{- .Values.database.external.sslmode -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.database.clair" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.clairDatabase" . }}?sslmode=disable
+postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.clairDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.database.notaryServer" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode=disable
+postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.database.notarySigner" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode=disable
+postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.redis.host" -}}
