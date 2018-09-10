@@ -33,6 +33,19 @@ secretKey: not-a-secure-key
 
 imagePullPolicy: &image_pull_policy IfNotPresent
 
+portal:
+  image:
+    repository: goharbor/harbor-portal
+    tag: dev
+    pullPolicy: *image_pull_policy
+# resources:
+#  requests:
+#    memory: 256Mi
+#    cpu: 100m
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 adminserver:
   image:
     repository: goharbor/harbor-adminserver
