@@ -25,6 +25,50 @@ spec:
       paths:
       - path: /
         backend:
+          serviceName: {{ template "harbor.portal" . }}
+          servicePort: 80
+      - path: /api/
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /service/
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /v2/
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /chartrepo/
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /login
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /log_out
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /sendEmail
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /language
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /reset
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /userExists
+        backend:
+          serviceName: {{ template "harbor.fullname" . }}-ui
+          servicePort: 80
+      - path: /reset_password
+        backend:
           serviceName: {{ template "harbor.fullname" . }}-ui
           servicePort: 80
   {{- if .Values.notary.enabled }}
