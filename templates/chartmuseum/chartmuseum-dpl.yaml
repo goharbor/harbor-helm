@@ -29,6 +29,12 @@ spec:
             name: "{{ template "harbor.fullname" . }}-chartmuseum"
         - secretRef:
             name: "{{ template "harbor.fullname" . }}-chartmuseum"
+        env:
+          - name: BASIC_AUTH_PASS
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-ui"
+                key: secret
         ports:
         - containerPort: 9999
         # TODO: update it after moving the storage out of registry scope

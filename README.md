@@ -49,27 +49,9 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `persistence.enabled`     | Persistent data | `true` |
 | `externalURL`       | Ther external URL for Harbor core service | `https://core.harbor.domain` |
 | `harborAdminPassword`  | The password of system admin | `Harbor12345` |
-| `authenticationMode` | The authentication mode: `db_auth` for local database, `ldap_auth` for LDAP | `db_auth` |
-| `selfRegistration`               | Allows users to register by themselves, otherwise only system administrators can add users | `on` |
-| `email.host` | The hostname of email server | `smtp.mydomain.com` |
-| `email.port` | The port of email server | `25` |
-| `email.username` | The username of email server | `sample_admin@mydomain.com` |
-| `email.password` | The password for email server | `password` |
-| `email.ssl` | Whether use TLS | `false` |
-| `email.insecure` | Whether the connection with email server is insecure | `false` |
-| `email.from` | The from address shows when send email| `admin <sample_admin@mydomain.com>` |
-| `email.identity` | | |
-| `ldap.url` | LDAP server URL for `ldap_auth` authentication | `ldaps://ldapserver` |
-| `ldap.searchDN` | LDAP search DN | |
-| `ldap.searchPassword` | LDAP search password | |
-| `ldap.baseDN` | LDAP base DN | |
-| `ldap.filter` | LDAP filter | `(objectClass=person)` |
-| `ldap.uid` | LDAP UID | `uid` |
-| `ldap.scope` | LDAP scope | `2` |
-| `ldap.timeout` | LDAP timeout | `5` |
-| `ldap.verifyCert` | Whether to verify HTTPS certificate | `true` |
 | `secretkey` | The key used for encryption. Must be a string of 16 chars | `not-a-secure-key` |
 | `harborImageTag` | The tag of Harbor images | `dev` |
+| `imagePullPolicy` | The image pull policy | `IfNotPresent` |
 | **Ingress** |
 | `ingress.enabled` | Enable ingress objects | `true` |
 | `ingress.hosts.core` | The host of Harbor core service in ingress rule | `core.harbor.domain` |
@@ -89,7 +71,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `jobservice.image.repository` | Repository for jobservice image | `goharbor/harbor-jobservice` |
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
 | `jobservice.image.pullPolicy` | Pull Policy for jobservice image | `IfNotPresent` |
-| `jobservice.secret` | jobservice secret | `not-a-secure-secret` |
 | `jobservice.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
@@ -98,7 +79,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `ui.image.repository` | Repository for ui image | `goharbor/harbor-ui` |
 | `ui.image.tag` | Tag for ui image | `dev` |
 | `ui.image.pullPolicy` | Pull Policy for ui image | `IfNotPresent` |
-| `ui.secret` | ui secret | `not-a-secure-secret` |
 | `ui.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `ui.nodeSelector` | Node labels for pod assignment | `{}` |
 | `ui.tolerations` | Tolerations for pod assignment | `[]` |
@@ -127,7 +107,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
 | `registry.image.tag` | Tag for registry image | `dev` |
 | `registry.image.pullPolicy` | Pull Policy for registry image | `IfNotPresent` |
-| `registry.httpSecret` | registry secret | `not-a-secure-secret` |
 | `registry.logLevel` | The log level | `info` |
 | `registry.storage.type` | The storage used to store images: `filesystem`, `azure`, `gcs`, `s3`, `swift`, `oss` | `filesystem` |
 | `registry.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |

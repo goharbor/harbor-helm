@@ -28,39 +28,18 @@ ingress:
     secretName: ""
 
 harborAdminPassword: Harbor12345
-authenticationMode: "db_auth"
-selfRegistration: "on"
-ldap:
-  url: "ldaps://ldapserver"
-  searchDN: ""
-  searchPassword: ""
-  baseDN: ""
-  filter: "(objectClass=person)"
-  uid: "uid"
-  scope: "2"
-  timeout: "5"
-  verifyCert: "True"
-email:
-  host: "smtp.mydomain.com"
-  port: "25"
-  username: "sample_admin@mydomain.com"
-  password: "password"
-  ssl: "false"
-  insecure: "false"
-  from: "admin <sample_admin@mydomain.com>"
-  identity: ""
-
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: not-a-secure-key
 
 # The tag for Harbor docker images.
 harborImageTag: &harbor_image_tag dev
+imagePullPolicy: &image_pull_policy IfNotPresent
 
 adminserver:
   image:
     repository: goharbor/harbor-adminserver
     tag: *harbor_image_tag
-    pullPolicy: IfNotPresent
+    pullPolicy: *image_pull_policy
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -73,8 +52,7 @@ jobservice:
   image:
     repository: goharbor/harbor-jobservice
     tag: *harbor_image_tag
-    pullPolicy: IfNotPresent
-  secret: not-a-secure-secret
+    pullPolicy: *image_pull_policy
   maxWorkers: 50
 # resources:
 #   requests:
@@ -88,8 +66,7 @@ ui:
   image:
     repository: goharbor/harbor-ui
     tag: *harbor_image_tag
-    pullPolicy: IfNotPresent
-  secret: not-a-secure-secret
+    pullPolicy: *image_pull_policy
 # resources:
 #  requests:
 #    memory: 256Mi
@@ -107,7 +84,7 @@ database:
     image:
       repository: goharbor/harbor-db
       tag: *harbor_image_tag
-      pullPolicy: IfNotPresent
+      pullPolicy: *image_pull_policy
     # the superuser password of database
     password: "changeit"
     volumes:
@@ -137,8 +114,7 @@ registry:
   image:
     repository: goharbor/registry-photon
     tag: dev
-    pullPolicy: IfNotPresent
-  httpSecret: not-a-secure-secret
+    pullPolicy: *image_pull_policy
   logLevel: info
   storage:
     # specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift", 
@@ -222,7 +198,7 @@ chartmuseum:
   image:
     repository: goharbor/chartmuseum-photon
     tag: dev
-    pullPolicy: IfNotPresent
+    pullPolicy: *image_pull_policy
   volumes:
     data:
       # existingClaim: ""
@@ -242,7 +218,7 @@ clair:
   image:
     repository: goharbor/clair-photon
     tag: dev
-    pullPolicy: IfNotPresent
+    pullPolicy: *image_pull_policy
   # The interval of clair updaters, the unit is hour, 
   # set to 0 to disable the updaters
   updatersInterval: 12
@@ -281,18 +257,12 @@ notary:
     image:
       repository: goharbor/notary-server-photon
       tag: dev
-      pullPolicy: IfNotPresent
+      pullPolicy: *image_pull_policy
   signer:
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
-      pullPolicy: IfNotPresent
-    env:
-      NOTARY_SIGNER_DEFAULTALIAS: defaultalias
-    # The TLS certificate for Notary Signer. Will auto generate them if unspecified here.
-    caCrt:
-    tlsCrt:
-    tlsKey:
+      pullPolicy: *image_pull_policy
   nodeSelector: {}
   tolerations: []
   affinity: {}
