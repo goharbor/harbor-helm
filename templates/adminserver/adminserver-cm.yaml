@@ -10,6 +10,7 @@ data:
   POSTGRESQL_PORT: "{{ template "harbor.database.port" . }}"
   POSTGRESQL_USERNAME: "{{ template "harbor.database.username" . }}"
   POSTGRESQL_DATABASE: "{{ template "harbor.database.coreDatabase" . }}"
+  POSTGRESQL_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   EMAIL_HOST: "{{ .Values.email.host }}"
   EMAIL_PORT: "{{ .Values.email.port }}"
   EMAIL_USR: "{{ .Values.email.username }}"
