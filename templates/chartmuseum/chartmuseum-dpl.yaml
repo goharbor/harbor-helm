@@ -38,7 +38,7 @@ spec:
         ports:
         - containerPort: 9999
         # TODO: update it after moving the storage out of registry scope
-      {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
+      {{- if and .Values.persistence.enabled (eq .Values.registry.storage.type "filesystem") }}
         volumeMounts:
         - name: chartmuseum-data
           mountPath: /chart_storage
