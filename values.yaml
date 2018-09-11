@@ -36,7 +36,7 @@ imagePullPolicy: &image_pull_policy IfNotPresent
 adminserver:
   image:
     repository: goharbor/harbor-adminserver
-    tag: dev
+    tag: v1.6.0
     pullPolicy: *image_pull_policy
   # resources:
   #  requests:
@@ -49,7 +49,7 @@ adminserver:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: dev
+    tag: v1.6.0
     pullPolicy: *image_pull_policy
   maxWorkers: 50
 # resources:
@@ -63,7 +63,7 @@ jobservice:
 ui:
   image:
     repository: goharbor/harbor-ui
-    tag: dev
+    tag: v1.6.0
     pullPolicy: *image_pull_policy
 # resources:
 #  requests:
@@ -81,7 +81,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: dev
+      tag: v1.6.0
       pullPolicy: *image_pull_policy
     # the superuser password of database
     password: "changeit"
@@ -111,7 +111,7 @@ database:
 registry:
   image:
     repository: goharbor/registry-photon
-    tag: dev
+    tag: v2.6.2-v1.6.0
     pullPolicy: *image_pull_policy
   logLevel: info
   storage:
@@ -195,7 +195,7 @@ chartmuseum:
   enabled: true
   image:
     repository: goharbor/chartmuseum-photon
-    tag: dev
+    tag: v0.7.1-v1.6.0
     pullPolicy: *image_pull_policy
   volumes:
     data:
@@ -215,7 +215,7 @@ clair:
   enabled: true
   image:
     repository: goharbor/clair-photon
-    tag: dev
+    tag: v2.0.5-v1.6.0
     pullPolicy: *image_pull_policy
   # The interval of clair updaters, the unit is hour, 
   # set to 0 to disable the updaters
@@ -257,12 +257,12 @@ notary:
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: dev
+      tag: v0.5.1-v1.6.0
       pullPolicy: *image_pull_policy
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: dev
+      tag: v0.5.1-v1.6.0
       pullPolicy: *image_pull_policy
   nodeSelector: {}
   tolerations: []
