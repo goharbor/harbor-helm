@@ -1,5 +1,5 @@
 persistence:
-  enabled: true
+  enabled: &persistence_enabled true
 # Ther external URL for Harbor core service. It is used to
 # 1) populate the docker/helm commands showed on portal
 # 2) populate the token service URL returned to docker/notary client
@@ -31,14 +31,12 @@ harborAdminPassword: Harbor12345
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: not-a-secure-key
 
-# The tag for Harbor docker images.
-harborImageTag: &harbor_image_tag dev
 imagePullPolicy: &image_pull_policy IfNotPresent
 
 adminserver:
   image:
     repository: goharbor/harbor-adminserver
-    tag: *harbor_image_tag
+    tag: dev
     pullPolicy: *image_pull_policy
   # resources:
   #  requests:
@@ -51,7 +49,7 @@ adminserver:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: *harbor_image_tag
+    tag: dev
     pullPolicy: *image_pull_policy
   maxWorkers: 50
 # resources:
@@ -65,7 +63,7 @@ jobservice:
 ui:
   image:
     repository: goharbor/harbor-ui
-    tag: *harbor_image_tag
+    tag: dev
     pullPolicy: *image_pull_policy
 # resources:
 #  requests:
@@ -83,7 +81,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: *harbor_image_tag
+      tag: dev
       pullPolicy: *image_pull_policy
     # the superuser password of database
     password: "changeit"
@@ -240,9 +238,12 @@ redis:
     enabled: false
   master:
     persistence:
-# TODO: There is a perm issue: Can't open the append-only file: Permission denied
-# TODO: Setting it to false is a temp workaround.  Will re-visit this problem.
-      enabled: false
+      enabled: *persistence_enabled
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+  persistence:
+    # existingClaim:
   external:
     enabled: false
     host: "192.168.0.2"
