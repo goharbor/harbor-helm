@@ -184,3 +184,7 @@ host:port,pool_size,password
 {{- define "harbor.redisForUI" -}}
   {{- template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }},100,{{ template "harbor.redis.password" . }}
 {{- end -}}
+
+{{- define "harbor.portal" -}}
+  {{- printf "%s-portal" (include "harbor.fullname" .) -}}
+{{- end -}}
