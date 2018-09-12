@@ -1,12 +1,14 @@
 # Helm Chart for Harbor
 
+**Notes:** The master branch is in heavy development, please use the codes on other branch instead.
+
 ## Introduction
 
 This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://github.com/goharbor/harbor) in a Kubernetes cluster. Welcome to [contribute](CONTRIBUTING.md) to Helm Chart for Harbor.
 
 ## Prerequisites
 
-- Kubernetes cluster 1.8+ with Beta APIs enabled
+- Kubernetes cluster 1.10+ with Beta APIs enabled
 - Kubernetes Ingress Controller is enabled
 - Helm 2.8.0+
 
@@ -15,7 +17,11 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://
 Download Harbor helm chart code.
 ```bash
 git clone https://github.com/goharbor/harbor-helm
+```
+Checkout the branch.
+```bash
 cd harbor-helm
+git checkout branch_name
 ```
 Download external dependent charts required by Harbor chart.
 ```bash
@@ -50,7 +56,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `externalURL`       | Ther external URL for Harbor core service | `https://core.harbor.domain` |
 | `harborAdminPassword`  | The password of system admin | `Harbor12345` |
 | `secretkey` | The key used for encryption. Must be a string of 16 chars | `not-a-secure-key` |
-| `harborImageTag` | The tag of Harbor images | `dev` |
 | `imagePullPolicy` | The image pull policy | `IfNotPresent` |
 | **Ingress** |
 | `ingress.enabled` | Enable ingress objects | `true` |
@@ -136,7 +141,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `redis.usePassword` | Whether use password | `false` |
 | `redis.password` | The password for Redis | `changeit` |
 | `redis.cluster.enabled` | Enable Redis cluster | `false` |
-| `redis.master.persistence.enabled` | Persistent data   | `false` |
+| `redis.master.persistence.enabled` | Persistent data   | `true` |
 | `redis.external.enabled` | If an external Redis is used, set it to `true` | `false` |
 | `redis.external.host` | The hostname of external Redis | `192.168.0.2` |
 | `redis.external.port` | The port of external Redis | `6379` |
@@ -155,22 +160,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 
 ## Persistence
 
-You need to create `StorageClass` before you can persist data in persistent volume.
+By default, the Harbor persistents the data in a few of persistent volumes. The volumes are created using dynamic volume provisioning. If you want to use the existing persistent volume claims, specify them during installation.
 
-To create a `StorageClass`, set the following value in `values.yaml`:
-
-```yaml
-persistence:
-  enabled: true
-
-```
-
-Four PVCs will be created automatically:
-- adminserver-config
-- chartmuseum-data
-- database-data
-- registry-data
-
-All the created PVCs need to be removed manually after Helm deletes the Chart. 
-
-When running a cluster without persistence, this Chart uses `emptyDir` as the temporary volumes. Data does not survive the termination of a pod.
+When running a cluster without persistence, set the  `persistence.enabled` as `false`. Data does not survive the termination of a pod.
