@@ -150,11 +150,35 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end -}}
 {{- end -}}
 
-{{- define "harbor.redis.databaseIndex" -}}
+{{- define "harbor.redis.coreDatabaseIndex" -}}
   {{- if .Values.redis.external.enabled -}}
-    {{- .Values.redis.external.databaseIndex -}}
+    {{- .Values.redis.external.coreDatabaseIndex -}}
   {{- else -}}
     {{- printf "%s" "0" }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.redis.jobserviceDatabaseIndex" -}}
+  {{- if .Values.redis.external.enabled -}}
+    {{- .Values.redis.external.jobserviceDatabaseIndex -}}
+  {{- else -}}
+    {{- printf "%s" "1" }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.redis.registryDatabaseIndex" -}}
+  {{- if .Values.redis.external.enabled -}}
+    {{- .Values.redis.external.registryDatabaseIndex -}}
+  {{- else -}}
+    {{- printf "%s" "2" }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.redis.chartmuseumDatabaseIndex" -}}
+  {{- if .Values.redis.external.enabled -}}
+    {{- .Values.redis.external.chartmuseumDatabaseIndex -}}
+  {{- else -}}
+    {{- printf "%s" "3" }}
   {{- end -}}
 {{- end -}}
 
@@ -169,11 +193,22 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{/*the username redis is used for a placeholder as no username needed in redis*/}}
 {{- define "harbor.redisForJobservice" -}}
   {{- if and .Values.redis.external.enabled .Values.redis.external.usePassword -}}
-    redis:{{ template "harbor.redis.password" . }}@{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}/{{ template "harbor.redis.databaseIndex" }}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.password" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.jobserviceDatabaseIndex" . ) }}
   {{- else if and (not .Values.redis.external.enabled) .Values.redis.usePassword -}}
-    redis:{{ template "harbor.redis.password" . }}@{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}/{{ template "harbor.redis.databaseIndex" }}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.password" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.jobserviceDatabaseIndex" . ) }}
   {{- else }}
-    {{- template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}/{{ template "harbor.redis.databaseIndex" }}
+    {{- template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}/{{ template "harbor.redis.jobserviceDatabaseIndex" . }}
+  {{- end -}}
+{{- end -}}
+
+{{/*the username redis is used for a placeholder as no username needed in redis*/}}
+{{- define "harbor.redisForGC" -}}
+  {{- if and .Values.redis.external.enabled .Values.redis.external.usePassword -}}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.password" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) }}
+  {{- else if and (not .Values.redis.external.enabled) .Values.redis.usePassword -}}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.password" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) }}
+  {{- else }}
+    {{- printf "redis://%s:%s/%s" (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) -}}
   {{- end -}}
 {{- end -}}
 

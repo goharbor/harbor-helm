@@ -139,7 +139,7 @@ data:
     redis:
       addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
       password: {{ template "harbor.redis.password" . }}
-      db: {{ template "harbor.redis.databaseIndex" . }}
+      db: {{ template "harbor.redis.registryDatabaseIndex" . }}
     http:
       addr: :5000
       # set via environment variable
@@ -160,3 +160,8 @@ data:
           timeout: 3000ms
           threshold: 5
           backoff: 1s
+  ctl-config.yml: |+
+    ---
+    protocol: "http"
+    port: 8080
+    log_level: "INFO"
