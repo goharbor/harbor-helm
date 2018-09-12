@@ -84,7 +84,7 @@ spec:
         - containerPort: 5000
         - containerPort: 5001
         volumeMounts:
-        {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
+        {{- if and .Values.persistence.enabled (eq .Values.registry.storage.type "filesystem") }}
         - name: registry-data
           mountPath: {{ .Values.registry.storage.filesystem.rootdirectory }}
         {{- end }}
@@ -101,7 +101,7 @@ spec:
       - name: registry-config
         configMap:
           name: "{{ template "harbor.fullname" . }}-registry"
-      {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
+      {{- if and .Values.persistence.enabled (eq .Values.registry.storage.type "filesystem") }}
       - name: registry-data
         persistentVolumeClaim:
           claimName: {{ .Values.registry.volumes.data.existingClaim | default (printf "%s-registry" (include "harbor.fullname" .)) }}  
