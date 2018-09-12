@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: registry
-        image: {{ .Values.registry.image.repository }}:{{ .Values.registry.image.tag }}
+        image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
 {{ toYaml .Values.registry.resources | indent 10 }}
@@ -94,6 +94,36 @@ spec:
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
+      - name: registryctl
+        image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        resources:
+{{ toYaml .Values.registry.resources | indent 10 }}
+        args: ["serve", "/etc/registry/config.yml"]
+        env:
+          - name: UI_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-ui"
+                key: secret
+          - name: JOBSERVICE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-jobservice"
+                key: secret
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        {{- if and .Values.persistence.enabled (eq .Values.registry.storage.type "filesystem") }}
+        - name: registry-data
+          mountPath: {{ .Values.registry.storage.filesystem.rootdirectory }}
+        {{- end }}
+        - name: registry-config
+          mountPath: /etc/registry/config.yml
+          subPath: config.yml
+        - name: registry-config
+          mountPath: /etc/registryctl/config.yml
+          subPath: ctl-config.yml
       volumes:
       - name: registry-root-certificate
         secret:

@@ -121,11 +121,16 @@ database:
     sslmode: "disable"
 
 registry:
-  image:
-    repository: goharbor/registry-photon
-    tag: dev
+  registry:
+    image:
+      repository: goharbor/registry-photon
+      tag: dev
+    logLevel: info
+  controller:
+    image:
+      repository: goharbor/harbor-registryctl
+      tag: dev
   replicas: 1
-  logLevel: info
   storage:
     # specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift", 
     # "oss" and fill the information needed in the corresponding section
@@ -255,13 +260,21 @@ redis:
       accessMode: ReadWriteOnce
       size: 1Gi
     nodeSelector: {}
+    # Overwrite the default value in the Redis chart
+    # as the command "FLUSHDB" is needed for online GC
+    disableCommands: ""
   persistence:
     # existingClaim:
   external:
     enabled: false
     host: "192.168.0.2"
     port: "6379"
-    databaseIndex: "0"
+    # The "coreDatabaseIndex" must be "0" as the library Harbor
+    # used doesn't support configuring it
+    coreDatabaseIndex: "0"
+    jobserviceDatabaseIndex: "1"
+    registryDatabaseIndex: "2"
+    chartmuseumDatabaseIndex: "3"
     usePassword: false
     password: "changeit"
 
