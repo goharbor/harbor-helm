@@ -16,7 +16,7 @@ spec:
       containers:
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
-        imagePullPolicy: {{ .Values.portal.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
         - containerPort: 80
     {{- with .Values.ui.nodeSelector }}

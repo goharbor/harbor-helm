@@ -21,7 +21,7 @@ spec:
       containers:
       - name: clair
         image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}
-        imagePullPolicy: {{ .Values.clair.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         args: ["-insecure-tls", "-config", "/etc/clair/config.yaml"]
         resources:
 {{ toYaml .Values.clair.resources | indent 10 }}

@@ -21,7 +21,7 @@ spec:
       containers:
       - name: chartmuseum
         image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}
-        imagePullPolicy: {{ .Values.chartmuseum.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
 {{ toYaml .Values.chartmuseum.resources | indent 10 }}
         envFrom:
