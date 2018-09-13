@@ -37,6 +37,7 @@ portal:
   image:
     repository: goharbor/harbor-portal
     tag: dev
+  replicas: 1
 # resources:
 #  requests:
 #    memory: 256Mi
@@ -49,6 +50,7 @@ adminserver:
   image:
     repository: goharbor/harbor-adminserver
     tag: dev
+  replicas: 1
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -61,6 +63,7 @@ jobservice:
   image:
     repository: goharbor/harbor-jobservice
     tag: dev
+  replicas: 1
   maxWorkers: 50
 # resources:
 #   requests:
@@ -74,6 +77,7 @@ ui:
   image:
     repository: goharbor/harbor-ui
     tag: dev
+  replicas: 1
 # resources:
 #  requests:
 #    memory: 256Mi
@@ -120,6 +124,7 @@ registry:
   image:
     repository: goharbor/registry-photon
     tag: dev
+  replicas: 1
   logLevel: info
   storage:
     # specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift", 
@@ -203,6 +208,7 @@ chartmuseum:
   image:
     repository: goharbor/chartmuseum-photon
     tag: dev
+  replicas: 1
   volumes:
     data:
       # existingClaim: ""
@@ -222,6 +228,7 @@ clair:
   image:
     repository: goharbor/clair-photon
     tag: dev
+  replicas: 1
   # The interval of clair updaters, the unit is hour, 
   # set to 0 to disable the updaters
   updatersInterval: 12
@@ -263,10 +270,12 @@ notary:
     image:
       repository: goharbor/notary-server-photon
       tag: dev
+    replicas: 1
   signer:
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
+    replicas: 1
   nodeSelector: {}
   tolerations: []
   affinity: {}

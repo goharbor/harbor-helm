@@ -6,7 +6,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: ui
 spec:
-  replicas: 1
+  replicas: {{ .Values.ui.replicas }}
   template:
     metadata:
       labels:

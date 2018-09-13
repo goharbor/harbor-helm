@@ -6,7 +6,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: adminserver
 spec:
-  replicas: 1
+  replicas: {{ .Values.adminserver.replicas }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

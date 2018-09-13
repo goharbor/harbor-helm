@@ -66,9 +66,18 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `ingress.annotations` | The annotations used in ingress | `true` |
 | `ingress.tls.enabled` | Enable TLS | `true` |
 | `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty | |
+| **Portal** |
+| `portal.image.repository` | Repository for portal image | `goharbor/harbor-portal` |
+| `portal.image.tag` | Tag for portal image | `dev` |
+| `portal.replicas` | The replica count | `1` |
+| `portal.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
+| `portal.nodeSelector` | Node labels for pod assignment | `{}` |
+| `portal.tolerations` | Tolerations for pod assignment | `[]` |
+| `portal.affinity` | Node/Pod affinities | `{}` |
 | **Adminserver** |
 | `adminserver.image.repository` | Repository for adminserver image | `goharbor/harbor-adminserver` |
 | `adminserver.image.tag` | Tag for adminserver image | `dev` |
+| `adminserver.replicas` | The replica count | `1` |
 | `adminserver.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `adminserver.nodeSelector` | Node labels for pod assignment | `{}` |
 | `adminserver.tolerations` | Tolerations for pod assignment | `[]` |
@@ -76,6 +85,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **Jobservice** |
 | `jobservice.image.repository` | Repository for jobservice image | `goharbor/harbor-jobservice` |
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
+| `jobservice.replicas` | The replica count | `1` |
 | `jobservice.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
@@ -83,6 +93,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **UI** |
 | `ui.image.repository` | Repository for ui image | `goharbor/harbor-ui` |
 | `ui.image.tag` | Tag for ui image | `dev` |
+| `ui.replicas` | The replica count | `1` |
 | `ui.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `ui.nodeSelector` | Node labels for pod assignment | `{}` |
 | `ui.tolerations` | Tolerations for pod assignment | `[]` |
@@ -109,6 +120,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **Registry** |
 | `registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
 | `registry.image.tag` | Tag for registry image | `dev` |
+| `registry.replicas` | The replica count | `1` |
 | `registry.logLevel` | The log level | `info` |
 | `registry.storage.type` | The storage used to store images: `filesystem`, `azure`, `gcs`, `s3`, `swift`, `oss` | `filesystem` |
 | `registry.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
@@ -120,6 +132,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `chartmuseum.enabled` | Enable chartmusuem to store chart | `true` |
 | `chartmuseum.image.repository` | Repository for chartmuseum image | `goharbor/chartmuseum-photon` |
 | `chartmuseum.image.tag` | Tag for chartmuseum image | `dev` |
+| `chartmuseum.replicas` | The replica count | `1` |
 | `chartmuseum.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `chartmuseum.volumes` | used to create PVCs if persistence is enabled (see instructions in values.yaml) | see values.yaml |
 | `chartmuseum.nodeSelector` | Node labels for pod assignment | `{}` |
@@ -129,6 +142,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `clair.enabled` | Enable Clair? | `true` |
 | `clair.image.repository` | Repository for clair image | `goharbor/clair-photon` |
 | `clair.image.tag` | Tag for clair image | `dev`
+| `clair.replicas` | The replica count | `1` |
 | `clair.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined
 | `clair.nodeSelector` | Node labels for pod assignment | `{}` |
 | `clair.tolerations` | Tolerations for pod assignment | `[]` |
@@ -148,8 +162,10 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `notary.enabled` | Enable Notary? | `true` |
 | `notary.server.image.repository` | Repository for notary server image | `goharbor/notary-server-photon` |
 | `notary.server.image.tag` | Tag for notary server image | `dev`
+| `notary.server.replicas` | The replica count | `1` |
 | `notary.signer.image.repository` | Repository for notary signer image | `goharbor/notary-signer-photon` |
 | `notary.signer.image.tag` | Tag for notary signer image | `dev`
+| `notary.signer.replicas` | The replica count | `1` |
 | `notary.nodeSelector` | Node labels for pod assignment | `{}` |
 | `notary.tolerations` | Tolerations for pod assignment | `[]` |
 | `notary.affinity` | Node/Pod affinities | `{}` |
