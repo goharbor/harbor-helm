@@ -20,7 +20,7 @@ spec:
       containers:
       - name: adminserver
         image: "{{ .Values.adminserver.image.repository }}:{{ .Values.adminserver.image.tag }}"
-        imagePullPolicy: "{{ .Values.adminserver.image.pullPolicy }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         resources:
 {{ toYaml .Values.adminserver.resources | indent 10 }}
         envFrom:

@@ -33,7 +33,9 @@ helm install --name my-release .
 ```
 
 The command deploys Harbor on the Kubernetes cluster with the default configuration.
-The [configuration](#configuration) section lists the parameters that can be configured in values.yaml or via '--set' flag during installation.
+The [configuration](#configuration) section lists the parameters that can be configured in values.yaml or via `--set` flag during installation.
+
+**Notes:** If you want to disble the persistence by `--set`, two items need to be configured as `false`: `persistence.enabled` and `redis.master.persistence.enabled`.
 
 ## Uninstalling the Chart
 
@@ -67,7 +69,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **Adminserver** |
 | `adminserver.image.repository` | Repository for adminserver image | `goharbor/harbor-adminserver` |
 | `adminserver.image.tag` | Tag for adminserver image | `dev` |
-| `adminserver.image.pullPolicy` | Pull Policy for adminserver image | `IfNotPresent` |
 | `adminserver.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `adminserver.nodeSelector` | Node labels for pod assignment | `{}` |
 | `adminserver.tolerations` | Tolerations for pod assignment | `[]` |
@@ -75,7 +76,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **Jobservice** |
 | `jobservice.image.repository` | Repository for jobservice image | `goharbor/harbor-jobservice` |
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
-| `jobservice.image.pullPolicy` | Pull Policy for jobservice image | `IfNotPresent` |
 | `jobservice.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
@@ -83,7 +83,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **UI** |
 | `ui.image.repository` | Repository for ui image | `goharbor/harbor-ui` |
 | `ui.image.tag` | Tag for ui image | `dev` |
-| `ui.image.pullPolicy` | Pull Policy for ui image | `IfNotPresent` |
 | `ui.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `ui.nodeSelector` | Node labels for pod assignment | `{}` |
 | `ui.tolerations` | Tolerations for pod assignment | `[]` |
@@ -92,7 +91,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `database.type` | If external database is used, set it to `external` | `internal` |
 | `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |
 | `database.internal.image.tag` | Tag for database image | `dev` |
-| `database.internal.image.pullPolicy` | Pull Policy for database image | `IfNotPresent` |
 | `database.internal.password` | The password for database | `changeit` |
 | `database.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `database.internal.volumes` | The volume used to persistent data |
@@ -111,7 +109,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **Registry** |
 | `registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
 | `registry.image.tag` | Tag for registry image | `dev` |
-| `registry.image.pullPolicy` | Pull Policy for registry image | `IfNotPresent` |
 | `registry.logLevel` | The log level | `info` |
 | `registry.storage.type` | The storage used to store images: `filesystem`, `azure`, `gcs`, `s3`, `swift`, `oss` | `filesystem` |
 | `registry.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
@@ -123,7 +120,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `chartmuseum.enabled` | Enable chartmusuem to store chart | `true` |
 | `chartmuseum.image.repository` | Repository for chartmuseum image | `goharbor/chartmuseum-photon` |
 | `chartmuseum.image.tag` | Tag for chartmuseum image | `dev` |
-| `chartmuseum.image.pullPolicy` | Pull Policy for chartmuseum image | `IfNotPresent` |
 | `chartmuseum.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `chartmuseum.volumes` | used to create PVCs if persistence is enabled (see instructions in values.yaml) | see values.yaml |
 | `chartmuseum.nodeSelector` | Node labels for pod assignment | `{}` |
