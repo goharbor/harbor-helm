@@ -20,7 +20,7 @@ spec:
       containers:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
-        imagePullPolicy: {{ .Values.jobservice.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
 {{ toYaml .Values.jobservice.resources | indent 10 }}
         env:

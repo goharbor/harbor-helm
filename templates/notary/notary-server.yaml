@@ -21,7 +21,7 @@ spec:
       containers:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
-        imagePullPolicy: {{ .Values.notary.server.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
 {{ toYaml .Values.notary.server.resources | indent 10 }}
         env:

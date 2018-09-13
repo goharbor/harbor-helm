@@ -20,7 +20,7 @@ spec:
       containers:
       - name: registry
         image: {{ .Values.registry.image.repository }}:{{ .Values.registry.image.tag }}
-        imagePullPolicy: {{ .Values.registry.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
 {{ toYaml .Values.registry.resources | indent 10 }}
         args: ["serve", "/etc/registry/config.yml"]

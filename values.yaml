@@ -31,13 +31,12 @@ harborAdminPassword: Harbor12345
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: not-a-secure-key
 
-imagePullPolicy: &image_pull_policy IfNotPresent
+imagePullPolicy: IfNotPresent
 
 portal:
   image:
     repository: goharbor/harbor-portal
     tag: dev
-    pullPolicy: *image_pull_policy
 # resources:
 #  requests:
 #    memory: 256Mi
@@ -50,7 +49,6 @@ adminserver:
   image:
     repository: goharbor/harbor-adminserver
     tag: dev
-    pullPolicy: *image_pull_policy
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -63,7 +61,6 @@ jobservice:
   image:
     repository: goharbor/harbor-jobservice
     tag: dev
-    pullPolicy: *image_pull_policy
   maxWorkers: 50
 # resources:
 #   requests:
@@ -77,7 +74,6 @@ ui:
   image:
     repository: goharbor/harbor-ui
     tag: dev
-    pullPolicy: *image_pull_policy
 # resources:
 #  requests:
 #    memory: 256Mi
@@ -95,7 +91,6 @@ database:
     image:
       repository: goharbor/harbor-db
       tag: dev
-      pullPolicy: *image_pull_policy
     # the superuser password of database
     password: "changeit"
     volumes:
@@ -125,7 +120,6 @@ registry:
   image:
     repository: goharbor/registry-photon
     tag: dev
-    pullPolicy: *image_pull_policy
   logLevel: info
   storage:
     # specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift", 
@@ -209,7 +203,6 @@ chartmuseum:
   image:
     repository: goharbor/chartmuseum-photon
     tag: dev
-    pullPolicy: *image_pull_policy
   volumes:
     data:
       # existingClaim: ""
@@ -229,7 +222,6 @@ clair:
   image:
     repository: goharbor/clair-photon
     tag: dev
-    pullPolicy: *image_pull_policy
   # The interval of clair updaters, the unit is hour, 
   # set to 0 to disable the updaters
   updatersInterval: 12
@@ -271,12 +263,10 @@ notary:
     image:
       repository: goharbor/notary-server-photon
       tag: dev
-      pullPolicy: *image_pull_policy
   signer:
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
-      pullPolicy: *image_pull_policy
   nodeSelector: {}
   tolerations: []
   affinity: {}
