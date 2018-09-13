@@ -254,6 +254,7 @@ redis:
       # storageClass: "-"
       accessMode: ReadWriteOnce
       size: 1Gi
+    nodeSelector: {}
   persistence:
     # existingClaim:
   external:

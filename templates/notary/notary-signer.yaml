@@ -38,4 +38,16 @@ spec:
       - name: notary-config
         configMap:
           name: "{{ template "harbor.fullname" . }}-notary"
+    {{- with .Values.notary.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.notary.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.notary.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{ end }}
