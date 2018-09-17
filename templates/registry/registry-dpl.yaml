@@ -6,7 +6,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
 spec:
-  replicas: 1
+  replicas: {{ .Values.registry.replicas }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
