@@ -122,7 +122,6 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `registry.image.tag` | Tag for registry image | `dev` |
 | `registry.replicas` | The replica count | `1` |
 | `registry.logLevel` | The log level | `info` |
-| `registry.storage.type` | The storage used to store images: `filesystem`, `azure`, `gcs`, `s3`, `swift`, `oss` | `filesystem` |
 | `registry.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `registry.volumes` | used to create PVCs if persistence is enabled (see instructions in values.yaml) | see values.yaml |
 | `registry.nodeSelector` | Node labels for pod assignment | `{}` |
@@ -138,6 +137,9 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `chartmuseum.nodeSelector` | Node labels for pod assignment | `{}` |
 | `chartmuseum.tolerations` | Tolerations for pod assignment | `[]` |
 | `chartmuseum.affinity` | Node/Pod affinities | `{}` |
+| **Storage For Registry And Chartmuseum** |
+| `storage.type` | The storage backend used for registry and chartmuseum: `filesystem`, `azure`, `gcs`, `s3`, `swift`, `oss` | `filesystem` |
+| `other values` | The other values please refer to https://github.com/docker/distribution/blob/master/docs/configuration.md#storage |  |
 | **Clair** |
 | `clair.enabled` | Enable Clair? | `true` |
 | `clair.image.repository` | Repository for clair image | `goharbor/clair-photon` |
