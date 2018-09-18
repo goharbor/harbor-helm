@@ -1,6 +1,6 @@
 {{- if .Values.persistence.enabled }}
 {{- if not .Values.registry.volumes.data.existingClaim }}
-{{- if eq .Values.registry.storage.type "filesystem" }}
+{{- if eq .Values.storage.type "filesystem" }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
