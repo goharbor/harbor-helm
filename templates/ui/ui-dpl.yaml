@@ -30,6 +30,8 @@ spec:
                 key: secret
           - name: _REDIS_URL
             value: {{ template "harbor.redisForUI" . }}
+          - name: _REDIS_URL_REG
+            value: {{ template "harbor.redisForGC" . }}
           - name: GODEBUG
             value: netdns=cgo
           - name: LOG_LEVEL

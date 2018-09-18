@@ -34,6 +34,10 @@ spec:
               secretKeyRef:
                 name: "{{ template "harbor.fullname" . }}-jobservice"
                 key: secret
+          - name: ADMINSERVER_URL
+            value: "http://{{ template "harbor.fullname" . }}-adminserver"
+          - name: REGISTRY_CONTROLLER_URL
+            value: "http://{{ template "harbor.fullname" . }}-registry:8080"
           - name: LOG_LEVEL
             value: debug
           - name: GODEBUG
