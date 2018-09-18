@@ -12,7 +12,7 @@ data:
       fields:
         service: registry
     storage:
-      {{- $storage := .Values.registry.storage }}
+      {{- $storage := .Values.storage }}
       {{- $type := $storage.type }}
       {{- if eq $type "filesystem" }}
       filesystem:

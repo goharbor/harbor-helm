@@ -36,7 +36,7 @@ data:
   UAA_CLIENTID: ""
   UAA_CLIENTSECRET: ""
   UAA_VERIFY_CERT: "True"
-  REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.registry.storage.type }}"
+  REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.storage.type }}"
   WITH_CHARTMUSEUM: "{{ .Values.chartmuseum.enabled }}"
   CHART_REPOSITORY_URL: "http://{{ template "harbor.fullname" . }}-chartmuseum"
   # The following properties have no default value in Harbor core if not 
