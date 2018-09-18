@@ -114,9 +114,9 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-        {{- if and .Values.persistence.enabled (eq .Values.registry.storage.type "filesystem") }}
+        {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         - name: registry-data
-          mountPath: {{ .Values.registry.storage.filesystem.rootdirectory }}
+          mountPath: {{ .Values.storage.filesystem.rootdirectory }}
         {{- end }}
         - name: registry-config
           mountPath: /etc/registry/config.yml
