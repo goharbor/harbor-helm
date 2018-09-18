@@ -22,10 +22,11 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
   tls:
     enabled: true
-    # Fill the secretName if you want to use the certificate of 
-    # yourself when Harbor serves with HTTPS. A certificate will 
-    # be generated automatically by the chart if leave it empty
-    secretName: ""
+    # Fill in the empty string if you want to use your own TLS secret
+    secretName: &tls_secretName ""
+    # notary secret by default uses the value of secretName
+    # replace the variable reference if you want to use your own TLS secret for notary
+    notarySecretName: *tls_secretName
 
 harborAdminPassword: Harbor12345
 # The secret key used for encryption. Must be a string of 16 chars.
