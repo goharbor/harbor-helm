@@ -216,10 +216,14 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 host:port,pool_size,password
 100 is the default value of pool size
 */}}
-{{- define "harbor.redisForUI" -}}
+{{- define "harbor.redisForCore" -}}
   {{- template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }},100,{{ template "harbor.redis.password" . }}
 {{- end -}}
 
 {{- define "harbor.portal" -}}
   {{- printf "%s-portal" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.core" -}}
+  {{- printf "%s-core" (include "harbor.fullname" .) -}}
 {{- end -}}

@@ -1,27 +1,27 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ template "harbor.fullname" . }}-ui"
+  name: {{ template "harbor.core" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: ui
+    component: core
 spec:
-  replicas: {{ .Values.ui.replicas }}
+  replicas: {{ .Values.core.replicas }}
   template:
     metadata:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
-        component: ui
+        component: core
     spec:
       containers:
-      - name: ui
-        image: {{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}
+      - name: core
+        image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
-          - name: UI_SECRET
+          - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-ui"
+                name: {{ template "harbor.core" . }}
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:
@@ -29,7 +29,7 @@ spec:
                 name: "{{ template "harbor.fullname" . }}-jobservice"
                 key: secret
           - name: _REDIS_URL
-            value: {{ template "harbor.redisForUI" . }}
+            value: {{ template "harbor.redisForCore" . }}
           - name: _REDIS_URL_REG
             value: {{ template "harbor.redisForGC" . }}
           - name: GODEBUG
@@ -37,7 +37,7 @@ spec:
           - name: LOG_LEVEL
             value: debug
           - name: CONFIG_PATH
-            value: /etc/ui/app.conf
+            value: /etc/core/app.conf
           - name: ENABLE_HARBOR_SCAN_ON_PUSH
             value: "1"
           - name: ADMINSERVER_URL
@@ -47,35 +47,35 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-        - name: ui-config
-          mountPath: /etc/ui/app.conf
+        - name: config
+          mountPath: /etc/core/app.conf
           subPath: app.conf
-        - name: ui-secrets-key
-          mountPath: /etc/ui/key
+        - name: secret-key
+          mountPath: /etc/core/key
           subPath: key
-        - name: ui-secrets-private-key
-          mountPath: /etc/ui/private_key.pem
+        - name: token-service-private-key
+          mountPath: /etc/core/private_key.pem
           subPath: tokenServicePrivateKey
         {{- if eq (include "harbor.isAutoGenedCertNeeded" .) "true" }}
         - name: ca-download
-          mountPath: /etc/ui/ca/ca.crt
+          mountPath: /etc/core/ca/ca.crt
           subPath: ca.crt
         {{- end }}
         - name: psc
-          mountPath: /etc/ui/token
+          mountPath: /etc/core/token
       volumes:
-      - name: ui-config
+      - name: config
         configMap:
-          name: "{{ template "harbor.fullname" . }}-ui"
-      - name: ui-secrets-key
+          name: {{ template "harbor.core" . }}
+      - name: secret-key
         secret:
-          secretName: "{{ template "harbor.fullname" . }}-ui"
+          secretName: {{ template "harbor.core" . }}
           items:
             - key: secretKey
               path: key
-      - name: ui-secrets-private-key
+      - name: token-service-private-key
         secret:
-          secretName: "{{ template "harbor.fullname" . }}-ui"
+          secretName: {{ template "harbor.core" . }}
       {{- if eq (include "harbor.isAutoGenedCertNeeded" .) "true" }}
       - name: ca-download
         secret:
@@ -86,15 +86,15 @@ spec:
       {{- end }}
       - name: psc
         emptyDir: {}
-    {{- with .Values.ui.nodeSelector }}
+    {{- with .Values.core.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.ui.affinity }}
+    {{- with .Values.core.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.ui.tolerations }}
+    {{- with .Values.core.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
