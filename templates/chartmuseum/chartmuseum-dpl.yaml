@@ -33,7 +33,7 @@ spec:
           - name: BASIC_AUTH_PASS
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-ui"
+                name: {{ template "harbor.core" . }}
                 key: secret
         ports:
         - containerPort: 9999

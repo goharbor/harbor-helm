@@ -24,10 +24,10 @@ spec:
         resources:
 {{ toYaml .Values.jobservice.resources | indent 10 }}
         env:
-          - name: UI_SECRET
+          - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-ui"
+                name: {{ template "harbor.core" . }}
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:

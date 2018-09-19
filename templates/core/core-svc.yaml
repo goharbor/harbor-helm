@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "harbor.fullname" . }}-ui"
+  name: {{ template "harbor.core" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
@@ -10,4 +10,4 @@ spec:
       targetPort: 8080
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: ui
+    component: core
