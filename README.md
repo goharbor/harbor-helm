@@ -86,6 +86,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `jobservice.image.repository` | Repository for jobservice image | `goharbor/harbor-jobservice` |
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
 | `jobservice.replicas` | The replica count | `1` |
+| `jobservice.volumes` | The volume used to store data if persistence is enabled | |
 | `jobservice.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
@@ -118,10 +119,12 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `database.external.notaryServerDatabase` | The database used by Notary server | `notary_server` |
 | `database.external.notarySignerDatabase` | The database used by Notary signer | `notary_signer` |
 | **Registry** |
-| `registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
-| `registry.image.tag` | Tag for registry image | `dev` |
+| `registry.registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
+| `registry.registry.image.tag` | Tag for registry image | `dev` |
+| `registry.registry.logLevel` | The log level | `info` |
+| `registry.controller.image.repository` | Repository for registry controller image | `goharbor/harbor-registryctl` |
+| `registry.controller.image.tag` | Tag for registry controller image | `dev` |
 | `registry.replicas` | The replica count | `1` |
-| `registry.logLevel` | The log level | `info` |
 | `registry.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `registry.volumes` | used to create PVCs if persistence is enabled (see instructions in values.yaml) | see values.yaml |
 | `registry.nodeSelector` | Node labels for pod assignment | `{}` |
