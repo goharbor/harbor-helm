@@ -31,7 +31,7 @@ data:
 {{- $storage := .Values.storage }}
 {{- $storageType := $storage.type }}
 {{- if eq $storageType "filesystem" }}
-  STORAGE: local"
+  STORAGE: "local"
   STORAGE_LOCAL_ROOTDIR: "/chart_storage"
 {{- else if eq $storageType "azure" }}
   STORAGE: "microsoft"
