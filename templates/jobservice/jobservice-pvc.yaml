@@ -1,0 +1,22 @@
+{{- if and .Values.persistence.enabled (not .Values.jobservice.volumes.data.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "harbor.fullname" . }}-jobservice
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: jobservice
+spec:
+  accessModes: 
+    - {{ .Values.jobservice.volumes.data.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.jobservice.volumes.data.size }}
+  {{- if .Values.jobservice.volumes.data.storageClass }}
+    {{- if eq "-" .Values.jobservice.volumes.data.storageClass }}
+  storageClassName: ""
+    {{- else }}
+  storageClassName: {{ .Values.jobservice.volumes.data.storageClass }}
+    {{- end }}
+  {{- end }}
+{{- end }}
