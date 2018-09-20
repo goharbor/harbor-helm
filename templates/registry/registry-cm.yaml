@@ -156,7 +156,7 @@ data:
       endpoints:
         - name: harbor
           disabled: false
-          url: http://{{ template "harbor.fullname" . }}-ui/service/notifications
+          url: http://{{ template "harbor.core" . }}/service/notifications
           timeout: 3000ms
           threshold: 5
           backoff: 1s

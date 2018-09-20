@@ -19,7 +19,7 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
         - containerPort: 80
-    {{- with .Values.ui.nodeSelector }}
+    {{- with .Values.portal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}

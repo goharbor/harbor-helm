@@ -90,14 +90,14 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
 | `jobservice.affinity` | Node/Pod affinities | `{}` |
-| **UI** |
-| `ui.image.repository` | Repository for ui image | `goharbor/harbor-ui` |
-| `ui.image.tag` | Tag for ui image | `dev` |
-| `ui.replicas` | The replica count | `1` |
-| `ui.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
-| `ui.nodeSelector` | Node labels for pod assignment | `{}` |
-| `ui.tolerations` | Tolerations for pod assignment | `[]` |
-| `ui.affinity` | Node/Pod affinities | `{}` |
+| **Core** |
+| `core.image.repository` | Repository for Harbor core image | `goharbor/harbor-core` |
+| `core.image.tag` | Tag for Harbor core image | `dev` |
+| `core.replicas` | The replica count | `1` |
+| `core.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
+| `core.nodeSelector` | Node labels for pod assignment | `{}` |
+| `core.tolerations` | Tolerations for pod assignment | `[]` |
+| `core.affinity` | Node/Pod affinities | `{}` |
 | **Database** |
 | `database.type` | If external database is used, set it to `external` | `internal` |
 | `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |

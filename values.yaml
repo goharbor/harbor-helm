@@ -73,9 +73,9 @@ jobservice:
   tolerations: []
   affinity: {}
 
-ui:
+core:
   image:
-    repository: goharbor/harbor-ui
+    repository: goharbor/harbor-core
     tag: dev
   replicas: 1
 # resources:
