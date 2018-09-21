@@ -99,6 +99,7 @@ database:
     password: "changeit"
     volumes:
       data:
+        # existingClaim: ""
         # storageClass: "-"
         accessMode: ReadWriteOnce
         size: 1Gi

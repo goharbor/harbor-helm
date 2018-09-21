@@ -38,8 +38,8 @@ spec:
             value: debug
           - name: CONFIG_PATH
             value: /etc/core/app.conf
-          - name: ENABLE_HARBOR_SCAN_ON_PUSH
-            value: "1"
+          - name: SYNC_REGISTRY
+            value: "false"
           - name: ADMINSERVER_URL
             value: "http://{{ template "harbor.fullname" . }}-adminserver"
           - name: CHART_CACHE_DRIVER

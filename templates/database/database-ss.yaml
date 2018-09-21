@@ -42,6 +42,11 @@ spec:
       volumes:
       - name: "database-data"
         emptyDir: {}
+      {{- else if .Values.database.internal.volumes.data.existingClaim }}
+      volumes:
+      - name: "database-data"
+        persistentVolumeClaim:
+          claimName: {{ .Values.database.internal.volumes.data.existingClaim }}
       {{- end -}}
     {{- with .Values.database.internal.nodeSelector }}
       nodeSelector:
@@ -55,7 +60,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if .Values.persistence.enabled }}
+  {{- if and .Values.persistence.enabled (not .Values.database.internal.volumes.data.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: "database-data"
