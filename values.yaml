@@ -65,6 +65,12 @@ jobservice:
     tag: dev
   replicas: 1
   maxWorkers: 50
+  volumes:
+    data:
+      # existingClaim: ""
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 1Gi
 # resources:
 #   requests:
 #     memory: 256Mi
