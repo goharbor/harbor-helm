@@ -43,31 +43,7 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
-      - path: /login
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /log_out
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /sendEmail
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /language
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /reset
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /userExists
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /reset_password
+      - path: /c/
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
