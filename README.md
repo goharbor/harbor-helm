@@ -65,7 +65,8 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `ingress.hosts.notary` | The host of Harbor notary service in ingress rule | `notary.harbor.domain` |
 | `ingress.annotations` | The annotations used in ingress | `true` |
 | `ingress.tls.enabled` | Enable TLS | `true` |
-| `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty | |
+| `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty |
+| `ingress.tls.notarySecretName` | Fill the notarySecretName if you want to use the certificate of yourself when Notary serves with HTTPS. if left empty, it uses the `ingress.tls.secretName` value |
 | **Portal** |
 | `portal.image.repository` | Repository for portal image | `goharbor/harbor-portal` |
 | `portal.image.tag` | Tag for portal image | `dev` |
