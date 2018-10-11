@@ -23,10 +23,6 @@ Checkout the branch.
 cd harbor-helm
 git checkout branch_name
 ```
-Download external dependent charts required by Harbor chart.
-```bash
-helm dependency update
-```
 Install the Harbor helm chart with a release name `my-release`:
 ```bash
 helm install --name my-release .
@@ -34,8 +30,6 @@ helm install --name my-release .
 
 The command deploys Harbor on the Kubernetes cluster with the default configuration.
 The [configuration](#configuration) section lists the parameters that can be configured in values.yaml or via `--set` flag during installation.
-
-**Notes:** If you want to disble the persistence by `--set`, two items need to be configured as `false`: `persistence.enabled` and `redis.master.persistence.enabled`.
 
 ## Uninstalling the Chart
 
@@ -105,7 +99,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |
 | `database.internal.image.tag` | Tag for database image | `dev` |
 | `database.internal.password` | The password for database | `changeit` |
-| `database.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
+| `database.internal.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `database.internal.volumes` | The volume used to persistent data |
 | `database.internal.nodeSelector` | Node labels for pod assignment | `{}` |
 | `database.internal.tolerations` | Tolerations for pod assignment | `[]` |
@@ -154,16 +148,21 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `clair.tolerations` | Tolerations for pod assignment | `[]` |
 | `clair.affinity` | Node/Pod affinities | `{}` |
 | **Redis** |
-| `redis.usePassword` | Whether use password | `false` |
-| `redis.password` | The password for Redis | `changeit` |
-| `redis.cluster.enabled` | Enable Redis cluster | `false` |
-| `redis.master.persistence.enabled` | Persistent data   | `true` |
-| `redis.external.enabled` | If an external Redis is used, set it to `true` | `false` |
+| `redis.type` | If external redis is used, set it to `external` | `internal` |
+| `redis.internal.image.repository` | Repository for redis image | `goharbor/redis-photon` |
+| `redis.internal.image.tag` | Tag for redis image | `dev` |
+| `redis.internal.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
+| `redis.internal.volumes` | The volume used to persistent data |
+| `redis.internal.nodeSelector` | Node labels for pod assignment | `{}` |
+| `redis.internal.tolerations` | Tolerations for pod assignment | `[]` |
+| `redis.internal.affinity` | Node/Pod affinities | `{}` |
 | `redis.external.host` | The hostname of external Redis | `192.168.0.2` |
 | `redis.external.port` | The port of external Redis | `6379` |
-| `redis.external.databaseIndex` | The database index of external Redis | `0` |
-| `redis.external.usePassword` | Whether use password for external Redis | `false` |
-| `redis.external.password` | The password of external Redis | `changeit` |
+| `redis.external.coreDatabaseIndex` | The database index for core | `0` |
+| `redis.external.jobserviceDatabaseIndex` | The database index for jobservice | `1` |
+| `redis.external.registryDatabaseIndex` | The database index for registry | `2` |
+| `redis.external.chartmuseumDatabaseIndex` | The database index for chartmuseum | `3` |
+| `redis.external.password` | The password of external Redis | |
 | **Notary** |
 | `notary.enabled` | Enable Notary? | `true` |
 | `notary.server.image.repository` | Repository for notary server image | `goharbor/notary-server-photon` |
