@@ -1,5 +1,5 @@
 persistence:
-  enabled: &persistence_enabled true
+  enabled: true
 # Ther external URL for Harbor core service. It is used to
 # 1) populate the docker/helm commands showed on portal
 # 2) populate the token service URL returned to docker/notary client
@@ -93,7 +93,6 @@ core:
   tolerations: []
   affinity: {}
 
-# TODO: change the style to be same with redis
 database:
   # if external database is used, set "type" to "external"
   # and fill the connection informations in "external" section
@@ -258,27 +257,27 @@ clair:
   affinity: {}
 
 redis:
-  # if external Redis is used, set "external.enabled" to "true"
-  # and fill the connection informations in "external" section.
-  # or the internal Redis will be used
-  usePassword: false
-  password: "changeit"
-  cluster:
-    enabled: false
-  master:
-    persistence:
-      enabled: *persistence_enabled
-      # storageClass: "-"
-      accessMode: ReadWriteOnce
-      size: 1Gi
+  # if external Redis is used, set "type" to "external"
+  # and fill the connection informations in "external" section
+  type: internal
+  internal:
+    image:
+      repository: goharbor/redis-photon
+      tag: dev
+    volumes:
+      data:
+        # existingClaim: ""
+        # storageClass: "-"
+        accessMode: ReadWriteOnce
+        size: 1Gi
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
     nodeSelector: {}
-    # Overwrite the default value in the Redis chart
-    # as the command "FLUSHDB" is needed for online GC
-    disableCommands: ""
-  persistence:
-    # existingClaim:
+    tolerations: []
+    affinity: {}
   external:
-    enabled: false
     host: "192.168.0.2"
     port: "6379"
     # The "coreDatabaseIndex" must be "0" as the library Harbor
@@ -287,8 +286,7 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     chartmuseumDatabaseIndex: "3"
-    usePassword: false
-    password: "changeit"
+    password: ""
 
 notary:
   enabled: true
