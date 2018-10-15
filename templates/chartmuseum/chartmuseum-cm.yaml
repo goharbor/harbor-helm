@@ -8,8 +8,8 @@ metadata:
 data:
   PORT: "9999"
   CACHE: "redis"
-  CACHE_REDIS_ADDR: "{{ template "harbor.redis.host" }}:{{ template "harbor.redis.port" }}"
-  CACHE_REDIS_DB: "{{ template "harbor.redis.chartmuseumDatabaseIndex" }}"
+  CACHE_REDIS_ADDR: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
+  CACHE_REDIS_DB: "{{ template "harbor.redis.chartmuseumDatabaseIndex" . }}"
   BASIC_AUTH_USER: "chart_controller"
   DEPTH: "1"
   DEBUG: "false"

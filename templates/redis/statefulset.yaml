@@ -1,0 +1,72 @@
+{{- if eq .Values.redis.type "internal" -}}
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "harbor.redis" . }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: redis
+spec:
+  replicas: 1
+  serviceName: {{ template "harbor.redis" . }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: redis
+  template:
+    metadata:
+      labels:
+{{ include "harbor.labels" . | indent 8 }}
+        component: redis
+    spec:
+      containers:
+      - name: redis
+        image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        resources:
+{{ toYaml .Values.redis.internal.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/redis
+      {{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: data
+        emptyDir: {}
+      {{- else if .Values.redis.internal.volumes.data.existingClaim }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Values.redis.internal.volumes.data.existingClaim }}
+      {{- end -}}
+    {{- with .Values.redis.internal.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.redis.internal.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.redis.internal.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+  {{- if and .Values.persistence.enabled (not .Values.redis.internal.volumes.data.existingClaim) }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+{{ include "harbor.labels" . | indent 8 }}
+    spec:
+      accessModes: [{{ .Values.redis.internal.volumes.data.accessMode | quote }}]
+      {{- if .Values.redis.internal.volumes.data.storageClass }}
+      {{- if (eq "-" .Values.redis.internal.volumes.data.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.redis.internal.volumes.data.storageClass }}"
+      {{- end }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.redis.internal.volumes.data.size | quote }}
+  {{- end -}}
+  {{- end -}}
