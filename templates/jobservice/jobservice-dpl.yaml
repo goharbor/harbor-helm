@@ -50,6 +50,7 @@ spec:
           subPath: config.yml
         - name: job-logs
           mountPath: /var/log/jobs
+          subPath: {{ .Values.jobservice.volumes.data.subPath }}
       volumes:
       - name: jobservice-config
         configMap:

@@ -41,6 +41,7 @@ spec:
         volumeMounts:
         - name: chartmuseum-data
           mountPath: /chart_storage
+          subPath: {{ .Values.chartmuseum.volumes.data.subPath }}
       volumes:
       - name: chartmuseum-data
         persistentVolumeClaim:

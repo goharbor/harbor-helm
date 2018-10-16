@@ -1,5 +1,8 @@
 persistence:
   enabled: true
+  # Setting it to "keep" to avoid removing PVCs during a helm delete 
+  # operation. Leaving it empty will delete PVCs after the chart deleted
+  resourcePolicy: keep
 # Ther external URL for Harbor core service. It is used to
 # 1) populate the docker/helm commands showed on portal
 # 2) populate the token service URL returned to docker/notary client
@@ -116,6 +119,7 @@ jobservice:
     data:
       # existingClaim: ""
       # storageClass: "-"
+      subPath: "jobservice"
       accessMode: ReadWriteOnce
       size: 1Gi
 # resources:
@@ -153,6 +157,7 @@ database:
       data:
         # existingClaim: ""
         # storageClass: "-"
+        subPath: "database"
         accessMode: ReadWriteOnce
         size: 1Gi
     # resources:
@@ -189,6 +194,7 @@ registry:
     data:
       # existingClaim: ""
       # storageClass: "-"
+      subPath: "registry"
       accessMode: ReadWriteOnce
       size: 5Gi
   # resources:
@@ -209,6 +215,7 @@ chartmuseum:
     data:
       # existingClaim: ""
       # storageClass: "-"
+      subPath: "chartmuseum"
       accessMode: ReadWriteOnce
       size: 5Gi
   # resources:
@@ -227,7 +234,7 @@ storage:
   # "oss" and fill the information needed in the corresponding section
   type: filesystem
   filesystem:
-    rootdirectory: /var/lib/registry
+    rootdirectory: /storage
     #maxthreads: 100
   azure:
     accountname: accountname
@@ -314,6 +321,7 @@ redis:
       data:
         # existingClaim: ""
         # storageClass: "-"
+        subPath: "redis"
         accessMode: ReadWriteOnce
         size: 1Gi
     # resources:
