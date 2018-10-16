@@ -87,6 +87,7 @@ spec:
         {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         - name: registry-data
           mountPath: {{ .Values.storage.filesystem.rootdirectory }}
+          subPath: {{ .Values.registry.volumes.data.subPath }}
         {{- end }}
         - name: registry-root-certificate
           mountPath: /etc/registry/root.crt
@@ -117,6 +118,7 @@ spec:
         {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         - name: registry-data
           mountPath: {{ .Values.storage.filesystem.rootdirectory }}
+          subPath: {{ .Values.registry.volumes.data.subPath }}
         {{- end }}
         - name: registry-config
           mountPath: /etc/registry/config.yml

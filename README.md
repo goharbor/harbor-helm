@@ -49,6 +49,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | -----------------------    | ---------------------------------- | ----------------------- |
 | **Harbor** |
 | `persistence.enabled`     | Persistent data | `true` |
+| `persistence.resourcePolicy`     | Setting it to "keep" to avoid removing PVCs during a helm delete operation. Leaving it empty will delete PVCs after the chart deleted | `keep` |
 | `externalURL`       | Ther external URL for Harbor core service | `https://core.harbor.domain` |
 | `harborAdminPassword`  | The password of system admin | `Harbor12345` |
 | `secretkey` | The key used for encryption. Must be a string of 16 chars | `not-a-secure-key` |

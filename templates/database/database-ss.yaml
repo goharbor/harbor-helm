@@ -38,6 +38,7 @@ spec:
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
+          subPath: {{ .Values.database.internal.volumes.data.subPath }}
       {{- if not .Values.persistence.enabled }}
       volumes:
       - name: "database-data"
