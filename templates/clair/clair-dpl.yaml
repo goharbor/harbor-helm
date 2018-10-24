@@ -23,6 +23,19 @@ spec:
         image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         args: ["-insecure-tls", "-config", "/etc/clair/config.yaml"]
+        env:
+        {{- if .Values.clair.proxy.enabled }}
+        {{- if .Values.clair.proxy.http_proxy }}
+        - name: HTTP_PROXY
+          value: {{ .Values.clair.proxy.http_proxy }}
+        {{- end }}
+        {{- if .Values.clair.proxy.https_proxy }}
+        - name: HTTPS_PROXY
+          value: {{ .Values.clair.proxy.https_proxy }}
+        {{- end }}
+        - name: NO_PROXY
+          value: "{{ template "harbor.registry" . }},{{ template "harbor.core" . }}"
+        {{- end }}
         resources:
 {{ toYaml .Values.clair.resources | indent 10 }}
         ports:
