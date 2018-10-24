@@ -15,7 +15,7 @@ data:
   EXT_ENDPOINT: "{{ .Values.externalURL }}"
   CORE_URL: "http://{{ template "harbor.core" . }}"
   JOBSERVICE_URL: "http://{{ template "harbor.fullname" . }}-jobservice"
-  REGISTRY_URL: "http://{{ template "harbor.fullname" . }}-registry:5000"
+  REGISTRY_URL: "http://{{ template "harbor.registry" . }}:5000"
   TOKEN_SERVICE_URL: "http://{{ template "harbor.core" . }}/service/token"
   WITH_NOTARY: "{{ .Values.notary.enabled }}"
   NOTARY_URL: "http://{{ template "harbor.notaryServiceName" . }}:4443"

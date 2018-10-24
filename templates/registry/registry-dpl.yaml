@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "harbor.fullname" . }}-registry"
+  name: "{{ template "harbor.registry" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
@@ -38,7 +38,7 @@ spec:
         args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
-            name: "{{ template "harbor.fullname" . }}-registry"
+            name: "{{ template "harbor.registry" . }}"
         ports:
         - containerPort: 5000
         - containerPort: 5001
@@ -72,7 +72,7 @@ spec:
         args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
-            name: "{{ template "harbor.fullname" . }}-registry"
+            name: "{{ template "harbor.registry" . }}"
         env:
           - name: CORE_SECRET
             valueFrom:
@@ -102,11 +102,11 @@ spec:
           secretName: {{ template "harbor.core" . }}
       - name: registry-config
         configMap:
-          name: "{{ template "harbor.fullname" . }}-registry"
+          name: "{{ template "harbor.registry" . }}"
       - name: registry-data
       {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         persistentVolumeClaim:
-          claimName: {{ .Values.registry.volumes.data.existingClaim | default (printf "%s-registry" (include "harbor.fullname" .)) }}  
+          claimName: {{ .Values.registry.volumes.data.existingClaim | default (include "harbor.registry" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
