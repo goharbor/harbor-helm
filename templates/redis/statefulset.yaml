@@ -28,6 +28,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/redis
+          subPath: {{ .Values.redis.internal.volumes.data.subPath }}
       {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data
