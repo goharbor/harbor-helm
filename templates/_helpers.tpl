@@ -20,7 +20,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "harbor.labels" -}}
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+chart: {{ .Chart.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 

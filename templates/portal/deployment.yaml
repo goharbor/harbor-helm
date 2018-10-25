@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "harbor.portal" . }}"
@@ -7,6 +7,10 @@ metadata:
     component: portal
 spec:
   replicas: {{ .Values.portal.replicas }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: portal
   template:
     metadata:
       labels:
