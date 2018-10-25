@@ -31,6 +31,30 @@ ingress:
     # replace the variable reference if you want to use your own TLS secret for notary
     notarySecretName: *tls_secretName
 
+# Setting ingress.enabled to false will enable the service, and
+# the nginx will be deployed as the proxy
+service:
+  name: harbor
+  # ClusterIP or NodePort
+  type: ClusterIP
+  ports:
+    # The port Harbor listens on when serving with HTTP
+    http: 
+      port: 80
+      # set it when the type of service is "NodePort"
+      nodePort: 30002
+    # The port Harbor listens on when serving with HTTPS
+    https: 
+      port: 443
+      # set it when the type of service is "NodePort"
+      nodePort: 30003
+    # The port Notary service listens on. Only needed when
+    # notary.enabled is set to true
+    notary: 
+      port: 4443
+      # set it when the type of service is "NodePort"
+      nodePort: 30004
+
 harborAdminPassword: Harbor12345
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: not-a-secure-key
@@ -46,6 +70,28 @@ portal:
 #  requests:
 #    memory: 256Mi
 #    cpu: 100m
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+nginx:
+  image:
+    repository: goharbor/nginx-photon
+    tag: dev
+  replicas: 1
+  tls:
+    enabled: false
+    # Fill the secretName if you want to use the certificate of 
+    # yourself when Harbor serves with HTTPS. A certificate will 
+    # be generated automatically by the chart if leave it empty
+    secretName: ""
+    # The commmon name used to generate the certificate, fill it 
+    # if the secretName is null
+    commonName: ""
+  # resources:
+  #  requests:
+  #    memory: 256Mi
+  #    cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}

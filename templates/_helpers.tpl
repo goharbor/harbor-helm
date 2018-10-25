@@ -30,8 +30,24 @@ release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
-{{- define "harbor.isAutoGenedCertNeeded" -}}
-  {{- if and (and .Values.ingress.enabled .Values.ingress.tls.enabled) (not .Values.ingress.tls.secretName) -}}
+{{- define "harbor.autoGenCertForIngress" -}}
+  {{- if and .Values.ingress.enabled (and .Values.ingress.tls.enabled (not .Values.ingress.tls.secretName)) -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.autoGenCertForNginx" -}}
+  {{- if and (not .Values.ingress.enabled) (and .Values.nginx.tls.enabled (not .Values.nginx.tls.secretName)) -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.autoGenCert" -}}
+  {{- if or (eq (include "harbor.autoGenCertForIngress" .) "true") (eq (include "harbor.autoGenCertForNginx" .) "true") -}}
     {{- printf "true" -}}
   {{- else -}}
     {{- printf "false" -}}
@@ -224,4 +240,40 @@ host:port,pool_size,password
 
 {{- define "harbor.redis" -}}
   {{- printf "%s-redis" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.adminserver" -}}
+  {{- printf "%s-adminserver" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.jobservice" -}}
+  {{- printf "%s-jobservice" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.registry" -}}
+  {{- printf "%s-registry" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.chartmuseum" -}}
+  {{- printf "%s-chartmuseum" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.database" -}}
+  {{- printf "%s-database" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.clair" -}}
+  {{- printf "%s-clair" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.notary-server" -}}
+  {{- printf "%s-notary-server" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.notary-signer" -}}
+  {{- printf "%s-notary-signer" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.nginx" -}}
+  {{- printf "%s-nginx" (include "harbor.fullname" .) -}}
 {{- end -}}
