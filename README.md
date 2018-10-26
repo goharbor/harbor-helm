@@ -59,6 +59,7 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `ingress.hosts.core` | The host of Harbor core service in ingress rule | `core.harbor.domain` |
 | `ingress.hosts.notary` | The host of Harbor notary service in ingress rule | `notary.harbor.domain` |
 | `ingress.annotations` | The annotations used in ingress | `true` |
+| `ingress.labels` | The custom labels to use in ingress | `true` |
 | `ingress.tls.enabled` | Enable TLS | `true` |
 | `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty |
 | `ingress.tls.notarySecretName` | Fill the notarySecretName if you want to use the certificate of yourself when Notary serves with HTTPS. if left empty, it uses the `ingress.tls.secretName` value |
@@ -70,6 +71,27 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `portal.nodeSelector` | Node labels for pod assignment | `{}` |
 | `portal.tolerations` | Tolerations for pod assignment | `[]` |
 | `portal.affinity` | Node/Pod affinities | `{}` |
+| **Authentication** |
+| `auth.mode` | The type of authentication that is used | `db_auth` |
+| `auth.self_registration` | Enable / Disable the ability for a user to register himself/herself. When disabled, new users can only be created by the Admin user. When auth.mode is set to ldap_auth, self-registration feature is always disabled, and this flag is ignored | `off` |
+| `auth.ldap.url` | The LDAP endpoint URL | `ldaps://ldap.domain` |
+| `auth.ldap.searchDn` | The DN of a user who has the permission to search an LDAP/AD server | `uid=admin,ou=people,dc=mydomain,dc=com` |
+| `auth.ldap.searchPassword` | The password of the user specified by ldap.search_dn | `search_password` |
+| `auth.ldap.baseDn` | The base DN to look up a user | `ou=people,dc=mydomain,dc=com` |
+| `auth.ldap.filter` | The search filter for looking up a user | `objectClass=person` |
+| `auth.ldap.userUid` | The attribute used to match a user during a LDAP search | `sAMAccountName` |
+| `auth.ldap.searchScope` | The scope to search for a user, 0-LDAP_SCOPE_BASE, 1-LDAP_SCOPE_ONELEVEL, 2-LDAP_SCOPE_SUBTREE | `2` |
+| `auth.ldap.timeout` | The timeout limit when requesting the LDAP | `5` |
+| `auth.ldap.verifyCert` | Whether the LDAP certificate should be verified or not| `true` |
+ **Email** |
+| `email.host` | The hostname of email server | `smtp.mydomain.com` |
+| `email.port` | The port of email server | `25` |
+| `email.username` | The username of email server | `sample_admin@mydomain.com` |
+| `email.password` | The password for email server | `unsecure_password` |
+| `email.ssl` | Whether use TLS | `false` |
+| `email.from` | The from address shown when send email| `admin <sample_admin@mydomain.com>` |
+| `email.identity` | | |
+| `email.insecure` | Whether the connection with email server is insecure | `false` |
 | **Adminserver** |
 | `adminserver.image.repository` | Repository for adminserver image | `goharbor/harbor-adminserver` |
 | `adminserver.image.tag` | Tag for adminserver image | `dev` |

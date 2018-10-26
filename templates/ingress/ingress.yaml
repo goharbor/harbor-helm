@@ -5,6 +5,7 @@ metadata:
   name: "{{ template "harbor.fullname" . }}-ingress"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ toYaml .Values.ingress.labels | indent 4 }}
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:

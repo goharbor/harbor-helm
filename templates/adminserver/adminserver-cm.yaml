@@ -42,10 +42,26 @@ data:
   # The following properties have no default value in Harbor core if not 
   # set via env. They should be removed after the refactoring:
   # AUTH_MODE, SELF_REGISTRATION, PROJECT_CREATION_RESTRICTION 
-  AUTH_MODE: "db_auth"	
-  SELF_REGISTRATION: "on"
+  AUTH_MODE: "{{ .Values.auth.mode }}"
+  SELF_REGISTRATION: "{{ .Values.auth.self_registration }}"
   PROJECT_CREATION_RESTRICTION: "everyone"
   TOKEN_EXPIRATION: "30"
-  EMAIL_HOST: "smtp.mydomain.com"
-  EMAIL_FROM: "admin <sample_admin@mydomain.com>"
-  EMAIL_PORT: "25"
+{{ if eq .Values.auth.mode "ldap_auth" }}
+  LDAP_URL: "{{ .Values.auth.ldap.url }}"
+  LDAP_SEARCH_DN: "{{ .Values.auth.ldap.searchDn }}"
+  LDAP_BASE_DN: "{{ .Values.auth.ldap.baseDn }}"
+  LDAP_FILTER: "{{ .Values.auth.ldap.filter }}"
+  LDAP_UID: "{{ .Values.auth.ldap.userUid }}"
+  LDAP_SCOPE: "{{ .Values.auth.ldap.searchScope }}"
+  LDAP_TIMEOUT: "{{ .Values.auth.ldap.timeout }}"
+  LDAP_VERIFY_CERT: "{{ .Values.auth.ldap.verifyCert }}"
+{{ end }}
+{{ if .Values.email.enabled }}
+  EMAIL_HOST: "{{ .Values.email.host }}"
+  EMAIL_PORT: "{{ .Values.email.port }}"
+  EMAIL_USR: "{{ .Values.email.username }}"
+  EMAIL_SSL: "{{ .Values.email.ssl }}"
+  EMAIL_FROM: "{{ .Values.email.from }}"
+  EMAIL_IDENTITY: "{{ .Values.email.identity }}"
+  EMAIL_INSECURE: "{{ .Values.email.insecure }}"
+{{ end }}

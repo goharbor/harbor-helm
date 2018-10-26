@@ -12,6 +12,35 @@ persistence:
 # ingress.hosts.core .
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
+harborAdminPassword: Harbor12345
+# The secret key used for encryption. Must be a string of 16 chars.
+secretKey: not-a-secure-key
+imagePullPolicy: IfNotPresent
+
+auth:
+  mode: db_auth
+  selfRegistration: "off"
+  ldap:
+    url: ldaps://ldap.domain
+    searchDn: uid=admin,ou=people,dc=mydomain,dc=com
+    searchPassword: search_password
+    baseDn: ou=people,dc=mydomain,dc=com
+    filter: objectClass=person
+    userUid: sAMAccountName
+    searchScope: 2
+    timeout: 5
+    verifyCert: true
+
+email:
+  enabled: false
+  host: smtp.mydomain.com
+  port: "25"
+  username: sample_admin@mydomain.com
+  password: unsecure_password
+  ssl: "false"
+  from: "admin <sample_admin@mydomain.com>"
+  identity: ""
+  insecure: false
 
 ingress:
   enabled: true
@@ -23,6 +52,8 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  labels:
+    ingress: tls
   tls:
     enabled: true
     # Fill in the empty string if you want to use your own TLS secret
@@ -54,12 +85,6 @@ service:
       port: 4443
       # set it when the type of service is "NodePort"
       nodePort: 30004
-
-harborAdminPassword: Harbor12345
-# The secret key used for encryption. Must be a string of 16 chars.
-secretKey: not-a-secure-key
-
-imagePullPolicy: IfNotPresent
 
 portal:
   image:
