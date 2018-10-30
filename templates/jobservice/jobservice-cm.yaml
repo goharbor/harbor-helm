@@ -16,6 +16,6 @@ data:
         namespace: "harbor_job_service_namespace"
     logger:
       path: "/var/log/jobs"
-      level: "INFO"
+      level: {{ .Values.logLevel | upper }}
       archive_period: 14 #days
     admin_server: "http://{{ template "harbor.fullname" . }}-adminserver"

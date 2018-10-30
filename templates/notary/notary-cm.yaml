@@ -28,7 +28,7 @@ data:
         "key_algorithm": "ecdsa"
       },
       "logging": {
-        "level": "debug"
+        "level": "{{ .Values.logLevel }}"
       },
       "storage": {
         "backend": "postgres",
@@ -52,7 +52,7 @@ data:
         "tls_key_file": "./notary-signer.key"
       },
       "logging": {
-        "level": "debug"
+        "level": "{{ .Values.logLevel }}"
       },
       "storage": {
         "backend": "postgres",

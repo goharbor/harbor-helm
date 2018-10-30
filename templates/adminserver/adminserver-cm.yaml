@@ -19,7 +19,7 @@ data:
   TOKEN_SERVICE_URL: "http://{{ template "harbor.core" . }}/service/token"
   WITH_NOTARY: "{{ .Values.notary.enabled }}"
   NOTARY_URL: "http://{{ template "harbor.notaryServiceName" . }}:4443"
-  LOG_LEVEL: "info"
+  LOG_LEVEL: "{{ .Values.logLevel }}"
   IMAGE_STORE_PATH: "/" # This is a temporary hack.
   CFG_EXPIRATION: "5"
   GODEBUG: "netdns=cgo"
