@@ -55,6 +55,8 @@ service:
       # set it when the type of service is "NodePort"
       nodePort: 30004
 
+logLevel: debug
+
 harborAdminPassword: Harbor12345
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: not-a-secure-key
@@ -183,7 +185,6 @@ registry:
     image:
       repository: goharbor/registry-photon
       tag: dev
-    logLevel: info
   controller:
     image:
       repository: goharbor/harbor-registryctl

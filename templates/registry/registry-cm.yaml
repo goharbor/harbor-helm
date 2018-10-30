@@ -8,7 +8,7 @@ data:
   config.yml: |+
     version: 0.1
     log:
-      level: {{ .Values.registry.logLevel }}
+      level: {{ .Values.logLevel }}
       fields:
         service: registry
     storage:
@@ -164,4 +164,4 @@ data:
     ---
     protocol: "http"
     port: 8080
-    log_level: "INFO"
+    log_level: {{ .Values.logLevel }}
