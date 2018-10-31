@@ -22,6 +22,18 @@ spec:
       - name: chartmuseum
         image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9999
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9999
+          initialDelaySeconds: 1
+          periodSeconds: 10
         resources:
 {{ toYaml .Values.chartmuseum.resources | indent 10 }}
         envFrom:
