@@ -37,15 +37,17 @@ spec:
                 key: secret
         ports:
         - containerPort: 9999
-      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         volumeMounts:
         - name: chartmuseum-data
           mountPath: /chart_storage
           subPath: {{ .Values.chartmuseum.volumes.data.subPath }}
       volumes:
       - name: chartmuseum-data
+      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         persistentVolumeClaim:
           claimName: {{ .Values.chartmuseum.volumes.data.existingClaim | default (printf "%s-chartmuseum" (include "harbor.fullname" .)) }}
+      {{- else }}
+        emptyDir: {}
       {{- end }}
       {{- with .Values.chartmuseum.nodeSelector }}
       nodeSelector:
