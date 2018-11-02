@@ -31,11 +31,9 @@ spec:
         - containerPort: 5000
         - containerPort: 5001
         volumeMounts:
-        {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         - name: registry-data
           mountPath: {{ .Values.storage.filesystem.rootdirectory }}
           subPath: {{ .Values.registry.volumes.data.subPath }}
-        {{- end }}
         - name: registry-root-certificate
           mountPath: /etc/registry/root.crt
           subPath: tokenServiceRootCertBundle
@@ -65,11 +63,9 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-        {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         - name: registry-data
           mountPath: {{ .Values.storage.filesystem.rootdirectory }}
           subPath: {{ .Values.registry.volumes.data.subPath }}
-        {{- end }}
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
@@ -83,10 +79,12 @@ spec:
       - name: registry-config
         configMap:
           name: "{{ template "harbor.fullname" . }}-registry"
-      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
       - name: registry-data
+      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
         persistentVolumeClaim:
           claimName: {{ .Values.registry.volumes.data.existingClaim | default (printf "%s-registry" (include "harbor.fullname" .)) }}  
+      {{- else }}
+        emptyDir: {}
       {{- end }}
     {{- with .Values.registry.nodeSelector }}
       nodeSelector:
