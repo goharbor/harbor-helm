@@ -12,7 +12,11 @@ data:
   CACHE_REDIS_DB: "{{ template "harbor.redis.chartmuseumDatabaseIndex" . }}"
   BASIC_AUTH_USER: "chart_controller"
   DEPTH: "1"
+{{- if eq .Values.logLevel "debug" }}
+  DEBUG: "true"
+{{- else }}
   DEBUG: "false"
+{{- end }}
   LOG_JSON: "true"
   DISABLE_METRICS: "false"
   DISABLE_API: "false"

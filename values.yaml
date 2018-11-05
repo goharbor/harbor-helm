@@ -209,7 +209,6 @@ registry:
     image:
       repository: goharbor/registry-photon
       tag: dev
-    logLevel: info
   controller:
     image:
       repository: goharbor/harbor-registryctl

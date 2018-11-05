@@ -1,5 +1,5 @@
 {{- if eq .Values.database.type "internal" -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ template "harbor.fullname" . }}-database"
