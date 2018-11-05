@@ -16,6 +16,7 @@ harborAdminPassword: Harbor12345
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: not-a-secure-key
 imagePullPolicy: IfNotPresent
+logLevel: debug
 
 auth:
   mode: db_auth
