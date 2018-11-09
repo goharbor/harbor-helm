@@ -14,8 +14,17 @@ data:
       redis_pool:
         redis_url: "{{ template "harbor.redisForJobservice" . }}"
         namespace: "harbor_job_service_namespace"
-    logger:
-      path: "/var/log/jobs"
-      level: {{ .Values.logLevel | upper }}
-      archive_period: 14 #days
+    job_loggers:
+      - name: "FILE"
+        level: {{ .Values.logLevel | upper }}
+        settings: # Customized settings of logger
+          base_dir: "/var/log/jobs"
+        sweeper:
+          duration: 14 #days
+          settings: # Customized settings of sweeper
+            work_dir: "/var/log/jobs"
+    #Loggers for the job service
+    loggers:
+      - name: "STD_OUTPUT"
+        level: {{ .Values.logLevel | upper }}
     admin_server: "http://{{ template "harbor.fullname" . }}-adminserver"
