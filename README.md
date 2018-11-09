@@ -144,6 +144,9 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `clair.image.repository` | Repository for clair image | `goharbor/clair-photon` |
 | `clair.image.tag` | Tag for clair image | `dev`
 | `clair.replicas` | The replica count | `1` |
+| `clair.proxy.enabled` | Enable the use of http(s) proxy | `false` |
+| `clair.proxy.http_proxy` | URL of the http proxy |
+| `clair.proxy.https_proxy` | URL of the https proxy |
 | `clair.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined
 | `clair.nodeSelector` | Node labels for pod assignment | `{}` |
 | `clair.tolerations` | Tolerations for pod assignment | `[]` |

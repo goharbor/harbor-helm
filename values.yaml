@@ -299,7 +299,12 @@ clair:
     repository: goharbor/clair-photon
     tag: dev
   replicas: 1
-  # The interval of clair updaters, the unit is hour, 
+  # Use an http(s) proxy to update vulnerabilities database from internet
+  proxy:
+    enabled: false
+    http_proxy:
+    https_proxy:
+  # The interval of clair updaters, the unit is hour,
   # set to 0 to disable the updaters
   updatersInterval: 12
   # resources:
