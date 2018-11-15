@@ -122,7 +122,7 @@ jobservice:
       # existingClaim: ""
       # storageClass: "-"
       subPath: "jobservice"
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 1Gi
 # resources:
 #   requests:
@@ -196,7 +196,7 @@ registry:
       # existingClaim: ""
       # storageClass: "-"
       subPath: "registry"
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 5Gi
   # resources:
   #  requests:
@@ -217,7 +217,7 @@ chartmuseum:
       # existingClaim: ""
       # storageClass: "-"
       subPath: "chartmuseum"
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 5Gi
   # resources:
   #  requests:
