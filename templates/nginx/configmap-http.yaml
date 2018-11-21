@@ -1,4 +1,4 @@
-{{- if and (not .Values.ingress.enabled) (not .Values.nginx.tls.enabled) }}
+{{- if and (ne .Values.expose.type "ingress") (not .Values.expose.tls.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

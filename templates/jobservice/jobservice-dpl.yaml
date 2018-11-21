@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "harbor.fullname" . }}-jobservice"
+  name: "{{ template "harbor.jobservice" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
@@ -44,16 +44,14 @@ spec:
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-jobservice"
+                name: "{{ template "harbor.jobservice" . }}"
                 key: secret
           - name: ADMINSERVER_URL
-            value: "http://{{ template "harbor.fullname" . }}-adminserver"
+            value: "http://{{ template "harbor.adminserver" . }}"
           - name: REGISTRY_CONTROLLER_URL
             value: "http://{{ template "harbor.registry" . }}:8080"
           - name: LOG_LEVEL
             value: debug
-          - name: GODEBUG
-            value: netdns=cgo
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -62,15 +60,15 @@ spec:
           subPath: config.yml
         - name: job-logs
           mountPath: /var/log/jobs
-          subPath: {{ .Values.jobservice.volumes.data.subPath }}
+          subPath: {{ .Values.persistence.persistentVolumeClaim.jobservice.subPath }}
       volumes:
       - name: jobservice-config
         configMap:
-          name: "{{ template "harbor.fullname" . }}-jobservice"
+          name: "{{ template "harbor.jobservice" . }}"
       - name: job-logs
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.jobservice.volumes.data.existingClaim | default (printf "%s-jobservice" (include "harbor.fullname" .)) }}  
+          claimName: {{ .Values.persistence.persistentVolumeClaim.jobservice.existingClaim | default (include "harbor.jobservice" .) }}  
         {{- else }}
         emptyDir: {}
         {{- end }}

@@ -1,4 +1,4 @@
-{{- if not .Values.ingress.enabled}}
+{{- if ne .Values.expose.type "ingress" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -44,7 +44,7 @@ spec:
         - name: config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
-        {{- if .Values.nginx.tls.enabled }}
+        {{- if .Values.expose.tls.enabled }}
         - name: certificate
           mountPath: /etc/nginx/cert
         {{- end }}
@@ -52,10 +52,14 @@ spec:
       - name: config
         configMap:
           name: {{ template "harbor.nginx" . }}
-      {{- if .Values.nginx.tls.enabled }}
+      {{- if .Values.expose.tls.enabled }}
       - name: certificate
         secret:
+          {{- if .Values.expose.tls.secretName }}
+          secretName: {{ .Values.expose.tls.secretName }}
+          {{- else }}
           secretName: {{ template "harbor.nginx" . }}
+          {{- end }}
       {{- end }}
     {{- with .Values.nginx.nodeSelector }}
       nodeSelector:

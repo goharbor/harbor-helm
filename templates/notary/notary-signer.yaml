@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "harbor.fullname" . }}-notary-signer
+  name: {{ template "harbor.notary-signer" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: notary-signer
@@ -37,7 +37,7 @@ spec:
       volumes:
       - name: notary-config
         configMap:
-          name: "{{ template "harbor.fullname" . }}-notary"
+          name: "{{ template "harbor.notary-server" . }}"
     {{- with .Values.notary.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

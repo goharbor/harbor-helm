@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "harbor.fullname" . }}-notary-server
+  name: {{ template "harbor.notary-server" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: notary-server
@@ -38,7 +38,7 @@ spec:
       volumes:
       - name: notary-config
         configMap:
-          name: "{{ template "harbor.fullname" . }}-notary"
+          name: "{{ template "harbor.notary-server" . }}"
       - name: root-certificate
         secret:
           secretName: {{ template "harbor.core" . }}

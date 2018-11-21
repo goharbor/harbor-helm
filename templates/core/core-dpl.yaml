@@ -42,14 +42,12 @@ spec:
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-jobservice"
+                name: "{{ template "harbor.jobservice" . }}"
                 key: secret
           - name: _REDIS_URL
             value: {{ template "harbor.redisForCore" . }}
           - name: _REDIS_URL_REG
             value: {{ template "harbor.redisForGC" . }}
-          - name: GODEBUG
-            value: netdns=cgo
           - name: LOG_LEVEL
             value: {{ .Values.logLevel }}
           - name: CONFIG_PATH
@@ -57,7 +55,7 @@ spec:
           - name: SYNC_REGISTRY
             value: "false"
           - name: ADMINSERVER_URL
-            value: "http://{{ template "harbor.fullname" . }}-adminserver"
+            value: "http://{{ template "harbor.adminserver" . }}"
           - name: CHART_CACHE_DRIVER
             value: "redis"
         ports:
@@ -96,7 +94,7 @@ spec:
       - name: ca-download
         secret:
         {{- if eq (include "harbor.autoGenCertForIngress" .) "true" }}
-          secretName: "{{ template "harbor.fullname" . }}-ingress"
+          secretName: "{{ template "harbor.ingress" . }}"
         {{- else }}
           secretName: {{ template "harbor.nginx" . }}
         {{- end }}
