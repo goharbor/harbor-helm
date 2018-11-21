@@ -21,6 +21,18 @@ spec:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /api/v1/stats
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/v1/stats
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
         resources:
 {{ toYaml .Values.jobservice.resources | indent 10 }}
         env:

@@ -22,6 +22,18 @@ spec:
       - name: clair
         image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 6061
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 6061
+          initialDelaySeconds: 30
+          periodSeconds: 10
         args: ["-insecure-tls", "-config", "/etc/clair/config.yaml"]
         env:
         {{- if .Values.clair.proxy.enabled }}
