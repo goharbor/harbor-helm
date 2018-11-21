@@ -34,7 +34,7 @@ spec:
             port: 6061
           initialDelaySeconds: 30
           periodSeconds: 10
-        args: ["-insecure-tls", "-config", "/etc/clair/config.yaml"]
+        args: ["-log-level", "{{ .Values.logLevel }}"]
         env:
         {{- if .Values.clair.proxy.enabled }}
         {{- if .Values.clair.proxy.http_proxy }}
