@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "harbor.fullname" . }}-clair
+  name: {{ template "harbor.clair" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: clair
@@ -36,18 +36,16 @@ spec:
           periodSeconds: 10
         args: ["-log-level", "{{ .Values.logLevel }}"]
         env:
-        {{- if .Values.clair.proxy.enabled }}
-        {{- if .Values.clair.proxy.http_proxy }}
+        {{- if .Values.clair.httpProxy }}
         - name: HTTP_PROXY
-          value: {{ .Values.clair.proxy.http_proxy }}
+          value: {{ .Values.clair.httpProxy }}
         {{- end }}
-        {{- if .Values.clair.proxy.https_proxy }}
+        {{- if .Values.clair.httpsProxy }}
         - name: HTTPS_PROXY
-          value: {{ .Values.clair.proxy.https_proxy }}
+          value: {{ .Values.clair.httpsProxy }}
         {{- end }}
         - name: NO_PROXY
           value: "{{ template "harbor.registry" . }},{{ template "harbor.core" . }}"
-        {{- end }}
         resources:
 {{ toYaml .Values.clair.resources | indent 10 }}
         ports:
@@ -59,7 +57,7 @@ spec:
       volumes:
       - name: clair-config
         configMap:
-          name: "{{ template "harbor.fullname" . }}-clair"
+          name: "{{ template "harbor.clair" . }}"
           items:
             - key: config.yaml
               path: config.yaml

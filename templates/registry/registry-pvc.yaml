@@ -1,6 +1,6 @@
 {{- if .Values.persistence.enabled }}
-{{- if not .Values.registry.volumes.data.existingClaim }}
-{{- if eq .Values.storage.type "filesystem" }}
+{{- $registry := .Values.persistence.persistentVolumeClaim.registry -}}
+{{- if and (not $registry.existingClaim) (eq .Values.persistence.imageChartStorage.type "filesystem") }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -14,17 +14,16 @@ metadata:
     component: registry
 spec:
   accessModes: 
-    - {{ .Values.registry.volumes.data.accessMode }}
+    - {{ $registry.accessMode }}
   resources:
     requests:
-      storage: {{ .Values.registry.volumes.data.size }}
-  {{- if .Values.registry.volumes.data.storageClass }}
-    {{- if eq "-" .Values.registry.volumes.data.storageClass }}
+      storage: {{ $registry.size }}
+  {{- if $registry.storageClass }}
+    {{- if eq "-" $registry.storageClass }}
   storageClassName: ""
     {{- else }}
-  storageClassName: {{ .Values.registry.volumes.data.storageClass }}
+  storageClassName: {{ $registry.storageClass }}
     {{- end }}
   {{- end }}
-{{- end }}
 {{- end }}
 {{- end }}

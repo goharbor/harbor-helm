@@ -44,8 +44,8 @@ spec:
         - containerPort: 5001
         volumeMounts:
         - name: registry-data
-          mountPath: {{ .Values.storage.filesystem.rootdirectory }}
-          subPath: {{ .Values.registry.volumes.data.subPath }}
+          mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
+          subPath: {{ .Values.persistence.persistentVolumeClaim.registry.subPath }}
         - name: registry-root-certificate
           mountPath: /etc/registry/root.crt
           subPath: tokenServiceRootCertBundle
@@ -88,8 +88,8 @@ spec:
         - containerPort: 8080
         volumeMounts:
         - name: registry-data
-          mountPath: {{ .Values.storage.filesystem.rootdirectory }}
-          subPath: {{ .Values.registry.volumes.data.subPath }}
+          mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
+          subPath: {{ .Values.persistence.persistentVolumeClaim.registry.subPath }}
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
@@ -104,9 +104,9 @@ spec:
         configMap:
           name: "{{ template "harbor.registry" . }}"
       - name: registry-data
-      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
+      {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
         persistentVolumeClaim:
-          claimName: {{ .Values.registry.volumes.data.existingClaim | default (include "harbor.registry" .) }}
+          claimName: {{ .Values.persistence.persistentVolumeClaim.registry.existingClaim | default (include "harbor.registry" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}

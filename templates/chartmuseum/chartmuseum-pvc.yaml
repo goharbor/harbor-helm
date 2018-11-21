@@ -1,11 +1,12 @@
-{{- if .Values.persistence.enabled }}
-{{- if not .Values.chartmuseum.volumes.data.existingClaim }}
-{{- if eq .Values.storage.type "filesystem" }}
+{{- $persistence := .Values.persistence -}}
+{{- if $persistence.enabled }}
+{{- $chartmuseum := $persistence.persistentVolumeClaim.chartmuseum -}}
+{{- if and (not $chartmuseum.existingClaim) (eq $persistence.imageChartStorage.type "filesystem") }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "harbor.fullname" . }}-chartmuseum
-  {{- if eq .Values.persistence.resourcePolicy "keep" }}
+  name: {{ template "harbor.chartmuseum" . }}
+  {{- if eq $persistence.resourcePolicy "keep" }}
   annotations:
     helm.sh/resource-policy: keep
   {{- end }}
@@ -14,17 +15,16 @@ metadata:
     component: chartmuseum
 spec:
   accessModes: 
-    - {{ .Values.chartmuseum.volumes.data.accessMode }}
+    - {{ $chartmuseum.accessMode }}
   resources:
     requests:
-      storage: {{ .Values.chartmuseum.volumes.data.size }}
-  {{- if .Values.chartmuseum.volumes.data.storageClass }}
-    {{- if eq "-" .Values.chartmuseum.volumes.data.storageClass }}
+      storage: {{ $chartmuseum.size }}
+  {{- if $chartmuseum.storageClass }}
+    {{- if eq "-" $chartmuseum.storageClass }}
   storageClassName: ""
     {{- else }}
-  storageClassName: {{ .Values.chartmuseum.volumes.data.storageClass }}
+  storageClassName: {{ $chartmuseum.storageClass }}
     {{- end }}
   {{- end }}
-{{- end }}
 {{- end }}
 {{- end }}

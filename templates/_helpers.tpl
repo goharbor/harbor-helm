@@ -30,8 +30,16 @@ release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
+{{- define "harbor.autoGenCert" -}}
+  {{- if and .Values.expose.tls.enabled (not .Values.expose.tls.secretName) -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.autoGenCertForIngress" -}}
-  {{- if and .Values.ingress.enabled (and .Values.ingress.tls.enabled (not .Values.ingress.tls.secretName)) -}}
+  {{- if and (eq (include "harbor.autoGenCert" .) "true") (eq .Values.expose.type "ingress") -}}
     {{- printf "true" -}}
   {{- else -}}
     {{- printf "false" -}}
@@ -39,28 +47,16 @@ app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{- define "harbor.autoGenCertForNginx" -}}
-  {{- if and (not .Values.ingress.enabled) (and .Values.nginx.tls.enabled (not .Values.nginx.tls.secretName)) -}}
+  {{- if and (eq (include "harbor.autoGenCert" .) "true") (ne .Values.expose.type "ingress") -}}
     {{- printf "true" -}}
   {{- else -}}
     {{- printf "false" -}}
   {{- end -}}
-{{- end -}}
-
-{{- define "harbor.autoGenCert" -}}
-  {{- if or (eq (include "harbor.autoGenCertForIngress" .) "true") (eq (include "harbor.autoGenCertForNginx" .) "true") -}}
-    {{- printf "true" -}}
-  {{- else -}}
-    {{- printf "false" -}}
-  {{- end -}}
-{{- end -}}
-
-{{- define "harbor.notaryServiceName" -}}
-{{- printf "%s-notary-server" (include "harbor.fullname" .) -}}
 {{- end -}}
 
 {{- define "harbor.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- template "harbor.fullname" . }}-database
+    {{- template "harbor.database" . }}
   {{- else -}}
     {{- .Values.database.external.host -}}
   {{- end -}}
@@ -82,20 +78,16 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
-{{- define "harbor.database.password" -}}
-  {{- if eq .Values.database.type "internal" -}}
-    {{- .Values.database.internal.password | b64enc | quote -}}
-  {{- else -}}
-    {{- .Values.database.external.password | b64enc | quote -}}
-  {{- end -}}
-{{- end -}}
-
 {{- define "harbor.database.rawPassword" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- .Values.database.internal.password -}}
   {{- else -}}
     {{- .Values.database.external.password -}}
   {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.encryptedPassword" -}}
+  {{- include "harbor.database.rawPassword" . | b64enc | quote -}}
 {{- end -}}
 
 {{- define "harbor.database.coreDatabase" -}}
@@ -276,4 +268,8 @@ host:port,pool_size,password
 
 {{- define "harbor.nginx" -}}
   {{- printf "%s-nginx" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.ingress" -}}
+  {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
