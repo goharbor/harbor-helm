@@ -1,4 +1,5 @@
 {{- if eq .Values.redis.type "internal" -}}
+{{- $redis := .Values.persistence.persistentVolumeClaim.redis -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -38,16 +39,16 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/redis
-          subPath: {{ .Values.redis.internal.volumes.data.subPath }}
+          subPath: {{ $redis.subPath }}
       {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data
         emptyDir: {}
-      {{- else if .Values.redis.internal.volumes.data.existingClaim }}
+      {{- else if $redis.existingClaim }}
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: {{ .Values.redis.internal.volumes.data.existingClaim }}
+          claimName: {{ $redis.existingClaim }}
       {{- end -}}
     {{- with .Values.redis.internal.nodeSelector }}
       nodeSelector:
@@ -61,23 +62,23 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if and .Values.persistence.enabled (not .Values.redis.internal.volumes.data.existingClaim) }}
+  {{- if and .Values.persistence.enabled (not $redis.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: data
       labels:
 {{ include "harbor.labels" . | indent 8 }}
     spec:
-      accessModes: [{{ .Values.redis.internal.volumes.data.accessMode | quote }}]
-      {{- if .Values.redis.internal.volumes.data.storageClass }}
-      {{- if (eq "-" .Values.redis.internal.volumes.data.storageClass) }}
+      accessModes: [{{ $redis.accessMode | quote }}]
+      {{- if $redis.storageClass }}
+      {{- if (eq "-" $redis.storageClass) }}
       storageClassName: ""
       {{- else }}
-      storageClassName: "{{ .Values.redis.internal.volumes.data.storageClass }}"
+      storageClassName: "{{ $redis.storageClass }}"
       {{- end }}
       {{- end }}
       resources:
         requests:
-          storage: {{ .Values.redis.internal.volumes.data.size | quote }}
+          storage: {{ $redis.size | quote }}
   {{- end -}}
   {{- end -}}

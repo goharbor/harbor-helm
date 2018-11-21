@@ -1,8 +1,9 @@
-{{- if and .Values.persistence.enabled (not .Values.jobservice.volumes.data.existingClaim) }}
+{{- $jobservice := .Values.persistence.persistentVolumeClaim.jobservice -}}
+{{- if and .Values.persistence.enabled (not $jobservice.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "harbor.fullname" . }}-jobservice
+  name: {{ template "harbor.jobservice" . }}
   {{- if eq .Values.persistence.resourcePolicy "keep" }}
   annotations:
     helm.sh/resource-policy: keep
@@ -12,15 +13,15 @@ metadata:
     component: jobservice
 spec:
   accessModes: 
-    - {{ .Values.jobservice.volumes.data.accessMode }}
+    - {{ $jobservice.accessMode }}
   resources:
     requests:
-      storage: {{ .Values.jobservice.volumes.data.size }}
-  {{- if .Values.jobservice.volumes.data.storageClass }}
-    {{- if eq "-" .Values.jobservice.volumes.data.storageClass }}
+      storage: {{ $jobservice.size }}
+  {{- if $jobservice.storageClass }}
+    {{- if eq "-" $jobservice.storageClass }}
   storageClassName: ""
     {{- else }}
-  storageClassName: {{ .Values.jobservice.volumes.data.storageClass }}
+  storageClassName: {{ $jobservice.storageClass }}
     {{- end }}
   {{- end }}
 {{- end }}

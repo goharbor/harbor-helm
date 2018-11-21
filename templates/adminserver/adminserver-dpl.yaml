@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "harbor.fullname" . }}-adminserver"
+  name: "{{ template "harbor.adminserver" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: adminserver
@@ -37,9 +37,9 @@ spec:
 {{ toYaml .Values.adminserver.resources | indent 10 }}
         envFrom:
         - configMapRef:
-            name: "{{ template "harbor.fullname" . }}-adminserver"
+            name: "{{ template "harbor.adminserver" . }}"
         - secretRef:
-            name: "{{ template "harbor.fullname" . }}-adminserver"
+            name: "{{ template "harbor.adminserver" . }}"
         env:
           - name: PORT
             value: "8080"
@@ -55,7 +55,7 @@ spec:
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-jobservice"
+                name: "{{ template "harbor.jobservice" . }}"
                 key: secret
         ports:
         - containerPort: 8080
@@ -66,7 +66,7 @@ spec:
       volumes:
       - name: adminserver-key
         secret:
-          secretName: "{{ template "harbor.fullname" . }}-adminserver"
+          secretName: "{{ template "harbor.adminserver" . }}"
           items:
           - key: secretKey
             path: key

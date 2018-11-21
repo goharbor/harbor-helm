@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "harbor.fullname" . }}-chartmuseum"
+  name: "{{ template "harbor.chartmuseum" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 data:
@@ -32,7 +32,7 @@ data:
   MAX_UPLOAD_SIZE: "20971520"
   CHART_POST_FORM_FIELD_NAME: "chart"
   PROV_POST_FORM_FIELD_NAME: "prov"
-{{- $storage := .Values.storage }}
+{{- $storage := .Values.persistence.imageChartStorage }}
 {{- $storageType := $storage.type }}
 {{- if eq $storageType "filesystem" }}
   STORAGE: "local"

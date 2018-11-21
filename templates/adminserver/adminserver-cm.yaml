@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "harbor.fullname" . }}-adminserver"
+  name: "{{ template "harbor.adminserver" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: adminserver
@@ -18,11 +18,10 @@ data:
   REGISTRY_URL: "http://{{ template "harbor.registry" . }}:5000"
   TOKEN_SERVICE_URL: "http://{{ template "harbor.core" . }}/service/token"
   WITH_NOTARY: "{{ .Values.notary.enabled }}"
-  NOTARY_URL: "http://{{ template "harbor.notaryServiceName" . }}:4443"
+  NOTARY_URL: "http://{{ template "harbor.notary-server" . }}:4443"
   LOG_LEVEL: "{{ .Values.logLevel }}"
   IMAGE_STORE_PATH: "/" # This is a temporary hack.
   CFG_EXPIRATION: "5"
-  GODEBUG: "netdns=cgo"
   ADMIRAL_URL: "NA"
   RESET: "false"
   WITH_CLAIR: "{{ .Values.clair.enabled }}"
@@ -36,9 +35,9 @@ data:
   UAA_CLIENTID: ""
   UAA_CLIENTSECRET: ""
   UAA_VERIFY_CERT: "True"
-  REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.storage.type }}"
+  REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.persistence.imageChartStorage.type }}"
   WITH_CHARTMUSEUM: "{{ .Values.chartmuseum.enabled }}"
-  CHART_REPOSITORY_URL: "http://{{ template "harbor.fullname" . }}-chartmuseum"
+  CHART_REPOSITORY_URL: "http://{{ template "harbor.chartmuseum" . }}"
   # The following properties have no default value in Harbor core if not 
   # set via env. They should be removed after the refactoring:
   # AUTH_MODE, SELF_REGISTRATION, PROJECT_CREATION_RESTRICTION 

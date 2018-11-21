@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "harbor.fullname" . }}-clair
+  name: {{ template "harbor.clair" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: clair

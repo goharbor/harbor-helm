@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "harbor.fullname" . }}-chartmuseum"
+  name: "{{ template "harbor.chartmuseum" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: chartmuseum
@@ -38,9 +38,9 @@ spec:
 {{ toYaml .Values.chartmuseum.resources | indent 10 }}
         envFrom:
         - configMapRef:
-            name: "{{ template "harbor.fullname" . }}-chartmuseum"
+            name: "{{ template "harbor.chartmuseum" . }}"
         - secretRef:
-            name: "{{ template "harbor.fullname" . }}-chartmuseum"
+            name: "{{ template "harbor.chartmuseum" . }}"
         env:
           - name: BASIC_AUTH_PASS
             valueFrom:
@@ -52,12 +52,12 @@ spec:
         volumeMounts:
         - name: chartmuseum-data
           mountPath: /chart_storage
-          subPath: {{ .Values.chartmuseum.volumes.data.subPath }}
+          subPath: {{ .Values.persistence.persistentVolumeClaim.chartmuseum.subPath }}
       volumes:
       - name: chartmuseum-data
-      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
+      {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
         persistentVolumeClaim:
-          claimName: {{ .Values.chartmuseum.volumes.data.existingClaim | default (printf "%s-chartmuseum" (include "harbor.fullname" .)) }}
+          claimName: {{ .Values.persistence.persistentVolumeClaim.chartmuseum.existingClaim | default (include "harbor.chartmuseum" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}

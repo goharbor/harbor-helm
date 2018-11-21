@@ -1,32 +1,34 @@
-{{- if .Values.ingress.enabled }}
+{{- if eq .Values.expose.type "ingress" }}
+{{- $ingress := .Values.expose.ingress -}}
+{{- $tls := .Values.expose.tls -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{ template "harbor.fullname" . }}-ingress"
+  name: "{{ template "harbor.ingress" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{ toYaml $ingress.annotations | indent 4 }}
 spec:
-  {{- if .Values.ingress.tls.enabled }}
+  {{- if $tls.enabled }}
   tls:
   - hosts:
-    - {{ .Values.ingress.hosts.core }}
-    {{- if .Values.ingress.tls.secretName }}
-    secretName: {{ .Values.ingress.tls.secretName }}
+    - {{ $ingress.hosts.core }}
+    {{- if $tls.secretName }}
+    secretName: {{ $tls.secretName }}
     {{- else }}
-    secretName: "{{ template "harbor.fullname" . }}-ingress"
+    secretName: "{{ template "harbor.ingress" . }}"
     {{- end }}
   - hosts:
-    - {{ .Values.ingress.hosts.notary }}
-    {{- if .Values.ingress.tls.notarySecretName }}
-    secretName: {{ .Values.ingress.tls.notarySecretName }}
+    - {{ $ingress.hosts.notary }}
+    {{- if $tls.notarySecretName }}
+    secretName: {{ $tls.notarySecretName }}
     {{- else }}
-    secretName: "{{ template "harbor.fullname" . }}-ingress"
+    secretName: "{{ template "harbor.ingress" . }}"
     {{- end }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.hosts.core }}
+  - host: {{ $ingress.hosts.core }}
     http:
       paths:
       - path: /
@@ -54,12 +56,12 @@ spec:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
   {{- if .Values.notary.enabled }}
-  - host: {{ .Values.ingress.hosts.notary }}
+  - host: {{ $ingress.hosts.notary }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "harbor.notaryServiceName" . }}
+          serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443
   {{- end }}
 {{- end }}
