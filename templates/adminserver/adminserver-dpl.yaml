@@ -16,6 +16,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: adminserver
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/adminserver/adminserver-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/adminserver/adminserver-secrets.yaml") . | sha256sum }}
     spec:
       containers:
       - name: adminserver
