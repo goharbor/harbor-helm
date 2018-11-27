@@ -17,6 +17,15 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: nginx
+      annotations:
+      {{- if not .Values.expose.tls.enabled }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/nginx/configmap-http.yaml") . | sha256sum }}
+      {{- else }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/nginx/configmap-https.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if eq (include "harbor.autoGenCertForNginx" .) "true" }}
+        checksum/secret: {{ include (print $.Template.BasePath "/nginx/secret.yaml") . | sha256sum }}
+      {{- end }}
     spec:
       containers:
       - name: nginx
