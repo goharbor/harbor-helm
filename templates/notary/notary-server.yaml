@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: notary-server
-        image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
+        image: {{ .Values.notary.server.image.repository }}@{{ .Values.notary.server.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
 {{ toYaml .Values.notary.server.resources | indent 10 }}

@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+        image: {{ .Values.redis.internal.image.repository }}@{{ .Values.redis.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           tcpSocket:

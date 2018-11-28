@@ -14,18 +14,18 @@ expose:
     # tls.key that contain the certificate and private key to use for TLS
     # The certificate and private key will be generated automatically if
     # leaving it empty
-    secretName: &tls_secretName ""
+    secretName: &tls_secretName "harbor-tls"
     # By default, the Notary service will use the same cert and key as
     # described above. Fill the name of secret if you want to use a 
     # separated one. Only needed when the type is "ingress".
-    notarySecretName: *tls_secretName
+    notarySecretName: tls-notary
     # The commmon name used to generate the certificate, it's necessary
     # when the type is "clusterIP" or "nodePort" and "secretName" is null
     commonName: ""
   ingress:
     hosts:
-      core: core.harbor.domain
-      notary: notary.harbor.domain
+      core: registry.0u6ws.k8s.archon.ore.aws.k8s.3stripes.net
+      notary: notary.0u6ws.k8s.archon.ore.aws.k8s.3stripes.net
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -76,7 +76,7 @@ expose:
 # the IP address of k8s node 
 # 
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://core.harbor.domain
+externalURL: https://registry.0u6ws.k8s.archon.ore.aws.k8s.3stripes.net
 
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly. 
@@ -111,7 +111,7 @@ persistence:
       existingClaim: ""
       storageClass: ""
       subPath: "jobservice"
-      accessMode: ReadWriteMany
+      accessMode: ReadWriteOnce
       size: 1Gi
     database:
       existingClaim: ""
@@ -134,7 +134,7 @@ persistence:
     # "oss" and fill the information needed in the corresponding section. The tyep
     # must be "filesystem" if you want to use persistent volumes for registry
     # and chartmuseum
-    type: filesystem
+    type: s3
     filesystem:
       rootdirectory: /storage
       #maxthreads: 100
@@ -150,13 +150,13 @@ persistence:
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: 5242880
     s3:
-      region: us-west-1
-      bucket: bucketname
-      #accesskey: awsaccesskey
-      #secretkey: awssecretkey
+      region: us-west-2
+      bucket: harbor-poc
+      accesskey: <ACCESS_KEY>
+      secretkey: <SECRET_KEY>
+      keyid: images
       #regionendpoint: http://myobjects.local
       #encrypt: false
-      #keyid: mykeyid
       #secure: true
       #v4auth: true
       #chunksize: 5242880
@@ -198,15 +198,15 @@ imagePullPolicy: IfNotPresent
 
 logLevel: debug
 # The initial password of Harbor admin. Change it from portal after launching Harbor
-harborAdminPassword: Harbor12345
+harborAdminPassword: <SOME_PASS>
 # The secret key used for encryption. Must be a string of 16 chars.
-secretKey: not-a-secure-key
+secretKey: <SOME_SECRET>
 
 nginx:
   image:
     repository: goharbor/nginx-photon
     tag: dev
-  replicas: 1
+  replicas: 3
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -218,8 +218,8 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: dev
-  replicas: 1
+    tag: sha256:425e2678c84ad4708e2e3e6b4055f04fe2093317744537407943dec969f31f86
+  replicas: 3
 # resources:
 #  requests:
 #    memory: 256Mi
@@ -231,8 +231,8 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: dev
-  replicas: 1
+    tag: sha256:a2343bfd56f80260ae10df67d7b1befd91356d862d08cb812163533fa3d7f581
+  replicas: 3
 # resources:
 #  requests:
 #    memory: 256Mi
@@ -244,8 +244,8 @@ core:
 adminserver:
   image:
     repository: goharbor/harbor-adminserver
-    tag: dev
-  replicas: 1
+    tag: sha256:c1fdc6d88ccef60c47814776c7407df34f400203d4d785fbe2b809ed1e3d967d
+  replicas: 3
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -257,7 +257,7 @@ adminserver:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: dev
+    tag: sha256:b4417fb5fe6aea1495bb07316a97958e3cd2d8e11a26254ae18c6137e16cdc09
   replicas: 1
   maxJobWorkers: 10
 # resources:
@@ -272,12 +272,12 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: dev
+      tag: sha256:c6769b72c709a240b4c8ced1fcc61e6765da6d72d956f9929d249dfd4cd9cd33
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: dev
-  replicas: 1
+      tag: sha256:33abb50a07c6d25c8ba4057cf116b27117263d5bfa1f8204e8a4b6d7f7f84965
+  replicas: 3
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -290,7 +290,7 @@ chartmuseum:
   enabled: true
   image:
     repository: goharbor/chartmuseum-photon
-    tag: dev
+    tag: sha256:b7eb0ebeb7c73d7328b4e5eef8735107062fd7d9b080d0f97a6f34cb3f0ba50a
   replicas: 1
   # resources:
   #  requests:
@@ -304,7 +304,7 @@ clair:
   enabled: true
   image:
     repository: goharbor/clair-photon
-    tag: dev
+    tag: sha256:a3b6b16adc1468894f6235f91593e631026daacba5e7c5ba0624908eb6b5d631
   replicas: 1
   # The http(s) proxy used to update vulnerabilities database from internet
   httpProxy:
@@ -325,12 +325,12 @@ notary:
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: dev
+      tag: sha256:f74e4850ffdc849c9621f98c7496820dc9cd7501c4f0d96722f8d55c866f4b28
     replicas: 1
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: dev
+      tag: sha256:293742db2116611282e593fdfbecdebacfb0911e4a7df05a90f54473a91f3314
     replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -343,7 +343,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: dev
+      tag: sha256:173ba752309bdf3a3bca857416ade6a1ac478f910063509ec5e6b76cf8eb1413
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -354,14 +354,14 @@ database:
     tolerations: []
     affinity: {}
   external:
-    host: "192.168.0.1"
+    host: "harbor-db"
     port: "5432"
-    username: "user"
-    password: "password"
+    username: "harbor"
+    password: "<SOME_PASS>"
     coreDatabase: "registry"
     clairDatabase: "clair"
-    notaryServerDatabase: "notary_server"
-    notarySignerDatabase: "notary_signer"
+    notaryServerDatabase: "notaryserver"
+    notarySignerDatabase: "notarysigner"
     sslmode: "disable"
 
 redis:
@@ -371,7 +371,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: dev
+      tag: sha256:e56b440106ae7558d2d6f43b20a276b148b3391813516ee68294de438e0c9b25
     # resources:
     #  requests:
     #    memory: 256Mi

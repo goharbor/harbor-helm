@@ -22,14 +22,14 @@ spec:
     spec:
       initContainers:
       - name: "remove-lost-found"
-        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        image: {{ .Values.database.internal.image.repository }}@{{ .Values.database.internal.image.tag }}
         command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
       containers:
       - name: database
-        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        image: {{ .Values.database.internal.image.repository }}@{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           exec:

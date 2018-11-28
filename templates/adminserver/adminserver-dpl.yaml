@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: adminserver
-        image: "{{ .Values.adminserver.image.repository }}:{{ .Values.adminserver.image.tag }}"
+        image: "{{ .Values.adminserver.image.repository }}@{{ .Values.adminserver.image.tag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
           httpGet:
