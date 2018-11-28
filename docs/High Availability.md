@@ -15,7 +15,7 @@ Deploy Harbor on K8S via helm to make it highly available, that is, if one of no
 ## Architecture
 Most of Harbor's components are stateless now.  So we can simply increase the replica of the pods to make sure the components are distributed to multiple worker nodes, and leverage the "Service" mechanism of K8S to ensure the connectivity across pods.
 
-As for storage layer, it is expected that the user provide high available PostgreSQL, Redis cluster for application data and object storage for storing image.
+As for storage layer, it is expected that the user provide high available PostgreSQL, Redis cluster for application data and PVCs or object storage for storing images and charts.
 
 ![HA](img/ha.png)
 
@@ -31,7 +31,7 @@ cd harbor-helm
 ### Configuration
 Configure the followings items in `values.yaml`, you can also set them as parameters via `--set` flag during running `helm install`:
 - **Ingress rule**  
-   Configure the `ingree.hosts.core` and `ingree.hosts.notary`.
+   Configure the `expose.ingress.hosts.core` and `expose.ingress.hosts.notary`.
 - **External URL**  
    Configure the `externalURL`.
 - **External PostgreSQL**  
@@ -41,15 +41,15 @@ Configure the followings items in `values.yaml`, you can also set them as parame
 - **External Redis**  
    Set the `redis.type` to `external` and fill the information in `redis.external` section.  
 
-   As the Redis client used by Harbor's upstream projects doesn't support `Sentinel`, Harbor can only work with a single entrypoint Redis. 
+   As the Redis client used by Harbor's upstream projects doesn't support `Sentinel`, Harbor can only work with a single entry point Redis. You can refer to this [guide](https://community.pivotal.io/s/article/How-to-setup-HAProxy-and-Redis-Sentinel-for-automatic-failover-between-Redis-Master-and-Slave-servers) to setup a HAProxy before the Redis to expose a single entry point.
 - **Storage**   
-   By default, a default `StorageClass` is needed in the K8S cluster to provision PVCs to store images, charts and job logs.  
+   By default, a default `StorageClass` is needed in the K8S cluster to provision volumes to store images, charts and job logs.  
 
-   If you want to specify the `StorageClass`, uncomment and set `registry.volumes.data.storageClass`, `chartmuseum.volumes.data.storageClass` and `jobservice.volumes.data.storageClass`.  
+   If you want to specify the `StorageClass`, set `persistence.persistentVolumeClaim.registry.storageClass`, `persistence.persistentVolumeClaim.chartmuseum.storageClass` and `persistence.persistentVolumeClaim.jobservice.storageClass`.  
 
-   You can also use the existing PVCs to store data. Uncomment and set `registry.volumes.data.existingClaim`, `chartmuseum.volumes.data.existingClaim` and `jobservice.volumes.data.existingClaim`.  
+   You can also use the existing PVCs to store data, set `persistence.persistentVolumeClaim.registry.existingClaim`, `persistence.persistentVolumeClaim.chartmuseum.existingClaim` and `persistence.persistentVolumeClaim.jobservice.existingClaim`.  
 
-   Cloud storage also can be used to store images and charts. Set the `storage.type` to the value you want to use and fill the corresponding section. Notes: PVC is also needed to store job logs.
+   Cloud storage also can be used to store images and charts. Set the `persistence.imageChartStorage.type` to the value you want to use and fill the corresponding section. Notes: PVC is also needed to store job logs.
 
 - **Replica**   
    Set `portal.replicas`, `adminserver.replicas`, `core.replicas`, `jobservice.replicas`, `registry.replicas`, `chartmuseum.replicas`, `clair.replicas`, `notary.server.replicas` and `notary.signer.replicas` to `n`(`n`>=2).
