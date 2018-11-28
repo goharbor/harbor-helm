@@ -63,7 +63,7 @@ expose:
         # The node port Notary listens on
         nodePort: 30004
 
-# Ther external URL for Harbor core service. It is used to
+# The external URL for Harbor core service. It is used to
 # 1) populate the docker/helm commands showed on portal
 # 2) populate the token service URL returned to docker/notary client
 # 
@@ -113,12 +113,16 @@ persistence:
       subPath: "jobservice"
       accessMode: ReadWriteOnce
       size: 1Gi
+    # If external database is used, the following settings for database will 
+    # be ignored
     database:
       existingClaim: ""
       storageClass: ""
       subPath: "database"
       accessMode: ReadWriteOnce
       size: 1Gi
+    # If external Redis is used, the following settings for Redis will 
+    # be ignored
     redis:
       existingClaim: ""
       storageClass: ""
@@ -131,7 +135,7 @@ persistence:
   # for the detail.
   imageChartStorage:
     # Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift", 
-    # "oss" and fill the information needed in the corresponding section. The tyep
+    # "oss" and fill the information needed in the corresponding section. The type
     # must be "filesystem" if you want to use persistent volumes for registry
     # and chartmuseum
     type: s3
@@ -202,6 +206,7 @@ harborAdminPassword: <SOME_PASS>
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: <SOME_SECRET>
 
+# If expose the service via "ingress", the Nginx will not be used
 nginx:
   image:
     repository: goharbor/nginx-photon
