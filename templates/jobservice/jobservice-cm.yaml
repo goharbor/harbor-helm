@@ -15,6 +15,7 @@ data:
         redis_url: "{{ template "harbor.redisForJobservice" . }}"
         namespace: "harbor_job_service_namespace"
     job_loggers:
+      {{- if eq .Values.jobservice.jobLogger "file" }}
       - name: "FILE"
         level: {{ .Values.logLevel | upper }}
         settings: # Customized settings of logger
@@ -23,6 +24,15 @@ data:
           duration: 14 #days
           settings: # Customized settings of sweeper
             work_dir: "/var/log/jobs"
+      {{- else if eq .Values.jobservice.jobLogger "database" }}
+      - name: "DB"
+        level: {{ .Values.logLevel | upper }}
+        sweeper:
+          duration: 14 #days
+      {{- else }}
+      - name: "STD_OUTPUT"
+        level: {{ .Values.logLevel | upper }}
+      {{- end }}
     #Loggers for the job service
     loggers:
       - name: "STD_OUTPUT"
