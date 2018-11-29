@@ -69,7 +69,7 @@ spec:
         configMap:
           name: "{{ template "harbor.jobservice" . }}"
       - name: job-logs
-        {{- if .Values.persistence.enabled }}
+        {{- if and .Values.persistence.enabled (eq .Values.jobservice.jobLogger "file") }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.persistentVolumeClaim.jobservice.existingClaim | default (include "harbor.jobservice" .) }}  
         {{- else }}

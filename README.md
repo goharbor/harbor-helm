@@ -158,6 +158,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
 | `jobservice.replicas` | The replica count | `1` |
 | `jobservice.maxJobWorkers` | The max job workers | `10` |
+| `jobservice.jobLogger` | The logger for jobs: `file`, `database` or `stdout` | `file` |
 | `jobservice.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |

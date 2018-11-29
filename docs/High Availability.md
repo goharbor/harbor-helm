@@ -9,8 +9,7 @@ Deploy Harbor on K8S via helm to make it highly available, that is, if one of no
 - High available ingress controller (Harbor does not manage the external endpoint)
 - High available PostgreSQL database (Harbor does not handle the deployment of HA of database)
 - High available Redis (Harbor does not handle the deployment of HA of Redis)
-- PVC that can be shared across nodes. Users can use `StorageClass` on K8S cluster for dynamically provision or use the existing PVC.
-- External object storage for storing image and chart data(optional, PVC can be used for storing)
+- PVC that can be shared across nodes or external object storage
 
 ## Architecture
 Most of Harbor's components are stateless now.  So we can simply increase the replica of the pods to make sure the components are distributed to multiple worker nodes, and leverage the "Service" mechanism of K8S to ensure the connectivity across pods.
@@ -51,7 +50,7 @@ Configure the followings items in `values.yaml`, you can also set them as parame
 
    You can also use the existing PVCs to store data, set `persistence.persistentVolumeClaim.registry.existingClaim`, `persistence.persistentVolumeClaim.chartmuseum.existingClaim` and `persistence.persistentVolumeClaim.jobservice.existingClaim`.  
 
-   Cloud storage also can be used to store images and charts. Set the `persistence.imageChartStorage.type` to the value you want to use and fill the corresponding section. Notes: PVC is also needed to store job logs.
+   If you have no PVCs that can be shared across nodes, you can use external object storage to store images and charts and store the job logs in database. Set the `persistence.imageChartStorage.type` to the value you want to use and fill the corresponding section and set `jobservice.jobLogger` to `database`.  
 
 - **Replica**   
    Set `portal.replicas`, `adminserver.replicas`, `core.replicas`, `jobservice.replicas`, `registry.replicas`, `chartmuseum.replicas`, `clair.replicas`, `notary.server.replicas` and `notary.signer.replicas` to `n`(`n`>=2).
