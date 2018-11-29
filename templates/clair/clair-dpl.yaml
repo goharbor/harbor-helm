@@ -14,6 +14,8 @@ spec:
       component: clair
   template:
     metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/clair/clair-cm.yaml") . | sha256sum }}
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: clair

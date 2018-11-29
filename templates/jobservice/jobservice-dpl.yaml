@@ -13,6 +13,9 @@ spec:
       component: jobservice
   template:
     metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jobservice/jobservice-secret.yaml") . | sha256sum }}
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: jobservice

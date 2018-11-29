@@ -14,6 +14,13 @@ spec:
       component: nginx
   template:
     metadata:
+      annotations:
+        {{- if and (ne .Values.expose.type "ingress") (not .Values.expose.tls.enabled) }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/nginx/nginx-cm-http.yaml") . | sha256sum }}
+        {{- else if and (ne .Values.expose.type "ingress") .Values.expose.tls.enabled }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/nginx/nginx-cm-https.yaml") . | sha256sum }}
+        {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/nginx/nginx-secret.yaml") . | sha256sum }}
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: nginx

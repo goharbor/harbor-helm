@@ -16,6 +16,8 @@ spec:
       component: database
   template:
     metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: database
