@@ -16,6 +16,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: jobservice
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
     spec:
       containers:
       - name: jobservice

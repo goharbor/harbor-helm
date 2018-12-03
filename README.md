@@ -91,27 +91,27 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `persistence.resourcePolicy`     | Setting it to `keep` to avoid removing PVCs during a helm delete operation. Leaving it empty will delete PVCs after the chart deleted | `keep` |
 | `persistence.persistentVolumeClaim.registry.existingClaim`     | Use the existing PVC which must be created manually before bound | |
 |`persistence.persistentVolumeClaim.registry.storageClass`     | Specify the `storageClass` used to provision the volume. Or the default StorageClass will be used(the default). Set it to `-` to disable dynamic provisioning | |
-|`persistence.persistentVolumeClaim.registry.subPath`     | The sub path used in the volume | `registry` |
-|`persistence.persistentVolumeClaim.registry.accessMode`     | The access mode of the volume | `ReadWriteMany` |
+|`persistence.persistentVolumeClaim.registry.subPath`     | The sub path used in the volume | |
+|`persistence.persistentVolumeClaim.registry.accessMode`     | The access mode of the volume | `ReadWriteOnce` |
 |`persistence.persistentVolumeClaim.registry.size`     | The size of the volume | `5Gi` |
 |`persistence.persistentVolumeClaim.chartmuseum.existingClaim`     | Use the existing PVC which must be created manually before bound | |
 |`persistence.persistentVolumeClaim.chartmuseum.storageClass`     | Specify the `storageClass` used to provision the volume. Or the default StorageClass will be used(the default). Set it to `-` to disable dynamic provisioning | |
-|`persistence.persistentVolumeClaim.chartmuseum.subPath`     | The sub path used in the volume | `chartmuseum` |
-|`persistence.persistentVolumeClaim.chartmuseum.accessMode`     | The access mode of the volume | `ReadWriteMany` |
+|`persistence.persistentVolumeClaim.chartmuseum.subPath`     | The sub path used in the volume | |
+|`persistence.persistentVolumeClaim.chartmuseum.accessMode`     | The access mode of the volume | `ReadWriteOnce` |
 |`persistence.persistentVolumeClaim.chartmuseum.size`     | The size of the volume | `5Gi` |
 |`persistence.persistentVolumeClaim.jobservice.existingClaim`     | Use the existing PVC which must be created manually before bound | |
 |`persistence.persistentVolumeClaim.jobservice.storageClass`     | Specify the `storageClass` used to provision the volume. Or the default StorageClass will be used(the default). Set it to `-` to disable dynamic provisioning | |
-|`persistence.persistentVolumeClaim.jobservice.subPath`     | The sub path used in the volume | `jobservice` |
-|`persistence.persistentVolumeClaim.jobservice.accessMode`     | The access mode of the volume | `ReadWriteMany` |
+|`persistence.persistentVolumeClaim.jobservice.subPath`     | The sub path used in the volume | |
+|`persistence.persistentVolumeClaim.jobservice.accessMode`     | The access mode of the volume | `ReadWriteOnce` |
 |`persistence.persistentVolumeClaim.jobservice.size`     | The size of the volume | `1Gi` |
 |`persistence.persistentVolumeClaim.database.existingClaim`     | Use the existing PVC which must be created manually before bound. If external database is used, the setting will be ignored | |
 |`persistence.persistentVolumeClaim.database.storageClass`     | Specify the `storageClass` used to provision the volume. Or the default StorageClass will be used(the default). Set it to `-` to disable dynamic provisioning. If external database is used, the setting will be ignored | |
-|`persistence.persistentVolumeClaim.database.subPath`     | The sub path used in the volume. If external database is used, the setting will be ignored | `database` |
+|`persistence.persistentVolumeClaim.database.subPath`     | The sub path used in the volume. If external database is used, the setting will be ignored | |
 |`persistence.persistentVolumeClaim.database.accessMode`     | The access mode of the volume. If external database is used, the setting will be ignored | `ReadWriteOnce` |
 |`persistence.persistentVolumeClaim.database.size`     | The size of the volume. If external database is used, the setting will be ignored | `1Gi` |
 |`persistence.persistentVolumeClaim.redis.existingClaim`     | Use the existing PVC which must be created manually before bound. If external Redis is used, the setting will be ignored | |
 |`persistence.persistentVolumeClaim.redis.storageClass`     | Specify the `storageClass` used to provision the volume. Or the default StorageClass will be used(the default). Set it to `-` to disable dynamic provisioning. If external Redis is used, the setting will be ignored | |
-|`persistence.persistentVolumeClaim.redis.subPath`     | The sub path used in the volume. If external Redis is used, the setting will be ignored | `redis` |
+|`persistence.persistentVolumeClaim.redis.subPath`     | The sub path used in the volume. If external Redis is used, the setting will be ignored | |
 |`persistence.persistentVolumeClaim.redis.accessMode`     | The access mode of the volume. If external Redis is used, the setting will be ignored | `ReadWriteOnce` |
 |`persistence.persistentVolumeClaim.redis.size`     | The size of the volume. If external Redis is used, the setting will be ignored | `1Gi` |
 |`persistence.imageChartStorage.type`     | The type of storage for images and charts: `filesystem`, `azure`, `gcs`, `s3`, `swift` or `oss`. The type must be `filesystem` if you want to use persistent volumes for registry and chartmuseum. Refer to the [guide](https://github.com/docker/distribution/blob/master/docs/configuration.md#storage) for more information about the detail | `filesystem` |

@@ -17,6 +17,8 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: notary-signer
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/notary/notary-cm.yaml") . | sha256sum }}
     spec:
       containers:
       - name: notary-signer

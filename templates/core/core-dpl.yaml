@@ -16,6 +16,9 @@ spec:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: core
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
     spec:
       containers:
       - name: core

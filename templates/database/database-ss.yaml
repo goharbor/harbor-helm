@@ -19,6 +19,8 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: database
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
     spec:
       initContainers:
       - name: "remove-lost-found"
