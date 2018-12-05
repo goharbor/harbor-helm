@@ -19,6 +19,9 @@ spec:
         component: notary-server
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/notary/notary-cm.yaml") . | sha256sum }}
+{{- if .Values.notary.podAnnotations }}
+{{ toYaml .Values.notary.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: notary-server

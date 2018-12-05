@@ -232,6 +232,8 @@ portal:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 core:
   image:
@@ -245,6 +247,8 @@ core:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 adminserver:
   image:
@@ -258,6 +262,8 @@ adminserver:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 jobservice:
   image:
@@ -274,6 +280,8 @@ jobservice:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 registry:
   registry:
@@ -292,6 +300,8 @@ registry:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 chartmuseum:
   enabled: true
@@ -306,6 +316,8 @@ chartmuseum:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 clair:
   enabled: true
@@ -326,6 +338,8 @@ clair:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 notary:
   enabled: true
@@ -342,6 +356,8 @@ notary:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 database:
   # if external database is used, set "type" to "external"

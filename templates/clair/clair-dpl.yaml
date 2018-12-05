@@ -19,6 +19,9 @@ spec:
         component: clair
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/clair/clair-cm.yaml") . | sha256sum }}
+{{- if .Values.clair.podAnnotations }}
+{{ toYaml .Values.clair.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: clair
