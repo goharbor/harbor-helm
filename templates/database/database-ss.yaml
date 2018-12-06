@@ -21,6 +21,9 @@ spec:
         component: database
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
+{{- if .Values.database.podAnnotations }}
+{{ toYaml .Values.database.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       initContainers:
       - name: "remove-lost-found"

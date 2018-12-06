@@ -26,6 +26,9 @@ spec:
       {{- if eq (include "harbor.autoGenCertForNginx" .) "true" }}
         checksum/secret: {{ include (print $.Template.BasePath "/nginx/secret.yaml") . | sha256sum }}
       {{- end }}
+{{- if .Values.nginx.podAnnotations }}
+{{ toYaml .Values.nginx.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: nginx

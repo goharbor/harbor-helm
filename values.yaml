@@ -219,6 +219,8 @@ nginx:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 portal:
   image:
@@ -386,6 +388,8 @@ database:
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
     sslmode: "disable"
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -412,3 +416,5 @@ redis:
     registryDatabaseIndex: "2"
     chartmuseumDatabaseIndex: "3"
     password: ""
+  ## Additional deployment annotations
+  podAnnotations: {}
