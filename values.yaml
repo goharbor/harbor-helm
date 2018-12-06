@@ -152,7 +152,7 @@ persistence:
       # TODO: support the keyfile of gcs
       #keyfile: /path/to/keyfile
       #rootdirectory: /gcs/object/name/prefix
-      #chunksize: 5242880
+      #chunksize: "5242880"
     s3:
       region: us-west-1
       bucket: bucketname
@@ -163,7 +163,7 @@ persistence:
       #keyid: mykeyid
       #secure: true
       #v4auth: true
-      #chunksize: 5242880
+      #chunksize: "5242880"
       #rootdirectory: /s3/object/name/prefix
       #storageclass: STANDARD
     swift:
