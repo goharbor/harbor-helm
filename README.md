@@ -129,6 +129,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `nginx.nodeSelector` | Node labels for pod assignment | `{}` |
 | `nginx.tolerations` | Tolerations for pod assignment | `[]` |
 | `nginx.affinity` | Node/Pod affinities | `{}` |
+| `nginx.podAnnotations` | Annotations to add to the nginx pod | `{}` |
 | **Portal** |
 | `portal.image.repository` | Repository for portal image | `goharbor/harbor-portal` |
 | `portal.image.tag` | Tag for portal image | `dev` |
@@ -137,6 +138,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `portal.nodeSelector` | Node labels for pod assignment | `{}` |
 | `portal.tolerations` | Tolerations for pod assignment | `[]` |
 | `portal.affinity` | Node/Pod affinities | `{}` |
+| `portal.podAnnotations` | Annotations to add to the portal pod | `{}` |
 | **Core** |
 | `core.image.repository` | Repository for Harbor core image | `goharbor/harbor-core` |
 | `core.image.tag` | Tag for Harbor core image | `dev` |
@@ -145,6 +147,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `core.nodeSelector` | Node labels for pod assignment | `{}` |
 | `core.tolerations` | Tolerations for pod assignment | `[]` |
 | `core.affinity` | Node/Pod affinities | `{}` |
+| `core.podAnnotations` | Annotations to add to the core pod | `{}` |
 | **Adminserver** |
 | `adminserver.image.repository` | Repository for adminserver image | `goharbor/harbor-adminserver` |
 | `adminserver.image.tag` | Tag for adminserver image | `dev` |
@@ -153,6 +156,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `adminserver.nodeSelector` | Node labels for pod assignment | `{}` |
 | `adminserver.tolerations` | Tolerations for pod assignment | `[]` |
 | `adminserver.affinity` | Node/Pod affinities | `{}` |
+| `adminserver.podAnnotations` | Annotations to add to the adminserver pod | `{}` |
 | **Jobservice** |
 | `jobservice.image.repository` | Repository for jobservice image | `goharbor/harbor-jobservice` |
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
@@ -163,6 +167,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
 | `jobservice.affinity` | Node/Pod affinities | `{}` |
+| `jobservice.podAnnotations` | Annotations to add to the jobservice pod | `{}` |
 | **Registry** |
 | `registry.registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
 | `registry.registry.image.tag` | Tag for registry image | `dev` |
@@ -173,6 +178,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `registry.nodeSelector` | Node labels for pod assignment | `{}` |
 | `registry.tolerations` | Tolerations for pod assignment | `[]` |
 | `registry.affinity` | Node/Pod affinities | `{}` |
+| `registry.podAnnotations` | Annotations to add to the registry pod | `{}` |
 | **Chartmuseum** |
 | `chartmuseum.enabled` | Enable chartmusuem to store chart | `true` |
 | `chartmuseum.image.repository` | Repository for chartmuseum image | `goharbor/chartmuseum-photon` |
@@ -182,6 +188,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `chartmuseum.nodeSelector` | Node labels for pod assignment | `{}` |
 | `chartmuseum.tolerations` | Tolerations for pod assignment | `[]` |
 | `chartmuseum.affinity` | Node/Pod affinities | `{}` |
+| `chartmuseum.podAnnotations` | Annotations to add to the chart museum pod | `{}` |
 | **Clair** |
 | `clair.enabled` | Enable Clair | `true` |
 | `clair.image.repository` | Repository for clair image | `goharbor/clair-photon` |
@@ -194,6 +201,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `clair.nodeSelector` | Node labels for pod assignment | `{}` |
 | `clair.tolerations` | Tolerations for pod assignment | `[]` |
 | `clair.affinity` | Node/Pod affinities | `{}` |
+| `clair.podAnnotations` | Annotations to add to the clair pod | `{}` |
 | **Notary** |
 | `notary.enabled` | Enable Notary? | `true` |
 | `notary.server.image.repository` | Repository for notary server image | `goharbor/notary-server-photon` |
@@ -205,6 +213,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `notary.nodeSelector` | Node labels for pod assignment | `{}` |
 | `notary.tolerations` | Tolerations for pod assignment | `[]` |
 | `notary.affinity` | Node/Pod affinities | `{}` |
+| `notary.podAnnotations` | Annotations to add to the notary pod | `{}` |
 | **Database** |
 | `database.type` | If external database is used, set it to `external` | `internal` |
 | `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |
@@ -223,6 +232,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `database.external.notaryServerDatabase` | The database used by Notary server | `notary_server` |
 | `database.external.notarySignerDatabase` | The database used by Notary signer | `notary_signer` |
 | `database.external.sslmode` | Connection method of external database (require|prefer|disable) | `disable`|
+| `database.podAnnotations` | Annotations to add to the database pod | `{}` |
 | **Redis** |
 | `redis.type` | If external redis is used, set it to `external` | `internal` |
 | `redis.internal.image.repository` | Repository for redis image | `goharbor/redis-photon` |
@@ -238,3 +248,4 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.external.registryDatabaseIndex` | The database index for registry | `2` |
 | `redis.external.chartmuseumDatabaseIndex` | The database index for chartmuseum | `3` |
 | `redis.external.password` | The password of external Redis | |
+| `redis.podAnnotations` | Annotations to add to the redis pod | `{}` |
