@@ -19,8 +19,9 @@ expose:
     # described above. Fill the name of secret if you want to use a 
     # separated one. Only needed when the type is "ingress".
     notarySecretName: *tls_secretName
-    # The commmon name used to generate the certificate, it's necessary
-    # when the type is "clusterIP" or "nodePort" and "secretName" is null
+    # The commmon name used to generate the certificate when the expose type 
+    # is "clusterIP" or "nodePort" and "secretName" is null. The domain name
+    # in "externalURL" will be used if it isn't set
     commonName: ""
   ingress:
     hosts:

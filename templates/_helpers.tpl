@@ -273,3 +273,19 @@ host:port,pool_size,password
 {{- define "harbor.ingress" -}}
   {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
+
+
+{{/*
+Return the common name when expose service via
+NodePort or ClusterIP
+*/}}
+{{- define "harbor.commonName" -}}
+  {{- $cn := .Values.expose.tls.commonName -}}
+  {{- if $cn -}}
+    {{- print $cn -}}
+  {{- else -}}
+    {{- $url := (replace "https://" "" .Values.externalURL) | replace "http://" "" -}}
+    {{- $cn := split ":" $url }}
+    {{- print $cn._0 -}}
+  {{- end -}}
+{{- end -}}
