@@ -71,7 +71,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 |`expose.tls.enabled`|Enable the tls or not|`true`|
 |`expose.tls.secretName`|Fill the name of secret if you want to use your own TLS certificate and private key. The secret must contain keys named `tls.crt` and `tls.key` that contain the certificate and private key to use for TLS. The certificate and private key will be generated automatically if it is not set||
 |`expose.tls.notarySecretName`|By default, the Notary service will use the same cert and key as described above. Fill the name of secret if you want to use a separated one. Only needed when the `expose.type` is `ingress`.||
-|`expose.tls.commonName`|The commmon name used to generate the certificate when the expose type is `clusterIP` or `nodePort` and `secretName` is null. The domain name in `externalURL` will be used if it isn't set||
+|`expose.tls.commonName`|The common name used to generate the certificate, it's necessary when the `expose.type` is `clusterIP` or `nodePort` and `expose.tls.secretName` is null||
 | `expose.ingress.hosts.core` | The host of Harbor core service in ingress rule | `core.harbor.domain` |
 | `expose.ingress.hosts.notary` | The host of Harbor Notary service in ingress rule | `notary.harbor.domain` |
 | `expose.ingress.annotations` | The annotations used in ingress ||
