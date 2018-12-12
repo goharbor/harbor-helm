@@ -19,6 +19,8 @@ spec:
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/adminserver/adminserver-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/adminserver/adminserver-secrets.yaml") . | sha256sum }}
+        checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
+        checksum/secret-jobservice: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
 {{- if .Values.adminserver.podAnnotations }}
 {{ toYaml .Values.adminserver.podAnnotations | indent 8 }}
 {{- end }}
@@ -56,7 +58,7 @@ spec:
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: "{{ template "harbor.core" . }}"
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:
