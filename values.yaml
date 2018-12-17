@@ -14,11 +14,11 @@ expose:
     # tls.key that contain the certificate and private key to use for TLS
     # The certificate and private key will be generated automatically if 
     # it is not set
-    secretName: &tls_secretName ""
+    secretName: ""
     # By default, the Notary service will use the same cert and key as
     # described above. Fill the name of secret if you want to use a 
     # separated one. Only needed when the type is "ingress".
-    notarySecretName: *tls_secretName
+    notarySecretName: ""
     # The commmon name used to generate the certificate, it's necessary
     # when the type is "clusterIP" or "nodePort" and "secretName" is null
     commonName: ""
@@ -89,7 +89,7 @@ persistence:
   enabled: true
   # Setting it to "keep" to avoid removing PVCs during a helm delete 
   # operation. Leaving it empty will delete PVCs after the chart deleted
-  resourcePolicy: keep
+  resourcePolicy: "keep"
   persistentVolumeClaim:
     registry:
       # Use the existing PVC which must be created manually before bound
@@ -202,9 +202,9 @@ imagePullPolicy: IfNotPresent
 
 logLevel: debug
 # The initial password of Harbor admin. Change it from portal after launching Harbor
-harborAdminPassword: Harbor12345
+harborAdminPassword: "Harbor12345"
 # The secret key used for encryption. Must be a string of 16 chars.
-secretKey: not-a-secure-key
+secretKey: "not-a-secure-key"
 
 # If expose the service via "ingress", the Nginx will not be used
 nginx:

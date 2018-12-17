@@ -19,13 +19,17 @@ spec:
     {{- else }}
     secretName: "{{ template "harbor.ingress" . }}"
     {{- end }}
+  {{- if .Values.notary.enabled }}
   - hosts:
     - {{ $ingress.hosts.notary }}
     {{- if $tls.notarySecretName }}
     secretName: {{ $tls.notarySecretName }}
+    {{- else if $tls.secretName }}
+    secretName: {{ $tls.secretName }}
     {{- else }}
     secretName: "{{ template "harbor.ingress" . }}"
     {{- end }}
+  {{- end }}
   {{- end }}
   rules:
   - host: {{ $ingress.hosts.core }}
