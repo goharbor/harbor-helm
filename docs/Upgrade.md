@@ -38,9 +38,9 @@ Configure the new chart to make sure that the configuration items have the same 
     5) Configure the chart to use the new secret by setting `expose.tls.secretName` as the value you set in step iii  
 
 4. **Upgrade**  
-Run upgrade command:  
+Run upgrade command, replace `CHART` with the name of chart downloaded:  
     ```
-    helm upgrade release-name --force .
+    helm upgrade release-name --force CHART
     ```  
     The `--force` is necessary if upgrade from version 0.3.0 due to issue [#30](https://github.com/goharbor/harbor-helm/issues/30).  
 

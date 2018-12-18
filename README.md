@@ -1,6 +1,6 @@
 # Helm Chart for Harbor
 
-**Notes:** The master branch is in heavy development, please use the codes on other branch instead. A high available solution for Harbor based on chart can be find [here](docs/High%20Availability.md).  
+**Notes:** The master branch may be in an unstable or even broken state during development. Please use [releases](https://github.com/goharbor/harbor-helm/releases) instead of the master branch in order to get stable charts. A high available solution for Harbor based on chart can be find [here](docs/High%20Availability.md). And refer to the [guide](docs/Upgrade.md) to upgrade the existing deployment.  
 
 ## Introduction
 This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://github.com/goharbor/harbor) in a Kubernetes cluster. Welcome to [contribute](CONTRIBUTING.md) to Helm Chart for Harbor.
@@ -11,15 +11,8 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://
 
 ## Installation
 ### Download the chart
-Download Harbor helm chart code.
-```bash
-git clone https://github.com/goharbor/harbor-helm
-```
-Checkout the branch.
-```bash
-cd harbor-helm
-git checkout branch_name
-```
+Download Harbor helm chart from the [releases](https://github.com/goharbor/harbor-helm/releases) page.  
+
 ### Configure the chart
 The following items can be configured in `values.yaml` or set via `--set` flag during installation.  
 
@@ -49,9 +42,9 @@ If Harbor is deployed behind the proxy, set it as the URL of proxy.
 #### Configure the other items listed in [configuration](#configuration) section.
 
 ### Install the chart
-Install the Harbor helm chart with a release name `my-release`:
+Install the Harbor helm chart with a release name `my-release`, replace `CHART` with the name of chart downloaded:
 ```bash
-helm install --name my-release .
+helm install --name my-release CHART
 ```
 
 ## Uninstallation

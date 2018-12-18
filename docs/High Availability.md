@@ -21,11 +21,7 @@ As for storage layer, it is expected that the user provide high available Postgr
 ## Installation
 
 ### Download Chart
-Download Harbor helm chart code.
-```bash
-git clone https://github.com/goharbor/harbor-helm
-cd harbor-helm
-```
+Download Harbor helm chart from the [releases](https://github.com/goharbor/harbor-helm/releases) page.  
 
 ### Configuration
 Configure the followings items in `values.yaml`, you can also set them as parameters via `--set` flag during running `helm install`:
@@ -56,8 +52,8 @@ Configure the followings items in `values.yaml`, you can also set them as parame
    Set `portal.replicas`, `adminserver.replicas`, `core.replicas`, `jobservice.replicas`, `registry.replicas`, `chartmuseum.replicas`, `clair.replicas`, `notary.server.replicas` and `notary.signer.replicas` to `n`(`n`>=2).
 
 ### Installation
-Install the Harbor helm chart with a release name `my-release`:
+Install the Harbor helm chart with a release name `my-release`, replace `CHART` with the name of chart downloaded:
 ```bash
-helm install --name my-release .
+helm install --name my-release CHART
 ```
 
