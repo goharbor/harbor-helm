@@ -149,8 +149,8 @@ persistence:
       #realm: core.windows.net
     gcs:
       bucket: bucketname
-      # TODO: support the keyfile of gcs
-      #keyfile: /path/to/keyfile
+      # The base64 encoded json file which contains the key
+      encodedkey: base64-encoded-json-key-file
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
     s3:
