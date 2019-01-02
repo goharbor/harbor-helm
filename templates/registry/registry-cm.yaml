@@ -136,6 +136,8 @@ data:
           enabled: false
       delete:
         enabled: true
+      redirect:
+        disable: {{ $storage.disableredirect }}
     redis:
       addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
       password: {{ template "harbor.redis.rawPassword" . }}
