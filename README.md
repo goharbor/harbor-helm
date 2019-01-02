@@ -114,6 +114,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 |`persistence.persistentVolumeClaim.redis.subPath`     | The sub path used in the volume. If external Redis is used, the setting will be ignored | |
 |`persistence.persistentVolumeClaim.redis.accessMode`     | The access mode of the volume. If external Redis is used, the setting will be ignored | `ReadWriteOnce` |
 |`persistence.persistentVolumeClaim.redis.size`     | The size of the volume. If external Redis is used, the setting will be ignored | `1Gi` |
+|`persistence.imageChartStorage.disableredirect`     | The configuration for managing redirects from content backends. For backends which not supported it (such as using minio for `s3` storage type), please set it to `true` to disable redirects. Refer to the [guide](https://github.com/docker/distribution/blob/master/docs/configuration.md#redirect) for more information about the detail | `false` |
 |`persistence.imageChartStorage.type`     | The type of storage for images and charts: `filesystem`, `azure`, `gcs`, `s3`, `swift` or `oss`. The type must be `filesystem` if you want to use persistent volumes for registry and chartmuseum. Refer to the [guide](https://github.com/docker/distribution/blob/master/docs/configuration.md#storage) for more information about the detail | `filesystem` |
 | |
 | `externalURL` | The external URL for Harbor core service | `https://core.harbor.domain` |
