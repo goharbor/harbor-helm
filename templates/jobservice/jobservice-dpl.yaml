@@ -39,8 +39,10 @@ spec:
             port: 8080
           initialDelaySeconds: 20
           periodSeconds: 10
+{{- if .Values.jobservice.resources }}
         resources:
 {{ toYaml .Values.jobservice.resources | indent 10 }}
+{{- end }}
         env:
           - name: CORE_SECRET
             valueFrom:

@@ -51,8 +51,10 @@ spec:
         {{- end }}
         - name: NO_PROXY
           value: "{{ template "harbor.registry" . }},{{ template "harbor.core" . }}"
+{{- if .Values.clair.resources }}
         resources:
 {{ toYaml .Values.clair.resources | indent 10 }}
+{{- end }}
         ports:
         - containerPort: 6060
         volumeMounts:

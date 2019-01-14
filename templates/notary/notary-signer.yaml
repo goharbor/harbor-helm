@@ -24,8 +24,10 @@ spec:
       - name: notary-signer
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+{{- if .Values.notary.signer.resources }}
         resources:
 {{ toYaml .Values.notary.signer.resources | indent 10 }}
+{{- end }}
         env:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
