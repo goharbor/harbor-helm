@@ -27,8 +27,10 @@ spec:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+{{- if .Values.notary.server.resources }}
         resources:
 {{ toYaml .Values.notary.server.resources | indent 10 }}
+{{- end }}
         env:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql

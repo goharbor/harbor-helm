@@ -41,8 +41,10 @@ spec:
             port: 8080
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- if .Values.adminserver.resources }}
         resources:
 {{ toYaml .Values.adminserver.resources | indent 10 }}
+{{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.adminserver" . }}"

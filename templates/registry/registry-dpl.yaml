@@ -39,8 +39,10 @@ spec:
             port: 5000
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- if .Values.registry.registry.resources }}
         resources:
-{{ toYaml .Values.registry.resources | indent 10 }}
+{{ toYaml .Values.registry.registry.resources | indent 10 }}
+{{- end }}
         args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
@@ -73,8 +75,10 @@ spec:
             port: 8080
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- if .Values.registry.controller.resources }}
         resources:
-{{ toYaml .Values.registry.resources | indent 10 }}
+{{ toYaml .Values.registry.controller.resources | indent 10 }}
+{{- end }}
         args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:

@@ -41,8 +41,10 @@ spec:
             port: 9999
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- if .Values.chartmuseum.resources }}
         resources:
 {{ toYaml .Values.chartmuseum.resources | indent 10 }}
+{{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.chartmuseum" . }}"

@@ -297,15 +297,19 @@ registry:
     image:
       repository: goharbor/registry-photon
       tag: dev
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
   controller:
     image:
       repository: goharbor/harbor-registryctl
       tag: dev
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -357,11 +361,19 @@ notary:
       repository: goharbor/notary-server-photon
       tag: dev
     replicas: 1
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
   signer:
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
     replicas: 1
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}

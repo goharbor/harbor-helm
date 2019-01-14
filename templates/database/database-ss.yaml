@@ -49,8 +49,10 @@ spec:
             - /docker-healthcheck.sh
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- if .Values.database.internal.resources }}
         resources:
 {{ toYaml .Values.database.internal.resources | indent 10 }}
+{{- end }}
         envFrom:
           - secretRef:
               name: "{{ template "harbor.database" . }}"
