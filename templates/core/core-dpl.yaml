@@ -19,6 +19,7 @@ spec:
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
+        checksum/secret-jobservice: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
 {{- if .Values.core.podAnnotations }}
 {{ toYaml .Values.core.podAnnotations | indent 8 }}
 {{- end }}
