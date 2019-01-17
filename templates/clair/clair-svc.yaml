@@ -7,7 +7,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   ports:
-    - port: 6060
+    - name: clair
+      port: 6060
+    - name: health
+      port: 6061
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: clair

@@ -50,20 +50,26 @@ spec:
               secretKeyRef:
                 name: "{{ template "harbor.jobservice" . }}"
                 key: secret
-          - name: _REDIS_URL
-            value: {{ template "harbor.redisForCore" . }}
-          - name: _REDIS_URL_REG
-            value: {{ template "harbor.redisForGC" . }}
           - name: LOG_LEVEL
             value: {{ .Values.logLevel }}
           - name: CONFIG_PATH
             value: /etc/core/app.conf
           - name: SYNC_REGISTRY
             value: "false"
-          - name: ADMINSERVER_URL
-            value: "http://{{ template "harbor.adminserver" . }}"
           - name: CHART_CACHE_DRIVER
             value: "redis"
+          - name: _REDIS_URL
+            value: {{ template "harbor.redisForCore" . }}
+          - name: _REDIS_URL_REG
+            value: {{ template "harbor.redisForGC" . }}
+          - name: ADMINSERVER_URL
+            value: "http://{{ template "harbor.adminserver" . }}"
+          - name: PORTAL_URL
+            value: "http://{{ template "harbor.portal" . }}"
+          - name: REGISTRYCTL_URL
+            value: "http://{{ template "harbor.registry" . }}:8080"
+          - name: CLAIR_HEALTH_CHECK_SERVER_URL
+            value: "http://{{ template "harbor.clair" . }}:6061"
         ports:
         - containerPort: 8080
         volumeMounts:
