@@ -19,6 +19,8 @@ spec:
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/registry/registry-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/registry/registry-secret.yaml") . | sha256sum }}
+        checksum/secret-jobservice: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
+        checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
 {{- if .Values.registry.podAnnotations }}
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
@@ -88,7 +90,7 @@ spec:
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-jobservice"
+                name: {{ template "harbor.jobservice" . }}
                 key: secret
         ports:
         - containerPort: 8080
