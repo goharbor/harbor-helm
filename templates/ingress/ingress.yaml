@@ -35,27 +35,51 @@ spec:
   - host: {{ $ingress.hosts.core }}
     http:
       paths:
+      {{- if $ingress.paths.core }}
+      - path: {{ $ingress.paths.core }}
+      {{- else }}
       - path: /
+      {{- end }}
         backend:
           serviceName: {{ template "harbor.portal" . }}
           servicePort: 80
+      {{- if $ingress.paths.core }}
+      - path: {{ $ingress.paths.core }}api/
+      {{- else }}
       - path: /api/
+      {{- end }}
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
+      {{- if $ingress.paths.core }}
+      - path: {{ $ingress.paths.core }}service/
+      {{- else }}
       - path: /service/
+      {{- end }}
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
+      {{- if $ingress.paths.core }}
+      - path: {{ $ingress.paths.core }}v2/
+      {{- else }}
       - path: /v2/
+      {{- end }}
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
+      {{- if $ingress.paths.core }}
+      - path: {{ $ingress.paths.core }}chartrepo/
+      {{- else }}
       - path: /chartrepo/
+      {{- end }}
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
+      {{- if $ingress.paths.core }}
+      - path: {{ $ingress.paths.core }}c/
+      {{- else }}
       - path: /c/
+      {{- end }}
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
@@ -63,7 +87,11 @@ spec:
   - host: {{ $ingress.hosts.notary }}
     http:
       paths:
+      {{- if $ingress.paths.notary }}
+      - path: {{ $ingress.paths.notary }}
+      {{- else }}
       - path: /
+      {{- end }}
         backend:
           serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443

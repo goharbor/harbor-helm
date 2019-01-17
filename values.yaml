@@ -26,6 +26,12 @@ expose:
     hosts:
       core: core.harbor.domain
       notary: notary.harbor.domain
+    paths:
+      # By default, harbor is meant to be deployed using its own hostname
+      # but if you need to re-use an hostname, you could use custom paths.
+      # (don't forget to specify trailing slashes).
+      # core: /harbor/
+      # notary: /notary/
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
