@@ -54,6 +54,27 @@ spec:
       nodePort: {{ $nodePort.ports.notary.nodePort }}
       {{- end }}
     {{- end }}
+{{- else if eq .Values.expose.type "loadBalancer" }}
+{{- $loadBalancer := .Values.expose.loadBalancer }}
+  name: {{ $loadBalancer.name }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: {{ $loadBalancer.ports.httpPort }}
+      targetPort: 80
+    {{- if .Values.expose.tls.enabled }}
+    - name: https
+      port: {{ $loadBalancer.ports.httpsPort }}
+      targetPort: 443
+    {{- end }}
+    {{- if .Values.notary.enabled }}
+    - name: notary
+      port: {{ $loadBalancer.ports.notaryPort }}
+      targetPort: 4443
+    {{- end }}
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
