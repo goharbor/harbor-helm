@@ -43,7 +43,7 @@ data:
   # AUTH_MODE, SELF_REGISTRATION, PROJECT_CREATION_RESTRICTION 
   AUTH_MODE: "db_auth"	
   SELF_REGISTRATION: "on"
-  PROJECT_CREATION_RESTRICTION: "everyone"
+  PROJECT_CREATION_RESTRICTION: "{{ .Values.projectCreationRestriction }}"
   TOKEN_EXPIRATION: "30"
   EMAIL_HOST: "smtp.mydomain.com"
   EMAIL_FROM: "admin <sample_admin@mydomain.com>"
