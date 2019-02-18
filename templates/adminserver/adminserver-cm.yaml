@@ -41,9 +41,22 @@ data:
   # The following properties have no default value in Harbor core if not 
   # set via env. They should be removed after the refactoring:
   # AUTH_MODE, SELF_REGISTRATION, PROJECT_CREATION_RESTRICTION 
-  AUTH_MODE: "db_auth"	
-  SELF_REGISTRATION: "on"
-  PROJECT_CREATION_RESTRICTION: "everyone"
+  AUTH_MODE: "{{ .Values.auth.mode }}"
+  LDAP_URL: "{{ .Values.auth.ldap.ldap_url }}"
+  LDAP_SEARCHDN: {{ .Values.auth.ldap.ldap_searchdn }}
+  LDAP_SEARCH_PWD: "{{ .Values.auth.ldap.ldap_search_pwd }}"
+  LDAP_BASEDN: "{{ .Values.auth.ldap.ldap_basedn}}"
+  LDAP_FILTER: "{{ .Values.auth.ldap.ldap_filter}}"
+  LDAP_UID: "{{ .Values.auth.ldap.ldap_uid }}"
+  LDAP_SCOPE: "{{ .Values.auth.ldap.ldap_scope }}"
+  LDAP_TIMEOUT: "{{ .Values.auth.ldap.ldap_timeout }}"
+  LDAP_VERIFY_CERT: "{{ .Values.auth.ldap.ldap_verify_cert }}"
+  LDAP_GROUP_BASEDN: "{{ .Values.auth.ldap.ldap_group_basedn }}"
+  LDAP_GROUP_FILTER: "{{ .Values.auth.ldap.ldap_group_filter }}"
+  LDAP_GROUP_GID: "{{ .Values.auth.ldap.ldap_group_gid }}"
+  LDAP_GROUP_SCOPE: "{{ .Values.auth.ldap.ldap_group_scope }}"
+  SELF_REGISTRATION: "{{ .Values.auth.self_registration }}"
+  PROJECT_CREATION_RESTRICTION: "{{ .Values.auth.project_creation_restriction }}"
   TOKEN_EXPIRATION: "30"
   EMAIL_HOST: "smtp.mydomain.com"
   EMAIL_FROM: "admin <sample_admin@mydomain.com>"
