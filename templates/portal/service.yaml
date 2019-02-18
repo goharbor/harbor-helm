@@ -5,6 +5,9 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
+{{- if or (eq .Values.expose.type "ingress") (eq .Values.expose.type "nodePort") }}
+  type: NodePort
+{{- end }}
   ports:
     - port: 80
       targetPort: 80
