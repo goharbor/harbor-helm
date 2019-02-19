@@ -37,4 +37,3 @@ data:
     loggers:
       - name: "STD_OUTPUT"
         level: {{ .Values.logLevel | upper }}
-    admin_server: "http://{{ template "harbor.adminserver" . }}"

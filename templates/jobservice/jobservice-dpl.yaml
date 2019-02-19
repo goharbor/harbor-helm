@@ -55,8 +55,8 @@ spec:
               secretKeyRef:
                 name: "{{ template "harbor.jobservice" . }}"
                 key: secret
-          - name: ADMINSERVER_URL
-            value: "http://{{ template "harbor.adminserver" . }}"
+          - name: CORE_URL
+            value: "http://{{ template "harbor.core" . }}"
           - name: REGISTRY_CONTROLLER_URL
             value: "http://{{ template "harbor.registry" . }}:8080"
           - name: LOG_LEVEL
