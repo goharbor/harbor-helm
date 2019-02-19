@@ -234,10 +234,6 @@ host:port,pool_size,password
   {{- printf "%s-redis" (include "harbor.fullname" .) -}}
 {{- end -}}
 
-{{- define "harbor.adminserver" -}}
-  {{- printf "%s-adminserver" (include "harbor.fullname" .) -}}
-{{- end -}}
-
 {{- define "harbor.jobservice" -}}
   {{- printf "%s-jobservice" (include "harbor.fullname" .) -}}
 {{- end -}}

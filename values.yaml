@@ -271,21 +271,6 @@ core:
   ## Additional deployment annotations
   podAnnotations: {}
 
-adminserver:
-  image:
-    repository: goharbor/harbor-adminserver
-    tag: dev
-  replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  ## Additional deployment annotations
-  podAnnotations: {}
-
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
