@@ -22,7 +22,7 @@ data:
   DISABLE_API: "false"
   DISABLE_STATEFILES: "false"
   ALLOW_OVERWRITE: "true"
-  CHART_URL: {{ .Values.externalURL }}/chartrepo
+  CHART_URL:
   AUTH_ANONYMOUS_GET: "false"
   TLS_CERT:
   TLS_KEY:
