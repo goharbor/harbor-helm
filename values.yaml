@@ -1,7 +1,7 @@
 expose:
   # Set the way how to expose the service. Set the type as "ingress", 
-  # "clusterIP" or "nodePort" and fill the information in the corresponding 
-  # section
+  # "clusterIP", "nodePort" or "loadBalancer" and fill the information 
+  # in the corresponding section
   type: ingress
   tls:
     # Enable the tls or not. Note: if the type is "ingress" and the tls 
@@ -20,7 +20,7 @@ expose:
     # separated one. Only needed when the type is "ingress".
     notarySecretName: ""
     # The commmon name used to generate the certificate, it's necessary
-    # when the type is "clusterIP" or "nodePort" and "secretName" is null
+    # when the type isn't "ingress" and "secretName" is null
     commonName: ""
   ingress:
     hosts:
@@ -62,6 +62,17 @@ expose:
         port: 4443
         # The node port Notary listens on
         nodePort: 30004
+  loadBalancer:
+    # The name of LoadBalancer service
+    name: harbor
+    ports:
+      # The service port Harbor listens on when serving with HTTP
+      httpPort: 80
+      # The service port Harbor listens on when serving with HTTPS
+      httpsPort: 443
+      # The service port Notary listens on. Only needed when notary.enabled 
+      # is set to true
+      notaryPort: 4443
 
 # The external URL for Harbor core service. It is used to
 # 1) populate the docker/helm commands showed on portal
