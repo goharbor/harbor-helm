@@ -103,7 +103,8 @@ persistence:
   resourcePolicy: "keep"
   persistentVolumeClaim:
     registry:
-      # Use the existing PVC which must be created manually before bound
+      # Use the existing PVC which must be created manually before bound, 
+      # and specify the "subPath" if the PVC is shared with other components
       existingClaim: ""
       # Specify the "storageClass" used to provision the volume. Or the default
       # StorageClass will be used(the default).
