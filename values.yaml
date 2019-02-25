@@ -270,6 +270,17 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Secret is used when core server communicates with other components.
+  # If a secret key is not specified, Helm will generate one.
+  # Must be a string of 16 chars.
+  secret: ""
+
+  # Fill the name of a kubernetes secret if you want to use your own
+  # TLS certificate and private key for token encryption/decryption.
+  # The secret must contain keys named tls.tokenServiceRootCertBundle and
+  # tls.tokenServicePrivateKey that contain the certificate and private key.
+  # They will be automatically generated if not set
+  secretName: ""
 
 jobservice:
   image:
@@ -288,6 +299,10 @@ jobservice:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Secret is used when job service communicates with other components.
+  # If a secret key is not specified, Helm will generate one.
+  # Must be a string of 16 chars.
+  secret: ""
 
 registry:
   registry:
@@ -312,6 +327,12 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Secret is used to secure the upload state from client
+  # and registry storage backend.
+  # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
+  # If a secret key is not specified, Helm will generate one.
+  # Must be a string of 16 chars.
+  secret: ""
 
 chartmuseum:
   enabled: true
@@ -376,6 +397,13 @@ notary:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Fill the name of a kubernetes secret if you want to use your own
+  # TLS certificate authority, certificate and private key for notary
+  # communications.
+  # The secret must contain keys named tls.ca, tls.crt and tls.key that
+  # contain the CA, certificate and private key.
+  # They will be generated if not set.
+  secretName: ""
 
 database:
   # if external database is used, set "type" to "external"
