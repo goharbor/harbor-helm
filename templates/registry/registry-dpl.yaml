@@ -116,7 +116,11 @@ spec:
       volumes:
       - name: registry-root-certificate
         secret:
+          {{- if .Values.core.secretName }}
+          secretName: {{ .Values.core.secretName }}
+          {{- else }}
           secretName: {{ template "harbor.core" . }}
+          {{- end }}
       - name: registry-config
         configMap:
           name: "{{ template "harbor.registry" . }}"

@@ -43,13 +43,27 @@ spec:
         - name: root-certificate
           mountPath: /root.crt
           subPath: tokenServiceRootCertBundle
+        {{- if .Values.notary.secretName }}
+        - name: notary-ca
+          mountPath: /etc/ssl/notary/cert/notary-signer-ca.crt
+          subPath: ca
+        {{- end }}
       volumes:
       - name: notary-config
         configMap:
           name: "{{ template "harbor.notary-server" . }}"
       - name: root-certificate
         secret:
+          {{- if .Values.core.secretName }}
+          secretName: {{ .Values.core.secretName }}
+          {{- else }}
           secretName: {{ template "harbor.core" . }}
+          {{- end }}
+      {{- if .Values.notary.secretName }}
+      - name: notary-ca
+        secret:
+          secretName: {{ .Values.notary.secretName }}
+      {{- end }}
     {{- with .Values.notary.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
