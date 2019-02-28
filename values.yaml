@@ -231,10 +231,13 @@ nginx:
     repository: goharbor/nginx-photon
     tag: dev
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  #resources:
+  # requests:
+  #   memory: 256Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 512Mi
+  #   cpu: 200m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -246,10 +249,13 @@ portal:
     repository: goharbor/harbor-portal
     tag: dev
   replicas: 1
-# resources:
-#  requests:
-#    memory: 256Mi
-#    cpu: 100m
+  #resources:
+  # requests:
+  #   memory: 256Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 512Mi
+  #   cpu: 200m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -261,10 +267,13 @@ core:
     repository: goharbor/harbor-core
     tag: dev
   replicas: 1
-# resources:
-#  requests:
-#    memory: 256Mi
-#    cpu: 100m
+  #resources:
+  # requests:
+  #   memory: 256Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 512Mi
+  #   cpu: 200m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -279,10 +288,13 @@ jobservice:
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLogger: file
-# resources:
-#   requests:
-#     memory: 256Mi
-#     cpu: 100m
+  #resources:
+  # requests:
+  #   memory: 256Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 512Mi
+  #   cpu: 200m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -294,18 +306,24 @@ registry:
     image:
       repository: goharbor/registry-photon
       tag: dev
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+      #resources:
+      # requests:
+      #   memory: 256Mi
+      #   cpu: 100m
+      # limits:
+      #   memory: 512Mi
+      #   cpu: 200m
   controller:
     image:
       repository: goharbor/harbor-registryctl
       tag: dev
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+      #resources:
+      # requests:
+      #   memory: 256Mi
+      #   cpu: 100m
+      # limits:
+      #   memory: 512Mi
+      #   cpu: 200m
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -319,10 +337,13 @@ chartmuseum:
     repository: goharbor/chartmuseum-photon
     tag: dev
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  #resources:
+  # requests:
+  #   memory: 256Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 512Mi
+  #   cpu: 200m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -341,10 +362,13 @@ clair:
   # The interval of clair updaters, the unit is hour, set to 0 to 
   # disable the updaters
   updatersInterval: 12
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  #resources:
+  # requests:
+  #   memory: 256Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 512Mi
+  #   cpu: 200m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -358,19 +382,25 @@ notary:
       repository: goharbor/notary-server-photon
       tag: dev
     replicas: 1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    #resources:
+    # requests:
+    #   memory: 256Mi
+    #   cpu: 100m
+    # limits:
+    #   memory: 512Mi
+    #   cpu: 200m
   signer:
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
     replicas: 1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    #resources:
+    # requests:
+    #   memory: 256Mi
+    #   cpu: 100m
+    # limits: 
+    #   memory: 512Mi
+    #   cpu: 200m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -387,10 +417,13 @@ database:
       tag: dev
     # The initial superuser password for internal database
     password: "changeit"
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    #resources:
+    # requests:
+    #   memory: 256Mi
+    #   cpu: 100m
+    # limits:
+    #   memory: 512Mi
+    #   cpu: 200m
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -415,10 +448,13 @@ redis:
     image:
       repository: goharbor/redis-photon
       tag: dev
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    #resources:
+    # requests:
+    #   memory: 256Mi
+    #   cpu: 100m
+    # limits:
+    #   memory: 512Mi
+    #   cpu: 200m
     nodeSelector: {}
     tolerations: []
     affinity: {}
