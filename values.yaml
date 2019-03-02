@@ -23,13 +23,16 @@ expose:
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
   ingress:
+    # set to the type of ingress controller if it has specific requirements.
+    # leave empty for defaults.
+    # controller: gce
     hosts:
       core: core.harbor.domain
       notary: notary.harbor.domain
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
       ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
   clusterIP:
     # The name of ClusterIP service
