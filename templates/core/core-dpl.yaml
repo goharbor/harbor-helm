@@ -91,7 +91,11 @@ spec:
               path: key
       - name: token-service-private-key
         secret:
+          {{- if .Values.core.secretName }}
+          secretName: {{ .Values.core.secretName }}
+          {{- else }}
           secretName: {{ template "harbor.core" . }}
+          {{- end }}
       {{- if eq (include "harbor.autoGenCert" .) "true" }}
       - name: ca-download
         secret:
