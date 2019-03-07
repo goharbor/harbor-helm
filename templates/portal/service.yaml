@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
-{{- if and (hasKey .Values.expose.ingress "controller") (eq .Values.expose.ingress.controller "gce") }}
+{{- if (eq .Values.expose.ingress.controller "gce") }}
   type: NodePort
 {{- end }}
   ports:

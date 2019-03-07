@@ -31,8 +31,8 @@ spec:
     {{- end }}
   {{- end }}
   {{- end }}
+  {{- if  eq .Values.expose.ingress.controller "gce" }}
   rules:
-  {{- if and (hasKey .Values.expose.ingress "controller") (eq .Values.expose.ingress.controller "gce") }}
     - host: {{ $ingress.hosts.core }}
       http:
         paths:
@@ -60,7 +60,7 @@ spec:
           backend:
             serviceName: {{ template "harbor.core" . }}
             servicePort: 80
-  {{- if .Values.notary.enabled }}
+    {{- if .Values.notary.enabled }}
     - host: {{ $ingress.hosts.notary }}
       http:
         paths:
@@ -69,7 +69,8 @@ spec:
             serviceName: {{ template "harbor.notary-server" . }}
             servicePort: 4443
     {{- end }}
-    {{- else }}
+  {{- else }}
+  rules:
     - host: {{ $ingress.hosts.core }}
       http:
         paths:

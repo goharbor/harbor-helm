@@ -24,8 +24,9 @@ expose:
     commonName: ""
   ingress:
     # set to the type of ingress controller if it has specific requirements.
-    # leave empty for defaults.
-    # controller: gce
+    # leave as `default` for most ingress controllers.
+    # set to `gce` if using the GCE ingress controller
+    controller: default
     hosts:
       core: core.harbor.domain
       notary: notary.harbor.domain
