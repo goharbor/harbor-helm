@@ -17,7 +17,9 @@ spec:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: core
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}
+        checksum/configmap-envs: {{ include (print $.Template.BasePath "/core/core-cm-envs.yaml") . | sha256sum }}
+        checksum/configmap-app: {{ include (print $.Template.BasePath "/core/core-cm-app.yaml") . | sha256sum }}
+        checksum/secret-uaa-ca: {{ include (print $.Template.BasePath "/core/core-secret-uaa-ca-cert.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
         checksum/secret-jobservice: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
 {{- if .Values.core.podAnnotations }}
@@ -42,7 +44,7 @@ spec:
           periodSeconds: 10
         envFrom:
         - configMapRef:
-            name: "{{ template "harbor.core" . }}"
+            name: "{{ template "harbor.core" . }}-envs"
         - secretRef:
             name: "{{ template "harbor.core" . }}"
         env:
@@ -73,6 +75,10 @@ spec:
           mountPath: /etc/core/ca/ca.crt
           subPath: ca.crt
         {{- end }}
+        {{- if and (eq .Values.auth.mode "uaa_auth") (.Values.auth.uaa.caCert) }}
+        - name: uaa-ca-cert
+          mountPath: /etc/core/uaa
+        {{- end }}
         - name: psc
           mountPath: /etc/core/token
 {{- if .Values.core.resources }}
@@ -82,7 +88,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "harbor.core" . }}
+          name: {{ template "harbor.core" . }}-app
       - name: secret-key
         secret:
           secretName: {{ template "harbor.core" . }}
@@ -107,6 +113,11 @@ spec:
           items:
             - key: ca.crt
               path: ca.crt
+      {{- end }}
+      {{- if and (eq .Values.auth.mode "uaa_auth") (.Values.auth.uaa.caCert) }}
+      - name: uaa-ca-cert
+        secret:
+          secretName: {{ template "harbor.core" . }}-uaa-ca-cert
       {{- end }}
       - name: psc
         emptyDir: {}

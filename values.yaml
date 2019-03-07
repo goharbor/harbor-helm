@@ -217,13 +217,28 @@ persistence:
       #chunksize: 10M
       #rootdirectory: rootdirectory
 
-imagePullPolicy: IfNotPresent
+imagePullPolicy: Always
 
 logLevel: debug
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
+
+auth:
+  selfRegistration: "on"
+  # supports `db` and `uaa_auth`
+  mode: db
+# if setting auth mode to uaa, uncomment and fill out the following:
+#  uaa:
+#    endpoint: https://uaa.example.com:8443
+#    clientID: harbor
+#    clientSecret: "not-really-a-client-secret"
+#    verifyCert: "true"
+#    caCert: |
+#      -----BEGIN CERTIFICATE-----
+#      -----END CERTIFICATE-----
+
 
 # If expose the service via "ingress", the Nginx will not be used
 nginx:
