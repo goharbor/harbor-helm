@@ -5,24 +5,18 @@ metadata:
 {{- if eq .Values.expose.type "clusterIP" }}
 {{- $clusterIP := .Values.expose.clusterIP }}
   name: {{ $clusterIP.name }}
-  
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   type: ClusterIP
   ports:
     - name: http
-      port: {{ $clusterIP.ports.httpPort }}
+      port: {{ $clusterIP.ports.http }}
       targetPort: 80
     {{- if .Values.expose.tls.enabled }}
     - name: https
-      port: {{ $clusterIP.ports.httpsPort }}
+      port: {{ $clusterIP.ports.https }}
       targetPort: 443
-    {{- end }}
-    {{- if .Values.notary.enabled }}
-    - name: notary
-      port: {{ $clusterIP.ports.notaryPort }}
-      targetPort: 4443
     {{- end }}
 {{- else if eq .Values.expose.type "nodePort" }}
 {{- $nodePort := .Values.expose.nodePort }}
@@ -46,14 +40,6 @@ spec:
       nodePort: {{ $nodePort.ports.https.nodePort }}
       {{- end }}
     {{- end }}
-    {{- if .Values.notary.enabled }}
-    - name: notary
-      port: {{ $nodePort.ports.notary.port }}
-      targetPort: 4443
-      {{- if $nodePort.ports.notary.nodePort }}
-      nodePort: {{ $nodePort.ports.notary.nodePort }}
-      {{- end }}
-    {{- end }}
 {{- else if eq .Values.expose.type "loadBalancer" }}
 {{- $loadBalancer := .Values.expose.loadBalancer }}
   name: {{ $loadBalancer.name }}
@@ -63,17 +49,12 @@ spec:
   type: LoadBalancer
   ports:
     - name: http
-      port: {{ $loadBalancer.ports.httpPort }}
+      port: {{ $loadBalancer.ports.http }}
       targetPort: 80
     {{- if .Values.expose.tls.enabled }}
     - name: https
-      port: {{ $loadBalancer.ports.httpsPort }}
+      port: {{ $loadBalancer.ports.https }}
       targetPort: 443
-    {{- end }}
-    {{- if .Values.notary.enabled }}
-    - name: notary
-      port: {{ $loadBalancer.ports.notaryPort }}
-      targetPort: 4443
     {{- end }}
 {{- end }}
   selector:

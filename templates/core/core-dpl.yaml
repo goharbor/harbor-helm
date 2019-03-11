@@ -99,11 +99,7 @@ spec:
       {{- if eq (include "harbor.autoGenCert" .) "true" }}
       - name: ca-download
         secret:
-        {{- if eq (include "harbor.autoGenCertForIngress" .) "true" }}
-          secretName: "{{ template "harbor.ingress" . }}"
-        {{- else }}
-          secretName: {{ template "harbor.nginx" . }}
-        {{- end }}
+          secretName: "{{ template "harbor.certificate" . }}"
           items:
             - key: ca.crt
               path: ca.crt
