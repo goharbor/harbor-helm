@@ -9,12 +9,13 @@ expose:
     # images. Refer to https://github.com/goharbor/harbor/issues/5291 
     # for the detail.
     enabled: true
-    # Fill the name of secret if you want to use your own TLS certificate
-    # and private key. The secret must contain keys named tls.crt and 
-    # tls.key that contain the certificate and private key to use for TLS
-    # The certificate and private key will be generated automatically if 
-    # it is not set
-    secretName: ""
+    # Fill the name of secret if you want to use your own TLS certificate. 
+    # The secret must contain keys named:
+    # "tls.crt" - the certificate
+    # "tls.key" - the private key
+    # "ca.crt" - the certificate of CA
+    # These files will be generated automatically if the "secretName" is not set
+    secretName: "cert"
     # The commmon name used to generate the certificate, it's necessary
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
