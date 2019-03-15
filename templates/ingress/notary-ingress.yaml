@@ -1,0 +1,33 @@
+{{- if .Values.notary.enabled }}
+{{- if eq .Values.expose.type "ingress" }}
+{{- $ingress := .Values.expose.ingress -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "harbor.ingress.notary" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+  annotations:
+{{ toYaml $ingress.annotations | indent 4 }}
+    {{ printf "%s: /" $ingress.rewriteAnnotation }}
+spec:
+  {{- if .Values.expose.tls.enabled }}
+  tls:
+  - secretName: {{ template "harbor.certificate-secret" . }}
+    {{- if $ingress.host }}
+    hosts: 
+    - {{ $ingress.host }}
+    {{- end }}
+  {{- end }}
+  rules:
+  - http:
+      paths:
+      - path: /notary/
+        backend:
+          serviceName: {{ template "harbor.notary-server" . }}
+          servicePort: 4443
+    {{- if $ingress.host }}
+    host: {{ $ingress.host }}
+    {{- end }}
+{{- end }}
+{{- end }} 

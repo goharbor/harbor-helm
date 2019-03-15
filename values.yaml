@@ -9,39 +9,34 @@ expose:
     # images. Refer to https://github.com/goharbor/harbor/issues/5291 
     # for the detail.
     enabled: true
-    # Fill the name of secret if you want to use your own TLS certificate
-    # and private key. The secret must contain keys named tls.crt and 
-    # tls.key that contain the certificate and private key to use for TLS
-    # The certificate and private key will be generated automatically if 
-    # it is not set
-    secretName: ""
-    # By default, the Notary service will use the same cert and key as
-    # described above. Fill the name of secret if you want to use a 
-    # separated one. Only needed when the type is "ingress".
-    notarySecretName: ""
+    # Fill the name of secret if you want to use your own TLS certificate. 
+    # The secret must contain keys named:
+    # "tls.crt" - the certificate
+    # "tls.key" - the private key
+    # "ca.crt" - the certificate of CA
+    # These files will be generated automatically if the "secretName" is not set
+    secretName: "cert"
     # The commmon name used to generate the certificate, it's necessary
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
   ingress:
-    hosts:
-      core: core.harbor.domain
-      notary: notary.harbor.domain
+    host: harbor.local
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    # The annotation name for "rewrite-target", only needed when Notary
+    # service is enabled
+    rewriteAnnotation: nginx.ingress.kubernetes.io/rewrite-target
   clusterIP:
     # The name of ClusterIP service
     name: harbor
     ports:
       # The service port Harbor listens on when serving with HTTP
-      httpPort: 80
+      http: 80
       # The service port Harbor listens on when serving with HTTPS
-      httpsPort: 443
-      # The service port Notary listens on. Only needed when notary.enabled 
-      # is set to true
-      notaryPort: 4443
+      https: 443
   nodePort:
     # The name of NodePort service
     name: harbor
@@ -56,38 +51,29 @@ expose:
         port: 443
         # The node port Harbor listens on when serving with HTTPS
         nodePort: 30003
-      # Only needed when notary.enabled is set to true
-      notary: 
-        # The service port Notary listens on
-        port: 4443
-        # The node port Notary listens on
-        nodePort: 30004
   loadBalancer:
     # The name of LoadBalancer service
     name: harbor
     ports:
       # The service port Harbor listens on when serving with HTTP
-      httpPort: 80
+      http: 80
       # The service port Harbor listens on when serving with HTTPS
-      httpsPort: 443
-      # The service port Notary listens on. Only needed when notary.enabled 
-      # is set to true
-      notaryPort: 4443
+      https: 443
 
-# The external URL for Harbor core service. It is used to
+# The external URL for Harbor service. It is used to
 # 1) populate the docker/helm commands showed on portal
 # 2) populate the token service URL returned to docker/notary client
 # 
 # Format: protocol://domain[:port]. Usually:
 # 1) if "expose.type" is "ingress", the "domain" should be 
-# the value of "expose.ingress.hosts.core"
+# the value of "expose.ingress.host"
 # 2) if "expose.type" is "clusterIP", the "domain" should be
 # the value of "expose.clusterIP.name"
 # 3) if "expose.type" is "nodePort", the "domain" should be
 # the IP address of k8s node 
 # 
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://core.harbor.domain
+externalURL: https://harbor.local
 
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly. 

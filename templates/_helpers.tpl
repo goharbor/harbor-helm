@@ -38,22 +38,6 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
-{{- define "harbor.autoGenCertForIngress" -}}
-  {{- if and (eq (include "harbor.autoGenCert" .) "true") (eq .Values.expose.type "ingress") -}}
-    {{- printf "true" -}}
-  {{- else -}}
-    {{- printf "false" -}}
-  {{- end -}}
-{{- end -}}
-
-{{- define "harbor.autoGenCertForNginx" -}}
-  {{- if and (eq (include "harbor.autoGenCert" .) "true") (ne .Values.expose.type "ingress") -}}
-    {{- printf "true" -}}
-  {{- else -}}
-    {{- printf "false" -}}
-  {{- end -}}
-{{- end -}}
-
 {{- define "harbor.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- template "harbor.database" . }}
@@ -266,6 +250,25 @@ host:port,pool_size,password
   {{- printf "%s-nginx" (include "harbor.fullname" .) -}}
 {{- end -}}
 
-{{- define "harbor.ingress" -}}
-  {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
+{{- define "harbor.ingress.core" -}}
+  {{- printf "%s-ingress-core" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.ingress.notary" -}}
+  {{- printf "%s-ingress-notary" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.certificate" -}}
+  {{- printf "%s-certificate" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.certificate-secret" -}}
+  {{- $tls := .Values.expose.tls -}}
+  {{- $secret := "" -}}
+    {{- if $tls.secretName }}
+      {{- $secret = $tls.secretName }}
+    {{- else }}
+      {{- $secret = (include "harbor.certificate" .) }}
+    {{- end }}
+  {{- printf "%s" $secret -}}
 {{- end -}}
