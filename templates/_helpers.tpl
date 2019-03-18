@@ -264,11 +264,18 @@ host:port,pool_size,password
 
 {{- define "harbor.certificate-secret" -}}
   {{- $tls := .Values.expose.tls -}}
-  {{- $secret := "" -}}
-    {{- if $tls.secretName }}
-      {{- $secret = $tls.secretName }}
-    {{- else }}
-      {{- $secret = (include "harbor.certificate" .) }}
-    {{- end }}
-  {{- printf "%s" $secret -}}
+  {{- if $tls.secretName }}
+    {{- printf "%s" $tls.secretName -}}
+  {{- else }}
+    {{- printf "%s" (include "harbor.certificate" .) -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "harbor.common-name" -}}
+  {{- $expose := .Values.expose }}
+  {{- if and (eq $expose.type "ingress") $expose.ingress.host }}
+    {{- printf "%s" $expose.ingress.host -}}
+  {{- else }}
+    {{- printf "%s" $expose.tls.commonName -}}
+  {{- end }}
 {{- end -}}
