@@ -15,7 +15,7 @@ expose:
     # "tls.key" - the private key
     # "ca.crt" - the certificate of CA
     # These files will be generated automatically if the "secretName" is not set
-    secretName: "cert"
+    secretName: ""
     # The commmon name used to generate the certificate, it's necessary
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
