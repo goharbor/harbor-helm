@@ -45,3 +45,4 @@ data:
   PORTAL_URL: "http://{{ template "harbor.portal" . }}"
   REGISTRYCTL_URL: "http://{{ template "harbor.registry" . }}:8080"
   CLAIR_HEALTH_CHECK_SERVER_URL: "http://{{ template "harbor.clair" . }}:6061"
+  SELF_REGISTRATION: "{{ .Values.core.selfRegistration }}"
