@@ -261,12 +261,18 @@ core:
   # Must be a string of 16 chars.
   secret: ""
 
+  # Fill the name of a kubernetes secret, if you don't want this chart to
+  # generate one.
+  # If specified, a core secret will not be generated.
+  # If this is set, secret should not be set.
+  secretName: ""
+
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
   # The secret must contain keys named tls.tokenServiceRootCertBundle and
   # tls.tokenServicePrivateKey that contain the certificate and private key.
   # They will be automatically generated if not set
-  secretName: ""
+  certSecretName: ""
 
 jobservice:
   image:
@@ -289,6 +295,11 @@ jobservice:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # Fill the name of a kubernetes secret, if you don't want this chart to
+  # generate one.
+  # If specified, a jobservice secret will not be generated.
+  # If this is set, secret should not be set.
+  secretName: ""
 
 registry:
   registry:
@@ -319,6 +330,11 @@ registry:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # Fill the name of a kubernetes secret, if you don't want this chart to
+  # generate one.
+  # If specified, a registry secret will not be generated.
+  # If this is set, secret should not be set.
+  secretName: ""
 
 chartmuseum:
   enabled: true
@@ -335,6 +351,10 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Fill the name of a kubernetes secret, if you don't want this chart to
+  # generate one.
+  # If specified, a chartmuseum secret will not be generated.
+  secretName: ""
 
 clair:
   enabled: true
@@ -408,6 +428,11 @@ database:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    # Fill the name of a kubernetes secret, if you don't want this chart to
+    # generate one.
+    # If specified, a database secret will not be generated.
+    # If this is set, secret should not be set.
+    secretName: ""
   external:
     host: "192.168.0.1"
     port: "5432"

@@ -126,6 +126,15 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
+{{- define "harbor.database.secretName" -}}
+  {{- if .Values.database.internal.secretName -}}
+    {{- .Values.database.internal.secretName -}}
+  {{- else -}}
+    {{- include "harbor.database" . -}}
+  {{- end -}}
+{{- end -}}
+
+
 {{- define "harbor.redis.host" -}}
   {{- if eq .Values.redis.type "internal" -}}
     {{- template "harbor.redis" . -}}
@@ -214,6 +223,14 @@ host:port,pool_size,password
   {{- printf "%s-core" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{- define "harbor.core.secretName" -}}
+  {{- if .Values.core.secretName -}}
+    {{- .Values.core.secretName -}}
+  {{- else -}}
+    {{- include "harbor.core" . -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.redis" -}}
   {{- printf "%s-redis" (include "harbor.fullname" .) -}}
 {{- end -}}
@@ -222,12 +239,36 @@ host:port,pool_size,password
   {{- printf "%s-jobservice" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{- define "harbor.jobservice.secretName" -}}
+  {{- if .Values.jobservice.secretName -}}
+    {{- .Values.jobservice.secretName -}}
+  {{- else -}}
+    {{- include "harbor.jobservice" . -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.registry" -}}
   {{- printf "%s-registry" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{- define "harbor.registry.secretName" -}}
+  {{- if .Values.registry.secretName -}}
+    {{- .Values.registry.secretName -}}
+  {{- else -}}
+    {{- include "harbor.registry" . -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.chartmuseum" -}}
   {{- printf "%s-chartmuseum" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.chartmuseum.secretName" -}}
+  {{- if .Values.chartmuseum.secretName -}}
+    {{- .Values.chartmuseum.secretName -}}
+  {{- else -}}
+    {{- include "harbor.chartmuseum" . -}}
+  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.database" -}}
