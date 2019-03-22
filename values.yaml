@@ -13,12 +13,15 @@ expose:
     # The secret must contain keys named:
     # "tls.crt" - the certificate
     # "tls.key" - the private key
-    # "ca.crt" - the certificate of CA
+    # "ca.crt" - the certificate of CA, if self-signed
     # These files will be generated automatically if the "secretName" is not set
     secretName: ""
     # The commmon name used to generate the certificate, it's necessary
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
+    # Whether the cert is be self-signed
+    # If not, then it's expected that "tls.crt" will be signed by a trusted CA.
+    selfSigned: true
   ingress:
     host: harbor.local
     annotations:

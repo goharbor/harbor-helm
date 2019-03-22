@@ -101,7 +101,11 @@ spec:
         secret:
           secretName: "{{ template "harbor.certificate-secret" . }}"
           items:
+{{- if (or (not .Values.expose.tls.secretName) .Values.expose.tls.selfSigned) }}
             - key: ca.crt
+{{- else }}
+            - key: tls.crt
+{{- end }}
               path: ca.crt
       {{- end }}
       - name: psc
