@@ -7,10 +7,10 @@ metadata:
 data:
   app.conf: |+
     appname = Harbor
-    runmode = dev
+    runmode = {{ .Values.core.runmode }}
     enablegzip = true
 
-    [dev]
+    [{{ .Values.core.runmode }}]
     httpport = 8080
     EnableXSRF = true
     {{- if .Values.core.xsrfKey }}

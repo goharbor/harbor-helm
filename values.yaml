@@ -334,6 +334,10 @@ core:
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
 
+  # Set this to dev when debugging a new harbor instance, set to prod when
+  # ready to go to production.
+  runmode: dev
+
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
