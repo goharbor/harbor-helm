@@ -141,7 +141,6 @@ data:
         disable: {{ $storage.disableredirect }}
     redis:
       addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
-      password: {{ template "harbor.redis.rawPassword" . }}
       db: {{ template "harbor.redis.registryDatabaseIndex" . }}
     http:
       addr: :5000
