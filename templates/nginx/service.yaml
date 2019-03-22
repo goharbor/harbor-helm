@@ -7,6 +7,10 @@ metadata:
   name: {{ $clusterIP.name }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with $clusterIP.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   type: ClusterIP
   ports:
@@ -28,6 +32,10 @@ spec:
   name: {{ $nodePort.name }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with $nodePort.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   type: NodePort
   ports:
