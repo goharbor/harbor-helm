@@ -17,6 +17,16 @@ spec:
     - {{ $ingress.host }}
     {{- end }}
   {{- end }}
+  {{- if .Values.notary.enabled }}
+    {{- if .Values.expose.tls.enabled }}
+    tls:
+    - secretName: {{ template "harbor.certificate-secret" . }}
+      {{- if $ingress.host }}
+      hosts: 
+      - {{ $ingress.host }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
   rules:
   - http:
       paths:
@@ -44,6 +54,12 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
+     {{- if .Values.notary.enabled }} 
+      - path: /notary/
+        backend:
+          serviceName: {{ template "harbor.notary-server" . }}
+          servicePort: 4443
+     {{- end }}
     {{- if $ingress.host }}
     host: {{ $ingress.host }}
     {{- end }}
