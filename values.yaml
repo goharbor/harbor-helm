@@ -210,7 +210,7 @@ secretKey: "not-a-secure-key"
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: v1.7.0
+    tag: v1.7.5
   replicas: 1
   # resources:
   #  requests:
@@ -225,7 +225,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: v1.7.0
+    tag: v1.7.5
   replicas: 1
 # resources:
 #  requests:
@@ -240,7 +240,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: v1.7.0
+    tag: v1.7.5
   replicas: 1
 # resources:
 #  requests:
@@ -255,7 +255,7 @@ core:
 adminserver:
   image:
     repository: goharbor/harbor-adminserver
-    tag: v1.7.0
+    tag: v1.7.5
   replicas: 1
   # resources:
   #  requests:
@@ -270,7 +270,7 @@ adminserver:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v1.7.0
+    tag: v1.7.5
   replicas: 1
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
@@ -289,11 +289,11 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: v2.6.2-v1.7.0
+      tag: v2.6.2-v1.7.5
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: v1.7.0
+      tag: v1.7.5
   replicas: 1
   # resources:
   #  requests:
@@ -309,7 +309,7 @@ chartmuseum:
   enabled: true
   image:
     repository: goharbor/chartmuseum-photon
-    tag: v0.7.1-v1.7.0
+    tag: v0.8.1-v1.7.5
   replicas: 1
   # resources:
   #  requests:
@@ -325,7 +325,7 @@ clair:
   enabled: true
   image:
     repository: goharbor/clair-photon
-    tag: v2.0.7-v1.7.0
+    tag: v2.0.8-v1.7.5
   replicas: 1
   # The http(s) proxy used to update vulnerabilities database from internet
   httpProxy:
@@ -348,12 +348,12 @@ notary:
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: v0.6.1-v1.7.0
+      tag: v0.6.1-v1.7.5
     replicas: 1
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: v0.6.1-v1.7.0
+      tag: v0.6.1-v1.7.5
     replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -368,7 +368,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: v1.7.0
+      tag: v1.7.5
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -398,7 +398,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: v1.7.0
+      tag: v1.7.5
     # resources:
     #  requests:
     #    memory: 256Mi
