@@ -5,6 +5,9 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
+{{- if  (eq .Values.expose.ingress.controller "gce") }}
+  type: NodePort
+{{- end }}
   ports:
     - port: 80
       targetPort: 8080

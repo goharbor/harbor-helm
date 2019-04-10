@@ -13,10 +13,42 @@ spec:
   tls:
   - secretName: {{ template "harbor.certificate-secret" . }}
     {{- if $ingress.host }}
-    hosts: 
+    hosts:
     - {{ $ingress.host }}
     {{- end }}
   {{- end }}
+{{- if  eq .Values.expose.ingress.controller "gce" }}
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: {{ template "harbor.portal" . }}
+          servicePort: 80
+      - path: /api/*
+        backend:
+          serviceName: {{ template "harbor.core" . }}
+          servicePort: 80
+      - path: /service/*
+        backend:
+          serviceName: {{ template "harbor.core" . }}
+          servicePort: 80
+      - path: /v2/*
+        backend:
+          serviceName: {{ template "harbor.core" . }}
+          servicePort: 80
+      - path: /chartrepo/*
+        backend:
+          serviceName: {{ template "harbor.core" . }}
+          servicePort: 80
+      - path: /c/*
+        backend:
+          serviceName: {{ template "harbor.core" . }}
+          servicePort: 80
+    {{- if $ingress.host }}
+    host: {{ $ingress.host }}
+    {{- end }}
+{{- else }}
   rules:
   - http:
       paths:
@@ -53,4 +85,5 @@ spec:
     {{- if $ingress.host }}
     host: {{ $ingress.host }}
     {{- end }}
+{{- end }}
 {{- end }}
