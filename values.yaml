@@ -264,12 +264,12 @@ core:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
-
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
-  # The secret must contain keys named tls.tokenServiceRootCertBundle and
-  # tls.tokenServicePrivateKey that contain the certificate and private key.
-  # They will be automatically generated if not set
+  # The secret must contain keys named:
+  # "tls.crt" - the certificate
+  # "tls.key" - the private key
+  # The default key pair will be used if it isn't set
   secretName: ""
 
 jobservice:

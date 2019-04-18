@@ -67,7 +67,7 @@ spec:
           subPath: key
         - name: token-service-private-key
           mountPath: /etc/core/private_key.pem
-          subPath: tokenServicePrivateKey
+          subPath: tls.key
         {{- if .Values.expose.tls.enabled }}
         - name: ca-download
           mountPath: /etc/core/ca/ca.crt
