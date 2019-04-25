@@ -70,6 +70,10 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.database.escapedRawPassword" -}}
+  {{- include "harbor.database.rawPassword" . | urlquery | replace "+" "%20" -}}
+{{- end -}}
+
 {{- define "harbor.database.encryptedPassword" -}}
   {{- include "harbor.database.rawPassword" . | b64enc | quote -}}
 {{- end -}}
@@ -115,15 +119,15 @@ app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{- define "harbor.database.clair" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.clairDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.clairDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.database.notaryServer" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.database.notarySigner" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.rawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.redis.host" -}}
@@ -180,10 +184,16 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.redis.escapedRawPassword" -}}
+  {{- if (include "harbor.redis.rawPassword" . ) -}}
+    {{- include "harbor.redis.rawPassword" . | urlquery | replace "+" "%20" -}}
+  {{- end -}}
+{{- end -}}
+
 {{/*the username redis is used for a placeholder as no username needed in redis*/}}
 {{- define "harbor.redisForJobservice" -}}
-  {{- if (include "harbor.redis.rawPassword" . ) -}}
-    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.rawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.jobserviceDatabaseIndex" . ) }}
+  {{- if (include "harbor.redis.escapedRawPassword" . ) -}}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.escapedRawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.jobserviceDatabaseIndex" . ) }}
   {{- else }}
     {{- template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}/{{ template "harbor.redis.jobserviceDatabaseIndex" . }}
   {{- end -}}
@@ -191,8 +201,8 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 
 {{/*the username redis is used for a placeholder as no username needed in redis*/}}
 {{- define "harbor.redisForGC" -}}
-  {{- if (include "harbor.redis.rawPassword" . ) -}}
-    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.rawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) }}
+  {{- if (include "harbor.redis.escapedRawPassword" . ) -}}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.escapedRawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) }}
   {{- else }}
     {{- printf "redis://%s:%s/%s" (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) -}}
   {{- end -}}
