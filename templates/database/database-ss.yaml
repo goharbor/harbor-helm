@@ -41,13 +41,13 @@ spec:
           exec:
             command:
             - /docker-healthcheck.sh
-          initialDelaySeconds: 1
+          initialDelaySeconds: 60
           periodSeconds: 10
         readinessProbe:
           exec:
             command:
             - /docker-healthcheck.sh
-          initialDelaySeconds: 1
+          initialDelaySeconds: 60
           periodSeconds: 10
 {{- if .Values.database.internal.resources }}
         resources:
