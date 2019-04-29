@@ -44,17 +44,17 @@ spec:
         - configMapRef:
             name: "{{ template "harbor.core" . }}"
         - secretRef:
-            name: "{{ template "harbor.core" . }}"
+            name: "{{ template "harbor.core.secretName" . }}"
         env:
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: {{ template "harbor.core.secretName" . }}
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.jobservice" . }}"
+                name: "{{ template "harbor.jobservice.secretName" . }}"
                 key: secret
         ports:
         - containerPort: 8080
@@ -85,16 +85,16 @@ spec:
           name: {{ template "harbor.core" . }}
       - name: secret-key
         secret:
-          secretName: {{ template "harbor.core" . }}
+          secretName: {{ template "harbor.core.secretName" . }}
           items:
             - key: secretKey
               path: key
       - name: token-service-private-key
         secret:
-          {{- if .Values.core.secretName }}
-          secretName: {{ .Values.core.secretName }}
+          {{- if .Values.core.certSecretName }}
+          secretName: {{ .Values.core.certSecretName }}
           {{- else }}
-          secretName: {{ template "harbor.core" . }}
+          secretName: {{ template "harbor.core.secretName" . }}
           {{- end }}
       {{- if .Values.expose.tls.enabled }}
       - name: ca-download

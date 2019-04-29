@@ -48,12 +48,12 @@ spec:
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: {{ template "harbor.core.secretName" . }}
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.jobservice" . }}"
+                name: "{{ template "harbor.jobservice.secretName" . }}"
                 key: secret
           - name: CORE_URL
             value: "http://{{ template "harbor.core" . }}"

@@ -55,7 +55,7 @@ spec:
 {{- end }}
         envFrom:
           - secretRef:
-              name: "{{ template "harbor.database" . }}"
+              name: "{{ template "harbor.database.secretName" . }}"
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data

@@ -49,12 +49,12 @@ spec:
         - configMapRef:
             name: "{{ template "harbor.chartmuseum" . }}"
         - secretRef:
-            name: "{{ template "harbor.chartmuseum" . }}"
+            name: "{{ template "harbor.chartmuseum.secretName" . }}"
         env:
           - name: BASIC_AUTH_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: {{ template "harbor.core.secretName" . }}
                 key: secret
         ports:
         - containerPort: 9999
@@ -78,7 +78,7 @@ spec:
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
       - name: gcs-key
         secret:
-          secretName: {{ template "harbor.registry" . }}
+          secretName: {{ template "harbor.registry.secretName" . }}
           items:
             - key: GCS_KEY_DATA
               path: gcs-key.json
