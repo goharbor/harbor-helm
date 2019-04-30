@@ -58,7 +58,7 @@ spec:
           subPath: {{ .Values.persistence.persistentVolumeClaim.registry.subPath }}
         - name: registry-root-certificate
           mountPath: /etc/registry/root.crt
-          subPath: tokenServiceRootCertBundle
+          subPath: tls.crt
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml

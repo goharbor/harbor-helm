@@ -42,7 +42,7 @@ spec:
           mountPath: /etc/notary
         - name: root-certificate
           mountPath: /root.crt
-          subPath: tokenServiceRootCertBundle
+          subPath: tls.crt
         {{- if .Values.notary.secretName }}
         - name: notary-ca
           mountPath: /etc/ssl/notary/cert/notary-signer-ca.crt
