@@ -47,7 +47,7 @@ spec:
           exec:
             command:
             - /docker-healthcheck.sh
-          initialDelaySeconds: 60
+          initialDelaySeconds: 1
           periodSeconds: 10
 {{- if .Values.database.internal.resources }}
         resources:

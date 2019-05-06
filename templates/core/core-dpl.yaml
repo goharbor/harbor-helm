@@ -99,7 +99,13 @@ spec:
       {{- if .Values.expose.tls.enabled }}
       - name: ca-download
         secret:
-          secretName: "{{ template "harbor.certificate-secret" . }}"
+        {{- if eq (include "harbor.autoGenCertForIngress" .) "true" }}
+          secretName: "{{ template "harbor.ingress" . }}"
+        {{- else if eq (include "harbor.autoGenCertForNginx" .) "true" }}
+          secretName: {{ template "harbor.nginx" . }}
+        {{- else }}
+          secretName: {{ .Values.expose.tls.secretName }}
+        {{- end }}
           items:
             - key: ca.crt
               path: ca.crt

@@ -23,8 +23,8 @@ spec:
       {{- else }}
         checksum/configmap: {{ include (print $.Template.BasePath "/nginx/configmap-https.yaml") . | sha256sum }}
       {{- end }}
-      {{- if eq (include "harbor.autoGenCert" .) "true" }}
-        checksum/secret: {{ include (print $.Template.BasePath "/common/certificate-secret.yaml") . | sha256sum }}
+      {{- if eq (include "harbor.autoGenCertForNginx" .) "true" }}
+        checksum/secret: {{ include (print $.Template.BasePath "/nginx/secret.yaml") . | sha256sum }}
       {{- end }}
 {{- if .Values.nginx.podAnnotations }}
 {{ toYaml .Values.nginx.podAnnotations | indent 8 }}
@@ -53,6 +53,7 @@ spec:
         ports:
         - containerPort: 80
         - containerPort: 443
+        - containerPort: 4443
         volumeMounts:
         - name: config
           mountPath: /etc/nginx/nginx.conf
@@ -68,7 +69,11 @@ spec:
       {{- if .Values.expose.tls.enabled }}
       - name: certificate
         secret:
-          secretName: {{ template "harbor.certificate-secret" . }}
+          {{- if .Values.expose.tls.secretName }}
+          secretName: {{ .Values.expose.tls.secretName }}
+          {{- else }}
+          secretName: {{ template "harbor.nginx" . }}
+          {{- end }}
       {{- end }}
     {{- with .Values.nginx.nodeSelector }}
       nodeSelector:
