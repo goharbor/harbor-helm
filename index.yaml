@@ -1,0 +1,52 @@
+apiVersion: v1
+entries:
+  harbor:
+  - appVersion: 1.7.5
+    created: 2019-05-13T14:06:06.244579+08:00
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
+    digest: cb67a449113126fea868aaafe7ae24db177925378e5d6d057b41701b7b2a1f8b
+    engine: gotpl
+    home: https://goharbor.io
+    icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
+    keywords:
+    - docker
+    - registry
+    - harbor
+    maintainers:
+    - email: huh@vmware.com
+      name: Jesse Hu
+    - email: username.taken@gmail.com
+      name: paulczar
+    name: harbor
+    sources:
+    - https://github.com/goharbor/harbor
+    - https://github.com/goharbor/harbor-helm
+    urls:
+    - harbor-1.0.1.tgz
+    version: 1.0.1
+  - appVersion: 1.7.0
+    created: 2019-05-13T14:06:06.242958+08:00
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
+    digest: 7d24a18a4a2d82df12f811658a73ca51e8458d939822beaf266cd00cc0d43769
+    engine: gotpl
+    home: https://goharbor.io
+    icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
+    keywords:
+    - docker
+    - registry
+    - harbor
+    maintainers:
+    - email: huh@vmware.com
+      name: Jesse Hu
+    - email: username.taken@gmail.com
+      name: paulczar
+    name: harbor
+    sources:
+    - https://github.com/goharbor/harbor
+    - https://github.com/goharbor/harbor-helm
+    urls:
+    - harbor-1.0.0.tgz
+    version: 1.0.0
+generated: 2019-05-13T14:06:06.240845+08:00
