@@ -286,3 +286,6 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.podAnnotations`                                                      | Annotations to add to the redis pod                                                                                                                                                                                                                                                                                                             | `{}`                            |
 
 [resources]: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+
+
+just for test
