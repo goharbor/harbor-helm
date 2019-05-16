@@ -249,3 +249,6 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.external.chartmuseumDatabaseIndex` | The database index for chartmuseum | `3` |
 | `redis.external.password` | The password of external Redis | |
 | `redis.podAnnotations` | Annotations to add to the redis pod | `{}` |
+
+
+just for test
