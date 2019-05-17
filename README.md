@@ -1,6 +1,6 @@
 # Helm Chart for Harbor
 
-**Notes:** The master branch is in heavy development, please use the codes on other branch instead. A high available solution for Harbor based on chart can be find [here](docs/High%20Availability.md). And refer to the [guide](docs/Upgrade.md) to upgrade the existing deployment.
+**Notes:** The master branch is in heavy development, please use the other stable versions instead. A high available solution for Harbor based on chart can be find [here](docs/High%20Availability.md). And refer to the [guide](docs/Upgrade.md) to upgrade the existing deployment.
 
 ## Introduction
 
@@ -13,24 +13,15 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://
 
 ## Installation
 
-### Download the chart
-
-Download Harbor helm chart code.
+### Add Helm repository
 
 ```bash
-git clone https://github.com/goharbor/harbor-helm
-```
-
-Checkout the branch.
-
-```bash
-cd harbor-helm
-git checkout branch_name
+helm repo add harbor https://helm.goharbor.io
 ```
 
 ### Configure the chart
 
-The following items can be configured in `values.yaml` or set via `--set` flag during installation.
+The following items can be set via `--set` flag during installation or configured by editing the `values.yaml` directly(need to download the chart first).  
 
 #### Configure the way how to expose Harbor service:
 
@@ -79,7 +70,7 @@ Secrets and certificates must be setup to avoid changes on every Helm upgrade (s
 Install the Harbor helm chart with a release name `my-release`:
 
 ```bash
-helm install --name my-release .
+helm install --name my-release harbor/harbor
 ```
 
 ## Uninstallation
