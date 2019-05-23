@@ -24,9 +24,9 @@ data:
   ALLOW_OVERWRITE: "true"
   #CHART_URL: {{ .Values.externalURL }}/chartrepo
   AUTH_ANONYMOUS_GET: "false"
-  TLS_CERT:
-  TLS_KEY:
-  CONTEXT_PATH:
+  TLS_CERT: ""
+  TLS_KEY: ""
+  CONTEXT_PATH: ""
   INDEX_LIMIT: "0"
   MAX_STORAGE_OBJECTS: "0"
   MAX_UPLOAD_SIZE: "20971520"
