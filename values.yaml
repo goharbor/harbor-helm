@@ -224,6 +224,11 @@ persistence:
 
 imagePullPolicy: IfNotPresent
 
+# Use this set to assign a list of default pullSecrets
+imagePullSecrets: []
+#  - name: docker-registry-secret
+#  - name: internal-registry-secret
+
 logLevel: debug
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
@@ -235,6 +240,9 @@ nginx:
   image:
     repository: goharbor/nginx-photon
     tag: dev
+    # Override default imagePullSecrets
+    # imagePullSecrets:
+    #   - name: local-registry-secret
   replicas: 1
   # resources:
   #  requests:
@@ -250,6 +258,9 @@ portal:
   image:
     repository: goharbor/harbor-portal
     tag: dev
+    # Override default imagePullSecrets
+    # imagePullSecrets:
+    #   - name: local-registry-secret
   replicas: 1
 # resources:
 #  requests:
@@ -265,6 +276,9 @@ core:
   image:
     repository: goharbor/harbor-core
     tag: dev
+    # Override default imagePullSecrets
+    # imagePullSecrets:
+    #   - name: local-registry-secret
   replicas: 1
 # resources:
 #  requests:
@@ -291,6 +305,9 @@ jobservice:
   image:
     repository: goharbor/harbor-jobservice
     tag: dev
+    # Override default imagePullSecrets
+    # imagePullSecrets:
+    #   - name: local-registry-secret
   replicas: 1
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
@@ -311,9 +328,13 @@ jobservice:
 
 registry:
   registry:
+    # Override default imagePullSecrets
+    # imagePullSecrets:
+    #   - name: local-registry-secret
     image:
       repository: goharbor/registry-photon
       tag: dev
+
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -322,6 +343,7 @@ registry:
     image:
       repository: goharbor/harbor-registryctl
       tag: dev
+
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -344,6 +366,9 @@ chartmuseum:
   image:
     repository: goharbor/chartmuseum-photon
     tag: dev
+    # Override default imagePullSecrets
+    # imagePullSecrets:
+    #   - name: local-registry-secret
   replicas: 1
   # resources:
   #  requests:
@@ -360,6 +385,9 @@ clair:
   image:
     repository: goharbor/clair-photon
     tag: dev
+    # Override default imagePullSecrets
+    # imagePullSecrets:
+    #   - name: local-registry-secret
   replicas: 1
   # The http(s) proxy used to update vulnerabilities database from internet
   httpProxy:
@@ -383,6 +411,9 @@ notary:
     image:
       repository: goharbor/notary-server-photon
       tag: dev
+      # Override default imagePullSecrets
+      # imagePullSecrets:
+      #   - name: local-registry-secret
     replicas: 1
     # resources:
     #  requests:
@@ -392,6 +423,9 @@ notary:
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
+      # Override default imagePullSecrets
+      # imagePullSecrets:
+      #   - name: local-registry-secret
     replicas: 1
     # resources:
     #  requests:
@@ -418,6 +452,9 @@ database:
     image:
       repository: goharbor/harbor-db
       tag: dev
+      # Override default imagePullSecrets
+      # imagePullSecrets:
+      #   - name: local-registry-secret
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -448,6 +485,9 @@ redis:
     image:
       repository: goharbor/redis-photon
       tag: dev
+      # Override default imagePullSecrets
+      # imagePullSecrets:
+      #   - name: local-registry-secret
     # resources:
     #  requests:
     #    memory: 256Mi
