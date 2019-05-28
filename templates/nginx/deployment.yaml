@@ -30,7 +30,7 @@ spec:
 {{ toYaml .Values.nginx.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.nginx.image.imagePullSecrets | default .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
