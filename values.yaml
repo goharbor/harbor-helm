@@ -225,7 +225,7 @@ persistence:
 imagePullPolicy: IfNotPresent
 
 # Use this set to assign a list of default pullSecrets
-imagePullSecrets: []
+imagePullSecrets: 
 #  - name: docker-registry-secret
 #  - name: internal-registry-secret
 
