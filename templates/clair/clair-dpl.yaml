@@ -23,6 +23,10 @@ spec:
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: clair
         image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}

@@ -224,6 +224,11 @@ persistence:
 
 imagePullPolicy: IfNotPresent
 
+# Use this set to assign a list of default pullSecrets
+imagePullSecrets: 
+#  - name: docker-registry-secret
+#  - name: internal-registry-secret
+
 logLevel: debug
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
@@ -314,6 +319,7 @@ registry:
     image:
       repository: goharbor/registry-photon
       tag: dev
+
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -322,6 +328,7 @@ registry:
     image:
       repository: goharbor/harbor-registryctl
       tag: dev
+
     # resources:
     #  requests:
     #    memory: 256Mi
