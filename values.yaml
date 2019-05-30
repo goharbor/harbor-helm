@@ -32,6 +32,8 @@ expose:
     # set to `gce` if using the GCE ingress controller
     controller: default
     annotations:
+    # set to ingress.kubernetes.io/ssl-redirect: "false" and nginx.ingress.kubernetes.io/ssl-redirect: "false" 
+    # if the tls is disabled.
       ingress.kubernetes.io/ssl-redirect: "true"
       ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
