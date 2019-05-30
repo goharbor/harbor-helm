@@ -26,7 +26,8 @@ The following items can be set via `--set` flag during installation or configure
 #### Configure the way how to expose Harbor service:
 
 - **Ingress**: The ingress controller must be installed in the Kubernetes cluster.  
-  **Notes:** if the TLS is disabled, the port must be included in the command when pulling/pushing images. Refer to issue [#5291](https://github.com/goharbor/harbor/issues/5291) for the detail.
+  **Notes:** if the TLS is disabled, the port must be included in the command when pulling/pushing images. Refer to issue [#5291](https://github.com/goharbor/harbor/issues/5291) for the detail. also set to ingress.kubernetes.io/ssl-redirect: "false" and nginx.ingress.kubernetes.io/ssl-redirect: "false" .
+    # if the tls is disabled.
 - **ClusterIP**: Exposes the service on a cluster-internal IP. Choosing this value makes the service only reachable from within the cluster.
 - **NodePort**: Exposes the service on each Node’s IP at a static port (the NodePort). You’ll be able to contact the NodePort service, from outside the cluster, by requesting `NodeIP:NodePort`. 
 - **LoadBalancer**: Exposes the service externally using a cloud provider’s load balancer.  
