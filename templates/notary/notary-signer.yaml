@@ -39,7 +39,7 @@ spec:
         - name: notary-config
           mountPath: /etc/notary
         - name: notary-cert
-          mountPath: /etc/ssl
+          mountPath: /etc/ssl/notary
       volumes:
       - name: notary-config
         configMap:
