@@ -16,11 +16,7 @@ data:
         "type": "remote",
         "hostname": "{{ template "harbor.notary-signer" . }}",
         "port": "7899",
-{{- if not .Values.notary.secretName }}
-        "tls_ca_file": "./notary-signer-ca.crt",
-{{- else }}
-        "tls_ca_file": "/etc/ssl/notary/cert/notary-signer-ca.crt",
-{{- end }}
+        "tls_ca_file": "/etc/ssl/ca.crt",
         "key_algorithm": "ecdsa"
       },
       "logging": {
@@ -44,13 +40,8 @@ data:
     {
       "server": {
         "grpc_addr": ":7899",
-{{- if not .Values.notary.secretName }}
-        "tls_cert_file": "./notary-signer.crt",
-        "tls_key_file": "./notary-signer.key"
-{{- else }}
-        "tls_cert_file": "/etc/ssl/notary/cert/notary-signer.crt",
-        "tls_key_file": "/etc/ssl/notary/cert/notary-signer.key"
-{{- end }}
+        "tls_cert_file": "/etc/ssl/tls.crt",
+        "tls_key_file": "/etc/ssl/tls.key"
       },
       "logging": {
         "level": "{{ .Values.logLevel }}"
