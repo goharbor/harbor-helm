@@ -44,8 +44,8 @@ spec:
           mountPath: /root.crt
           subPath: tls.crt
         - name: notary-ca
-          mountPath: /etc/ssl/ca.crt
-          subPath: ca
+          mountPath: /etc/ssl/tls.ca
+          subPath: tls.ca
       volumes:
       - name: notary-config
         configMap:
