@@ -7,16 +7,6 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: notary
 data:
-  {{ $ca := genCA "harbor-notary-ca" 365 }}
-  {{ $cert := genSignedCert (include "harbor.notary-signer" .) nil nil 365 $ca }}
-  {{- if not .Values.notary.secretName }}
-  notary-signer-ca.crt: |
-{{ $ca.Cert | indent 4 }}
-  notary-signer.crt: |
-{{ $cert.Cert | indent 4 }}
-  notary-signer.key: |
-{{ $cert.Key | indent 4 }}
-  {{- end }}
   server-config.postgres.json: |
     {
       "server": {
