@@ -77,6 +77,11 @@ spec:
           mountPath: /etc/core/ca/ca.crt
           subPath: ca.crt
         {{- end }}
+        {{- if .Values.uaaSecretName }}
+        - name: auth-ca-cert
+          mountPath: /etc/core/ca/auth-ca.crt
+          subPath: auth-ca.crt
+        {{- end }}
         - name: psc
           mountPath: /etc/core/token
 {{- if .Values.core.resources }}
@@ -87,6 +92,9 @@ spec:
       - name: config
         configMap:
           name: {{ template "harbor.core" . }}
+          items:
+            - key: app.conf
+              path: app.conf
       - name: secret-key
         secret:
           secretName: {{ template "harbor.core" . }}
@@ -113,6 +121,14 @@ spec:
           items:
             - key: ca.crt
               path: ca.crt
+      {{- end }}
+      {{- if .Values.uaaSecretName }}
+      - name: auth-ca-cert
+        secret:
+          secretName: {{ .Values.uaaSecretName }}
+          items:
+            - key: ca.crt
+              path: auth-ca.crt
       {{- end }}
       - name: psc
         emptyDir: {}
