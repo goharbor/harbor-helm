@@ -1,3 +1,14 @@
 Please wait for several minutes for Harbor deployment to complete.
 Then you should be able to visit the Harbor portal at {{ .Values.externalURL }}. 
 For more details, please visit https://github.com/goharbor/harbor.
+
+{{ if .Values.userSettings }}
+If this is your first time Installing Harbor,
+You may need to use the Harbor Configuration API to
+finish your configuration by running:
+
+$ curl -i -X PUT -u "admin:{{ .Values.harborAdminPassword }}" \
+  -H "Content-Type: application/json" \
+  {{ .Values.externalURL }}/api/configurations \
+  -d '{{ .Values.userSettings | toJson }}'
+{{ end }}
