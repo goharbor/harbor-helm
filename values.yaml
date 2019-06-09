@@ -94,6 +94,16 @@ expose:
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
 
+userSettings: {}
+  ## see https://github.com/goharbor/harbor/blob/master/docs/configure_user_settings.md
+  ## for valid settings
+  # self_registration: "false"
+  # auth_mode: uaa_auth
+  # uaa_client_id: harbor-cluster1
+  # uaa_client_secret: OyM2bx4JCDN1Q1MpgMIo-JFkwVJlq_ZF
+  # uaa_endpoint: https://pks.pivlab.gcp.paulczar.wtf:8443
+  # uaa_verify_cert: "true"
+
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly. 
 # Specify another StorageClass in the "storageClass" or set "existingClaim"
