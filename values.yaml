@@ -474,3 +474,12 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+
+jobConfig:
+  # if enabled setup proper Harbor settings
+  # https://github.com/goharbor/harbor/blob/master/docs/configure_user_settings.md#harbor-user-settings
+  enabled: false
+  settings: {}
+  image:
+    repository: byrnedo/alpine-curl
+    tag: 0.1.7
