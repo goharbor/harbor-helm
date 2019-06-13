@@ -33,21 +33,22 @@ Configure the new chart to make sure that the configuration items have the same 
 
 2) Export the secret as yaml file:
 
+
     ```bash
-    kubectl get secret secret-name -o yaml > secret.yaml
+    kubectl get secret <secret-name-from-step-1> -o yaml > secret.yaml
     ```
 
-3) Replace the `secret-name` in `secret.yaml` with the one from step **1**
 
-4) Rename the secret by setting `metadata.name` in `secret.yaml`
 
-5) Create a new secret:
+3) Rename the secret by setting `metadata.name` in `secret.yaml`
+
+4) Create a new secret:
 
     ```bash
     kubectl create -f secret.yaml
     ```
 
-6) Configure the chart to use the new secret by setting `expose.tls.secretName` as the value you set in step **3**
+5) Configure the chart to use the new secret by setting `expose.tls.secretName` as the value you set in step **3**
 
 ### 4. Upgrade
 
