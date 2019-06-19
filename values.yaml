@@ -101,7 +101,6 @@ externalURL: https://core.harbor.domain
 # contains a base64 encoded CA Certificate named `ca.crt`.
 # uaaSecretName:
 
-
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly.
 # Specify another StorageClass in the "storageClass" or set "existingClaim"
@@ -245,6 +244,11 @@ secretKey: "not-a-secure-key"
 
 # If expose the service via "ingress", the Nginx will not be used
 nginx:
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   image:
     repository: goharbor/nginx-photon
     tag: dev
@@ -260,14 +264,19 @@ nginx:
   podAnnotations: {}
 
 portal:
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   image:
     repository: goharbor/harbor-portal
     tag: dev
   replicas: 1
-# resources:
-#  requests:
-#    memory: 256Mi
-#    cpu: 100m
+  # resources:
+  #  requests:
+  #    memory: 256Mi
+  #    cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -275,14 +284,19 @@ portal:
   podAnnotations: {}
 
 core:
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   image:
     repository: goharbor/harbor-core
     tag: dev
   replicas: 1
-# resources:
-#  requests:
-#    memory: 256Mi
-#    cpu: 100m
+  # resources:
+  #  requests:
+  #    memory: 256Mi
+  #    cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -301,6 +315,11 @@ core:
   secretName: ""
 
 jobservice:
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   image:
     repository: goharbor/harbor-jobservice
     tag: dev
@@ -308,10 +327,10 @@ jobservice:
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLogger: file
-# resources:
-#   requests:
-#     memory: 256Mi
-#     cpu: 100m
+  # resources:
+  #   requests:
+  #     memory: 256Mi
+  #     cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -323,11 +342,15 @@ jobservice:
   secret: ""
 
 registry:
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   registry:
     image:
       repository: goharbor/registry-photon
       tag: dev
-
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -336,7 +359,6 @@ registry:
     image:
       repository: goharbor/harbor-registryctl
       tag: dev
-
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -356,6 +378,11 @@ registry:
 
 chartmuseum:
   enabled: true
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   image:
     repository: goharbor/chartmuseum-photon
     tag: dev
@@ -372,6 +399,11 @@ chartmuseum:
 
 clair:
   enabled: true
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   image:
     repository: goharbor/clair-photon
     tag: dev
@@ -394,6 +426,11 @@ clair:
 
 notary:
   enabled: true
+  serviceAccount:
+    create: true
+    name: ""
+  rbac: true
+  psp: true
   server:
     image:
       repository: goharbor/notary-server-photon
@@ -430,6 +467,11 @@ database:
   # and fill the connection informations in "external" section
   type: internal
   internal:
+    serviceAccount:
+      create: true
+      name: ""
+    rbac: true
+    psp: true
     image:
       repository: goharbor/harbor-db
       tag: dev
@@ -460,6 +502,11 @@ redis:
   # and fill the connection informations in "external" section
   type: internal
   internal:
+    serviceAccount:
+      create: true
+      name: ""
+    rbac: true
+    psp: true
     image:
       repository: goharbor/redis-photon
       tag: dev
@@ -482,3 +529,60 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+
+# RBAC settings, PSP is added to the end automatically.
+rbac:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+      - pods
+    verbs:
+      - get
+      - watch
+      - list
+
+# Pod Security Policy for Harbor, provides a single place to configure it.
+psp:
+  privileged: true
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: true
+  # This is redundant with non-root + disallow privilege escalation,
+  # but we can provide it for defense in depth.
+  requiredDropCapabilities:
+    - ALL
+  # Allow core volume types.
+  volumes:
+    - "configMap"
+    - "emptyDir"
+    - "projected"
+    - "secret"
+    - "downwardAPI"
+    # Assume that persistentVolumes set up by the cluster admin are safe to use.
+    - "persistentVolumeClaim"
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: "RunAsAny"
+    # Require the container to run without root privileges.
+    # rule: 'MustRunAsNonRoot'
+  seLinux:
+    # This policy assumes the nodes are using AppArmor rather than SELinux.
+    rule: "RunAsAny"
+  supplementalGroups:
+    rule: "RunAsAny"
+    # rule: 'MustRunAs'
+    # ranges:
+    #   # Forbid adding the root group.
+    #   - min: 1
+    #     max: 65535
+  fsGroup:
+    rule: "RunAsAny"
+    # rule: 'MustRunAs'
+    # ranges:
+    #   # Forbid adding the root group.
+    #   - min: 1
+    #     max: 65535
+  readOnlyRootFilesystem: false

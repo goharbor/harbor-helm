@@ -25,6 +25,9 @@ spec:
 {{ toYaml .Values.database.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.database.internal.rbac }}
+      serviceAccountName: {{ template "harbor.database-serviceAccountName" . }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

@@ -24,6 +24,9 @@ spec:
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.redis.internal.rbac }}
+      serviceAccountName: {{ template "harbor.redis-serviceAccountName" . }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

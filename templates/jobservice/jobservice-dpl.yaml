@@ -24,6 +24,9 @@ spec:
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.jobservice.rbac }}
+      serviceAccountName: {{ template "harbor.jobservice-serviceAccountName" . }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

@@ -1,0 +1,46 @@
+{{- if .Values.nginx.serviceAccount.create -}}
+{{- if .Values.nginx.rbac -}}
+{{ if .Values.nginx.psp -}}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ printf "%s-nginx-psp" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+spec:
+{{ toYaml .Values.psp | indent 2 }}
+{{- end }}
+---
+# Roles
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ printf "%s-nginx-cr" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+rules:
+{{ toYaml .Values.rbac | indent 2 -}}
+{{- if .Values.nginx.psp }}
+  - apiGroups: ["extensions"]
+    resources: ["podsecuritypolicies"]
+    resourceNames: [{{ printf "%s-nginx-psp" (include "harbor.fullname" .) | quote}}]
+    verbs: ["use"]
+{{- end }}
+---
+## Role bindings
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ printf "%s-nginx-crb" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "harbor.nginx-serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ printf "%s-nginx-cr" (include "harbor.fullname" .) | quote}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,47 @@
+{{- if .Values.portal.serviceAccount.create -}}
+{{- if .Values.portal.rbac -}}
+
+# Roles
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ printf "%s-portal-cr" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+rules:
+{{ toYaml .Values.rbac | indent 2 -}}
+{{- if .Values.portal.psp }}
+  - apiGroups: ["extensions"]
+    resources: ["podsecuritypolicies"]
+    resourceNames: [{{ printf "%s-portal-psp" (include "harbor.fullname" .) | quote}}]
+    verbs: ["use"]
+{{- end }}
+---
+## Role bindings
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ printf "%s-portal-crb" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "harbor.portal-serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ printf "%s-portal-cr" (include "harbor.fullname" .) | quote}}
+---
+{{ if .Values.portal.psp -}}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ printf "%s-portal-psp" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+spec:
+{{ toYaml .Values.psp | indent 2 }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

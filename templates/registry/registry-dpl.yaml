@@ -25,6 +25,9 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.registry.rbac }}
+      serviceAccountName: {{ template "harbor.registry-serviceAccountName" . }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

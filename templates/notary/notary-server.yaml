@@ -24,6 +24,9 @@ spec:
 {{ toYaml .Values.notary.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.notary.rbac }}
+      serviceAccountName: {{ template "harbor.notary-serviceAccountName" . }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

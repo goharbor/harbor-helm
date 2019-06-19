@@ -1,0 +1,8 @@
+{{- if or .Values.chartmuseum.serviceAccount.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+  name: {{ template "harbor.chartmuseum-serviceAccountName" . }}
+{{- end -}}

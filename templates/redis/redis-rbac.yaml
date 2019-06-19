@@ -1,0 +1,47 @@
+{{- if .Values.redis.internal.serviceAccount.create -}}
+{{- if .Values.redis.internal.rbac -}}
+
+# Roles
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ printf "%s-redis-cr" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+rules:
+{{- .Values.rbac | toYaml | trimSuffix "\n" | nindent 2 -}}
+{{- if .Values.redis.internal.psp }}
+  - apiGroups: ["extensions"]
+    resources: ["podsecuritypolicies"]
+    resourceNames: [{{ printf "%s-redis-psp" (include "harbor.fullname" .) | quote}}]
+    verbs: ["use"]
+{{- end }}
+---
+## Role bindings
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ printf "%s-redis-crb" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "harbor.redis-serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ printf "%s-redis-cr" (include "harbor.fullname" .) | quote}}
+---
+{{ if .Values.redis.internal.psp -}}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ printf "%s-redis-psp" (include "harbor.fullname" .) | quote}}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+spec:
+{{ toYaml .Values.psp | indent 2 }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
