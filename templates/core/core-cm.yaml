@@ -26,6 +26,7 @@ data:
   WITH_NOTARY: "{{ .Values.notary.enabled }}"
   NOTARY_URL: "http://{{ template "harbor.notary-server" . }}:4443"
   CFG_EXPIRATION: "5"
+  ADMIRAL_URL: "NA"
   WITH_CLAIR: "{{ .Values.clair.enabled }}"
   CLAIR_DB_HOST: "{{ template "harbor.database.host" . }}"
   CLAIR_DB_PORT: "{{ template "harbor.database.port" . }}"
