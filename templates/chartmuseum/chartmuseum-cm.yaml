@@ -11,7 +11,7 @@ data:
   CACHE_REDIS_ADDR: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
   CACHE_REDIS_DB: "{{ template "harbor.redis.chartmuseumDatabaseIndex" . }}"
   BASIC_AUTH_USER: "chart_controller"
-{{- if eq .Values.chartmuseum.absoluteUrl }}
+{{- if .Values.chartmuseum.absoluteUrl }}
   CHART_URL: {{ .Values.externalURL }}/chartrepo
 {{- end }}
   DEPTH: "1"
