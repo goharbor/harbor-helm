@@ -21,15 +21,15 @@ helm repo add harbor https://helm.goharbor.io
 
 ### Configure the chart
 
-The following items can be set via `--set` flag during installation or configured by editing the `values.yaml` directly(need to download the chart first).  
+The following items can be set via `--set` flag during installation or configured by editing the `values.yaml` directly(need to download the chart first).
 
-#### Configure the way how to expose Harbor service:
+#### Configure the way how to expose Harbor service
 
-- **Ingress**: The ingress controller must be installed in the Kubernetes cluster.  
+- **Ingress**: The ingress controller must be installed in the Kubernetes cluster.
   **Notes:** if the TLS is disabled, the port must be included in the command when pulling/pushing images. Refer to issue [#5291](https://github.com/goharbor/harbor/issues/5291) for the detail.
 - **ClusterIP**: Exposes the service on a cluster-internal IP. Choosing this value makes the service only reachable from within the cluster.
-- **NodePort**: Exposes the service on each Node’s IP at a static port (the NodePort). You’ll be able to contact the NodePort service, from outside the cluster, by requesting `NodeIP:NodePort`. 
-- **LoadBalancer**: Exposes the service externally using a cloud provider’s load balancer.  
+- **NodePort**: Exposes the service on each Node’s IP at a static port (the NodePort). You’ll be able to contact the NodePort service, from outside the cluster, by requesting `NodeIP:NodePort`.
+- **LoadBalancer**: Exposes the service externally using a cloud provider’s load balancer.
 
 #### Configure the external URL
 
@@ -43,11 +43,11 @@ Format: `protocol://domain[:port]`. Usually:
 - if expose the service via `Ingress`, the `domain` should be the value of `expose.ingress.hosts.core`
 - if expose the service via `ClusterIP`, the `domain` should be the value of `expose.clusterIP.name`
 - if expose the service via `NodePort`, the `domain` should be the IP address of one Kubernetes node
-- if expose the service via `LoadBalancer`, set the `domain` as your own domain name and add a CNAME record to map the domain name to the one you got from the cloud provider  
+- if expose the service via `LoadBalancer`, set the `domain` as your own domain name and add a CNAME record to map the domain name to the one you got from the cloud provider
 
 If Harbor is deployed behind the proxy, set it as the URL of proxy.
 
-#### Configure the way how to persistent data:
+#### Configure the way how to persistent data
 
 - **Disable**: The data does not survive the termination of a pod.
 - **Persistent Volume Claim(default)**: A default `StorageClass` is needed in the Kubernetes cluster to dynamic provision the volumes. Specify another StorageClass in the `storageClass` or set `existingClaim` if you have already existing persistent volumes to use.
@@ -62,8 +62,7 @@ If Harbor is deployed behind the proxy, set it as the URL of proxy.
 
 Secrets and certificates must be setup to avoid changes on every Helm upgrade (see: [#107](https://github.com/goharbor/harbor-helm/issues/107)).
 
-
-#### Configure the other items listed in [configuration](#configuration) section.
+#### Configure the other items listed in [configuration](#configuration) section
 
 ### Install the chart
 
@@ -203,7 +202,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `registry.tolerations`                                                      | Tolerations for pod assignment                                                                                                                                                                                                                                                                                                                  | `[]`                            |
 | `registry.affinity`                                                         | Node/Pod affinities                                                                                                                                                                                                                                                                                                                             | `{}`                            |
 | `registry.podAnnotations`                                                   | Annotations to add to the registry pod                                                                                                                                                                                                                                                                                                          | `{}`                            |
-| `registry.secret`                                                           | Secret is used to secure the upload state from client and registry storage backend. See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http. If a secret key is not specified, Helm will generate one. Must be a string of 16 chars.                                                                                 |                                 |
+| `registry.secret`                                                           | Secret is used to secure the upload state from client and registry storage backend. See [official docs](https://github.com/docker/distribution/blob/master/docs/configuration.md#http). If a secret key is not specified, Helm will generate one. Must be a string of 16 chars.                                                                                 |                                 |
 | **Chartmuseum**                                                             |
 | `chartmuseum.enabled`                                                       | Enable chartmusuem to store chart                                                                                                                                                                                                                                                                                                               | `true`                          |
 | `chartmuseum.image.repository`                                              | Repository for chartmuseum image                                                                                                                                                                                                                                                                                                                | `goharbor/chartmuseum-photon`   |
