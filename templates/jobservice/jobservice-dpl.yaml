@@ -26,6 +26,8 @@ spec:
     spec:
       {{- if .Values.jobservice.rbac }}
       serviceAccountName: {{ template "harbor.jobservice-serviceAccountName" . }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

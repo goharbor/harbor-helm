@@ -545,44 +545,27 @@ rbac:
 
 # Pod Security Policy for Harbor, provides a single place to configure it.
 psp:
-  privileged: true
-  # Required to prevent escalations to root.
   allowPrivilegeEscalation: true
-  # This is redundant with non-root + disallow privilege escalation,
-  # but we can provide it for defense in depth.
-  requiredDropCapabilities:
-    - ALL
-  # Allow core volume types.
-  volumes:
-    - "configMap"
-    - "emptyDir"
-    - "projected"
-    - "secret"
-    - "downwardAPI"
-    # Assume that persistentVolumes set up by the cluster admin are safe to use.
-    - "persistentVolumeClaim"
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: "RunAsAny"
-    # Require the container to run without root privileges.
-    # rule: 'MustRunAsNonRoot'
-  seLinux:
-    # This policy assumes the nodes are using AppArmor rather than SELinux.
-    rule: "RunAsAny"
-  supplementalGroups:
-    rule: "RunAsAny"
-    # rule: 'MustRunAs'
-    # ranges:
-    #   # Forbid adding the root group.
-    #   - min: 1
-    #     max: 65535
+  allowedCapabilities:
+    - "*"
   fsGroup:
-    rule: "RunAsAny"
-    # rule: 'MustRunAs'
-    # ranges:
-    #   # Forbid adding the root group.
-    #   - min: 1
-    #     max: 65535
-  readOnlyRootFilesystem: false
+    rule: RunAsAny
+  hostIPC: true
+  hostNetwork: true
+  hostPID: true
+  hostPorts:
+    - max: 65535
+      min: 0
+  privileged: true
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+    - "*"
+
+# Security Context, defines the user to run as who should be the owner of the necessary directories.
+securityContext:
+  privileged: true

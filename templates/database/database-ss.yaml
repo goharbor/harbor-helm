@@ -27,6 +27,8 @@ spec:
     spec:
       {{- if .Values.database.internal.rbac }}
       serviceAccountName: {{ template "harbor.database-serviceAccountName" . }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

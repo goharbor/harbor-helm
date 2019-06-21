@@ -26,6 +26,8 @@ spec:
     spec:
       {{- if .Values.redis.internal.rbac }}
       serviceAccountName: {{ template "harbor.redis-serviceAccountName" . }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

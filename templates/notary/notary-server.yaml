@@ -26,6 +26,8 @@ spec:
     spec:
       {{- if .Values.notary.rbac }}
       serviceAccountName: {{ template "harbor.notary-serviceAccountName" . }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

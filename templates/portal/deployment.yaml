@@ -23,6 +23,8 @@ spec:
     spec:
       {{- if .Values.portal.rbac }}
       serviceAccountName: {{ template "harbor.portal-serviceAccountName" . }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
