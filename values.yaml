@@ -356,6 +356,8 @@ registry:
 
 chartmuseum:
   enabled: true
+  # Harbor defaults ChartMuseum to returning relative urls, if you want using absolute url you should enable it by change the following value to 'true'
+  absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
     tag: dev
