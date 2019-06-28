@@ -279,6 +279,11 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
+
 
 portal:
   image:
@@ -294,6 +299,10 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
 
 core:
   image:
@@ -309,6 +318,11 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
+  #
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -338,6 +352,11 @@ jobservice:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
+  #
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -368,6 +387,11 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
+  #
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -405,6 +429,10 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
 
 clair:
   enabled: true
@@ -424,6 +452,11 @@ clair:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
+
 
 notary:
   enabled: true
@@ -436,6 +469,10 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # List of extra Containers to add to the pod if needed
+    # extraContainers:
+    # List of extra volumes to add to the pod if needed
+    # extraVolumes:
   signer:
     image:
       repository: goharbor/notary-signer-photon
@@ -445,6 +482,10 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # List of extra Containers to add to the pod if needed
+    # extraContainers:
+    # List of extra volumes to add to the pod if needed
+    # extraVolumes:
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -501,6 +542,10 @@ database:
   maxOpenConns: 100
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -529,3 +574,12 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
+
+# List of extra Containers to add to all pods if needed
+# extraContainers:
+# List of extra volumes to add to all pods if needed
+# extraVolumes:

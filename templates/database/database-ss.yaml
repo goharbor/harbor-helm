@@ -72,6 +72,12 @@ spec:
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.database.extraContainers }}
+{{ toYaml .Values.database.extraContainers | indent 6 }}
+      {{- end }}
       {{- if not .Values.persistence.enabled }}
       volumes:
       - name: "database-data"
@@ -82,6 +88,12 @@ spec:
         persistentVolumeClaim:
           claimName: {{ $database.existingClaim }}
       {{- end -}}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.database.extraVolumes }}
+{{ toYaml .Values.database.extraVolumes | indent 6 }}
+      {{- end }}
     {{- with .Values.database.internal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

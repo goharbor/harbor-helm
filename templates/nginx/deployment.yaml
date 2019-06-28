@@ -76,6 +76,12 @@ spec:
         - name: certificate
           mountPath: /etc/nginx/cert
         {{- end }}
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.nginx.extraContainers }}
+{{ toYaml .Values.nginx.extraContainers | indent 6 }}
+      {{- end }}
       volumes:
       - name: config
         configMap:
@@ -88,6 +94,12 @@ spec:
           {{- else }}
           secretName: {{ template "harbor.nginx" . }}
           {{- end }}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.nginx.extraVolumes }}
+{{ toYaml .Values.nginx.extraVolumes | indent 6 }}
       {{- end }}
     {{- with .Values.nginx.nodeSelector }}
       nodeSelector:
