@@ -20,7 +20,7 @@ expose:
     # described above. Fill the name of secret if you want to use a
     # separated one. Only needed when the type is "ingress".
     notarySecretName: ""
-    # The commmon name used to generate the certificate, it's necessary
+    # The common name used to generate the certificate, it's necessary
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
   ingress:
@@ -30,6 +30,7 @@ expose:
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
+    # set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
     controller: default
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
