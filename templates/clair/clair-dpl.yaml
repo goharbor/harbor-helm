@@ -19,6 +19,7 @@ spec:
         component: clair
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/clair/clair-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/clair/clair-secret.yaml") . | sha256sum }}
 {{- if .Values.clair.podAnnotations }}
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
@@ -67,11 +68,8 @@ spec:
           subPath: config.yaml
       volumes:
       - name: clair-config
-        configMap:
-          name: "{{ template "harbor.clair" . }}"
-          items:
-            - key: config.yaml
-              path: config.yaml
+        secret:
+          secretName: "{{ template "harbor.clair" . }}"
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

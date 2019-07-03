@@ -40,7 +40,10 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
         - name: DB_URL
-          value: {{ template "harbor.database.notaryServer" . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "harbor.notary-server" . }}
+              key: SERVER_DB_URL
         volumeMounts:
         - name: notary-config
           mountPath: /etc/notary
@@ -54,8 +57,15 @@ spec:
         {{- end }}
       volumes:
       - name: notary-config
-        configMap:
-          name: "{{ template "harbor.notary-server" . }}"
+        projected:
+          sources:
+          - configMap:
+              name: "{{ template "harbor.notary-server" . }}"
+          - secret:
+              name: "{{ template "harbor.notary-server" . }}"
+              items:
+                - key: server-config.postgres.json
+                  path: server-config.postgres.json
       - name: root-certificate
         secret:
           {{- if .Values.core.secretName }}

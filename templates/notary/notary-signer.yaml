@@ -36,7 +36,10 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
         - name: DB_URL
-          value: {{ template "harbor.database.notarySigner" . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "harbor.notary-server" . }}
+              key: SIGNER_DB_URL
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
@@ -55,8 +58,17 @@ spec:
         {{- end }}
       volumes:
       - name: notary-config
-        configMap:
-          name: "{{ template "harbor.notary-server" . }}"
+        projected:
+          sources:
+          - configMap:
+              name: "{{ template "harbor.notary-server" . }}"
+          - secret:
+              name: "{{ template "harbor.notary-server" . }}"
+              items:
+                - key: signer-config.postgres.json
+                  path: signer-config.postgres.json
+                - key: server-config.postgres.json
+                  path: server-config.postgres.json
       {{- if .Values.notary.secretName }}
       - name: notary-cert
         secret:
