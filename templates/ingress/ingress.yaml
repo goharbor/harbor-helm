@@ -57,6 +57,11 @@ spec:
     {{- end }}
   {{- end }}
   {{- end }}
+  {{- if eq .Values.expose.ingress.controller "ncp" }}
+  backend:
+    serviceName: {{ template "harbor.portal" . }}
+    servicePort: 80
+  {{- end }}
   rules:
   - http:
       paths:
