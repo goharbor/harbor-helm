@@ -16,9 +16,9 @@ spec:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: portal
+{{- with .Values.portal.podAnnotations }}
       annotations:
-{{- if .Values.portal.podAnnotations }}
-{{ toYaml .Values.portal.podAnnotations | indent 8 }}
+{{ toYaml . | indent 8 }}
 {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -29,9 +29,9 @@ spec:
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-{{- if .Values.portal.resources }}
+{{- with .Values.portal.resources }}
         resources:
-{{ toYaml .Values.portal.resources | indent 10 }}
+{{ toYaml . | indent 10 }}
 {{- end }}
         livenessProbe:
           httpGet:
