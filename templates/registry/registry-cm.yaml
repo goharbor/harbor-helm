@@ -149,11 +149,15 @@ data:
       debug:
         addr: localhost:5001
     auth:
+    {{- if .Values.registry.auth }}
+{{ toYaml .Values.registry.auth | indent 6 }}
+    {{- else }}
       token:
         issuer: harbor-token-issuer
         realm: "{{ .Values.externalURL }}/service/token"
         rootcertbundle: /etc/registry/root.crt
         service: harbor-registry
+    {{- end }}
     validation:
       disabled: true
     notifications:

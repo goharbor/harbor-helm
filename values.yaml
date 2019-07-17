@@ -331,6 +331,9 @@ registry:
       repository: goharbor/registry-photon
       tag: dev
 
+  # overwrite auth config of registry, defaults to harbor service token from externalURL
+  auth: {}
+
     # resources:
     #  requests:
     #    memory: 256Mi
