@@ -82,6 +82,9 @@ spec:
       port: {{ $loadBalancer.ports.notaryPort }}
       targetPort: 4443
     {{- end }}
+  {{- with $loadBalancer.loadBalancerIP }}
+  loadBalancerIP: {{ $loadBalancer.loadBalancerIP }}
+  {{- end }}
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
