@@ -31,6 +31,7 @@ expose:
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
     # set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
+    # set to `alb` if using the AWS ALB ingress controller
     controller: default
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
