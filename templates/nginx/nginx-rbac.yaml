@@ -1,7 +1,7 @@
 {{- if .Values.nginx.serviceAccount.create -}}
 {{- if .Values.nginx.rbac -}}
 {{ if .Values.nginx.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-nginx-psp" (include "harbor.fullname" .) | quote}}

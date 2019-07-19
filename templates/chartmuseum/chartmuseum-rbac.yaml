@@ -1,7 +1,7 @@
 {{- if .Values.chartmuseum.serviceAccount.create -}}
 {{- if .Values.chartmuseum.rbac -}}
 {{- if .Values.chartmuseum.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-chartmuseum-psp" (include "harbor.fullname" .) | quote}}

@@ -1,7 +1,7 @@
 {{- if .Values.registry.serviceAccount.create -}}
 {{- if .Values.registry.rbac -}}
 {{ if .Values.registry.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-registry-psp" (include "harbor.fullname" .) | quote}}

@@ -1,7 +1,7 @@
 {{- if .Values.notary.serviceAccount.create -}}
 {{- if .Values.notary.rbac -}}
 {{ if .Values.notary.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-notary-psp" (include "harbor.fullname" .) | quote}}

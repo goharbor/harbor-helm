@@ -1,7 +1,7 @@
 {{- if .Values.jobservice.serviceAccount.create -}}
 {{- if .Values.jobservice.rbac -}}
 {{ if .Values.jobservice.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-jobservice-psp" (include "harbor.fullname" .) | quote}}

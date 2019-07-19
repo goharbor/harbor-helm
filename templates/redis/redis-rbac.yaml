@@ -34,7 +34,7 @@ roleRef:
   name: {{ printf "%s-redis-cr" (include "harbor.fullname" .) | quote}}
 ---
 {{ if .Values.redis.internal.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-redis-psp" (include "harbor.fullname" .) | quote}}

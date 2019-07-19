@@ -1,7 +1,7 @@
 {{- if .Values.clair.serviceAccount.create -}}
 {{- if .Values.clair.rbac -}}
 {{- if .Values.clair.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-clair-psp" (include "harbor.fullname" .) | quote}}

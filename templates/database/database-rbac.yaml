@@ -1,7 +1,7 @@
 {{- if .Values.database.internal.serviceAccount.create -}}
 {{- if .Values.database.internal.rbac -}}
 {{ if .Values.database.internal.psp -}}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ printf "%s-database-psp" (include "harbor.fullname" .) | quote}}
