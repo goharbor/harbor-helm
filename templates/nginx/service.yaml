@@ -61,6 +61,9 @@ spec:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   type: LoadBalancer
+  {{- if $loadBalancer.IP }}
+  loadBalancerIP: {{ $loadBalancer.IP }}
+  {{- end }}
   ports:
     - name: http
       port: {{ $loadBalancer.ports.httpPort }}
