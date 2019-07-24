@@ -18,6 +18,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.redis.podLabels }}
+{{ toYaml .Values.redis.podLabels | indent 8 }}
+{{- end }}
         component: redis
 {{- if .Values.redis.podAnnotations }}
       annotations:

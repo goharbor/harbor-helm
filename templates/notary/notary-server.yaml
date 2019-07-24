@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.notary.podLabels }}
+{{ toYaml .Values.notary.podLabels | indent 8 }}
+{{- end }}
         component: notary-server
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/notary/notary-cm.yaml") . | sha256sum }}

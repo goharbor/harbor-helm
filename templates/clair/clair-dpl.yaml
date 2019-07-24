@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.clair.podLabels }}
+{{ toYaml .Values.clair.podLabels | indent 8 }}
+{{- end }}
         component: clair
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/clair/clair-cm.yaml") . | sha256sum }}

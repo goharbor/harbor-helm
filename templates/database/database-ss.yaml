@@ -18,6 +18,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.database.podLabels }}
+{{ toYaml .Values.database.podLabels | indent 8 }}
+{{- end }}
         component: database
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}

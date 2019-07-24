@@ -15,6 +15,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
+{{- if .Values.portal.podLabels }}
+{{ toYaml .Values.portal.podLabels | indent 8 }}
+{{- end }}
         component: portal
       annotations:
 {{- if .Values.portal.podAnnotations }}

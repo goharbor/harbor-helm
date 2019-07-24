@@ -15,6 +15,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.jobservice.podLabels }}
+{{ toYaml .Values.jobservice.podLabels | indent 8 }}
+{{- end }}
         component: jobservice
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
@@ -81,7 +84,7 @@ spec:
       - name: job-logs
         {{- if and .Values.persistence.enabled (eq .Values.jobservice.jobLogger "file") }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.persistentVolumeClaim.jobservice.existingClaim | default (include "harbor.jobservice" .) }}  
+          claimName: {{ .Values.persistence.persistentVolumeClaim.jobservice.existingClaim | default (include "harbor.jobservice" .) }}
         {{- else }}
         emptyDir: {}
         {{- end }}

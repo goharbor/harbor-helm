@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.chartmuseum.podLabels }}
+{{ toYaml .Values.chartmuseum.podLabels | indent 8 }}
+{{- end }}
         component: chartmuseum
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/chartmuseum/chartmuseum-cm.yaml") . | sha256sum }}

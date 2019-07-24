@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.nginx.podLabels }}
+{{ toYaml .Values.nginx.podLabels | indent 8 }}
+{{- end }}
         component: nginx
       annotations:
       {{- if not .Values.expose.tls.enabled }}

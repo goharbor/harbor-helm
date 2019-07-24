@@ -15,6 +15,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
+{{- if .Values.core.podLabels }}
+{{ toYaml .Values.core.podLabels | indent 8 }}
+{{- end }}
         component: core
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}

@@ -15,6 +15,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.registry.podLabels }}
+{{ toYaml .Values.registry.podLabels | indent 8 }}
+{{- end }}
         component: registry
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/registry/registry-cm.yaml") . | sha256sum }}
