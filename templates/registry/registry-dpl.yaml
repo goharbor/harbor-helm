@@ -71,6 +71,13 @@ spec:
           mountPath: /etc/registry/gcs-key.json
           subPath: gcs-key.json
         {{- end }}
+        {{- if .Values.registry.middleware.enabled }}
+        {{- if eq .Values.registry.middleware.type "cloudFront" }}
+        - name: cloudfront-key
+          mountPath: /etc/registry/pk.pem
+          subPath: pk.pem
+        {{- end }}
+        {{- end }}
       - name: registryctl
         image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -142,6 +149,16 @@ spec:
           items:
             - key: GCS_KEY_DATA
               path: gcs-key.json
+      {{- end }}
+      {{- if .Values.registry.middleware.enabled }}
+      {{- if eq .Values.registry.middleware.type "cloudFront" }}
+      - name: cloudfront-key
+        secret:
+          secretName: {{ .Values.registry.middleware.cloudFront.privateKeySecret }}
+          items:
+            - key: CLOUDFRONT_KEY_DATA
+              path: pk.pem
+      {{- end }}
       {{- end }}
     {{- with .Values.registry.nodeSelector }}
       nodeSelector:

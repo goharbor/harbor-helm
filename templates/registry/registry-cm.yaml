@@ -164,6 +164,21 @@ data:
           timeout: 3000ms
           threshold: 5
           backoff: 1s
+    {{- if .Values.registry.middleware.enabled }}
+    {{- $middleware := .Values.registry.middleware }}
+    {{- $middlewareType := $middleware.type }}
+    {{- if eq $middlewareType "cloudFront" }}
+    middleware:
+      storage:
+        - name: cloudfront
+          options:
+            baseurl: {{ $middleware.cloudFront.baseurl }}
+            privatekey: /etc/registry/pk.pem
+            keypairid: {{ $middleware.cloudFront.keypairid }}
+            duration: {{ $middleware.cloudFront.duration }}
+            ipfilteredby: {{ $middleware.cloudFront.ipfilteredby }}
+    {{- end }}
+    {{- end }}
   ctl-config.yml: |+
     ---
     protocol: "http"
