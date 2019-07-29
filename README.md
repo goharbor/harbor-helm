@@ -111,6 +111,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.loadBalancer.ports.httpPort` | The service port Harbor listens on when serving with HTTP |`80`|
 | `expose.loadBalancer.ports.httpsPort` | The service port Harbor listens on when serving with HTTP |`30002`|
 | `expose.loadBalancer.ports.notaryPort` | The service port Notary listens on. Only needed when `notary.enabled` is set to `true`|
+| `expose.loadBalancer.loadBalancerIP` | An optional static IP address for the loadBalancer when an ephemeral address is not desired|
 | `expose.loadBalancer.annotations` | The annotations attached to the loadBalancer service | {}} |
 | `expose.loadBalancer.sourceRanges` | List of IP address ranges to assign to loadBalancerSourceRanges | [] |
 | **Persistence**                                                             |
