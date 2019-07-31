@@ -68,6 +68,9 @@ spec:
   loadBalancerSourceRanges:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if $loadBalancer.IP }}
+  loadBalancerIP: {{ $loadBalancer.IP }}
+  {{- end }}
   ports:
     - name: http
       port: {{ $loadBalancer.ports.httpPort }}
