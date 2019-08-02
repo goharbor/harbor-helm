@@ -109,6 +109,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.nodePort.ports.notary.port`                                         | The service port Notary listens on. Only needed when `notary.enabled` is set to `true`                                                                                                                                                                                                                                                          | `4443`                          |
 | `expose.nodePort.ports.notary.nodePort`                                     | The node port Notary listens on. Only needed when `notary.enabled` is set to `true`                                                                                                                                                                                                                                                             | `30004`                         |
 | `expose.loadBalancer.name` | The name of service |`harbor`|
+| `expose.loadBalancer.IP` | The IP of the loadBalancer.  It works only when loadBalancer support assigning IP |`""`|
 | `expose.loadBalancer.ports.httpPort` | The service port Harbor listens on when serving with HTTP |`80`|
 | `expose.loadBalancer.ports.httpsPort` | The service port Harbor listens on when serving with HTTP |`30002`|
 | `expose.loadBalancer.ports.notaryPort` | The service port Notary listens on. Only needed when `notary.enabled` is set to `true`|
