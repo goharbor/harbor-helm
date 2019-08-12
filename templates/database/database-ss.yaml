@@ -33,7 +33,7 @@ spec:
       - name: "remove-lost-found"
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
+        command: ["/bin/bash","-c","rm -Rf /var/lib/postgresql/data/lost+found || true"]
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
