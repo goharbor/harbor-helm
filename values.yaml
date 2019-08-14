@@ -94,7 +94,7 @@ expose:
 # 2) if "expose.type" is "clusterIP", the "domain" should be
 # the value of "expose.clusterIP.name"
 # 3) if "expose.type" is "nodePort", the "domain" should be
-# the IP address of k8s node
+# the IP address or DNS of k8s node with nodePort (ex https://IPorDNS:30003)
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
