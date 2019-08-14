@@ -26,6 +26,8 @@ data:
         timeout: 300s
       updater:
         interval: {{ .Values.clair.updatersInterval }}h
+      
+      healthaddr: "0.0.0.0:6061"
 
       notifier:
         attempts: 3
