@@ -23,7 +23,7 @@
   {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
   {{- $_ := set . "controller_path" "/c/" -}}
 {{- end }}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: "{{ template "harbor.ingress" . }}"

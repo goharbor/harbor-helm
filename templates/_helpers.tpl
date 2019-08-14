@@ -279,3 +279,86 @@ host:port,pool_size,password
 {{- define "harbor.ingress" -}}
   {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
+
+{{/*
+Service Account stuff.
+*/}}
+{{- define "harbor.chartmuseum-serviceAccountName" -}}
+{{- if .Values.chartmuseum.serviceAccount.create -}}
+    {{ default (printf "%s-chartmuseum-serviceaccount" (include "harbor.fullname" .)) .Values.chartmuseum.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.chartmuseum.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.clair-serviceAccountName" -}}
+{{- if .Values.clair.serviceAccount.create -}}
+    {{ default (printf "%s-clair-serviceaccount" (include "harbor.fullname" .)) .Values.clair.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.clair.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.core-serviceAccountName" -}}
+{{- if .Values.core.serviceAccount.create -}}
+    {{ default (printf "%s-core-serviceaccount" (include "harbor.fullname" .)) .Values.core.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.core.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.database-serviceAccountName" -}}
+{{- if .Values.database.internal.serviceAccount.create -}}
+    {{ default (printf "%s-database-serviceaccount" (include "harbor.fullname" .)) .Values.database.internal.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.database.internal.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.jobservice-serviceAccountName" -}}
+{{- if .Values.jobservice.serviceAccount.create -}}
+    {{ default (printf "%s-jobservice-serviceaccount" (include "harbor.fullname" .)) .Values.jobservice.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.jobservice.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.nginx-serviceAccountName" -}}
+{{- if .Values.nginx.serviceAccount.create -}}
+    {{ default (printf "%s-nginx-serviceaccount" (include "harbor.fullname" .)) .Values.nginx.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.nginx.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.notary-serviceAccountName" -}}
+{{- if .Values.notary.serviceAccount.create -}}
+    {{ default (printf "%s-notary-serviceaccount" (include "harbor.fullname" .)) .Values.notary.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.notary.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.portal-serviceAccountName" -}}
+{{- if .Values.portal.serviceAccount.create -}}
+    {{ default (printf "%s-portal-serviceaccount" (include "harbor.fullname" .)) .Values.portal.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.portal.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.redis-serviceAccountName" -}}
+{{- if .Values.redis.internal.serviceAccount.create -}}
+    {{ default (printf "%s-redis-serviceaccount" (include "harbor.fullname" .)) .Values.redis.internal.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.redis.internal.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "harbor.registry-serviceAccountName" -}}
+{{- if .Values.registry.serviceAccount.create -}}
+    {{ default (printf "%s-registry-serviceaccount" (include "harbor.fullname" .)) .Values.registry.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.registry.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

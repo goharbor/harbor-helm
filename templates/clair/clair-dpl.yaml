@@ -23,6 +23,11 @@ spec:
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.clair.rbac }}
+      serviceAccountName: {{ template "harbor.clair-serviceAccountName" . }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
