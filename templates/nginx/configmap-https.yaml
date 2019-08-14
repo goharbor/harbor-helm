@@ -187,10 +187,15 @@ data:
           proxy_request_buffering off;
         }
       
-      location /service/notifications {
-          return 404;
+        location /service/notifications {
+            return 404;
+          }
         }
-      }
+
+        location /basic_status {
+              stub_status;
+        }
+        
         server {
           listen 8080;
           #server_name harbordomain.com;

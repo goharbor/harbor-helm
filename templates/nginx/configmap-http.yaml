@@ -128,11 +128,15 @@ data:
           proxy_buffering off;
           proxy_request_buffering off;
         }
-      
-      location /service/notifications {
-          return 404;
+
+        location /basic_status {
+              stub_status;
         }
-      }
+      
+        location /service/notifications {
+            return 404;
+          }
+        }
     }
 {{- end }}
     

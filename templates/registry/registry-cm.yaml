@@ -139,6 +139,18 @@ data:
         enabled: true
       redirect:
         disable: {{ $storage.disableredirect }}
+    debug:
+      prometheus: enabled
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+      tcp:
+        - addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
+          timeout: 3s
+          interval: 10s
+          threshold: 3
     redis:
       addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
       db: {{ template "harbor.redis.registryDatabaseIndex" . }}
