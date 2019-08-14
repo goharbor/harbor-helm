@@ -279,3 +279,7 @@ host:port,pool_size,password
 {{- define "harbor.ingress" -}}
   {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
+
+{{- define "harbor.jobConfig" -}}
+  {{- printf "%s-config" (include "harbor.fullname" .) -}}
+{{- end -}}

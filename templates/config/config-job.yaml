@@ -1,0 +1,52 @@
+{{ if .Values.jobConfig.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "harbor.jobConfig" . }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: config
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+{{ include "harbor.matchLabels" . | indent 8 }}
+        component: config
+      name: {{ template "harbor.jobConfig" . }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: config
+        image: {{ .Values.jobConfig.image.repository }}:{{ .Values.jobConfig.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: API_URL
+          value: http://{{ template "harbor.core" . }}/api/configurations
+        - name: HARBOR_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "harbor.core" . }}
+              key: HARBOR_ADMIN_PASSWORD
+        command: ['/bin/sh', '-c']
+        args:
+        - >-
+          curl --fail -X PUT $(API_URL)
+          -u 'admin:$(HARBOR_ADMIN_PASSWORD)'
+          -H 'accept: application/json'
+          -H 'Content-Type: application/json'
+          -d '@/config/config.json'
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        secret:
+          secretName: "{{ template "harbor.jobConfig" . }}"
+          items:
+          - key: config.json
+            path: config.json
+{{ end }}
