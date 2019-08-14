@@ -358,6 +358,17 @@ registry:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  middleware:
+    enabled: false
+    type: cloudFront
+    cloudFront:
+      baseurl: example.cloudfront.net
+      keypairid: KEYPAIRID
+      duration: 3000s
+      ipfilteredby: none
+      # The secret key that should be present is CLOUDFRONT_KEY_DATA, which should be the encoded private key
+      # that allows access to CloudFront
+      privateKeySecret: "my-secret"
 
 chartmuseum:
   enabled: true
