@@ -49,8 +49,7 @@ spec:
           subPath: tls.crt
         {{- if .Values.notary.secretName }}
         - name: notary-ca
-          mountPath: /etc/ssl/notary/cert/notary-signer-ca.crt
-          subPath: ca
+          mountPath: /etc/ssl/notary/cert/
         {{- end }}
       volumes:
       - name: notary-config
@@ -67,6 +66,10 @@ spec:
       - name: notary-ca
         secret:
           secretName: {{ .Values.notary.secretName }}
+          defaultMode: 0444
+          items:
+          - key: ca.crt
+            path: notary-signer-ca.crt
       {{- end }}
     {{- with .Values.notary.nodeSelector }}
       nodeSelector:
