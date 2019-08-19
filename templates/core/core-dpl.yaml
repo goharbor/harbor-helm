@@ -28,6 +28,34 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: "change-permission-of-directory"
+        image: {{ template "harbor.changePermissionImage" . }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", "chown -R 10000:10000 /etc/core || true"]
+        volumeMounts:
+        - name: config
+          mountPath: /etc/core/app.conf
+          subPath: app.conf
+        - name: secret-key
+          mountPath: /etc/core/key
+          subPath: key
+        - name: token-service-private-key
+          mountPath: /etc/core/private_key.pem
+          subPath: tls.key
+        {{- if .Values.expose.tls.enabled }}
+        - name: ca-download
+          mountPath: /etc/core/ca/ca.crt
+          subPath: ca.crt
+        {{- end }}
+        {{- if .Values.uaaSecretName }}
+        - name: auth-ca-cert
+          mountPath: /etc/core/ca/auth-ca.crt
+          subPath: auth-ca.crt
+        {{- end }}
+        - name: psc
+          mountPath: /etc/core/token
       containers:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}

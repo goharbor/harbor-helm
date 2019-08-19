@@ -28,6 +28,16 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: "change-permission-of-directory"
+        image: {{ template "harbor.changePermissionImage" . }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", "chown -R 999:999 /var/lib/redis || true"]
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/redis
+          subPath: {{ $redis.subPath }}
       containers:
       - name: redis
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
@@ -50,13 +60,11 @@ spec:
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
-      {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data
+      {{- if not .Values.persistence.enabled }}
         emptyDir: {}
       {{- else if $redis.existingClaim }}
-      volumes:
-      - name: data
         persistentVolumeClaim:
           claimName: {{ $redis.existingClaim }}
       {{- end -}}

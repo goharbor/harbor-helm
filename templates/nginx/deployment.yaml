@@ -34,6 +34,20 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: "change-permission-of-directory"
+        image: {{ template "harbor.changePermissionImage" . }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", "chown -R 10000:10000 /etc/nginx || true"]
+        volumeMounts:
+        - name: config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        {{- if .Values.expose.tls.enabled }}
+        - name: certificate
+          mountPath: /etc/nginx/cert
+        {{- end }}
       containers:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"

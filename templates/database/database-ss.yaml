@@ -30,6 +30,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
+      - name: "change-permission-of-directory"
+        image: {{ template "harbor.changePermissionImage" . }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", "chown -R 999:999 /var/lib/postgresql/data || true"]
+        volumeMounts:
+        - name: database-data
+          mountPath: /var/lib/postgresql/data
       - name: "remove-lost-found"
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}

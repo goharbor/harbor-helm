@@ -28,6 +28,23 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: "change-permission-of-directory"
+        image: {{ template "harbor.changePermissionImage" . }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", "chown -R 10000:10000 /etc/notary /root.crt /etc/ssl/notary/cert/notary-signer-ca.crt || true"]
+        volumeMounts:
+        - name: notary-config
+          mountPath: /etc/notary
+        - name: root-certificate
+          mountPath: /root.crt
+          subPath: tls.crt
+        {{- if .Values.notary.secretName }}
+        - name: notary-ca
+          mountPath: /etc/ssl/notary/cert/notary-signer-ca.crt
+          subPath: ca
+        {{- end }}
       containers:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
