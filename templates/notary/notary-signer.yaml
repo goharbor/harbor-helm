@@ -18,7 +18,7 @@ spec:
 {{ include "harbor.labels" . | indent 8 }}
         component: notary-signer
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/notary/notary-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
     spec:
       securityContext:
         fsGroup: 10000
@@ -42,15 +42,20 @@ spec:
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
-        - name: notary-config
-          mountPath: /etc/notary
-        - name: notary-cert
-          mountPath: /etc/ssl/notary
+        - name: config
+          mountPath: /etc/notary/signer-config.postgres.json
+          subPath: signer.json
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/tls.crt
+          subPath: tls.crt
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/tls.key
+          subPath: tls.key
       volumes:
-      - name: notary-config
-        configMap:
-          name: "{{ template "harbor.notary-server" . }}"
-      - name: notary-cert
+      - name: config
+        secret:
+          secretName: "{{ template "harbor.notary-server" . }}"
+      - name: signer-certificate
         secret:
           {{- if .Values.notary.secretName }}
           secretName: {{ .Values.notary.secretName }}

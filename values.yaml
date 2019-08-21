@@ -438,7 +438,7 @@ notary:
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.
-  # The secret must contain keys named tls.ca, tls.crt and tls.key that
+  # The secret must contain keys named ca.crt, tls.crt and tls.key that
   # contain the CA, certificate and private key.
   # They will be generated if not set.
   secretName: ""
