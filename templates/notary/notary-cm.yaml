@@ -7,16 +7,6 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: notary
 data:
-  {{ $ca := genCA "harbor-notary-ca" 365 }}
-  {{ $cert := genSignedCert (include "harbor.notary-signer" .) nil nil 365 $ca }}
-  {{- if not .Values.notary.secretName }}
-  notary-signer-ca.crt: |
-{{ $ca.Cert | indent 4 }}
-  notary-signer.crt: |
-{{ $cert.Cert | indent 4 }}
-  notary-signer.key: |
-{{ $cert.Key | indent 4 }}
-  {{- end }}
   server-config.postgres.json: |
     {
       "server": {
@@ -26,11 +16,7 @@ data:
         "type": "remote",
         "hostname": "{{ template "harbor.notary-signer" . }}",
         "port": "7899",
-{{- if not .Values.notary.secretName }}
-        "tls_ca_file": "./notary-signer-ca.crt",
-{{- else }}
-        "tls_ca_file": "/etc/ssl/notary/cert/notary-signer-ca.crt",
-{{- end }}
+        "tls_ca_file": "/etc/ssl/notary/tls.ca",
         "key_algorithm": "ecdsa"
       },
       "logging": {
@@ -54,13 +40,8 @@ data:
     {
       "server": {
         "grpc_addr": ":7899",
-{{- if not .Values.notary.secretName }}
-        "tls_cert_file": "./notary-signer.crt",
-        "tls_key_file": "./notary-signer.key"
-{{- else }}
-        "tls_cert_file": "/etc/ssl/notary/cert/notary-signer.crt",
-        "tls_key_file": "/etc/ssl/notary/cert/notary-signer.key"
-{{- end }}
+        "tls_cert_file": "/etc/ssl/notary/tls.crt",
+        "tls_key_file": "/etc/ssl/notary/tls.key"
       },
       "logging": {
         "level": "{{ .Values.logLevel }}"
