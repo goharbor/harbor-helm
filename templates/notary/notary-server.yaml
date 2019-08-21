@@ -18,7 +18,7 @@ spec:
 {{ include "harbor.labels" . | indent 8 }}
         component: notary-server
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/notary/notary-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
         checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
 {{- if .Values.notary.podAnnotations }}
 {{ toYaml .Values.notary.podAnnotations | indent 8 }}
@@ -44,26 +44,27 @@ spec:
         - name: DB_URL
           value: {{ template "harbor.database.notaryServer" . }}
         volumeMounts:
-        - name: notary-config
-          mountPath: /etc/notary
-        - name: root-certificate
+        - name: config
+          mountPath: /etc/notary/server-config.postgres.json
+          subPath: server.json
+        - name: token-service-certificate
           mountPath: /root.crt
           subPath: tls.crt
-        - name: notary-ca
-          mountPath: /etc/ssl/notary/tls.ca
-          subPath: tls.ca
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/ca.crt
+          subPath: ca.crt
       volumes:
-      - name: notary-config
-        configMap:
-          name: "{{ template "harbor.notary-server" . }}"
-      - name: root-certificate
+      - name: config
+        secret:
+          secretName: "{{ template "harbor.notary-server" . }}"
+      - name: token-service-certificate
         secret:
           {{- if .Values.core.secretName }}
           secretName: {{ .Values.core.secretName }}
           {{- else }}
           secretName: {{ template "harbor.core" . }}
           {{- end }}
-      - name: notary-ca
+      - name: signer-certificate
         secret:
           {{- if .Values.notary.secretName }}
           secretName: {{ .Values.notary.secretName }}
