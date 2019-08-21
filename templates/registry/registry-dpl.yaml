@@ -71,6 +71,11 @@ spec:
           mountPath: /etc/registry/gcs-key.json
           subPath: gcs-key.json
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
+        - name: storage-service-ca
+          mountPath: /harbor_cust_cert/custom-ca-bundle.crt
+          subPath: ca.crt
+        {{- end }}
         {{- if .Values.registry.middleware.enabled }}
         {{- if eq .Values.registry.middleware.type "cloudFront" }}
         - name: cloudfront-key
@@ -124,6 +129,11 @@ spec:
         - name: registry-config
           mountPath: /etc/registryctl/config.yml
           subPath: ctl-config.yml
+        {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
+        - name: storage-service-ca
+          mountPath: /harbor_cust_cert/custom-ca-bundle.crt
+          subPath: ca.crt
+        {{- end }}
       volumes:
       - name: registry-root-certificate
         secret:
@@ -149,6 +159,11 @@ spec:
           items:
             - key: GCS_KEY_DATA
               path: gcs-key.json
+      {{- end }}
+      {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
+      - name: storage-service-ca
+        secret:
+          secretName: {{ .Values.persistence.imageChartStorage.caBundleSecretName }}
       {{- end }}
       {{- if .Values.registry.middleware.enabled }}
       {{- if eq .Values.registry.middleware.type "cloudFront" }}

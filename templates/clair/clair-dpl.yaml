@@ -45,16 +45,14 @@ spec:
           periodSeconds: 10
         args: ["-log-level", "{{ .Values.logLevel }}"]
         env:
-        {{- if .Values.clair.httpProxy }}
+        {{- if has "clair" .Values.proxy.components }}
         - name: HTTP_PROXY
-          value: {{ .Values.clair.httpProxy }}
-        {{- end }}
-        {{- if .Values.clair.httpsProxy }}
+          value: "{{ .Values.proxy.httpProxy }}"
         - name: HTTPS_PROXY
-          value: {{ .Values.clair.httpsProxy }}
-        {{- end }}
+          value: "{{ .Values.proxy.httpsProxy }}"
         - name: NO_PROXY
-          value: "{{ template "harbor.registry" . }},{{ template "harbor.core" . }}"
+          value: "{{ template "harbor.noProxy" . }}"
+        {{- end }}
 {{- if .Values.clair.resources }}
         resources:
 {{ toYaml .Values.clair.resources | indent 10 }}

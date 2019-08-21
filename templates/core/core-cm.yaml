@@ -18,6 +18,8 @@ data:
   POSTGRESQL_USERNAME: "{{ template "harbor.database.username" . }}"
   POSTGRESQL_DATABASE: "{{ template "harbor.database.coreDatabase" . }}"
   POSTGRESQL_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
+  POSTGRESQL_MAX_IDLE_CONNS: "{{ .Values.database.maxIdleConns }}"
+  POSTGRESQL_MAX_OPEN_CONNS: "{{ .Values.database.maxOpenConns }}"
   EXT_ENDPOINT: "{{ .Values.externalURL }}"
   CORE_URL: "http://{{ template "harbor.core" . }}"
   JOBSERVICE_URL: "http://{{ template "harbor.fullname" . }}-jobservice"
@@ -48,4 +50,9 @@ data:
   CLAIR_HEALTH_CHECK_SERVER_URL: "http://{{ template "harbor.clair" . }}:6061"
   {{- if .Values.uaaSecretName }}
   UAA_CA_ROOT: "/etc/core/ca/auth-ca.crt"
+  {{- end }}
+  {{- if has "core" .Values.proxy.components }}
+  HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
+  HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
+  NO_PROXY: "{{ template "harbor.noProxy" . }}"
   {{- end }}

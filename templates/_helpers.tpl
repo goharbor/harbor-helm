@@ -279,3 +279,7 @@ host:port,pool_size,password
 {{- define "harbor.ingress" -}}
   {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
+
+{{- define "harbor.noProxy" -}}
+  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.clair" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) .Values.proxy.noProxy -}}
+{{- end -}}
