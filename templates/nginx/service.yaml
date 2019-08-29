@@ -12,11 +12,11 @@ spec:
   ports:
     - name: http
       port: {{ $clusterIP.ports.httpPort }}
-      targetPort: 80
+      targetPort: 8080
     {{- if .Values.expose.tls.enabled }}
     - name: https
       port: {{ $clusterIP.ports.httpsPort }}
-      targetPort: 443
+      targetPort: 8443
     {{- end }}
     {{- if .Values.notary.enabled }}
     - name: notary
@@ -33,14 +33,14 @@ spec:
   ports:
     - name: http
       port: {{ $nodePort.ports.http.port }}
-      targetPort: 80
+      targetPort: 8080
       {{- if $nodePort.ports.http.nodePort }}
       nodePort: {{ $nodePort.ports.http.nodePort }}
       {{- end }}
     {{- if .Values.expose.tls.enabled }}
     - name: https
       port: {{ $nodePort.ports.https.port }}
-      targetPort: 443
+      targetPort: 8443
       {{- if $nodePort.ports.https.nodePort }}
       nodePort: {{ $nodePort.ports.https.nodePort }}
       {{- end }}
@@ -74,11 +74,11 @@ spec:
   ports:
     - name: http
       port: {{ $loadBalancer.ports.httpPort }}
-      targetPort: 80
+      targetPort: 8080
     {{- if .Values.expose.tls.enabled }}
     - name: https
       port: {{ $loadBalancer.ports.httpsPort }}
-      targetPort: 443
+      targetPort: 8443
     {{- end }}
     {{- if .Values.notary.enabled }}
     - name: notary

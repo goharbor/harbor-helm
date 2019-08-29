@@ -40,16 +40,24 @@ spec:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        {{- $scheme := "HTTP" }}
+        {{- $port := 8080 }}
+        {{- if .Values.expose.tls.enabled }}
+          {{- $scheme = "HTTPS" }}
+          {{- $port = 8443 }}
+        {{- end }}
         livenessProbe:
           httpGet:
+            scheme: {{ $scheme }}
             path: /
-            port: 80
+            port: {{ $port }}
           initialDelaySeconds: 1
           periodSeconds: 10
         readinessProbe:
           httpGet:
+            scheme: {{ $scheme }}
             path: /
-            port: 80
+            port: {{ $port }}
           initialDelaySeconds: 1
           periodSeconds: 10
 {{- if .Values.nginx.resources }}
@@ -57,8 +65,8 @@ spec:
 {{ toYaml .Values.nginx.resources | indent 10 }}
 {{- end }}
         ports:
-        - containerPort: 80
-        - containerPort: 443
+        - containerPort: 8080
+        - containerPort: 8443
         - containerPort: 4443
         volumeMounts:
         - name: config
