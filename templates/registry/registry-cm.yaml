@@ -47,6 +47,9 @@ data:
         {{- if $storage.s3.encrypt }}
         encrypt: {{ $storage.s3.encrypt }}
         {{- end }}
+        {{- if $storage.s3.keyid }}
+        keyid: {{ $storage.s3.keyid }}
+        {{- end }}
         {{- if $storage.s3.secure }}
         secure: {{ $storage.s3.secure }}
         {{- end }}
