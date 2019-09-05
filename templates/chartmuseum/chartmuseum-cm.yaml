@@ -65,6 +65,9 @@ data:
   {{- if $storage.s3.accesskey }}
   AWS_ACCESS_KEY_ID: {{ $storage.s3.accesskey }}
   {{- end }}
+  {{- if $storage.s3.keyid }}
+  STORAGE_AMAZON_SSE: aws:kms
+  {{- end }}
 {{- else if eq $storageType "swift" }}
   STORAGE: "openstack"
   STORAGE_OPENSTACK_CONTAINER: {{ $storage.swift.container }}
