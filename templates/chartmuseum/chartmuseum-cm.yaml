@@ -68,33 +68,33 @@ data:
 {{- else if eq $storageType "swift" }}
   STORAGE: "openstack"
   STORAGE_OPENSTACK_CONTAINER: {{ $storage.swift.container }}
-  {{- if $storage.swift.secretkey }}
+  {{- if $storage.swift.prefix }}
   STORAGE_OPENSTACK_PREFIX: {{ $storage.swift.prefix }}
   {{- end }}
-  {{- if $storage.swift.secretkey }}
+  {{- if $storage.swift.region }}
   STORAGE_OPENSTACK_REGION: {{ $storage.swift.region }}
   {{- end }}
   OS_AUTH_URL: {{ $storage.swift.authurl }}
   OS_USERNAME: {{ $storage.swift.username }}
-  {{- if $storage.swift.secretkey }}
+  {{- if $storage.swift.tenantid }}
   OS_PROJECT_ID: {{ $storage.swift.tenantid }}
   {{- end }}
-  {{- if $storage.swift.secretkey }}
+  {{- if $storage.swift.tenant }}
   OS_PROJECT_NAME: {{ $storage.swift.tenant }}
   {{- end }}
-  {{- if $storage.swift.secretkey }}
+  {{- if $storage.swift.domainid }}
   OS_DOMAIN_ID: {{ $storage.swift.domainid }}
   {{- end }}
-  {{- if $storage.swift.secretkey }}
+  {{- if $storage.swift.domain }}
   OS_DOMAIN_NAME: {{ $storage.swift.domain }}
   {{- end }}
 {{- else if eq $storageType "oss" }}
   STORAGE: "alibaba"
   STORAGE_ALIBABA_BUCKET: {{ $storage.oss.bucket }}
-  {{- if $storage.oss.secretkey }}
+  {{- if $storage.oss.rootdirectory }}
   STORAGE_ALIBABA_PREFIX: {{ $storage.oss.rootdirectory }}
   {{- end }}
-  {{- if $storage.oss.secretkey }}
+  {{- if $storage.oss.endpoint }}
   STORAGE_ALIBABA_ENDPOINT: {{ $storage.oss.endpoint }}
   {{- end }}
   ALIBABA_CLOUD_ACCESS_KEY_ID: {{ $storage.oss.accesskeyid }}
