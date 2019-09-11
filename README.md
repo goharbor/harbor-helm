@@ -2,6 +2,8 @@
 
 **Notes:** The master branch is in heavy development, please use the other stable versions instead. A high available solution for Harbor based on chart can be find [here](docs/High%20Availability.md). And refer to the [guide](docs/Upgrade.md) to upgrade the existing deployment.
 
+This repository, including the issues, focus on deploying Harbor chart via helm.  So for the functionality issues or questions of Harbor, please open issues on [goharbor/harbor](https://github.com/goharbor/harbor)
+
 ## Introduction
 
 This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://github.com/goharbor/harbor) in a Kubernetes cluster. Welcome to [contribute](CONTRIBUTING.md) to Helm Chart for Harbor.
