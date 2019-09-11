@@ -74,7 +74,7 @@ spec:
         - name: token-service-private-key
           mountPath: /etc/core/private_key.pem
           subPath: tls.key
-        {{- if .Values.expose.tls.enabled }}
+        {{- if and .Values.expose.tls.enabled .Values.expose.tls.downloadCACertFromPortal }}
         - name: ca-download
           mountPath: /etc/core/ca/ca.crt
           subPath: ca.crt
@@ -110,7 +110,7 @@ spec:
           {{- else }}
           secretName: {{ template "harbor.core" . }}
           {{- end }}
-      {{- if .Values.expose.tls.enabled }}
+      {{- if and .Values.expose.tls.enabled .Values.expose.tls.downloadCACertFromPortal }}
       - name: ca-download
         secret:
         {{- if eq (include "harbor.autoGenCertForIngress" .) "true" }}

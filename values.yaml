@@ -13,6 +13,8 @@ expose:
     # The secret must contain keys named:
     # "tls.crt" - the certificate
     # "tls.key" - the private key
+    # If "downloadCACertFromPortal" is set to "true", the secret should also
+    # contain the key named:
     # "ca.crt" - the certificate of CA
     # These files will be generated automatically if the "secretName" is not set
     secretName: ""
@@ -23,6 +25,10 @@ expose:
     # The common name used to generate the certificate, it's necessary
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
+    # Setting it to "true" enables the download link for certificate of
+    # CA on portal. If the secret generated contains no certificate for
+    # CA, set it to "false"
+    downloadCACertFromPortal: true
   ingress:
     hosts:
       core: core.harbor.domain
