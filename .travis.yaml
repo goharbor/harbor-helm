@@ -1,0 +1,8 @@
+dist: xenial
+language: minimal
+matrix:
+  include:
+  - name: ""
+  - name: ""
+before_install:
+  - test/install_helm.sh
