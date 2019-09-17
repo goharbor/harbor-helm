@@ -39,7 +39,7 @@ app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{- define "harbor.autoGenCertForIngress" -}}
-  {{- if and (eq (include "harbor.autoGenCert" .) "true") (eq .Values.expose.type "ingress") -}}
+  {{- if and (eq (include "harbor.autoGenCert" .) "true") (eq .Values.expose.type "ingress") (not .Values.expose.ingress.nosecret) (not .Values.expose.ingress.notaryNoSecret) -}}
     {{- printf "true" -}}
   {{- else -}}
     {{- printf "false" -}}
