@@ -268,7 +268,7 @@ proxy:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: dev
+    tag: v1.9.0
   replicas: 1
   # resources:
   #  requests:
@@ -283,7 +283,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: dev
+    tag: v1.9.0
   replicas: 1
 # resources:
 #  requests:
@@ -298,7 +298,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: dev
+    tag: v1.9.0
   replicas: 1
 # resources:
 #  requests:
@@ -324,7 +324,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: dev
+    tag: v1.9.0
   replicas: 1
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
@@ -347,7 +347,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: dev
+      tag: v2.7.1-patch-2819-v1.9.0
 
     # resources:
     #  requests:
@@ -356,7 +356,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: dev
+      tag: v1.9.0
 
     # resources:
     #  requests:
@@ -394,7 +394,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: dev
+    tag: v0.9.0-v1.9.0
   replicas: 1
   # resources:
   #  requests:
@@ -410,7 +410,7 @@ clair:
   enabled: true
   image:
     repository: goharbor/clair-photon
-    tag: dev
+    tag: v2.0.9-v1.9.0
   replicas: 1
   # The interval of clair updaters, the unit is hour, set to 0 to
   # disable the updaters
@@ -430,7 +430,7 @@ notary:
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: dev
+      tag: v0.6.1-v1.9.0
     replicas: 1
     # resources:
     #  requests:
@@ -439,7 +439,7 @@ notary:
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: dev
+      tag: v0.6.1-v1.9.0
     replicas: 1
     # resources:
     #  requests:
@@ -465,7 +465,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: dev
+      tag: v1.9.0
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -509,7 +509,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: dev
+      tag: v1.9.0
     # resources:
     #  requests:
     #    memory: 256Mi
