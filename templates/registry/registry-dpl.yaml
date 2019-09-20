@@ -6,7 +6,13 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
 spec:
+  {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
+  replicas: 1
+  strategy:
+    type: Recreate
+  {{- else }}
   replicas: {{ .Values.registry.replicas }}
+  {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

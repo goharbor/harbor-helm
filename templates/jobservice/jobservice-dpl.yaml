@@ -6,7 +6,13 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
 spec:
+  {{- if and .Values.persistence.enabled (eq .Values.jobservice.jobLogger "file") }}
+  replicas: 1
+  strategy:
+    type: Recreate
+  {{- else }}
   replicas: {{ .Values.jobservice.replicas }}
+  {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
