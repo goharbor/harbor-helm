@@ -4,6 +4,7 @@ metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+    component: registry
 spec:
   ports:
     - name: registry
