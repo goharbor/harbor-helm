@@ -61,6 +61,16 @@ spec:
             value: "http://{{ template "harbor.registry" . }}:8080"
           - name: LOG_LEVEL
             value: debug
+          {{- if .Values.httpProxy }}
+          - name: HTTP_PROXY
+            value: {{ .Values.httpProxy }}
+          {{- end }}
+          {{- if .Values.httpsProxy }}
+          - name: HTTPS_PROXY
+            value: {{ .Values.httpsProxy }}
+          {{- end }}
+          - name: NO_PROXY
+            value: "{{ template "harbor.registry" . }},{{ template "harbor.core" . }}"
         ports:
         - containerPort: 8080
         volumeMounts:

@@ -233,6 +233,10 @@ harborAdminPassword: "Harbor12345"
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
 
+#proxy if needed for registry sync. Sets proxy on jobservice and core
+#httpProxy:
+#httpsProxy:
+
 # If expose the service via "ingress", the Nginx will not be used
 nginx:
   image:
@@ -312,6 +316,7 @@ jobservice:
   # Must be a string of 16 chars.
   secret: ""
 
+  
 registry:
   registry:
     image:

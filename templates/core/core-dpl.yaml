@@ -46,6 +46,16 @@ spec:
         - secretRef:
             name: "{{ template "harbor.core" . }}"
         env:
+          {{- if .Values.httpProxy }}
+          - name: HTTP_PROXY
+            value: {{ .Values.httpProxy }}
+          {{- end }}
+          {{- if .Values.httpsProxy }}
+          - name: HTTPS_PROXY
+            value: {{ .Values.httpsProxy }}
+          {{- end }}
+          - name: NO_PROXY
+            value: "{{ template "harbor.registry" . }},{{ template "harbor.core" . }},{{ template "harbor.portal" . }},{{ template "harbor.database" . }},{{ template "harbor.redis" . }},{{ template "harbor.jobservice" . }}"
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
