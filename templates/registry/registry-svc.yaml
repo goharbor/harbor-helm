@@ -10,6 +10,10 @@ spec:
       port: 5000
     - name: controller
       port: 8080
+  {{- if .Values.registry.exposeDebug }}
+    - name: debug
+      port: 5001
+  {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: registry

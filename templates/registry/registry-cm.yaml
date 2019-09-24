@@ -148,7 +148,16 @@ data:
       # set via environment variable
       # secret: placeholder
       debug:
+        {{- if .Values.registry.exposeDebug }}
+        addr: :5001
+        {{- else }}
         addr: localhost:5001
+        {{- end }}
+        {{- if .Values.registry.metrics }}
+        prometheus:
+          enabled: true
+          path: "/metrics"
+        {{- end }}
     auth:
       token:
         issuer: harbor-token-issuer
