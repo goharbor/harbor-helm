@@ -38,6 +38,7 @@ spec:
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
+          subPath: {{ $database.subPath }}
       - name: "remove-lost-found"
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -45,6 +46,7 @@ spec:
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
+          subPath: {{ $database.subPath }}
       containers:
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
