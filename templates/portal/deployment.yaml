@@ -47,6 +47,14 @@ spec:
           periodSeconds: 10
         ports:
         - containerPort: 8080
+{{- if .Values.portal.customize.extraVolumeMounts }}
+        volumeMounts:
+{{ toYaml .Values.portal.customize.extraVolumeMounts | indent 10 }}
+{{- end }}
+{{- if .Values.portal.customize.extraVolumes }}
+      volumes:
+{{ toYaml .Values.portal.customize.extraVolumes | indent 8 }}
+{{- end }}
     {{- with .Values.portal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

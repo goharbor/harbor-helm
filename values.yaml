@@ -295,6 +295,10 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  customize:
+    ## Add files for customize_look&feel see "harbor/docs/customize_look&feel_guide.md" 
+    extraVolumeMounts: []
+    extraVolumes: []
 
 core:
   image:
