@@ -31,7 +31,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 6379
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           tcpSocket:
