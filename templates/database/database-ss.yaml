@@ -55,7 +55,7 @@ spec:
           exec:
             command:
             - /docker-healthcheck.sh
-          initialDelaySeconds: 60
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           exec:
