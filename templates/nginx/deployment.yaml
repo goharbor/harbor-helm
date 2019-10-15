@@ -51,7 +51,7 @@ spec:
             scheme: {{ .scheme }}
             path: /
             port: {{ .port }}
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
