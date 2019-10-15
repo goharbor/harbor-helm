@@ -300,6 +300,9 @@ core:
     repository: goharbor/harbor-core
     tag: v1.9.1
   replicas: 1
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 300
 # resources:
 #  requests:
 #    memory: 256Mi
