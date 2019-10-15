@@ -162,9 +162,9 @@ data:
         - name: harbor
           disabled: false
           url: http://{{ template "harbor.core" . }}/service/notifications
-          timeout: 3000ms
-          threshold: 5
-          backoff: 1s
+          timeout: {{ default "3000ms" .Values.registry.notifications.timeout }}
+          threshold: {{ default "5" .Values.registry.notifications.threshold }}
+          backoff: {{ default "1s" .Values.registry.notifications.backoff }}
     {{- if .Values.registry.middleware.enabled }}
     {{- $middleware := .Values.registry.middleware }}
     {{- $middlewareType := $middleware.type }}
