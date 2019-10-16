@@ -1,6 +1,30 @@
 apiVersion: v1
 entries:
   harbor:
+  - appVersion: 1.9.1
+    created: "2019-10-16T16:37:46.050328+08:00"
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
+    digest: 2f2fad0ffc59fb22ee6caca8315352a74a94fa13d895f0caab236a953b51fb54
+    engine: gotpl
+    home: https://goharbor.io
+    icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
+    keywords:
+    - docker
+    - registry
+    - harbor
+    maintainers:
+    - email: huh@vmware.com
+      name: Jesse Hu
+    - email: username.taken@gmail.com
+      name: paulczar
+    name: harbor
+    sources:
+    - https://github.com/goharbor/harbor
+    - https://github.com/goharbor/harbor-helm
+    urls:
+    - harbor-1.2.1.tgz
+    version: 1.2.1
   - appVersion: 1.9.0
     created: "2019-09-19T17:36:44.565131+08:00"
     description: An open source trusted cloud native registry that stores, signs,
@@ -25,6 +49,30 @@ entries:
     urls:
     - harbor-1.2.0.tgz
     version: 1.2.0
+  - appVersion: 1.8.4
+    created: "2019-10-16T16:37:46.047577+08:00"
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
+    digest: 5e7bc48750b80397bb055663883c9cdc8f4b3de48cbd7bb91958f09146fa1fed
+    engine: gotpl
+    home: https://goharbor.io
+    icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
+    keywords:
+    - docker
+    - registry
+    - harbor
+    maintainers:
+    - email: huh@vmware.com
+      name: Jesse Hu
+    - email: username.taken@gmail.com
+      name: paulczar
+    name: harbor
+    sources:
+    - https://github.com/goharbor/harbor
+    - https://github.com/goharbor/harbor-helm
+    urls:
+    - harbor-1.1.4.tgz
+    version: 1.1.4
   - appVersion: 1.8.3
     created: "2019-09-19T14:40:21.693628+08:00"
     description: An open source trusted cloud native registry that stores, signs,
@@ -169,4 +217,4 @@ entries:
     urls:
     - harbor-1.0.0.tgz
     version: 1.0.0
-generated: "2019-09-19T17:36:44.559828+08:00"
+generated: "2019-10-16T16:37:46.044174+08:00"
