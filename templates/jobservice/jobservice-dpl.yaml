@@ -1,5 +1,9 @@
 apiVersion: apps/v1
+{{- if .Values.jobservice.statefulSet }}
+kind: StatefulSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: "{{ template "harbor.jobservice" . }}"
   labels:

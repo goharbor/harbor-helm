@@ -1,6 +1,10 @@
 {{- if .Values.chartmuseum.enabled }}
 apiVersion: apps/v1
+{{- if .Values.chartmuseum.statefulSet }}
+kind: StatefulSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: "{{ template "harbor.chartmuseum" . }}"
   labels:

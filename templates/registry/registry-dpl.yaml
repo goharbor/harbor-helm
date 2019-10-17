@@ -1,5 +1,9 @@
 apiVersion: apps/v1
+{{- if .Values.registry.statefulSet }}
+kind: StatefulSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
