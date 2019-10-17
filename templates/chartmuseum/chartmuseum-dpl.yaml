@@ -76,6 +76,12 @@ spec:
           mountPath: /harbor_cust_cert/custom-ca-bundle.crt
           subPath: ca.crt
         {{- end }}
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.chartmuseum.extraContainers }}
+{{ toYaml .Values.chartmuseum.extraContainers | indent 6 }}
+      {{- end }}
       volumes:
       - name: chartmuseum-data
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
@@ -96,6 +102,12 @@ spec:
       - name: storage-service-ca
         secret:
           secretName: {{ .Values.persistence.imageChartStorage.caBundleSecretName }}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.chartmuseum.extraVolumes }}
+{{ toYaml .Values.chartmuseum.extraVolumes | indent 6 }}
       {{- end }}
       {{- with .Values.chartmuseum.nodeSelector }}
       nodeSelector:

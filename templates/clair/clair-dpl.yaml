@@ -63,10 +63,22 @@ spec:
         - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.clair.extraContainers }}
+{{ toYaml .Values.clair.extraContainers | indent 6 }}
+      {{- end }}
       volumes:
       - name: config
         secret:
           secretName: "{{ template "harbor.clair" . }}"
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.clair.extraVolumes }}
+{{ toYaml .Values.clair.extraVolumes | indent 6 }}
+      {{- end }}
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

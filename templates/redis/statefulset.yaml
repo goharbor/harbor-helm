@@ -52,16 +52,29 @@ spec:
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
-      {{- if not .Values.persistence.enabled }}
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.redis.internal.extraContainers }}
+{{ toYaml .Values.redis.internal.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if or (or (not .Values.persistence.enabled) $redis.existingClaim) (or .Values.extraVolumes .Values.redis.internal.extraVolumes) }}
       volumes:
+      {{- end }}
+      {{- if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
       {{- else if $redis.existingClaim }}
-      volumes:
       - name: data
         persistentVolumeClaim:
           claimName: {{ $redis.existingClaim }}
       {{- end -}}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.redis.internal.extraVolumes }}
+{{ toYaml .Values.redis.internal.extraVolumes | indent 6 }}
+      {{- end }}
     {{- with .Values.redis.internal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

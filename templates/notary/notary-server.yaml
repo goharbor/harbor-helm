@@ -53,6 +53,12 @@ spec:
         - name: signer-certificate
           mountPath: /etc/ssl/notary/ca.crt
           subPath: ca.crt
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.notary.server.extraContainers }}
+{{ toYaml .Values.notary.server.extraContainers | indent 6 }}
+      {{- end }}
       volumes:
       - name: config
         secret:
@@ -71,6 +77,12 @@ spec:
           {{- else }}
           secretName: {{ template "harbor.notary-server" . }}
           {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.notary.server.extraVolumes }}
+{{ toYaml .Values.notary.server.extraVolumes | indent 6 }}
+      {{- end }}
     {{- with .Values.notary.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

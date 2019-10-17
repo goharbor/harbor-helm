@@ -47,6 +47,21 @@ spec:
           periodSeconds: 10
         ports:
         - containerPort: 8080
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.portal.extraContainers }}
+{{ toYaml .Values.portal.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if or .Values.extraVolumes .Values.portal.extraVolumes }}
+      volumes:
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.portal.extraVolumes }}
+{{ toYaml .Values.portal.extraVolumes | indent 6 }}
+      {{- end }}
     {{- with .Values.portal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

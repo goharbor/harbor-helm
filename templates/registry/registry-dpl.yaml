@@ -139,6 +139,12 @@ spec:
           mountPath: /etc/registry/gcs-key.json
           subPath: gcs-key.json
         {{- end }}
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.registry.extraContainers }}
+{{ toYaml .Values.registry.extraContainers | indent 6 }}
+      {{- end }}
       volumes:
       - name: registry-root-certificate
         secret:
@@ -179,6 +185,12 @@ spec:
             - key: CLOUDFRONT_KEY_DATA
               path: pk.pem
       {{- end }}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- end }}
+      {{- if .Values.registry.extraVolumes }}
+{{ toYaml .Values.registry.extraVolumes | indent 6 }}
       {{- end }}
     {{- with .Values.registry.nodeSelector }}
       nodeSelector:
