@@ -29,7 +29,7 @@ spec:
       {{- end }}
       containers:
       - name: clair
-        image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}
+        image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -53,9 +53,9 @@ spec:
         - name: NO_PROXY
           value: "{{ template "harbor.noProxy" . }}"
         {{- end }}
-{{- if .Values.clair.resources }}
+{{- if .Values.clair.clair.resources }}
         resources:
-{{ toYaml .Values.clair.resources | indent 10 }}
+{{ toYaml .Values.clair.clair.resources | indent 10 }}
 {{- end }}
         ports:
         - containerPort: 6060
@@ -63,6 +63,31 @@ spec:
         - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
+      - name: adapter
+        image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /probe/healthy
+            port: 8080
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /probe/ready
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        env:
+        - name: SCANNER_CLAIR_URL
+          # To avoid a pod cannot reach itself via service IP when the clusters disable hairpin
+          value: "http://127.0.0.1:6060"
+{{- if .Values.clair.adapter.resources }}
+        resources:
+{{ toYaml .Values.clair.adapter.resources | indent 10 }}
+{{- end }}
+        ports:
+        - containerPort: 8080
       volumes:
       - name: config
         secret:
