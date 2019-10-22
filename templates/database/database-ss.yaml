@@ -31,7 +31,7 @@ spec:
       {{- end }}
       initContainers:
       - name: "change-permission-of-directory"
-        image: "busybox:latest"
+        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
         args: ["-c", "chown -R 999:999 /var/lib/postgresql/data"]
