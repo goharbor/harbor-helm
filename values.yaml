@@ -411,17 +411,26 @@ chartmuseum:
 
 clair:
   enabled: true
-  image:
-    repository: goharbor/clair-photon
-    tag: dev
+  clair:
+    image:
+      repository: goharbor/clair-photon
+      tag: dev
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
+  adapter:
+    image:
+      repository: goharbor/clair-adapter-photon
+      tag: dev
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
   replicas: 1
   # The interval of clair updaters, the unit is hour, set to 0 to
   # disable the updaters
   updatersInterval: 12
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}
