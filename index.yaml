@@ -2,10 +2,10 @@ apiVersion: v1
 entries:
   harbor:
   - appVersion: 1.9.1
-    created: "2019-10-16T16:37:46.050328+08:00"
+    created: "2019-10-25T16:01:17.032138+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
-    digest: 2f2fad0ffc59fb22ee6caca8315352a74a94fa13d895f0caab236a953b51fb54
+    digest: 8293aa0c63b467b4566de2a8c5434bfc53878703d4c99ccf34dd9365e38b62c2
     engine: gotpl
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
@@ -26,10 +26,10 @@ entries:
     - harbor-1.2.1.tgz
     version: 1.2.1
   - appVersion: 1.9.0
-    created: "2019-09-19T17:36:44.565131+08:00"
+    created: "2019-10-25T16:01:17.030306+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
-    digest: 2901a91a04301de037381438cc1d25b8475d5ebf40a7a2238c78c23a71b36c7c
+    digest: 9a76025db44cc81ecbafe487437f50db69b29d79e48d048f97edcb2501792cd2
     engine: gotpl
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
@@ -50,10 +50,10 @@ entries:
     - harbor-1.2.0.tgz
     version: 1.2.0
   - appVersion: 1.8.4
-    created: "2019-10-16T16:37:46.047577+08:00"
+    created: "2019-10-25T16:01:17.027057+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
-    digest: 5e7bc48750b80397bb055663883c9cdc8f4b3de48cbd7bb91958f09146fa1fed
+    digest: 37dff7db277ab195bda0e1d03858ecbab4ce46c3cad6e00e7c00c77cb91b5811
     engine: gotpl
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
@@ -217,4 +217,4 @@ entries:
     urls:
     - harbor-1.0.0.tgz
     version: 1.0.0
-generated: "2019-10-16T16:37:46.044174+08:00"
+generated: "2019-10-25T16:01:17.023549+08:00"
