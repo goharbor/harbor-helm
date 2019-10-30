@@ -82,6 +82,8 @@ spec:
         - name: SCANNER_CLAIR_URL
           # To avoid a pod cannot reach itself via service IP when the clusters disable hairpin
           value: "http://127.0.0.1:6060"
+        - name: SCANNER_LOG_LEVEL
+          value: "{{ .Values.logLevel }}"
 {{- if .Values.clair.adapter.resources }}
         resources:
 {{ toYaml .Values.clair.adapter.resources | indent 10 }}
