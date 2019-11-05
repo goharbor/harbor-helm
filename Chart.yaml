@@ -1,6 +1,6 @@
 name: harbor
-version: 1.1.4
-appVersion: 1.8.4
+version: 1.1.5
+appVersion: 1.8.5
 description: An open source trusted cloud native registry that stores, signs, and scans content
 keywords:
 - docker
