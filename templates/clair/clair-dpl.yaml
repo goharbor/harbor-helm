@@ -82,6 +82,16 @@ spec:
         - name: SCANNER_CLAIR_URL
           # To avoid a pod cannot reach itself via service IP when the clusters disable hairpin
           value: "http://127.0.0.1:6060"
+        - name: SCANNER_STORE_REDIS_URL
+          valueFrom:
+              secretKeyRef:
+                name: {{ template "harbor.clair" . }}
+                key: redis
+        - name: SCANNER_CLAIR_DATABASE_URL
+          valueFrom:
+              secretKeyRef:
+                name: {{ template "harbor.clair" . }}
+                key: database
         - name: SCANNER_LOG_LEVEL
           value: "{{ .Values.logLevel }}"
 {{- if .Values.clair.adapter.resources }}

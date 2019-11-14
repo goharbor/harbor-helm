@@ -543,6 +543,7 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     chartmuseumDatabaseIndex: "3"
+    clairAdapterIndex: "4"
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
