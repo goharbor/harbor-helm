@@ -240,7 +240,8 @@ imagePullSecrets:
 #  - name: docker-registry-secret
 #  - name: internal-registry-secret
 
-logLevel: debug
+logLevel: info
+
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
 # The secret key used for encryption. Must be a string of 16 chars.
@@ -415,17 +416,26 @@ chartmuseum:
 
 clair:
   enabled: true
-  image:
-    repository: goharbor/clair-photon
-    tag: dev
+  clair:
+    image:
+      repository: goharbor/clair-photon
+      tag: dev
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
+  adapter:
+    image:
+      repository: goharbor/clair-adapter-photon
+      tag: dev
+    # resources:
+    #  requests:
+    #    memory: 256Mi
+    #    cpu: 100m
   replicas: 1
   # The interval of clair updaters, the unit is hour, set to 0 to
   # disable the updaters
   updatersInterval: 12
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -473,6 +483,10 @@ database:
     image:
       repository: goharbor/harbor-db
       tag: dev
+    # the image used by the init container
+    initContainerImage:
+      repository: busybox
+      tag: latest
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -533,6 +547,7 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     chartmuseumDatabaseIndex: "3"
+    clairAdapterIndex: "4"
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}

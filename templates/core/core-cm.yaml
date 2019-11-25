@@ -12,6 +12,9 @@ data:
 
     [dev]
     httpport = 8080
+    EnableXSRF = true
+    XSRFKey = {{ randAlphaNum 40 }}
+    XSRFExpire = 3600
   DATABASE_TYPE: "postgresql"
   POSTGRESQL_HOST: "{{ template "harbor.database.host" . }}"
   POSTGRESQL_PORT: "{{ template "harbor.database.port" . }}"
@@ -36,6 +39,7 @@ data:
   CLAIR_DB: "{{ template "harbor.database.clairDatabase" . }}"
   CLAIR_DB_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   CLAIR_URL: "http://{{ template "harbor.fullname" . }}-clair:6060"
+  CLAIR_ADAPTER_URL: "http://{{ template "harbor.clair" . }}:8080"
   REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.persistence.imageChartStorage.type }}"
   WITH_CHARTMUSEUM: "{{ .Values.chartmuseum.enabled }}"
   CHART_REPOSITORY_URL: "http://{{ template "harbor.chartmuseum" . }}"

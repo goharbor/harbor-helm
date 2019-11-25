@@ -31,7 +31,7 @@ spec:
       {{- end }}
       initContainers:
       - name: "change-permission-of-directory"
-        image: "busybox:latest"
+        image: {{ .Values.database.internal.initContainerImage.repository }}:{{ .Values.database.internal.initContainerImage.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
         args: ["-c", "chown -R 999:999 /var/lib/postgresql/data"]
@@ -55,7 +55,7 @@ spec:
           exec:
             command:
             - /docker-healthcheck.sh
-          initialDelaySeconds: 60
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           exec:

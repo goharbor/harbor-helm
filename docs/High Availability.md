@@ -25,11 +25,11 @@ As for storage layer, it is expected that the user provide high available Postgr
 
 ### Download Chart
 
-Download Harbor helm chart code.
+Download Harbor helm chart:
 
 ```bash
-git clone https://github.com/goharbor/harbor-helm
-cd harbor-helm
+helm repo add harbor https://helm.goharbor.io
+helm fetch harbor/harbor --untar
 ```
 
 ### Configuration
