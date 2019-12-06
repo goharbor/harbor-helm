@@ -13,7 +13,11 @@ data:
     [dev]
     httpport = 8080
     EnableXSRF = true
+    {{- if .Values.core.xsrfKey }}
+    XSRFKey = {{ .Values.core.xsrfKey }}
+    {{- else }}
     XSRFKey = {{ randAlphaNum 40 }}
+    {{- end }}
     XSRFExpire = 3600
   DATABASE_TYPE: "postgresql"
   POSTGRESQL_HOST: "{{ template "harbor.database.host" . }}"
