@@ -64,8 +64,13 @@ Configure the followings items in `values.yaml`, you can also set them as parame
 
 ### Installation
 
-Install the Harbor helm chart with a release name `my-release`:
+Install the Harbor helm chart with a release name `my-release`:  
 
+helm 2:
 ```bash
 helm install --name my-release .
+```
+helm 3:
+```
+helm install my-release .
 ```

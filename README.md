@@ -68,18 +68,28 @@ Secrets and certificates must be setup to avoid changes on every Helm upgrade (s
 
 ### Install the chart
 
-Install the Harbor helm chart with a release name `my-release`:
+Install the Harbor helm chart with a release name `my-release`:  
 
+helm 2:
 ```bash
 helm install --name my-release harbor/harbor
+```
+helm 3:
+```bash
+helm install my-release harbor/harbor
 ```
 
 ## Uninstallation
 
-To uninstall/delete the `my-release` deployment:
+To uninstall/delete the `my-release` deployment:  
 
+helm 2:
 ```bash
 helm delete --purge my-release
+```
+helm 3:
+```
+helm uninstall harbor my-release
 ```
 
 ## Configuration
