@@ -240,6 +240,7 @@ imagePullSecrets:
 #  - name: docker-registry-secret
 #  - name: internal-registry-secret
 
+# debug, info, warning, error or fatal
 logLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
