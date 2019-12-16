@@ -333,6 +333,12 @@ core:
   secretName: ""
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
+  # lifecycleHooks for the core container to automate configuration before or after startup,
+  # i.e. to set LDAP settings through API calls
+  lifecycleHooks: |
+#    postStart:
+#      exec:
+#        command: ["/bin/sh", "-c", "echo lifecycleHook"]
 
 jobservice:
   image:
