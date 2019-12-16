@@ -323,8 +323,7 @@ core:
   # "tls.key" - the private key
   # The default key pair will be used if it isn't set
   secretName: ""
-  # The XSRF key, must be a string of 40 chars. Will be generated automatically
-  # if it isn't specified
+  # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
 
 jobservice:
