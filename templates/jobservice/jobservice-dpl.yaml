@@ -7,6 +7,11 @@ metadata:
     component: jobservice
 spec:
   replicas: {{ .Values.jobservice.replicas }}
+  strategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if eq .Values.updateStrategy.type "Recreate" }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -24,6 +29,8 @@ spec:
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -36,7 +43,7 @@ spec:
           httpGet:
             path: /api/v1/stats
             port: 8080
-          initialDelaySeconds: 20
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
@@ -65,6 +72,14 @@ spec:
             value: "http://{{ template "harbor.registry" . }}:8080"
           - name: LOG_LEVEL
             value: debug
+          {{- if has "jobservice" .Values.proxy.components }}
+          - name: HTTP_PROXY
+            value: "{{ .Values.proxy.httpProxy }}"
+          - name: HTTPS_PROXY
+            value: "{{ .Values.proxy.httpsProxy }}"
+          - name: NO_PROXY
+            value: "{{ template "harbor.noProxy" . }}"
+          {{- end }}
         ports:
         - containerPort: 8080
         volumeMounts:

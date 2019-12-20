@@ -8,6 +8,11 @@ metadata:
     component: chartmuseum
 spec:
   replicas: {{ .Values.chartmuseum.replicas }}
+  strategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if eq .Values.updateStrategy.type "Recreate" }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -25,6 +30,8 @@ spec:
 {{ toYaml .Values.chartmuseum.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -37,7 +44,7 @@ spec:
           httpGet:
             path: /health
             port: 9999
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
@@ -71,6 +78,11 @@ spec:
           mountPath: /etc/chartmuseum/gcs-key.json
           subPath: gcs-key.json
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
+        - name: storage-service-ca
+          mountPath: /harbor_cust_cert/custom-ca-bundle.crt
+          subPath: ca.crt
+        {{- end }}
       volumes:
       - name: chartmuseum-data
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
@@ -86,6 +98,11 @@ spec:
           items:
             - key: GCS_KEY_DATA
               path: gcs-key.json
+      {{- end }}
+      {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
+      - name: storage-service-ca
+        secret:
+          secretName: {{ .Values.persistence.imageChartStorage.caBundleSecretName }}
       {{- end }}
       {{- with .Values.chartmuseum.nodeSelector }}
       nodeSelector:

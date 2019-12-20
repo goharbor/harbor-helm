@@ -18,24 +18,26 @@ spec:
 {{ include "harbor.labels" . | indent 8 }}
         component: clair
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/clair/clair-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/clair/clair-secret.yaml") . | sha256sum }}
 {{- if .Values.clair.podAnnotations }}
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
       - name: clair
-        image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}
+        image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
             path: /health
             port: 6061
-          initialDelaySeconds: 30
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
@@ -45,33 +47,65 @@ spec:
           periodSeconds: 10
         args: ["-log-level", "{{ .Values.logLevel }}"]
         env:
-        {{- if .Values.clair.httpProxy }}
+        {{- if has "clair" .Values.proxy.components }}
         - name: HTTP_PROXY
-          value: {{ .Values.clair.httpProxy }}
-        {{- end }}
-        {{- if .Values.clair.httpsProxy }}
+          value: "{{ .Values.proxy.httpProxy }}"
         - name: HTTPS_PROXY
-          value: {{ .Values.clair.httpsProxy }}
-        {{- end }}
+          value: "{{ .Values.proxy.httpsProxy }}"
         - name: NO_PROXY
-          value: "{{ template "harbor.registry" . }},{{ template "harbor.core" . }}"
-{{- if .Values.clair.resources }}
+          value: "{{ template "harbor.noProxy" . }}"
+        {{- end }}
+{{- if .Values.clair.clair.resources }}
         resources:
-{{ toYaml .Values.clair.resources | indent 10 }}
+{{ toYaml .Values.clair.clair.resources | indent 10 }}
 {{- end }}
         ports:
         - containerPort: 6060
         volumeMounts:
-        - name: clair-config
+        - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
+      - name: adapter
+        image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /probe/healthy
+            port: 8080
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /probe/ready
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        env:
+        - name: SCANNER_CLAIR_URL
+          # To avoid a pod cannot reach itself via service IP when the clusters disable hairpin
+          value: "http://127.0.0.1:6060"
+        - name: SCANNER_STORE_REDIS_URL
+          valueFrom:
+              secretKeyRef:
+                name: {{ template "harbor.clair" . }}
+                key: redis
+        - name: SCANNER_CLAIR_DATABASE_URL
+          valueFrom:
+              secretKeyRef:
+                name: {{ template "harbor.clair" . }}
+                key: database
+        - name: SCANNER_LOG_LEVEL
+          value: "{{ .Values.logLevel }}"
+{{- if .Values.clair.adapter.resources }}
+        resources:
+{{ toYaml .Values.clair.adapter.resources | indent 10 }}
+{{- end }}
+        ports:
+        - containerPort: 8080
       volumes:
-      - name: clair-config
-        configMap:
-          name: "{{ template "harbor.clair" . }}"
-          items:
-            - key: config.yaml
-              path: config.yaml
+      - name: config
+        secret:
+          secretName: "{{ template "harbor.clair" . }}"
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

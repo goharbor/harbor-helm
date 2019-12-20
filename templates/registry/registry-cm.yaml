@@ -143,6 +143,7 @@ data:
       addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
       db: {{ template "harbor.redis.registryDatabaseIndex" . }}
     http:
+      relativeurls: {{ .Values.registry.relativeurls }}
       addr: :5000
       # set via environment variable
       # secret: placeholder
@@ -164,6 +165,31 @@ data:
           timeout: 3000ms
           threshold: 5
           backoff: 1s
+          ignoredmediatypes:
+            - application/vnd.docker.image.rootfs.diff.tar.gzip
+            - application/vnd.docker.image.rootfs.foreign.diff.tar.gzip
+            - application/vnd.oci.image.layer.v1.tar
+            - application/vnd.oci.image.layer.v1.tar+gzip
+            - application/vnd.oci.image.layer.v1.tar+zstd
+            - application/vnd.oci.image.layer.nondistributable.v1.tar
+            - application/vnd.oci.image.layer.nondistributable.v1.tar+gzip
+            - application/vnd.oci.image.layer.nondistributable.v1.tar+zstd
+            - application/octet-stream
+    {{- if .Values.registry.middleware.enabled }}
+    {{- $middleware := .Values.registry.middleware }}
+    {{- $middlewareType := $middleware.type }}
+    {{- if eq $middlewareType "cloudFront" }}
+    middleware:
+      storage:
+        - name: cloudfront
+          options:
+            baseurl: {{ $middleware.cloudFront.baseurl }}
+            privatekey: /etc/registry/pk.pem
+            keypairid: {{ $middleware.cloudFront.keypairid }}
+            duration: {{ $middleware.cloudFront.duration }}
+            ipfilteredby: {{ $middleware.cloudFront.ipfilteredby }}
+    {{- end }}
+    {{- end }}
   ctl-config.yml: |+
     ---
     protocol: "http"
