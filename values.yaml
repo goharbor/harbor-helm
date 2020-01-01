@@ -536,6 +536,10 @@ redis:
     image:
       repository: goharbor/redis-photon
       tag: dev
+    # the image used by the init container
+    initContainerImage:
+      repository: busybox
+      tag: latest
     # resources:
     #  requests:
     #    memory: 256Mi
