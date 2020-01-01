@@ -269,7 +269,7 @@ proxy:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: v1.9.4-dev
+    tag: v1.9.4
   replicas: 1
   # resources:
   #  requests:
@@ -284,7 +284,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: v1.9.4-dev
+    tag: v1.9.4
   replicas: 1
 # resources:
 #  requests:
@@ -299,7 +299,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: v1.9.4-dev
+    tag: v1.9.4
   replicas: 1
   ## Liveness probe values
   livenessProbe:
@@ -330,7 +330,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v1.9.4-dev
+    tag: v1.9.4
   replicas: 1
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
@@ -353,7 +353,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: v1.9.4-dev
+      tag: v2.7.1-patch-2819-2553-v1.9.4
 
     # resources:
     #  requests:
@@ -362,7 +362,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: v1.9.4-dev
+      tag: v1.9.4
 
     # resources:
     #  requests:
@@ -400,7 +400,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: v1.9.4-dev
+    tag: v0.9.0-v1.9.4
   replicas: 1
   # resources:
   #  requests:
@@ -416,7 +416,7 @@ clair:
   enabled: true
   image:
     repository: goharbor/clair-photon
-    tag: v1.9.4-dev
+    tag: v2.1.0-v1.9.4
   replicas: 1
   # The interval of clair updaters, the unit is hour, set to 0 to
   # disable the updaters
@@ -436,7 +436,7 @@ notary:
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: v1.9.4-dev
+      tag: v0.6.1-v1.9.4
     replicas: 1
     # resources:
     #  requests:
@@ -445,7 +445,7 @@ notary:
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: v1.9.4-dev
+      tag: v0.6.1-v1.9.4
     replicas: 1
     # resources:
     #  requests:
@@ -471,7 +471,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: v1.9.4-dev
+      tag: v1.9.4
     # the image used by the init container
     initContainerImage:
       repository: busybox
@@ -519,7 +519,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: v1.9.4-dev
+      tag: v1.9.4
     # resources:
     #  requests:
     #    memory: 256Mi
