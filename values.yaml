@@ -197,6 +197,7 @@ persistence:
       #encrypt: false
       #keyid: mykeyid
       #secure: true
+      #skipverify: false
       #v4auth: true
       #chunksize: "5242880"
       #rootdirectory: /s3/object/name/prefix

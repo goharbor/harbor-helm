@@ -50,6 +50,9 @@ data:
         {{- if $storage.s3.secure }}
         secure: {{ $storage.s3.secure }}
         {{- end }}
+        {{- if and $storage.s3.secure $storage.s3.skipverify }}
+        skipverify: {{ $storage.s3.skipverify }}
+        {{- end }}
         {{- if $storage.s3.v4auth }}
         v4auth: {{ $storage.s3.v4auth }}
         {{- end }}
