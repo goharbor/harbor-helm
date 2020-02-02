@@ -89,7 +89,7 @@ helm delete --purge my-release
 ```
 helm 3:
 ```
-helm uninstall harbor my-release
+helm uninstall my-release
 ```
 
 ## Configuration
