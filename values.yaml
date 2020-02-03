@@ -508,8 +508,20 @@ database:
     password: "password"
     coreDatabase: "registry"
     clairDatabase: "clair"
+    # if not set, database.external.username is used
+    clairUsername: ""
+    # if not set, database.external.password is used
+    clairPassword: ""
     notaryServerDatabase: "notary_server"
+    # if not set, database.external.username is used
+    notaryServerUsername: ""
+    # if not set, database.external.password is used
+    notaryServerPassword: ""
     notarySignerDatabase: "notary_signer"
+    # if not set, database.external.username is used
+    notarySignerUsername: ""
+    # if not set, database.external.password is used
+    notarySignerPassword: ""
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
