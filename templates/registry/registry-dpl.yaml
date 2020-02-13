@@ -60,6 +60,15 @@ spec:
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+        env:
+        {{- if has "registry" .Values.proxy.components }}
+        - name: HTTP_PROXY
+          value: "{{ .Values.proxy.httpProxy }}"
+        - name: HTTPS_PROXY
+          value: "{{ .Values.proxy.httpsProxy }}"
+        - name: NO_PROXY
+          value: "{{ template "harbor.noProxy" . }}"
+        {{- end }}
         ports:
         - containerPort: 5000
         - containerPort: 5001
