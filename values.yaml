@@ -379,6 +379,9 @@ registry:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Optionally specify custom service account managed outside this chart
+  serviceAccount:
+    name: 
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used to secure the upload state from client
@@ -416,6 +419,9 @@ chartmuseum:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Optionally specify custom service account managed outside this chart
+  serviceAccount:
+    name: 
   ## Additional deployment annotations
   podAnnotations: {}
 
