@@ -34,9 +34,9 @@ spec:
             - name: "SCANNER_LOG_LEVEL"
               value: {{ .Values.logLevel | quote }}
             - name: "SCANNER_TRIVY_CACHE_DIR"
-              value: {{ .Values.trivy.cacheDir | quote }}
+              value: "/home/scanner/.cache/trivy"
             - name: "SCANNER_TRIVY_REPORTS_DIR"
-              value: {{ .Values.trivy.reportsDir | quote }}
+              value: "/home/scanner/.cache/reports"
             - name: "SCANNER_TRIVY_DEBUG_MODE"
               value: {{ .Values.trivy.debugMode | quote }}
             - name: "SCANNER_TRIVY_VULN_TYPE"
