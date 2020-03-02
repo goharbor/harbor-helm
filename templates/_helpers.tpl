@@ -202,6 +202,14 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.redis.trivyAdapterIndex" -}}
+  {{- if eq .Values.redis.type "internal" -}}
+    {{- printf "%s" "5" }}
+  {{- else -}}
+    {{- .Values.redis.external.trivyAdapterIndex -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.redis.rawPassword" -}}
   {{- if and (eq .Values.redis.type "external") .Values.redis.external.password -}}
     {{- .Values.redis.external.password -}}
@@ -238,6 +246,14 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
     {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.escapedRawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.clairAdapterIndex" . ) }}
   {{- else }}
     {{- printf "redis://%s:%s/%s" (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.clairAdapterIndex" . ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.redisForTrivyAdapter" -}}
+  {{- if (include "harbor.redis.escapedRawPassword" . ) -}}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.escapedRawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.trivyAdapterIndex" . ) }}
+  {{- else }}
+    {{- printf "redis://%s:%s/%s" (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.trivyAdapterIndex" . ) -}}
   {{- end -}}
 {{- end -}}
 
@@ -279,6 +295,10 @@ host:port,pool_size,password
 
 {{- define "harbor.clair" -}}
   {{- printf "%s-clair" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.trivy" -}}
+  {{- printf "%s-trivy" (include "harbor.fullname" .) -}}
 {{- end -}}
 
 {{- define "harbor.notary-server" -}}
