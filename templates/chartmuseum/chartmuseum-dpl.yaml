@@ -116,8 +116,8 @@ spec:
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
         - name: storage-service-ca
-          mountPath: /harbor_cust_cert/custom-ca-bundle.crt
-          subPath: ca.crt
+          mountPath: {{ template "harbor.caBundleMountPath" . }}
+          subPath: {{ template "harbor.caBundleSubPath" . }}
         {{- end }}
       volumes:
       - name: chartmuseum-data

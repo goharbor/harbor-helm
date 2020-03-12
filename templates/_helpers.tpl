@@ -54,6 +54,14 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.caBundleMountPath" -}}
+  {{- printf "/harbor_cust_cert/custom-ca-bundle.crt" -}}
+{{- end -}}
+
+{{- define "harbor.caBundleSubPath" -}}
+  {{- printf "ca.crt" -}}
+{{- end -}}
+
 {{- define "harbor.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- template "harbor.database" . }}

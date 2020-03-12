@@ -81,6 +81,11 @@ spec:
           mountPath: /etc/harbor/ssl/clair_adapter.key
           subPath: tls.key
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
+        - name: storage-service-ca
+          mountPath: {{ template "harbor.caBundleMountPath" . }}
+          subPath: {{ template "harbor.caBundleSubPath" . }}
+        {{- end }}
       - name: adapter
         image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -150,6 +155,11 @@ spec:
       - name: clair-internal-certs
         secret:
           secretName: {{ template "harbor.internalTLS.clair.secretName" . }}
+      {{- end }}
+      {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
+      - name: storage-service-ca
+        secret:
+          secretName: {{ .Values.persistence.imageChartStorage.caBundleSecretName }}
       {{- end }}
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:

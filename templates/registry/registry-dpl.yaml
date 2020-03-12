@@ -120,8 +120,8 @@ spec:
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
         - name: storage-service-ca
-          mountPath: /harbor_cust_cert/custom-ca-bundle.crt
-          subPath: ca.crt
+          mountPath: {{ template "harbor.caBundleMountPath" . }}
+          subPath: {{ template "harbor.caBundleSubPath" . }}
         {{- end }}
         {{- if .Values.registry.middleware.enabled }}
         {{- if eq .Values.registry.middleware.type "cloudFront" }}
@@ -201,8 +201,8 @@ spec:
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
         - name: storage-service-ca
-          mountPath: /harbor_cust_cert/custom-ca-bundle.crt
-          subPath: ca.crt
+          mountPath: {{ template "harbor.caBundleMountPath" . }}
+          subPath: {{ template "harbor.caBundleSubPath" . }}
         {{- end }}
         {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
         - name: gcs-key
