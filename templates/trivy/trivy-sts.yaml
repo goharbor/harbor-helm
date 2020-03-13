@@ -41,6 +41,11 @@ spec:
               value: {{ .Values.trivy.debugMode | quote }}
             - name: "SCANNER_TRIVY_VULN_TYPE"
               value: {{ .Values.trivy.vulnType | quote }}
+            - name: "SCANNER_TRIVY_GITHUB_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "harbor.trivy" . }}
+                  key: gitHubToken
             - name: "SCANNER_TRIVY_SEVERITY"
               value: {{ .Values.trivy.severity | quote }}
             - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
@@ -49,12 +54,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ template "harbor.trivy" . }}
-                  key: redis
+                  key: redisURL
             - name: "SCANNER_JOB_QUEUE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
                   name: {{ template "harbor.trivy" . }}
-                  key: redis
+                  key: redisURL
           ports:
             - name: api-server
               containerPort: 8080

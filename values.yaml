@@ -459,7 +459,7 @@ trivy:
   image:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
-    # tag the tag for Trivy scanner adapter image
+    # tag the tag for Trivy adapter image
     tag: dev
   # replicas the number of Pod replicas
   replicas: 1
@@ -471,6 +471,22 @@ trivy:
   severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
   # ignoreUnfixed the flag to display only fixed vulnerabilities
   ignoreUnfixed: false
+  # gitHubToken the GitHub access token to download Trivy DB
+  #
+  # Trivy DB contains vulnerability information from NVD, Red Hat, and many other upstream vulnerability databases.
+  # It is downloaded by Trivy from the GitHub release page https://github.com/aquasecurity/trivy-db/releases and cached
+  # in the local file system (/home/scanner/.cache/trivy/db/trivy.db). In addition, the database contains the update
+  # timestamp so Trivy can detect whether it should download a newer version from the Internet or use the cached one.
+  # Currently, the database is updated every 12 hours and published as a new release to GitHub.
+  #
+  # Anonymous downloads from GitHub are subject to the limit of 60 requests per hour. Normally such rate limit is enough
+  # for production operations. If, for any reason, it's not enough, you could increase the rate limit to 5000
+  # requests per hour by specifying the GitHub access token. For more details on GitHub rate limiting please consult
+  # https://developer.github.com/v3/#rate-limiting
+  #
+  # You can create a GitHub token by following the instuctions in
+  # https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+  gitHubToken:
   resources:
     requests:
       cpu: 200m
