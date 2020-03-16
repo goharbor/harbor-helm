@@ -150,31 +150,12 @@ data:
       debug:
         addr: localhost:5001
     auth:
-      token:
-        issuer: harbor-token-issuer
-        realm: "{{ .Values.externalURL }}/service/token"
-        rootcertbundle: /etc/registry/root.crt
-        service: harbor-registry
+      htpasswd:
+        realm: harbor-registry-basic-realm
+        path: /etc/registry/passwd
     validation:
       disabled: true
-    notifications:
-      endpoints:
-        - name: harbor
-          disabled: false
-          url: http://{{ template "harbor.core" . }}/service/notifications
-          timeout: 3000ms
-          threshold: 5
-          backoff: 1s
-          ignoredmediatypes:
-            - application/vnd.docker.image.rootfs.diff.tar.gzip
-            - application/vnd.docker.image.rootfs.foreign.diff.tar.gzip
-            - application/vnd.oci.image.layer.v1.tar
-            - application/vnd.oci.image.layer.v1.tar+gzip
-            - application/vnd.oci.image.layer.v1.tar+zstd
-            - application/vnd.oci.image.layer.nondistributable.v1.tar
-            - application/vnd.oci.image.layer.nondistributable.v1.tar+gzip
-            - application/vnd.oci.image.layer.nondistributable.v1.tar+zstd
-            - application/octet-stream
+
     {{- if .Values.registry.middleware.enabled }}
     {{- $middleware := .Values.registry.middleware }}
     {{- $middlewareType := $middleware.type }}
