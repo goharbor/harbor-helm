@@ -262,6 +262,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `trivy.vulnType` | Comma-separated list of vulnerability types. Possible values `os` and `library`. | `os,library` |
 | `trivy.severity` | Comma-separated list of severities to be checked | `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL` |
 | `trivy.ignoreUnfixed` | The flag to display only fixed vulnerabilities | `false` |
+| `trivy.gitHubToken` | The GitHub access token to download Trivy DB (see [rate limit](https://github.com/aquasecurity/trivy#github-rate-limiting)) | |
 | **Notary**                                                                  |
 | `notary.enabled`                                                            | Enable Notary?                                                                                                                                                                                                                                                                                                                                  | `true`                          |
 | `notary.server.image.repository`                                            | Repository for notary server image                                                                                                                                                                                                                                                                                                              | `goharbor/notary-server-photon` |
