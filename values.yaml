@@ -395,6 +395,13 @@ registry:
   secret: ""
   # If true, the registry returns relative URLs in Location headers. The client is responsible for resolving the correct URL.
   relativeurls: false
+  credentials:
+    username: "harbor_registry_user"
+    password: "harbor_registry_password"
+    # If you update the username or password of registry, make sure use cli tool htpasswd to generate the bcryp hash
+    # e.g. "htpasswd -nbC10 $username $password"
+    htpasswd: "harbor_registry_user:$apr1$8XBMIDf3$fwlkQS6AAqZFUx82.RqKg/"
+
   middleware:
     enabled: false
     type: cloudFront
