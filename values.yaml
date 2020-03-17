@@ -486,7 +486,7 @@ trivy:
   #
   # You can create a GitHub token by following the instuctions in
   # https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
-  gitHubToken:
+  gitHubToken: ""
   resources:
     requests:
       cpu: 200m
