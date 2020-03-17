@@ -35,7 +35,7 @@ data:
         server {{ template "harbor.portal" . }};
       }
 
-      log_format timed_combined '$remote_addr - '
+      log_format timed_combined '[$time_local]:$remote_addr - '
         '"$request" $status $body_bytes_sent '
         '"$http_referer" "$http_user_agent" '
         '$request_time $upstream_response_time $pipe';
