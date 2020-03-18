@@ -1,0 +1,24 @@
+{{- if and .Values.clair.enabled .Values.clair.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: "{{ template "harbor.clair" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: clair
+spec:
+  endpoints:
+    - interval: 10s
+      scrapeTimeout: 10s
+      honorLabels: true
+      port: adapter
+      path: /metrics
+      scheme: http
+  jobLabel: clair
+  selector:
+    matchLabels:
+      component: clair
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end -}}

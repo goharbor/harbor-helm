@@ -11,3 +11,4 @@ Thanks very much to all contributers who submitted pull requests to Helm Chart f
 - [Steven Arnott @ArcticSnowman](https://github.com/ArcticSnowman)
 - [Alex M @draeron](https://github.com/draeron)
 - [SangJun Yun](https://github.com/YunSangJun)
+- [Bruno Clermont @bclermont](https://github.com/bclermont) for [Robotinfra](https://www.robotinfra.com)

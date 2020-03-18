@@ -418,6 +418,8 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  serviceMonitor:
+    enabled: false
 
 clair:
   enabled: true
@@ -446,6 +448,8 @@ clair:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  serviceMonitor:
+    enabled: false
 
 notary:
   enabled: true
@@ -479,6 +483,8 @@ notary:
   # contain the CA, certificate and private key.
   # They will be generated if not set.
   secretName: ""
+  serviceMonitor:
+    enabled: false
 
 database:
   # if external database is used, set "type" to "external"
@@ -556,3 +562,19 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+
+exporter:
+  enabled: false
+  serviceMonitor:
+    interval: 2m
+    scrapeTimeout: 1m
+    enabled: false
+  image:
+    tag: v0.3
+    registry: c4po/harbor-exporter
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+  replicas: 1

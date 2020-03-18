@@ -1,0 +1,100 @@
+{{- if .Values.exporter.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "harbor.exporter" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: exporter
+spec:
+  replicas: {{ .Values.exporter.replicas }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: exporter
+  template:
+    metadata:
+      labels:
+{{ include "harbor.labels" . | indent 8 }}
+        component: exporter
+      annotations:
+        checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
+{{- if .Values.exporter.podAnnotations }}
+{{ toYaml .Values.exporter.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: default
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: exporter
+          image: {{ .Values.exporter.image.registry }}:{{ .Values.exporter.image.tag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: HARBOR_URI
+              value: http://{{ template "harbor.core" . }}
+            - name: HARBOR_USERNAME
+              value: admin
+            - name: HARBOR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "harbor.core" . }}
+                  key: HARBOR_ADMIN_PASSWORD
+          securityContext:
+            capabilities:
+              drop:
+                - SETPCAP
+                - MKNOD
+                - AUDIT_WRITE
+                - CHOWN
+                - NET_RAW
+                - DAC_OVERRIDE
+                - FOWNER
+                - FSETID
+                - KILL
+                - SETGID
+                - SETUID
+                - NET_BIND_SERVICE
+                - SYS_CHROOT
+                - SETFCAP
+            readOnlyRootFilesystem: true
+          resources:
+{{ toYaml .Values.exporter.resources | indent 12 }}
+          ports:
+            - containerPort: 9107
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+            initialDelaySeconds: 1
+            timeoutSeconds: 5
+            periodSeconds: 5
+    {{- with .Values.exporter.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.exporter.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.exporter.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end -}}

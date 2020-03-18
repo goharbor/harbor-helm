@@ -5,6 +5,7 @@ metadata:
   name: "{{ template "harbor.clair" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+    component: clair
 spec:
   ports:
     - name: adapter

@@ -1,0 +1,19 @@
+{{- if .Values.exporter.enabled -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: "{{ template "harbor.exporter" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: exporter
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 9107
+  selector:
+{{ include "harbor.matchLabels" . | indent 4 }}
+    component: exporter
+{{- end -}}

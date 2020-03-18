@@ -238,6 +238,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `chartmuseum.tolerations`                                                   | Tolerations for pod assignment                                                                                                                                                                                                                                                                                                                  | `[]`                            |
 | `chartmuseum.affinity`                                                      | Node/Pod affinities                                                                                                                                                                                                                                                                                                                             | `{}`                            |
 | `chartmuseum.podAnnotations`                                                | Annotations to add to the chart museum pod                                                                                                                                                                                                                                                                                                      | `{}`                            |
+| `chartmuseum.serviceMonitor.enabled`                                        | Create a Prometheus Operator's `ServiceMonitor` for chartmuseum                                                                                                                                                                                                                                                                                              | `false`                         |
 | **Clair** |
 | `clair.enabled` | Enable Clair | `true` |
 | `clair.clair.image.repository`  | Repository for clair image | `goharbor/clair-photon` |
@@ -252,6 +253,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `clair.tolerations` | Tolerations for pod assignment | `[]` |
 | `clair.affinity` | Node/Pod affinities | `{}` |
 | `clair.podAnnotations` | Annotations to add to the clair pod | `{}` |
+| `clair.serviceMonitor.enabled` | Create a Prometheus Operator's `ServiceMonitor` for clair | `false` |
 | **Notary**                                                                  |
 | `notary.enabled`                                                            | Enable Notary?                                                                                                                                                                                                                                                                                                                                  | `true`                          |
 | `notary.server.image.repository`                                            | Repository for notary server image                                                                                                                                                                                                                                                                                                              | `goharbor/notary-server-photon` |
@@ -267,6 +269,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `notary.affinity`                                                           | Node/Pod affinities                                                                                                                                                                                                                                                                                                                             | `{}`                            |
 | `notary.podAnnotations`                                                     | Annotations to add to the notary pod                                                                                                                                                                                                                                                                                                            | `{}`                            |
 | `notary.secretName`                                                         | Fill the name of a kubernetes secret if you want to use your own TLS certificate authority, certificate and private key for notary communications. The secret must contain keys named `tls.ca`, `tls.crt` and `tls.key` that contain the CA, certificate and private key. They will be generated if not set.                                    |                                 |
+| `notary.serviceMonitor.enabled`                                             | Create a Prometheus Operator's `ServiceMonitor` for notary | `false` |
 | **Database** |
 | `database.type` | If external database is used, set it to `external` | `internal` |
 | `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |
@@ -306,6 +309,18 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.external.chartmuseumDatabaseIndex` | The database index for chartmuseum | `3` |
 | `redis.external.clairAdapterIndex` | The database index for clair adapter | `4` |
 | `redis.external.password`                                                   | The password of external Redis                                                                                                                                                                                                                                                                                                                  |                                 |
-| `redis.podAnnotations`                                                      | Annotations to add to the redis pod                                                                                                                                                                                                                                                                                                             | `{}`                            |
+| `redis.podAnnotations`                                                      | Annotations to add to the redis pod                                                                                                                                                                                     | **Exporter** |
+| `exporter.enabled` | Deploy a Prometheus exporter for core metrics | `false` |
+| `exporter.serviceMonitor.enabled` | Create a Prometheus Operator's `ServiceMonitor` for exporter | `false` |
+| `exporter.serviceMonitor.interval` | Interval between each Prometheus metrics scrape | `2m` |
+| `exporter.serviceMonitor.scrapeTimeout` | Interval between each Prometheus metrics scrape | `1m` |
+| `exporter.image.tag` | Docker image tag of exporter | `v0.3` |
+| `exporter.image.registry` | Docker image registry of exporter | `c4po/harbor-exporter`  |
+| `exporter.resources` | The [resources] to allocate for container | `{}` |
+| `exporter.nodeSelector` | Node labels for pod | `{}` |
+| `exporter.tolerations` | Tolerations for pod | `[]` |
+| `exporter.affinity` |  Node/Pod affinities | `{}` |
+| `exporter.podAnnotations` | The annotations used on deployment | `{}` |
+| `exporter.relpicas` | The replica count | `1` |
 
 [resources]: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/

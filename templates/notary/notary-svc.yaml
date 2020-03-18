@@ -5,12 +5,14 @@ metadata:
   name: {{ template "harbor.notary-server" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+    component: notary-server
 spec:
 {{- if  (eq .Values.expose.ingress.controller "gce") }}
   type: NodePort
 {{- end }}
   ports:
-  - port: 4443
+  - name: http
+    port: 4443
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: notary-server
@@ -22,6 +24,7 @@ metadata:
   name: {{ template "harbor.notary-signer" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+    component: notary-signer
 spec:
   ports:
   - port: 7899

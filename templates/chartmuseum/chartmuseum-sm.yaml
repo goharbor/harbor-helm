@@ -1,0 +1,24 @@
+{{- if and .Values.chartmuseum.enabled .Values.chartmuseum.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: "{{ template "harbor.chartmuseum" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: chartmuseum
+spec:
+  endpoints:
+    - interval: 10s
+      scrapeTimeout: 10s
+      honorLabels: true
+      port: http
+      path: /metrics
+      scheme: http
+  jobLabel: chartmuseum
+  selector:
+    matchLabels:
+      component: chartmuseum
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end -}}

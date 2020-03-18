@@ -1,0 +1,24 @@
+{{- if and .Values.notary.enabled .Values.notary.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "harbor.notary-server" . }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: notary-server
+spec:
+  endpoints:
+    - interval: 10s
+      scrapeTimeout: 10s
+      honorLabels: true
+      port: http
+      path: /metrics
+      scheme: http
+  jobLabel: notary-server
+  selector:
+    matchLabels:
+      component: notary-server
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end -}}

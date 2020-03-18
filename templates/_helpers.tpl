@@ -289,6 +289,10 @@ host:port,pool_size,password
   {{- printf "%s-notary-signer" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{- define "harbor.exporter" -}}
+  {{- printf "%s-exporter" (include "harbor.fullname" .) -}}
+{{- end -}}
+
 {{- define "harbor.nginx" -}}
   {{- printf "%s-nginx" (include "harbor.fullname" .) -}}
 {{- end -}}
