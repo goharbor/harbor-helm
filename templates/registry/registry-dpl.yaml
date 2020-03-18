@@ -79,6 +79,9 @@ spec:
         - name: registry-root-certificate
           mountPath: /etc/registry/root.crt
           subPath: tls.crt
+        - name: registry-htpasswd
+          mountPath: /etc/registry/passwd
+          subPath: passwd
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
@@ -156,6 +159,12 @@ spec:
           subPath: gcs-key.json
         {{- end }}
       volumes:
+      - name: registry-htpasswd
+        secret:
+          secretName: {{ template "harbor.registry" . }}
+          items:
+            - key: REGISTRY_HTPASSWD
+              path: passwd
       - name: registry-root-certificate
         secret:
           {{- if .Values.core.secretName }}

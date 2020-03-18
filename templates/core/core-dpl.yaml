@@ -36,13 +36,13 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
-            path: /api/ping
+            path: /api/v2.0/ping
             port: 8080
           initialDelaySeconds: {{ .Values.core.livenessProbe.initialDelaySeconds }}
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /api/ping
+            path: /api/v2.0/ping
             port: 8080
           initialDelaySeconds: 20
           periodSeconds: 10
