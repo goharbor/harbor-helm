@@ -61,7 +61,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: "{{ template "harbor.jobservice" . }}"
-                key: secret
+                key: JOBSERVICE_SECRET
         ports:
         - containerPort: 8080
         volumeMounts:

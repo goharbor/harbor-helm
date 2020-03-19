@@ -49,7 +49,7 @@ data:
   _REDIS_URL: "{{ template "harbor.redisForCore" . }}"
   _REDIS_URL_REG: "{{ template "harbor.redisForGC" . }}"
   PORTAL_URL: "http://{{ template "harbor.portal" . }}"
-  REGISTRYCTL_URL: "http://{{ template "harbor.registry" . }}:8080"
+  REGISTRY_CONTROLLER_URL: "http://{{ template "harbor.registry" . }}:8080"
   CLAIR_HEALTH_CHECK_SERVER_URL: "http://{{ template "harbor.clair" . }}:6061"
   REGISTRY_CREDENTIAL_USERNAME: "{{ .Values.registry.credentials.username }}"
   CSRF_KEY: "{{ randAlphaNum 32 }}"

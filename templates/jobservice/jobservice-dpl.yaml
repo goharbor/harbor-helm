@@ -23,6 +23,7 @@ spec:
         component: jobservice
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
+        checksum/configmap-env: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm-env.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
         checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
 {{- if .Values.jobservice.podAnnotations }}
@@ -61,25 +62,11 @@ spec:
               secretKeyRef:
                 name: {{ template "harbor.core" . }}
                 key: secret
-          - name: JOBSERVICE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: "{{ template "harbor.jobservice" . }}"
-                key: secret
-          - name: CORE_URL
-            value: "http://{{ template "harbor.core" . }}"
-          - name: REGISTRY_CONTROLLER_URL
-            value: "http://{{ template "harbor.registry" . }}:8080"
-          - name: LOG_LEVEL
-            value: debug
-          {{- if has "jobservice" .Values.proxy.components }}
-          - name: HTTP_PROXY
-            value: "{{ .Values.proxy.httpProxy }}"
-          - name: HTTPS_PROXY
-            value: "{{ .Values.proxy.httpsProxy }}"
-          - name: NO_PROXY
-            value: "{{ template "harbor.noProxy" . }}"
-          {{- end }}
+        envFrom:
+        - configMapRef:
+            name: "{{ template "harbor.jobservice" . }}-env"
+        - secretRef:
+            name: "{{ template "harbor.jobservice" . }}"
         ports:
         - containerPort: 8080
         volumeMounts:
