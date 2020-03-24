@@ -1,3 +1,4 @@
+{{- if .Values.trivy.enabled }}
 {{- $trivyPVC := .Values.persistence.persistentVolumeClaim.trivy -}}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -105,3 +106,4 @@ spec:
         resources:
           requests:
             storage: {{ $trivyPVC.size | quote }}
+{{- end }}
