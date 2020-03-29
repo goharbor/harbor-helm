@@ -136,14 +136,6 @@ persistence:
       subPath: ""
       accessMode: ReadWriteOnce
       size: 1Gi
-    # If external database is used, the following settings for database will
-    # be ignored
-    database:
-      existingClaim: ""
-      storageClass: ""
-      subPath: ""
-      accessMode: ReadWriteOnce
-      size: 1Gi
     # If external Redis is used, the following settings for Redis will
     # be ignored
     redis:
@@ -535,27 +527,24 @@ notary:
   # They will be generated if not set.
   secretName: ""
 
+postgresql:
+  enabled: true
+  postgresqlPostgresPassword: changeit
+  postgresqlUsername: harbor
+  postgresqlPassword: changeit
+  postgresqlDatabase: registry
+  initdbScripts:
+    db-init.sql: |
+      CREATE DATABASE clair;
+      CREATE DATABASE notary_server;
+      CREATE DATABASE notary_signer;
+      GRANT ALL PRIVILEGES ON DATABASE clair TO harbor;
+      GRANT ALL PRIVILEGES ON DATABASE notary_server TO harbor;
+      GRANT ALL PRIVILEGES ON DATABASE notary_signer TO harbor;
+
 database:
   # if external database is used, set "type" to "external"
   # and fill the connection informations in "external" section
-  type: internal
-  internal:
-    image:
-      repository: goharbor/harbor-db
-      tag: dev
-    # the image used by the init container
-    initContainerImage:
-      repository: busybox
-      tag: latest
-    # The initial superuser password for internal database
-    password: "changeit"
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
   external:
     host: "192.168.0.1"
     port: "5432"
