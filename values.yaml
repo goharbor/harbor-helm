@@ -144,14 +144,6 @@ persistence:
       subPath: ""
       accessMode: ReadWriteOnce
       size: 1Gi
-    # If external Redis is used, the following settings for Redis will
-    # be ignored
-    redis:
-      existingClaim: ""
-      storageClass: ""
-      subPath: ""
-      accessMode: ReadWriteOnce
-      size: 1Gi
     trivy:
       existingClaim: ""
       storageClass: ""
