@@ -586,18 +586,8 @@ database:
 redis:
   # if external Redis is used, set "type" to "external"
   # and fill the connection informations in "external" section
-  type: internal
-  internal:
-    image:
-      repository: goharbor/redis-photon
-      tag: dev
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
+  enabled: true
+  password: changeit
   external:
     host: "192.168.0.2"
     port: "6379"
@@ -610,5 +600,3 @@ redis:
     clairAdapterIndex: "4"
     trivyAdapterIndex: "5"
     password: ""
-  ## Additional deployment annotations
-  podAnnotations: {}
