@@ -44,6 +44,7 @@ data:
   STORAGE: "microsoft"
   STORAGE_MICROSOFT_CONTAINER: {{ $storage.azure.container }}
   AZURE_STORAGE_ACCOUNT: {{ $storage.azure.accountname }}
+  AZURE_BASE_URL: {{ $storage.azure.realm }}
   STORAGE_MICROSOFT_PREFIX: "/azure/harbor/charts"
 {{- else if eq $storageType "gcs" }}
   STORAGE: "google"
