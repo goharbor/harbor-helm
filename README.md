@@ -255,17 +255,18 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `clair.tolerations` | Tolerations for pod assignment | `[]` |
 | `clair.affinity` | Node/Pod affinities | `{}` |
 | `clair.podAnnotations` | Annotations to add to the clair pod | `{}` |
-| **Trivy** |
-| `trivy.enabled` | Enable Trivy | `true` |
+| **[Trivy][trivy]** |
+| `trivy.enabled`          | The flag to enable Trivy scanner | `true` |
 | `trivy.image.repository` | Repository for Trivy adapter image | `goharbor/trivy-adapter-photon` |
-| `trivy.image.tag` | Tag for Trivy adapter image | `dev` |
-| `trivy.resources` | The [resources] to allocate for Trivy adapter container | |
-| `trivy.replicas` | The number of Pod replicas | `1` |
-| `trivy.debugMode` | The flag to enable Trivy debug mode | `false` |
-| `trivy.vulnType` | Comma-separated list of vulnerability types. Possible values `os` and `library`. | `os,library` |
-| `trivy.severity` | Comma-separated list of severities to be checked | `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL` |
-| `trivy.ignoreUnfixed` | The flag to display only fixed vulnerabilities | `false` |
-| `trivy.gitHubToken` | The GitHub access token to download Trivy DB (see [rate limit](https://github.com/aquasecurity/trivy#github-rate-limiting)) | |
+| `trivy.image.tag`        | Tag for Trivy adapter image | `dev` |
+| `trivy.resources`        | The [resources] to allocate for Trivy adapter container | |
+| `trivy.replicas`         | The number of Pod replicas | `1` |
+| `trivy.debugMode`        | The flag to enable Trivy debug mode | `false` |
+| `trivy.vulnType`         | Comma-separated list of vulnerability types. Possible values `os` and `library`. | `os,library` |
+| `trivy.severity`         | Comma-separated list of severities to be checked | `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL` |
+| `trivy.ignoreUnfixed`    | The flag to display only fixed vulnerabilities | `false` |
+| `trivy.skipUpdate`       | The flag to disable [Trivy DB][trivy-db] downloads from GitHub | `false` |
+| `trivy.gitHubToken`      | The GitHub access token to download [Trivy DB][trivy-db] (see [GitHub rate limiting][trivy-rate-limiting]) | |
 | **Notary**                                                                  |
 | `notary.enabled`                                                            | Enable Notary?                                                                                                                                                                                                                                                                                                                                  | `true`                          |
 | `notary.server.image.repository`                                            | Repository for notary server image                                                                                                                                                                                                                                                                                                              | `goharbor/notary-server-photon` |
@@ -323,3 +324,6 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.podAnnotations`                                                      | Annotations to add to the redis pod                                                                                                                                                                                                                                                                                                             | `{}`                            |
 
 [resources]: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+[trivy]: https://github.com/aquasecurity/trivy
+[trivy-db]: https://github.com/aquasecurity/trivy-db
+[trivy-rate-limiting]: https://github.com/aquasecurity/trivy#github-rate-limiting

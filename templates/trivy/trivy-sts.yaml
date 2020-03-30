@@ -31,6 +31,7 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           securityContext:
             privileged: false
+            allowPrivilegeEscalation: false
           env:
             - name: "SCANNER_LOG_LEVEL"
               value: {{ .Values.logLevel | quote }}
@@ -50,7 +51,9 @@ spec:
             - name: "SCANNER_TRIVY_SEVERITY"
               value: {{ .Values.trivy.severity | quote }}
             - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
-              value: {{ .Values.trivy.ignoreUnfixed | quote }}
+              value: {{ .Values.trivy.ignoreUnfixed | default false | quote }}
+            - name: "SCANNER_TRIVY_SKIP_UPDATE"
+              value: {{ .Values.trivy.skipUpdate | default false | quote }}
             - name: "SCANNER_STORE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
