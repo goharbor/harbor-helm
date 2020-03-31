@@ -1,10 +1,10 @@
 #/bin/bash
 set -e
 
-# Add required dependecies
-helm dependency update .
 # Check linting
 helm lint .
+# Add required dependecies
+helm dependency update .
 # expose the service via ingress, this disables the deployment of nginx
 helm template --set "expose.type=ingress" --output-dir /tmp/ .
 # expose the service via node port, this enables the deployment of nginx
