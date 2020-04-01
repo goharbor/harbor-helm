@@ -41,6 +41,15 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: "change-permission-of-directory"
+        image: {{ .Values.chartmuseum.initContainerImage.repository }}:{{ .Values.chartmuseum.initContainerImage.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args: ["chown", "-R", "10000:10000", /chart_storage]
+        volumeMounts:
+        - name: chartmuseum-data
+          mountPath: /chart_storage
+          subPath: {{ .Values.persistence.persistentVolumeClaim.chartmuseum.subPath }}
       containers:
       - name: chartmuseum
         image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}

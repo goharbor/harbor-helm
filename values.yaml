@@ -436,6 +436,9 @@ registry:
     image:
       repository: goharbor/registry-photon
       tag: v2.0.0
+    initContainerImage:
+      repository: busybox
+      tag: latest
 
     # resources:
     #  requests:
@@ -490,6 +493,9 @@ chartmuseum:
   image:
     repository: goharbor/chartmuseum-photon
     tag: v2.0.0
+  initContainerImage:
+    repository: busybox
+    tag: latest
   replicas: 1
   # resources:
   #  requests:
@@ -670,6 +676,10 @@ redis:
     image:
       repository: goharbor/redis-photon
       tag: v2.0.0
+    # the image used by the init container
+    initContainerImage:
+      repository: busybox
+      tag: latest
     # resources:
     #  requests:
     #    memory: 256Mi
