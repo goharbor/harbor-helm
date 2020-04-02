@@ -99,7 +99,11 @@ data:
   STORAGE_ALIBABA_PREFIX: {{ $storage.oss.rootdirectory }}
   {{- end }}
   {{- if $storage.oss.endpoint }}
-  STORAGE_ALIBABA_ENDPOINT: {{ $storage.oss.endpoint }}
+  STORAGE_ALIBABA_ENDPOINT: {{ $storage.oss.endpoint | trimPrefix $storage.oss.bucket | trimPrefix "." }}
+  {{- else if $storage.oss.internal}}
+  STORAGE_ALIBABA_ENDPOINT: {{ $storage.oss.region }}-internal.aliyuncs.com
+  {{- else }}
+  STORAGE_ALIBABA_ENDPOINT: {{ $storage.oss.region }}.aliyuncs.com
   {{- end }}
   ALIBABA_CLOUD_ACCESS_KEY_ID: {{ $storage.oss.accesskeyid }}
 {{- end }}

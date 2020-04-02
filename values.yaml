@@ -232,6 +232,7 @@ persistence:
       accesskeysecret: accesskeysecret
       region: regionname
       bucket: bucketname
+      ### endpoint format: [bucket].[region].aliyuncs.com or [bucket].[region]-internal.aliyuncs.com
       #endpoint: endpoint
       #internal: false
       #encrypt: false
