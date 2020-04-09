@@ -25,7 +25,14 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: false
+      initContainers:
+      {{- if .Values.trivy.extraInitContainers }}
+      {{- toYaml .Values.trivy.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.trivy.extraContainers }}
+      {{- toYaml .Values.trivy.extraContainers | nindent 8}}
+      {{- end }}
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -68,6 +75,9 @@ spec:
             - name: api-server
               containerPort: 8080
           volumeMounts:
+          {{- if .Values.trivy.extraVolumeMounts }}
+          {{- toYaml .Values.trivy.extraVolumeMounts | nindent 12}}
+          {{- end }}
             - name: data
               mountPath: /home/scanner/.cache
               readOnly: false
@@ -91,6 +101,10 @@ spec:
             failureThreshold: 3
           resources:
 {{ toYaml .Values.trivy.resources | indent 12 }}
+      volumes:
+      {{- if .Values.trivy.extraVolumes }}
+      {{- toYaml .Values.trivy.extraVolumes | nindent 6}}
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: data

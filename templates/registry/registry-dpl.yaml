@@ -36,7 +36,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.registry.extraInitContainers }}
+      {{- toYaml .Values.registry.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.registry.extraContainers }}
+      {{- toYaml .Values.registry.extraContainers | nindent 6}}
+      {{- end }}
       - name: registry
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -73,6 +80,9 @@ spec:
         - containerPort: 5000
         - containerPort: 5001
         volumeMounts:
+        {{- if .Values.registry.registry.extraVolumeMounts }}
+        {{- toYaml .Values.registry.registry.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
           subPath: {{ .Values.persistence.persistentVolumeClaim.registry.subPath }}
@@ -139,6 +149,9 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
+          {{- if .Values.registry.controller.extraVolumeMounts }}
+          {{- toYaml .Values.registry.controller.extraVolumeMounts | nindent 8}}
+          {{- end }}
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
           subPath: {{ .Values.persistence.persistentVolumeClaim.registry.subPath }}
@@ -159,6 +172,9 @@ spec:
           subPath: gcs-key.json
         {{- end }}
       volumes:
+      {{- if .Values.registry.extraVolumes }}
+      {{- toYaml .Values.registry.extraVolumes | nindent 6}}
+      {{- end }}
       - name: registry-htpasswd
         secret:
           secretName: {{ template "harbor.registry" . }}

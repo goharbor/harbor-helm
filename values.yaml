@@ -293,6 +293,14 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the pod.
+  extraVolumes: []
 
 portal:
   image:
@@ -308,6 +316,14 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the controller pod.
+  extraVolumes: []
 
 core:
   image:
@@ -339,6 +355,14 @@ core:
   secretName: ""
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the pod.
+  extraVolumes: []
 
 jobservice:
   image:
@@ -361,6 +385,14 @@ jobservice:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the pod.
+  extraVolumes: []
 
 registry:
   registry:
@@ -372,6 +404,8 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # Additional volumeMounts to the container.
+    extraVolumeMounts: []
   controller:
     image:
       repository: goharbor/harbor-registryctl
@@ -381,12 +415,20 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # Additional volumeMounts to the container.
+    extraVolumeMounts: []
   replicas: 1
   nodeSelector: {}
   tolerations: []
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumes to the pod.
+  extraVolumes: []
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -431,6 +473,14 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the pod.
+  extraVolumes: []
 
 clair:
   enabled: true
@@ -442,6 +492,8 @@ clair:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # Additional volumeMounts to the container.
+    extraVolumeMounts: []
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
@@ -450,6 +502,8 @@ clair:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # Additional volumeMounts to the container.
+    extraVolumeMounts: []
   replicas: 1
   # The interval of clair updaters, the unit is hour, set to 0 to
   # disable the updaters
@@ -459,6 +513,13 @@ clair:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumes to the pod.
+  extraVolumes: []
+
 
 trivy:
   # enabled the flag to enable Trivy scanner
@@ -507,6 +568,14 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the pod.
+  extraVolumes: []
 
 notary:
   enabled: true
@@ -519,6 +588,14 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # Containers, which are run before the pod containers are started.
+    extraInitContainers: []
+    # Additional containers to be added to the pod.
+    extraContainers: []
+    # Additional volumeMounts to the container.
+    extraVolumeMounts: []
+    # Additional volumes to the pod.
+    extraVolumes: []
   signer:
     image:
       repository: goharbor/notary-signer-photon
@@ -528,6 +605,14 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # Containers, which are run before the pod containers are started.
+    extraInitContainers: []
+    # Additional containers to be added to the pod.
+    extraContainers: []
+    # Additional volumeMounts to the container.
+    extraVolumeMounts: []
+    # Additional volumes to the pod.
+    extraVolumes: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -588,6 +673,14 @@ database:
   maxOpenConns: 100
   ## Additional deployment annotations
   podAnnotations: {}
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the pod.
+  extraVolumes: []
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -618,3 +711,11 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+  # Containers, which are run before the pod containers are started.
+  extraInitContainers: []
+  # Additional containers to be added to the pod.
+  extraContainers: []
+  # Additional volumeMounts to the container.
+  extraVolumeMounts: []
+  # Additional volumes to the pod.
+  extraVolumes: []

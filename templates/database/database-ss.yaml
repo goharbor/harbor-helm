@@ -30,6 +30,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
+      {{- if .Values.database.extraInitContainers }}
+      {{- toYaml .Values.database.extraInitContainers | nindent 6}}
+      {{- end }}
       - name: "change-permission-of-directory"
         image: {{ .Values.database.internal.initContainerImage.repository }}:{{ .Values.database.internal.initContainerImage.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -48,6 +51,9 @@ spec:
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
       containers:
+      {{- if .Values.database.extraContainers }}
+      {{- toYaml .Values.database.extraContainers | nindent 6}}
+      {{- end }}
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -71,15 +77,20 @@ spec:
           - secretRef:
               name: "{{ template "harbor.database" . }}"
         volumeMounts:
+        {{- if .Values.database.extraVolumeMounts }}
+        {{- toYaml .Values.database.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
-      {{- if not .Values.persistence.enabled }}
       volumes:
+      {{- if .Values.database.extraVolumes }}
+      {{- toYaml .Values.database.extraVolumes | nindent 6}}
+      {{- end }}
+      {{- if not .Values.persistence.enabled }}
       - name: "database-data"
         emptyDir: {}
       {{- else if $database.existingClaim }}
-      volumes:
       - name: "database-data"
         persistentVolumeClaim:
           claimName: {{ $database.existingClaim }}

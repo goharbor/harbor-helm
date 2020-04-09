@@ -36,7 +36,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.chartmuseum.extraInitContainers }}
+      {{- toYaml .Values.chartmuseum.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.chartmuseum.extraContainers }}
+      {{- toYaml .Values.chartmuseum.extraContainers | nindent 6}}
+      {{- end }}
       - name: chartmuseum
         image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -78,6 +85,9 @@ spec:
         ports:
         - containerPort: 9999
         volumeMounts:
+        {{- if .Values.chartmuseum.extraVolumeMounts }}
+        {{- toYaml .Values.chartmuseum.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: chartmuseum-data
           mountPath: /chart_storage
           subPath: {{ .Values.persistence.persistentVolumeClaim.chartmuseum.subPath }}
@@ -92,6 +102,9 @@ spec:
           subPath: ca.crt
         {{- end }}
       volumes:
+      {{- if .Values.chartmuseum.extraVolumes }}
+      {{- toYaml .Values.chartmuseum.extraVolumes | nindent 6}}
+      {{- end }}
       - name: chartmuseum-data
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
         persistentVolumeClaim:

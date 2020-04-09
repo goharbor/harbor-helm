@@ -30,7 +30,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.core.extraInitContainers }}
+      {{- toYaml .Values.core.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.core.extraContainers }}
+      {{- toYaml .Values.core.extraContainers | nindent 6}}
+      {{- end }}
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -65,6 +72,9 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
+        {{- if .Values.core.extraVolumeMounts }}
+        {{- toYaml .Values.core.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: config
           mountPath: /etc/core/app.conf
           subPath: app.conf
@@ -90,6 +100,9 @@ spec:
 {{ toYaml .Values.core.resources | indent 10 }}
 {{- end }}
       volumes:
+      {{- if .Values.core.extraVolumes }}
+      {{- toYaml .Values.core.extraVolumes | nindent 6}}
+      {{- end }}
       - name: config
         configMap:
           name: {{ template "harbor.core" . }}
