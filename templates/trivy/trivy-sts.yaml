@@ -54,6 +54,8 @@ spec:
               value: {{ .Values.trivy.ignoreUnfixed | default false | quote }}
             - name: "SCANNER_TRIVY_SKIP_UPDATE"
               value: {{ .Values.trivy.skipUpdate | default false | quote }}
+            - name: "SCANNER_TRIVY_INSECURE"
+              value: {{ .Values.trivy.insecure | default false | quote }}
             - name: "SCANNER_STORE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
