@@ -20,6 +20,9 @@ spec:
 {{ include "harbor.labels" . | indent 8 }}
         component: trivy
     spec:
+{{- if .Values.trivy.serviceAccountName }}
+      serviceAccountName: {{ .Values.trivy.serviceAccountName }}
+{{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 10000

@@ -25,6 +25,9 @@ spec:
 {{ toYaml .Values.database.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.database.internal.serviceAccountName }}
+      serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
+{{- end -}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

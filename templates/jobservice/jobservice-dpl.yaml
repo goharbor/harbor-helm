@@ -32,6 +32,9 @@ spec:
     spec:
       securityContext:
         fsGroup: 10000
+{{- if .Values.jobservice.serviceAccountName }}
+      serviceAccountName: {{ .Values.jobservice.serviceAccountName }}
+{{- end -}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
