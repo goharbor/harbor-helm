@@ -31,7 +31,7 @@ spec:
       {{- end }}
       containers:
       - name: clair
-        image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
+        image: {{ .Values.externalReg }}{{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -66,7 +66,7 @@ spec:
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
       - name: adapter
-        image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
+        image: {{ .Values.externalReg }}{{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

@@ -40,7 +40,7 @@ spec:
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
       - name: "remove-lost-found"
-        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        image: {{ .Values.externalReg }}{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
         volumeMounts:
@@ -49,7 +49,7 @@ spec:
           subPath: {{ $database.subPath }}
       containers:
       - name: database
-        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        image: {{ .Values.externalReg }}{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           exec:
