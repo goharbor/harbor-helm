@@ -38,6 +38,14 @@ expose:
       ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  ingressRoute:
+    hosts:
+      core: core.harbor.domain
+      notary: notary.harbor.domain
+    annotations: {}
+    entryPoints: []
+    middlewares: []
+    tls: {}
   clusterIP:
     # The name of ClusterIP service
     name: harbor

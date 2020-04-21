@@ -1,0 +1,47 @@
+{{- if eq .Values.expose.type "ingressRoute" }}
+{{- $ingressRoute := .Values.expose.ingressRoute -}}
+{{- $_ := set . "portal_path" "/" -}}
+{{- $_ := set . "api_path" "/api/" -}}
+{{- $_ := set . "service_path" "/service/" -}}
+{{- $_ := set . "v2_path" "/v2/" -}}
+{{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
+{{- $_ := set . "controller_path" "/c/" -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: "{{ template "harbor.ingressRoute" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+{{- if $ingressRoute.annotations }}
+  annotations:
+{{ toYaml $ingressRoute.annotations | indent 4 }}
+{{- end }}
+spec:
+  entryPoints:
+{{ toYaml $ingressRoute.entryPoints | indent 2 }}
+  routes:
+  - kind: Rule
+    match: Host(`{{ $ingressRoute.hosts.core }}`)
+    services:
+    - kind: Service
+      name: {{ template "harbor.portal" . }}
+      port: 80
+  - kind: Rule
+    match: Host(`{{ $ingressRoute.hosts.core }}`) && (PathPrefix(`{{ .api_path }}`) || PathPrefix(`{{ .service_path }}`) || PathPrefix(`{{ .v2_path }}`) || PathPrefix(`{{ .chartrepo_path }}`) || PathPrefix(`{{ .controller_path }}`))
+    services:
+    - kind: Service
+      name: {{ template "harbor.core" . }}
+      port: 80
+  {{- if .Values.notary.enabled }}
+  - kind: Rule
+    match: Host(`{{ $ingressRoute.hosts.notary }}`)
+    services:
+    - kind: Service
+      name: {{ template "harbor.notary-server" . }}
+      port: 4443
+  {{- end }}
+{{- if $ingressRoute.tls }}
+  tls: 
+{{ toYaml $ingressRoute.tls | indent 4 }}
+{{- end }}
+{{- end }}
