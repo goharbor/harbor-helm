@@ -1,7 +1,7 @@
 {{- if eq .Values.expose.type "ingress" }}
 {{- $ingress := .Values.expose.ingress -}}
 {{- $tls := .Values.expose.tls -}}
-{{- if eq .Values.expose.ingress.controller "gce" }}
+{{- if or (eq .Values.expose.ingress.controller "gce") (eq .Values.expose.ingress.controller "alb") }}
   {{- $_ := set . "portal_path" "/*" -}}
   {{- $_ := set . "api_path" "/api/*" -}}
   {{- $_ := set . "service_path" "/service/*" -}}
@@ -65,10 +65,12 @@ spec:
   rules:
   - http:
       paths:
+      {{- if not (eq .Values.expose.ingress.controller "alb") }}
       - path: {{ .portal_path }}
         backend:
           serviceName: {{ template "harbor.portal" . }}
           servicePort: 80
+      {{- end }}
       - path: {{ .api_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
@@ -89,6 +91,12 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: 80
+      {{- if eq .Values.expose.ingress.controller "alb" }}
+      - path: {{ .portal_path }}
+        backend:
+          serviceName: {{ template "harbor.portal" . }}
+          servicePort: 80
+      {{- end }}
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
     {{- end }}
