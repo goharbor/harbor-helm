@@ -191,6 +191,15 @@ persistence:
     s3:
       region: us-west-1
       bucket: bucketname
+      
+      # if you have s3 credentials in a existing k8s secret
+      # name of the secret that already exists
+      # existingSecretName: s3-secret
+      # key name of access key within `existingSecretName`
+      #accessKeyName:
+      # key name of secret key within `existingSecretName`
+      #secretKeyName:
+
       #accesskey: awsaccesskey
       #secretkey: awssecretkey
       #regionendpoint: http://myobjects.local
@@ -510,6 +519,15 @@ database:
     clairDatabase: "clair"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
+
+    # if you have database credentials in a existing k8s secret
+    # name of the secret that already exists
+    # existingSecretName: database-secret
+    # key name of database username within `existingSecretName`
+    #usernameKey:
+    # key name of database password within `existingSecretName`
+    #passwordKey:
+
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
@@ -556,3 +574,7 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+
+serviceAccount:
+  enabled: true
+  name: harbor  

@@ -1,3 +1,5 @@
+{{- $storage := .Values.persistence.imageChartStorage }}
+{{- $storageType := $storage.type }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,6 +32,9 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "harbor.serviceAccountName" . }}
+      {{- end }}
       securityContext:
         fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
@@ -60,6 +65,18 @@ spec:
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+        {{- if and (eq $storageType "s3") (hasKey $storage.s3 "existingSecretName") }}
+        - name: REGISTRY_STORAGE_S3_ACCESSKEY
+          valueFrom:
+            secretKeyRef: 
+              name: {{ $storage.s3.existingSecretName }}
+              key: {{ $storage.s3.accessKey }}
+        - name: REGISTRY_STORAGE_S3_SECRETKEY
+          valueFrom:
+            secretKeyRef: 
+              name: {{ $storage.s3.existingSecretName }}
+              key: {{ $storage.s3.secretKey }}
+        {{- end }}
         ports:
         - containerPort: 5000
         - containerPort: 5001
@@ -114,6 +131,18 @@ spec:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
         env:
+          {{- if and (eq $storageType "s3") (hasKey $storage.s3 "existingSecretName") }}
+          - name: REGISTRY_STORAGE_S3_ACCESSKEY
+            valueFrom:
+              secretKeyRef: 
+                name: {{ $storage.s3.existingSecretName }}
+                key: {{ $storage.s3.accessKeyName }}
+          - name: REGISTRY_STORAGE_S3_SECRETKEY
+            valueFrom:
+              secretKeyRef: 
+                name: {{ $storage.s3.existingSecretName }}
+                key: {{ $storage.s3.secretKeyName }}
+          {{- end }}
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:

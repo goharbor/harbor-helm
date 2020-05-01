@@ -66,7 +66,9 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "5432" -}}
   {{- else -}}
+    {{- if hasKey .Values.database.external "port" -}}
     {{- .Values.database.external.port -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 
@@ -299,4 +301,8 @@ host:port,pool_size,password
 
 {{- define "harbor.noProxy" -}}
   {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.clair" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) .Values.proxy.noProxy -}}
+{{- end -}}
+
+{{- define "harbor.serviceAccountName" -}}
+{{ default (include "harbor.fullname" . ) .Values.serviceAccount.name }}
 {{- end -}}

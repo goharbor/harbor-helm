@@ -23,6 +23,9 @@ spec:
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "harbor.serviceAccountName" . }}
+      {{- end }}
       securityContext:
         fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
