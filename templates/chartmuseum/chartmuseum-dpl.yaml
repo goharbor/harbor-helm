@@ -72,7 +72,12 @@ spec:
             valueFrom:
               secretKeyRef: 
                 name: {{ $storage.s3.existingSecretName }}
-                key: {{ $storage.s3.accessKeyName }}
+                key: {{ $storage.s3.accessKey }}
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef: 
+                name: {{ $storage.s3.existingSecretName }}
+                key: {{ $storage.s3.secretKey }}
           {{- end }}
           - name: BASIC_AUTH_PASS
             valueFrom:

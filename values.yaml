@@ -196,9 +196,9 @@ persistence:
       # name of the secret that already exists
       # existingSecretName: s3-secret
       # key name of access key within `existingSecretName`
-      #accessKeyName:
+      # accessKey:
       # key name of secret key within `existingSecretName`
-      #secretKeyName:
+      # secretKey:
 
       #accesskey: awsaccesskey
       #secretkey: awssecretkey
