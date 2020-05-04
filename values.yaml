@@ -577,4 +577,12 @@ redis:
 
 serviceAccount:
   enabled: true
-  name: harbor  
+  name: harbor
+
+oidc:
+  enabled: false
+  # name:
+  # endpoint:
+  # clientId: 
+  # clientSecret:
+  # scope:

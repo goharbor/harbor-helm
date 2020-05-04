@@ -1,0 +1,50 @@
+{{- if .Values.oidc.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "harbor.core" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    metadata:
+      name: {{ template "harbor.core" . }}
+      {{- if .Values.core.podAnnotations }}
+      annotations:
+{{ toYaml .Values.core.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "harbor.serviceAccountName" . }}
+      {{- end }}
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: reg.vibrenthealth.com
+      volumes:
+      - name: configure-oidc-script
+        configMap:
+          name: harbor-oidc
+      containers:
+      - name: {{ template "harbor.core" . }}
+        image: reg.vibrenthealth.com/vibrent/utils/debug-utils:master
+        command: ['sh', '-c', 'chmod +x /tmp/configureOidc.sh && ./tmp/configureOidc.sh']
+        env:
+        - name: AUTH_MODE
+          value: oidc_auth
+        - name: OIDC_NAME
+          value: {{ .Values.oidc.name }}
+        - name: OIDC_ENDPOINT
+          value: {{ .Values.oidc.endpoint }}
+        - name: OIDC_CLIENT_ID
+          value: {{ .Values.oidc.clientId }}
+        - name: OIDC_CLIENT_SECRET
+          value: {{ .Values.oidc.clientSecret }}
+        - name: OIDC_SCOPE
+          value: {{ .Values.oidc.scope }}
+        - name: HARBOR_ADMIN_USERNAME
+          value: {{ default "admin" .Values.adminUsername }}
+        - name: HARBOR_ADMIN_PASSWORD
+          value: {{ .Values.harborAdminPassword }}
+        volumeMounts:
+        - name: configure-oidc-script
+          mountPath: /tmp
+{{- end }}
