@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "harbor.core" . }}
+  name: {{ template "harbor.core" . }}-oidc
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
@@ -26,10 +26,11 @@ spec:
       - name: configure-oidc-script
         configMap:
           name: harbor-oidc
+          defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" . }}
         image: reg.vibrenthealth.com/vibrent/utils/debug-utils:master
-        command: ['sh', '-c', 'chmod +x /tmp/configureOidc.sh && ./tmp/configureOidc.sh']
+        command: ['sh', '-c', 'ls -lrt /tmp && ./tmp/configureOidc.sh']
         env:
         - name: AUTH_MODE
           value: oidc_auth
