@@ -92,11 +92,27 @@ spec:
               secretKeyRef:
                 name: {{ template "harbor.clair" . }}
                 key: redis
+        {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
+        - name: POSTGRESQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecretName }}
+              key: {{ .Values.database.external.usernameKey }}
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecretName }}
+              key: {{ .Values.database.external.passwordKey }}
+        {{- end }}
         - name: SCANNER_CLAIR_DATABASE_URL
+          {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
+          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.clairDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+          {{- else }}
           valueFrom:
               secretKeyRef:
                 name: {{ template "harbor.clair" . }}
                 key: database
+          {{- end }}
         - name: SCANNER_LOG_LEVEL
           value: "{{ .Values.logLevel }}"
 {{- if .Values.clair.adapter.resources }}

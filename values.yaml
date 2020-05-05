@@ -524,9 +524,9 @@ database:
     # name of the secret that already exists
     # existingSecretName: database-secret
     # key name of database username within `existingSecretName`
-    #usernameKey:
+    # usernameKey: f
     # key name of database password within `existingSecretName`
-    #passwordKey:
+    # passwordKey: f
 
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
@@ -586,3 +586,4 @@ oidc:
   # clientId: 
   # clientSecret:
   # scope:
+  # groups_claim:

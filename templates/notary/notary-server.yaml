@@ -42,10 +42,26 @@ spec:
 {{ toYaml .Values.notary.server.resources | indent 10 }}
 {{- end }}
         env:
+        {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
+        - name: POSTGRESQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecretName }}
+              key: {{ .Values.database.external.usernameKey }}
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecretName }}
+              key: {{ .Values.database.external.passwordKey }}
+        {{- end }}
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
         - name: DB_URL
+          {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
+          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+          {{- else }}
           value: {{ template "harbor.database.notaryServer" . }}
+          {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/notary/server-config.postgres.json

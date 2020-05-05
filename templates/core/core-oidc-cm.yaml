@@ -12,5 +12,5 @@ data:
     -X PUT \
     -H "Content-Type: application/json" \
     -ki {{ .Values.expose.ingress.hosts.core }}/api/configurations \
-    -d "{ \"auth_mode\":\"$AUTH_MODE\",\"oidc_name\":\"$OIDC_NAME\",\"oidc_endpoint\":\"$OIDC_ENDPOINT\",\"oidc_client_id\":\"$OIDC_CLIENT_ID\",\"oidc_client_secret\":\"$OIDC_CLIENT_SECRET\",\"oidc_scope\":\"$OIDC_SCOPE\" }"
+    -d "{ \"auth_mode\":\"$AUTH_MODE\",\"oidc_name\":\"$OIDC_NAME\",\"oidc_endpoint\":\"$OIDC_ENDPOINT\",\"oidc_client_id\":\"$OIDC_CLIENT_ID\",\"oidc_client_secret\":\"$OIDC_CLIENT_SECRET\",\"oidc_scope\":\"$OIDC_SCOPE\",\"oidc_groups_claim\":\"$OIDC_GROUPS_CLAIM\"}"
 {{- end }}
