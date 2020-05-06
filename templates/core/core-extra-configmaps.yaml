@@ -1,0 +1,9 @@
+{{- range $configMapName, $configMap := .Values.core.configMaps }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $configMapName }}
+data:
+{{ toYaml $configMap.data | indent 2 }}
+---
+{{- end }}

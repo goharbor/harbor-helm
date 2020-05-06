@@ -65,15 +65,21 @@ spec:
               secretKeyRef:
                 name: "{{ template "harbor.jobservice" . }}"
                 key: secret
+          {{- if .Values.core.secretKeyPath }}
+          - name: KEY_PATH
+            value: {{ .Values.core.secretKeyPath }}
+          {{- end }}
         ports:
         - containerPort: 8080
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf
           subPath: app.conf
+      {{- if not .Values.core.secretKeyPath }}
         - name: secret-key
           mountPath: /etc/core/key
           subPath: key
+      {{- end }}
         - name: token-service-private-key
           mountPath: /etc/core/private_key.pem
           subPath: tls.key
@@ -99,12 +105,14 @@ spec:
           items:
             - key: app.conf
               path: app.conf
+      {{- if not .Values.core.secretKeyPath }}
       - name: secret-key
         secret:
           secretName: {{ template "harbor.core" . }}
           items:
             - key: secretKey
               path: key
+      {{- end }}
       - name: token-service-private-key
         secret:
           {{- if .Values.core.secretName }}
