@@ -22,11 +22,7 @@ data:
   DATABASE_TYPE: "postgresql"
   POSTGRESQL_HOST: "{{ template "harbor.database.host" . }}"
   POSTGRESQL_PORT: "{{ template "harbor.database.port" . }}"
-  {{- if eq .Values.database.type "external" }}
-  {{- if not (hasKey .Values.database.external "existingSecretName") }}
   POSTGRESQL_USERNAME: "{{ template "harbor.database.username" . }}"
-  {{- end }}
-  {{- end }}
   POSTGRESQL_DATABASE: "{{ template "harbor.database.coreDatabase" . }}"
   POSTGRESQL_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   POSTGRESQL_MAX_IDLE_CONNS: "{{ .Values.database.maxIdleConns }}"

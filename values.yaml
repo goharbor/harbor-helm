@@ -430,6 +430,9 @@ chartmuseum:
 
 clair:
   enabled: true
+  volumes: []
+  volumeMounts: []
+  configMaps: []
   clair:
     image:
       repository: goharbor/clair-photon
@@ -438,6 +441,7 @@ clair:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+  useDefaultConfig: true
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
@@ -458,11 +462,15 @@ clair:
 
 notary:
   enabled: true
+  configMaps: []
   server:
     image:
       repository: goharbor/notary-server-photon
       tag: v1.10.2
     replicas: 1
+    useDefaultConfig: true
+    volumes: []
+    volumeMounts: []
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -472,6 +480,9 @@ notary:
       repository: goharbor/notary-signer-photon
       tag: v1.10.2
     replicas: 1
+    useDefaultConfig: true
+    volumes: []
+    volumeMounts: []
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -519,15 +530,13 @@ database:
     clairDatabase: "clair"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
-
-    # if you have database credentials in a existing k8s secret
-    # name of the secret that already exists
-    # existingSecretName: database-secret
-    # key name of database username within `existingSecretName`
-    # usernameKey: f
-    # key name of database password within `existingSecretName`
-    # passwordKey: f
-
+    # clair:
+    #   dbUrl: vault:kv/somePath/database#postgres://${.USERNAME_KEY_FROM_VAULT}:${.PASSWORD_KEY_FROM_VAULT}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.clairDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+    # notarySigner:
+    #   dbUrl: vault:kv/somePath/database#postgres://${.USERNAME_KEY_FROM_VAULT}:${.PASSWORD_KEY_FROM_VAULT}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+    # notaryServer:
+    #   dbUrl: vault:kv/somePath/database#postgres://${.USERNAME_KEY_FROM_VAULT}:${.PASSWORD_KEY_FROM_VAULT}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+    
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the

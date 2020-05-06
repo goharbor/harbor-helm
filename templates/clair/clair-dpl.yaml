@@ -48,6 +48,10 @@ spec:
             port: 6061
           initialDelaySeconds: 30
           periodSeconds: 10
+        {{- if .Values.clair.command }}
+        command: 
+{{ toYaml .Values.clair.command | indent 8 }}
+        {{- end }}
         args: ["-log-level", "{{ .Values.logLevel }}"]
         env:
         {{- if has "clair" .Values.proxy.components }}
@@ -65,9 +69,14 @@ spec:
         ports:
         - containerPort: 6060
         volumeMounts:
+        {{- if .Values.clair.useDefaultConfig }}
         - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
+        {{- end }}
+        {{- if .Values.clair.volumeMounts }}
+{{ toYaml .Values.clair.volumeMounts | indent 8 }}
+        {{- end }}
       - name: adapter
         image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -92,27 +101,8 @@ spec:
               secretKeyRef:
                 name: {{ template "harbor.clair" . }}
                 key: redis
-        {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
-        - name: POSTGRESQL_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.database.external.existingSecretName }}
-              key: {{ .Values.database.external.usernameKey }}
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.database.external.existingSecretName }}
-              key: {{ .Values.database.external.passwordKey }}
-        {{- end }}
         - name: SCANNER_CLAIR_DATABASE_URL
-          {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
-          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.clairDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
-          {{- else }}
-          valueFrom:
-              secretKeyRef:
-                name: {{ template "harbor.clair" . }}
-                key: database
-          {{- end }}
+          value: {{ include "harbor.database.clair" .}}
         - name: SCANNER_LOG_LEVEL
           value: "{{ .Values.logLevel }}"
 {{- if .Values.clair.adapter.resources }}
@@ -125,6 +115,9 @@ spec:
       - name: config
         secret:
           secretName: "{{ template "harbor.clair" . }}"
+      {{- if .Values.clair.volumes }}
+{{ toYaml .Values.deployment.volumes | indent 6 }}
+      {{- end }}
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

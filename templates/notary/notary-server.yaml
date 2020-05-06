@@ -42,37 +42,29 @@ spec:
 {{ toYaml .Values.notary.server.resources | indent 10 }}
 {{- end }}
         env:
-        {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
-        - name: POSTGRESQL_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.database.external.existingSecretName }}
-              key: {{ .Values.database.external.usernameKey }}
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.database.external.existingSecretName }}
-              key: {{ .Values.database.external.passwordKey }}
-        {{- end }}
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
         - name: DB_URL
-          {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
-          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
-          {{- else }}
-          value: {{ template "harbor.database.notaryServer" . }}
-          {{- end }}
+          value: {{ include "harbor.database.notaryServer" . }}
         volumeMounts:
+        {{- if .Values.notary.server.useDefaultConfig }}
         - name: config
           mountPath: /etc/notary/server-config.postgres.json
           subPath: server.json
+        {{- end }}
         - name: token-service-certificate
           mountPath: /root.crt
           subPath: tls.crt
         - name: signer-certificate
           mountPath: /etc/ssl/notary/ca.crt
           subPath: ca.crt
+        {{- if .Values.notary.server.volumeMounts }}
+{{ toYaml .Values.notary.server.volumeMounts | indent 8 }}
+        {{- end }}
       volumes:
+      {{- if .Values.notary.server.volumes }}
+{{ toYaml .Values.notary.server.volumes | indent 6 }}
+      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"

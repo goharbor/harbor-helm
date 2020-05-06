@@ -55,18 +55,6 @@ spec:
         - secretRef:
             name: "{{ template "harbor.core" . }}"
         env:
-        {{- if and (eq .Values.database.type "external") (hasKey .Values.database.external "existingSecretName") }}
-          - name: POSTGRESQL_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.database.external.existingSecretName }}
-                key: {{ .Values.database.external.usernameKey }}
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.database.external.existingSecretName }}
-                key: {{ .Values.database.external.passwordKey }}
-        {{- end }}
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
