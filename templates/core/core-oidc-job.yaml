@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "harbor.core" . }}-oidc
+  name: oidc-job
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
@@ -11,9 +11,9 @@ spec:
   template:
     metadata:
       name: {{ template "harbor.core" . }}
-      {{- if .Values.core.podAnnotations }}
+      {{- if .Values.oidc.oidcJobPodAnnotations }}
       annotations:
-{{ toYaml .Values.core.podAnnotations | indent 8 }}
+{{ toYaml .Values.oidc.oidcJobPodAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.serviceAccount.enabled }}
