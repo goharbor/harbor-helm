@@ -19,8 +19,8 @@ spec:
         component: notary-signer
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
-{{- if .Values.notary.podAnnotations }}
-{{ toYaml .Values.notary.podAnnotations | indent 8 }}
+{{- if .Values.notary.signer.podAnnotations }}
+{{ toYaml .Values.notary.signer.podAnnotations | indent 8 }}
 {{- end }}
     spec:
       {{- if .Values.serviceAccount.enabled }}
@@ -36,6 +36,10 @@ spec:
       - name: notary-signer
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.notary.signer.command }}
+        command: 
+{{ toYaml .Values.notary.signer.command | indent 8 }}
+        {{- end }}
 {{- if .Values.notary.signer.resources }}
         resources:
 {{ toYaml .Values.notary.signer.resources | indent 10 }}
