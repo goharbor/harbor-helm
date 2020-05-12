@@ -8,6 +8,11 @@ metadata:
     component: chartmuseum
 spec:
   replicas: {{ .Values.chartmuseum.replicas }}
+  strategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if eq .Values.updateStrategy.type "Recreate" }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -25,6 +30,8 @@ spec:
 {{ toYaml .Values.chartmuseum.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -37,7 +44,7 @@ spec:
           httpGet:
             path: /health
             port: 9999
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
@@ -55,6 +62,14 @@ spec:
         - secretRef:
             name: "{{ template "harbor.chartmuseum" . }}"
         env:
+          {{- if has "chartmuseum" .Values.proxy.components }}
+          - name: HTTP_PROXY
+            value: "{{ .Values.proxy.httpProxy }}"
+          - name: HTTPS_PROXY
+            value: "{{ .Values.proxy.httpsProxy }}"
+          - name: NO_PROXY
+            value: "{{ template "harbor.noProxy" . }}"
+          {{- end }}
           - name: BASIC_AUTH_PASS
             valueFrom:
               secretKeyRef:

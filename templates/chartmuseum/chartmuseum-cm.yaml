@@ -44,6 +44,7 @@ data:
   STORAGE: "microsoft"
   STORAGE_MICROSOFT_CONTAINER: {{ $storage.azure.container }}
   AZURE_STORAGE_ACCOUNT: {{ $storage.azure.accountname }}
+  AZURE_BASE_URL: {{ $storage.azure.realm }}
   STORAGE_MICROSOFT_PREFIX: "/azure/harbor/charts"
 {{- else if eq $storageType "gcs" }}
   STORAGE: "google"
@@ -64,6 +65,9 @@ data:
   {{- end }}
   {{- if $storage.s3.accesskey }}
   AWS_ACCESS_KEY_ID: {{ $storage.s3.accesskey }}
+  {{- end }}
+  {{- if $storage.s3.keyid }}
+  STORAGE_AMAZON_SSE: aws:kms
   {{- end }}
 {{- else if eq $storageType "swift" }}
   STORAGE: "openstack"

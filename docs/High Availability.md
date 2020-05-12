@@ -25,11 +25,11 @@ As for storage layer, it is expected that the user provide high available Postgr
 
 ### Download Chart
 
-Download Harbor helm chart code.
+Download Harbor helm chart:
 
 ```bash
-git clone https://github.com/goharbor/harbor-helm
-cd harbor-helm
+helm repo add harbor https://helm.goharbor.io
+helm fetch harbor/harbor --untar
 ```
 
 ### Configuration
@@ -64,8 +64,13 @@ Configure the followings items in `values.yaml`, you can also set them as parame
 
 ### Installation
 
-Install the Harbor helm chart with a release name `my-release`:
+Install the Harbor helm chart with a release name `my-release`:  
 
+helm 2:
 ```bash
 helm install --name my-release .
+```
+helm 3:
+```
+helm install my-release .
 ```

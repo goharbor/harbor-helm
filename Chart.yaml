@@ -13,8 +13,8 @@ sources:
 - https://github.com/goharbor/harbor
 - https://github.com/goharbor/harbor-helm
 maintainers:
-- name: Jesse Hu
-  email: huh@vmware.com
-- name: paulczar
-  email: username.taken@gmail.com
+- name: Wenkai Yin
+  email: yinw@vmware.com
+- name: Weiwei He
+  email: hweiwei@vmware.com
 engine: gotpl

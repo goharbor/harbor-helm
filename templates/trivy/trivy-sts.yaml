@@ -1,0 +1,114 @@
+{{- if .Values.trivy.enabled }}
+{{- $trivyPVC := .Values.persistence.persistentVolumeClaim.trivy -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "harbor.trivy" . }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: trivy
+spec:
+  replicas: {{ .Values.trivy.replicas }}
+  serviceName: {{  template "harbor.trivy" . }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: trivy
+  template:
+    metadata:
+      labels:
+{{ include "harbor.labels" . | indent 8 }}
+        component: trivy
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+        - name: trivy
+          image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+          env:
+            - name: "SCANNER_LOG_LEVEL"
+              value: {{ .Values.logLevel | quote }}
+            - name: "SCANNER_TRIVY_CACHE_DIR"
+              value: "/home/scanner/.cache/trivy"
+            - name: "SCANNER_TRIVY_REPORTS_DIR"
+              value: "/home/scanner/.cache/reports"
+            - name: "SCANNER_TRIVY_DEBUG_MODE"
+              value: {{ .Values.trivy.debugMode | quote }}
+            - name: "SCANNER_TRIVY_VULN_TYPE"
+              value: {{ .Values.trivy.vulnType | quote }}
+            - name: "SCANNER_TRIVY_GITHUB_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "harbor.trivy" . }}
+                  key: gitHubToken
+            - name: "SCANNER_TRIVY_SEVERITY"
+              value: {{ .Values.trivy.severity | quote }}
+            - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
+              value: {{ .Values.trivy.ignoreUnfixed | default false | quote }}
+            - name: "SCANNER_TRIVY_SKIP_UPDATE"
+              value: {{ .Values.trivy.skipUpdate | default false | quote }}
+            - name: "SCANNER_TRIVY_INSECURE"
+              value: {{ .Values.trivy.insecure | default false | quote }}
+            - name: "SCANNER_STORE_REDIS_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "harbor.trivy" . }}
+                  key: redisURL
+            - name: "SCANNER_JOB_QUEUE_REDIS_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "harbor.trivy" . }}
+                  key: redisURL
+          ports:
+            - name: api-server
+              containerPort: 8080
+          volumeMounts:
+            - name: data
+              mountPath: /home/scanner/.cache
+              readOnly: false
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /probe/healthy
+              port: api-server
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /probe/ready
+              port: api-server
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+{{ toYaml .Values.trivy.resources | indent 12 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+{{ include "harbor.labels" . | indent 10 }}
+      spec:
+        accessModes:
+          - {{ $trivyPVC.accessMode | quote }}
+        {{- if $trivyPVC.storageClass }}
+        {{- if (eq "-" $trivyPVC.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ $trivyPVC.storageClass }}"
+        {{- end }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ $trivyPVC.size | quote }}
+{{- end }}

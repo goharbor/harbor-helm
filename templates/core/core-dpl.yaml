@@ -36,13 +36,13 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
-            path: /api/ping
+            path: /api/v2.0/ping
             port: 8080
-          initialDelaySeconds: 20
+          initialDelaySeconds: {{ .Values.core.livenessProbe.initialDelaySeconds }}
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /api/ping
+            path: /api/v2.0/ping
             port: 8080
           initialDelaySeconds: 20
           periodSeconds: 10
@@ -61,7 +61,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: "{{ template "harbor.jobservice" . }}"
-                key: secret
+                key: JOBSERVICE_SECRET
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -80,7 +80,7 @@ spec:
         {{- end }}
         {{- if .Values.uaaSecretName }}
         - name: auth-ca-cert
-          mountPath: /etc/core/ca/auth-ca.crt
+          mountPath: /etc/core/auth-ca/auth-ca.crt
           subPath: auth-ca.crt
         {{- end }}
         - name: psc

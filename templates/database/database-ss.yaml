@@ -31,13 +31,14 @@ spec:
       {{- end }}
       initContainers:
       - name: "change-permission-of-directory"
-        image: "busybox:latest"
+        image: {{ .Values.database.internal.initContainerImage.repository }}:{{ .Values.database.internal.initContainerImage.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
         args: ["-c", "chown -R 999:999 /var/lib/postgresql/data"]
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
+          subPath: {{ $database.subPath }}
       - name: "remove-lost-found"
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -45,6 +46,7 @@ spec:
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
+          subPath: {{ $database.subPath }}
       containers:
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
@@ -53,7 +55,7 @@ spec:
           exec:
             command:
             - /docker-healthcheck.sh
-          initialDelaySeconds: 60
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           exec:

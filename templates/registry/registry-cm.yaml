@@ -47,6 +47,9 @@ data:
         {{- if $storage.s3.encrypt }}
         encrypt: {{ $storage.s3.encrypt }}
         {{- end }}
+        {{- if $storage.s3.keyid }}
+        keyid: {{ $storage.s3.keyid }}
+        {{- end }}
         {{- if $storage.s3.secure }}
         secure: {{ $storage.s3.secure }}
         {{- end }}
@@ -159,21 +162,12 @@ data:
           path: "/metrics"
         {{- end }}
     auth:
-      token:
-        issuer: harbor-token-issuer
-        realm: "{{ .Values.externalURL }}/service/token"
-        rootcertbundle: /etc/registry/root.crt
-        service: harbor-registry
+      htpasswd:
+        realm: harbor-registry-basic-realm
+        path: /etc/registry/passwd
     validation:
       disabled: true
-    notifications:
-      endpoints:
-        - name: harbor
-          disabled: false
-          url: http://{{ template "harbor.core" . }}/service/notifications
-          timeout: 3000ms
-          threshold: 5
-          backoff: 1s
+
     {{- if .Values.registry.middleware.enabled }}
     {{- $middleware := .Values.registry.middleware }}
     {{- $middlewareType := $middleware.type }}

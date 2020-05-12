@@ -36,6 +36,9 @@ data:
   CLAIR_DB: "{{ template "harbor.database.clairDatabase" . }}"
   CLAIR_DB_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   CLAIR_URL: "http://{{ template "harbor.fullname" . }}-clair:6060"
+  CLAIR_ADAPTER_URL: "http://{{ template "harbor.clair" . }}:8080"
+  WITH_TRIVY: {{ .Values.trivy.enabled | quote }}
+  TRIVY_ADAPTER_URL: "http://{{ template "harbor.trivy" . }}:8080"
   REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.persistence.imageChartStorage.type }}"
   WITH_CHARTMUSEUM: "{{ .Values.chartmuseum.enabled }}"
   CHART_REPOSITORY_URL: "http://{{ template "harbor.chartmuseum" . }}"
@@ -46,10 +49,12 @@ data:
   _REDIS_URL: "{{ template "harbor.redisForCore" . }}"
   _REDIS_URL_REG: "{{ template "harbor.redisForGC" . }}"
   PORTAL_URL: "http://{{ template "harbor.portal" . }}"
-  REGISTRYCTL_URL: "http://{{ template "harbor.registry" . }}:8080"
+  REGISTRY_CONTROLLER_URL: "http://{{ template "harbor.registry" . }}:8080"
   CLAIR_HEALTH_CHECK_SERVER_URL: "http://{{ template "harbor.clair" . }}:6061"
+  REGISTRY_CREDENTIAL_USERNAME: "{{ .Values.registry.credentials.username }}"
+  CSRF_KEY: "{{ randAlphaNum 32 }}"
   {{- if .Values.uaaSecretName }}
-  UAA_CA_ROOT: "/etc/core/ca/auth-ca.crt"
+  UAA_CA_ROOT: "/etc/core/auth-ca/auth-ca.crt"
   {{- end }}
   {{- if has "core" .Values.proxy.components }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"

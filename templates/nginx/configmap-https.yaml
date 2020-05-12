@@ -41,7 +41,7 @@ data:
       }
       {{- end }}
       
-      log_format timed_combined 'remote_addr - '
+      log_format timed_combined '[$time_local]:$remote_addr - '
         '"$request" $status $body_bytes_sent '
         '"$http_referer" "$http_user_agent" '
         '$request_time $upstream_response_time $pipe';
@@ -102,6 +102,11 @@ data:
       
         # required to avoid HTTP 411: see Issue #1486 (https://github.com/docker/docker/issues/1486)
         chunked_transfer_encoding on;
+
+        # Add extra headers
+        add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+        add_header X-Frame-Options DENY;
+        add_header Content-Security-Policy "frame-ancestors 'none'";
 
         location / {
           proxy_pass http://portal/;

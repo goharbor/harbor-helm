@@ -194,6 +194,22 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.redis.clairAdapterIndex" -}}
+  {{- if eq .Values.redis.type "internal" -}}
+    {{- printf "%s" "4" }}
+  {{- else -}}
+    {{- .Values.redis.external.clairAdapterIndex -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.redis.trivyAdapterIndex" -}}
+  {{- if eq .Values.redis.type "internal" -}}
+    {{- printf "%s" "5" }}
+  {{- else -}}
+    {{- .Values.redis.external.trivyAdapterIndex -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.redis.rawPassword" -}}
   {{- if and (eq .Values.redis.type "external") .Values.redis.external.password -}}
     {{- .Values.redis.external.password -}}
@@ -221,6 +237,23 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
     {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.escapedRawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) }}
   {{- else }}
     {{- printf "redis://%s:%s/%s" (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.registryDatabaseIndex" . ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*the username redis is used for a placeholder as no username needed in redis*/}}
+{{- define "harbor.redisForClairAdapter" -}}
+  {{- if (include "harbor.redis.escapedRawPassword" . ) -}}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.escapedRawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.clairAdapterIndex" . ) }}
+  {{- else }}
+    {{- printf "redis://%s:%s/%s" (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.clairAdapterIndex" . ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.redisForTrivyAdapter" -}}
+  {{- if (include "harbor.redis.escapedRawPassword" . ) -}}
+    {{- printf "redis://redis:%s@%s:%s/%s" (include "harbor.redis.escapedRawPassword" . ) (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.trivyAdapterIndex" . ) }}
+  {{- else }}
+    {{- printf "redis://%s:%s/%s" (include "harbor.redis.host" . ) (include "harbor.redis.port" . ) (include "harbor.redis.trivyAdapterIndex" . ) -}}
   {{- end -}}
 {{- end -}}
 
@@ -264,6 +297,10 @@ host:port,pool_size,password
   {{- printf "%s-clair" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{- define "harbor.trivy" -}}
+  {{- printf "%s-trivy" (include "harbor.fullname" .) -}}
+{{- end -}}
+
 {{- define "harbor.notary-server" -}}
   {{- printf "%s-notary-server" (include "harbor.fullname" .) -}}
 {{- end -}}
@@ -281,5 +318,5 @@ host:port,pool_size,password
 {{- end -}}
 
 {{- define "harbor.noProxy" -}}
-  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.clair" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) .Values.proxy.noProxy -}}
+  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.clair" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) .Values.proxy.noProxy -}}
 {{- end -}}
