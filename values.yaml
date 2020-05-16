@@ -33,6 +33,14 @@ expose:
     # set to `gce` if using the GCE ingress controller
     # set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
     controller: default
+    # You can specify that you want no secret in the ingress's TLS section.
+    # In this case, the "secretName" option will be ignored.
+    # This is useful for setups where the ingress controller already provides
+    # a TLS secret for multiple or all ingresses in the cluster.
+    nosecret: false
+    # The same setting for the notary ingress, if the notary is enabled.
+    # If set, notarySecretName will be ignored.
+    notaryNoSecret: false
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
       ingress.kubernetes.io/proxy-body-size: "0"
