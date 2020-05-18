@@ -2,6 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: {{ .Values.namespace }}
   name: {{ template "harbor.nginx" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}

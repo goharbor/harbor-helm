@@ -4,6 +4,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  namespace: {{ .Values.namespace }}
   name: {{ template "harbor.registry" . }}
   {{- if eq .Values.persistence.resourcePolicy "keep" }}
   annotations:

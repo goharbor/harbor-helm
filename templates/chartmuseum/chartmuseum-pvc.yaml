@@ -6,6 +6,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  namespace: {{ .Values.namespace }}
   name: {{ template "harbor.chartmuseum" . }}
   {{- if eq $persistence.resourcePolicy "keep" }}
   annotations:

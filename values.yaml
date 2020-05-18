@@ -1,3 +1,7 @@
+# Set custom namespace
+# default is default
+namespace: default
+
 expose:
   # Set the way how to expose the service. Set the type as "ingress",
   # "clusterIP", "nodePort" or "loadBalancer" and fill the information

@@ -3,6 +3,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: {{ .Values.namespace }}
   name: {{ template "harbor.redis" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}

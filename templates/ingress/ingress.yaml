@@ -26,6 +26,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+  namespace: {{ .Values.namespace }}
   name: "{{ template "harbor.ingress" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
