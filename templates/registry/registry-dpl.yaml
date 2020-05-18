@@ -30,6 +30,7 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: "{{ template "harbor.registry" . }}"
       securityContext:
         fsGroup: 10000
       {{- with .Values.imagePullSecrets }}

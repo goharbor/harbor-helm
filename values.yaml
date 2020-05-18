@@ -387,6 +387,8 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Service account annotations
+  serviceAccountAnnotations: {}
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -431,6 +433,8 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Service account annotations
+  serviceAccountAnnotations: {}
 
 clair:
   enabled: true
