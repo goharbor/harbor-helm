@@ -39,21 +39,15 @@ spec:
     {{- else }}
   - secretName: "{{ template "harbor.ingress" . }}"
     {{- end }}
-    {{- if $ingress.hosts.core }}
+    {{- if or $ingress.hosts.core $ingress.hosts.notary }}
     hosts:
+    {{- if $ingress.hosts.core }}
     - {{ $ingress.hosts.core }}
     {{- end }}
-  {{- if .Values.notary.enabled }}
-    {{- if $tls.notarySecretName }}
-  - secretName: {{ $tls.notarySecretName }}
-    {{- else if $tls.secretName }}
-  - secretName: {{ $tls.secretName }}
-    {{- else }}
-  - secretName: "{{ template "harbor.ingress" . }}"
-    {{- end }}
+    {{- if .Values.notary.enabled }}
     {{- if $ingress.hosts.notary }}
-    hosts:
     - {{ $ingress.hosts.notary }}
+    {{- end }}
     {{- end }}
   {{- end }}
   {{- end }}

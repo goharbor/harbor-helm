@@ -17,10 +17,6 @@ expose:
     # link on portal to download the certificate of CA
     # These files will be generated automatically if the "secretName" is not set
     secretName: ""
-    # By default, the Notary service will use the same cert and key as
-    # described above. Fill the name of secret if you want to use a
-    # separated one. Only needed when the type is "ingress".
-    notarySecretName: ""
     # The common name used to generate the certificate, it's necessary
     # when the type isn't "ingress" and "secretName" is null
     commonName: ""
