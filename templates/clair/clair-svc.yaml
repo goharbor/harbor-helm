@@ -8,7 +8,7 @@ metadata:
 spec:
   ports:
     - name: adapter
-      port: 8080
+      port: {{ include "harbor.clairAdapter.servicePort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: clair

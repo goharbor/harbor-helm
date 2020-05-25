@@ -5,9 +5,10 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 data:
-  CORE_URL: "http://{{ template "harbor.core" . }}"
-  REGISTRY_URL: "http://{{ template "harbor.registry" . }}:5000"
-  REGISTRY_CONTROLLER_URL: "http://{{ template "harbor.registry" . }}:8080"
+  CORE_URL: "{{ template "harbor.coreURL" . }}"
+  TOKEN_SERVICE_URL: "{{ template "harbor.tokenServiceURL" . }}"
+  REGISTRY_URL: "{{ template "harbor.registryURL" . }}"
+  REGISTRY_CONTROLLER_URL: "{{ template "harbor.registryControllerURL" . }}"
   REGISTRY_CREDENTIAL_USERNAME: "{{ .Values.registry.credentials.username }}"
   {{- if has "jobservice" .Values.proxy.components }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"

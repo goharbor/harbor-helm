@@ -7,9 +7,9 @@ metadata:
 spec:
   ports:
     - name: registry
-      port: 5000
+      port: {{ template "harbor.registry.servicePort" . }}
     - name: controller
-      port: 8080
+      port: {{ template "harbor.registryctl.servicePort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: registry

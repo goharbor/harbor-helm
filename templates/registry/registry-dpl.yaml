@@ -26,6 +26,11 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/registry/registry-secret.yaml") . | sha256sum }}
         checksum/secret-jobservice: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
         checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
+{{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/registry/registry-tls.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.registry.podAnnotations }}
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
@@ -43,13 +48,15 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: 5000
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.registry.containerPort" . }}
           initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
-            port: 5000
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.registry.containerPort" . }}
           initialDelaySeconds: 1
           periodSeconds: 10
 {{- if .Values.registry.registry.resources }}
@@ -69,8 +76,18 @@ spec:
         - name: NO_PROXY
           value: "{{ template "harbor.noProxy" . }}"
         {{- end }}
+        {{- if .Values.internalTLS.enabled }}
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: INTERNAL_TLS_KEY_PATH
+          value: /etc/harbor/tls/registry.key
+        - name: INTERNAL_TLS_CERT_PATH
+          value: /etc/harbor/tls/registry.crt
+        - name: INTERNAL_TLS_TRUST_CA_PATH
+          value: /harbor_cust_cert/harbor_internal_ca.crt
+        {{- end }}
         ports:
-        - containerPort: 5000
+        - containerPort: {{ template "harbor.registry.containerPort" . }}
         - containerPort: 5001
         volumeMounts:
         - name: registry-data
@@ -85,6 +102,17 @@ spec:
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
+        {{- if .Values.internalTLS.enabled }}
+        - name: registry-internal-certs
+          mountPath: /harbor_cust_cert/harbor_internal_ca.crt
+          subPath: ca.crt
+        - name: registry-internal-certs
+          mountPath: /etc/harbor/tls/registry.crt
+          subPath: tls.crt
+        - name: registry-internal-certs
+          mountPath: /etc/harbor/tls/registry.key
+          subPath: tls.key
+        {{- end }}
         {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
         - name: gcs-key
           mountPath: /etc/registry/gcs-key.json
@@ -108,13 +136,15 @@ spec:
         livenessProbe:
           httpGet:
             path: /api/health
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.registryctl.containerPort" . }}
           initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /api/health
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.registryctl.containerPort" . }}
           initialDelaySeconds: 1
           periodSeconds: 10
 {{- if .Values.registry.controller.resources }}
@@ -126,18 +156,28 @@ spec:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
         env:
-          - name: CORE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "harbor.core" . }}
-                key: secret
-          - name: JOBSERVICE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "harbor.jobservice" . }}
-                key: JOBSERVICE_SECRET
+        - name: CORE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "harbor.core" . }}
+              key: secret
+        - name: JOBSERVICE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "harbor.jobservice" . }}
+              key: JOBSERVICE_SECRET
+        {{- if .Values.internalTLS.enabled }}
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: INTERNAL_TLS_KEY_PATH
+          value: /etc/harbor/ssl/registryctl.key
+        - name: INTERNAL_TLS_CERT_PATH
+          value: /etc/harbor/ssl/registryctl.crt
+        - name: INTERNAL_TLS_TRUST_CA_PATH
+          value: /harbor_cust_cert/harbor_internal_ca.crt
+        {{- end }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ template "harbor.registryctl.containerPort" . }}
         volumeMounts:
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
@@ -148,6 +188,17 @@ spec:
         - name: registry-config
           mountPath: /etc/registryctl/config.yml
           subPath: ctl-config.yml
+        {{- if .Values.internalTLS.enabled }}
+        - name: registry-internal-certs
+          mountPath: /harbor_cust_cert/harbor_internal_ca.crt
+          subPath: ca.crt
+        - name: registry-internal-certs
+          mountPath: /etc/harbor/ssl/registryctl.crt
+          subPath: tls.crt
+        - name: registry-internal-certs
+          mountPath: /etc/harbor/ssl/registryctl.key
+          subPath: tls.key
+        {{- end }}
         {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
         - name: storage-service-ca
           mountPath: /harbor_cust_cert/custom-ca-bundle.crt
@@ -181,6 +232,11 @@ spec:
           claimName: {{ .Values.persistence.persistentVolumeClaim.registry.existingClaim | default (include "harbor.registry" .) }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.internalTLS.enabled }}
+      - name: registry-internal-certs
+        secret:
+          secretName: {{ template "harbor.internalTLS.registry.secretName" . }}
       {{- end }}
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
       - name: gcs-key

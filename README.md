@@ -68,7 +68,7 @@ Secrets and certificates must be setup to avoid changes on every Helm upgrade (s
 
 ### Install the chart
 
-Install the Harbor helm chart with a release name `my-release`:  
+Install the Harbor helm chart with a release name `my-release`:
 
 helm 2:
 ```bash
@@ -81,7 +81,7 @@ helm install my-release harbor/harbor
 
 ## Uninstallation
 
-To uninstall/delete the `my-release` deployment:  
+To uninstall/delete the `my-release` deployment:
 
 helm 2:
 ```bash
@@ -126,6 +126,31 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.loadBalancer.ports.notaryPort` | The service port Notary listens on. Only needed when `notary.enabled` is set to `true`|
 | `expose.loadBalancer.annotations` | The annotations attached to the loadBalancer service | {} |
 | `expose.loadBalancer.sourceRanges` | List of IP address ranges to assign to loadBalancerSourceRanges | [] |
+| **Internal TLS** |
+| `internalTLS.enabled` | Enable the tls for the components (chartmuseum, clair, core, jobservice, portal, registry, trivy) | `false` |
+| `internalTLS.certSource` | Method to provide tls for the components, options is `auto`, `manual`, `secret`. | `auto` |
+| `internalTLS.trustCa` | The content of trust ca, only available when `certSrouce` is `manual`. **Note**: all the internal certificates of the components must be issued by this ca |  |
+| `internalTLS.core.secretName` | The secret name for core component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
+| `internalTLS.core.crt` | Content of core's TLS cert file, only available when `certSource` is `manual` | |
+| `internalTLS.core.key` | Content of core's TLS key file, only available when `certSource` is `manual` | |
+| `internalTLS.jobservice.secretName` | The secret name for jobservice component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
+| `internalTLS.jobservice.crt` | Content of jobservice's TLS cert file, only available when `certSource` is `manual` | |
+| `internalTLS.jobservice.key` | Content of jobservice's TLS key file, only available when `certSource` is `manual` | |
+| `internalTLS.registry.secretName` | The secret name for registry component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
+| `internalTLS.registry.crt` | Content of registry's TLS cert file, only available when `certSource` is `manual` | |
+| `internalTLS.registry.key` | Content of registry's TLS key file, only available when `certSource` is `manual` | |
+| `internalTLS.portal.secretName` | The secret name for portal component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
+| `internalTLS.portal.crt` | Content of portal's TLS cert file, only available when `certSource` is `manual` | |
+| `internalTLS.portal.key` | Content of portal's TLS key file, only available when `certSource` is `manual` | |
+| `internalTLS.chartmuseum.secretName` | The secret name for chartmuseum component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
+| `internalTLS.chartmuseum.crt` | Content of chartmuseum's TLS cert file, only available when `certSource` is `manual` | |
+| `internalTLS.chartmuseum.key` | Content of chartmuseum's TLS key file, only available when `certSource` is `manual` | |
+| `internalTLS.clair.secretName` | The secret name for clair component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
+| `internalTLS.clair.crt` | Content of clair's TLS cert file, only available when `certSource` is `manual` | |
+| `internalTLS.clair.key` | Content of clair's TLS key file, only available when `certSource` is `manual` | |
+| `internalTLS.trivy.secretName` | The secret name for trivy component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
+| `internalTLS.trivy.crt` | Content of trivy's TLS cert file, only available when `certSource` is `manual` | |
+| `internalTLS.trivy.key` | Content of trivy's TLS key file, only available when `certSource` is `manual` | |
 | **Persistence**                                                             |
 | `persistence.enabled`                                                       | Enable the data persistence or not                                                                                                                                                                                                                                                                                                              | `true`                          |
 | `persistence.resourcePolicy`                                                | Setting it to `keep` to avoid removing PVCs during a helm delete operation. Leaving it empty will delete PVCs after the chart deleted                                                                                                                                                                                                           | `keep`                          |
@@ -159,7 +184,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `persistence.imageChartStorage.type`                                        | The type of storage for images and charts: `filesystem`, `azure`, `gcs`, `s3`, `swift` or `oss`. The type must be `filesystem` if you want to use persistent volumes for registry and chartmuseum. Refer to the [guide](https://github.com/docker/distribution/blob/master/docs/configuration.md#storage) for more information about the detail | `filesystem`                    |
 | **General**                                                                 |
 | `externalURL`                                                               | The external URL for Harbor core service                                                                                                                                                                                                                                                                                                        | `https://core.harbor.domain`    |
-| `uaaSecretName` | If using external UAA auth which has a self signed cert, you can provide a pre-created secret containing it under the key `ca.crt`. | `` |
+| `uaaSecretName` | If using external UAA auth which has a self signed cert, you can provide a pre-created secret containing it under the key `ca.crt`. | |
 | `imagePullPolicy` | The image pull policy |  |
 | `imagePullSecrets` | The imagePullSecrets names for all deployments |  |
 | `updateStrategy.type` | The update strategy for deployments with persistent volumes(jobservice, registry and chartmuseum): `RollingUpdate` or `Recreate`. Set it as `Recreate` when `RWM` for volumes isn't supported  | `RollingUpdate` |
@@ -227,7 +252,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `registry.middleware`                                                       | Middleware is used to add support for a CDN between backend storage and `docker pull` recipient.  See [official docs](https://github.com/docker/distribution/blob/master/docs/configuration.md#middleware).
 | `registry.podAnnotations`                                                   | Annotations to add to the registry pod                                                                                                                                                                                                                                                                                                          | `{}`                            |
 | `registry.secret`                                                           | Secret is used to secure the upload state from client and registry storage backend. See [official docs](https://github.com/docker/distribution/blob/master/docs/configuration.md#http). If a secret key is not specified, Helm will generate one. Must be a string of 16 chars.                                                                                 |                                 |
-| `registry.credentials.username` | The username for accessing the registry instance, which is hosted by htpasswd auth mode.  More details see [official docs](https://github.com/docker/distribution/blob/master/docs/configuration.md#htpasswd). | `harbor_registry_user` | 
+| `registry.credentials.username` | The username for accessing the registry instance, which is hosted by htpasswd auth mode.  More details see [official docs](https://github.com/docker/distribution/blob/master/docs/configuration.md#htpasswd). | `harbor_registry_user` |
 | `registry.credentials.password` | The password for accessing the registry instance, which is hosted by htpasswd auth mode.  More details see [official docs](https://github.com/docker/distribution/blob/master/docs/configuration.md#htpasswd).  It is suggested you update this value before installation. | `harbor_registry_password` |
 | `registry.credentials.htpasswd` | The content of htpasswd file based on the value of `registry.credentials.username` `registry.credentials.password`.  Currently `helm` does not support bcrypt in the template script, if the credential is updated you need to manually generated by calling [htpasswd](https://httpd.apache.org/docs/2.4/programs/htpasswd.html): `htpasswd -nbBC10 $username $password`.  More details see [official_docs](https://github.com/docker/distribution/blob/master/docs/configuration.md#htpasswd).|  `harbor_registry_user:$2y$10$9L4Tc0DJbFFMB6RdSCunrOpTHdwhid4ktBJmLD00bYgqkkGOvll3m` |
 | **Chartmuseum**                                                             |

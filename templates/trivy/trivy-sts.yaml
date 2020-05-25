@@ -1,5 +1,5 @@
 {{- if .Values.trivy.enabled }}
-{{- $trivyPVC := .Values.persistence.persistentVolumeClaim.trivy -}}
+{{- $trivyPVC := .Values.persistence.persistentVolumeClaim.trivy }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -19,6 +19,16 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: trivy
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/trivy/trivy-secret.yaml") . | sha256sum }}
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
+{{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/trivy/trivy-tls.yaml") . | sha256sum }}
+{{- end }}
+{{- if .Values.trivy.podAnnotations }}
+{{ toYaml .Values.trivy.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       securityContext:
         runAsNonRoot: true
@@ -56,6 +66,16 @@ spec:
               value: {{ .Values.trivy.skipUpdate | default false | quote }}
             - name: "SCANNER_TRIVY_INSECURE"
               value: {{ .Values.trivy.insecure | default false | quote }}
+            - name: SCANNER_API_SERVER_ADDR
+              value: ":{{ template "harbor.trivy.containerPort" . }}"
+            {{- if .Values.internalTLS.enabled }}
+            - name: INTERNAL_TLS_ENABLED
+              value: "true"
+            - name: SCANNER_API_SERVER_TLS_KEY
+              value: /etc/harbor/ssl/trivy.key
+            - name: SCANNER_API_SERVER_TLS_CERTIFICATE
+              value: /etc/harbor/ssl/trivy.crt
+            {{- end }}
             - name: "SCANNER_STORE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
@@ -68,14 +88,26 @@ spec:
                   key: redisURL
           ports:
             - name: api-server
-              containerPort: 8080
+              containerPort: {{ template "harbor.trivy.containerPort" . }}
           volumeMounts:
             - name: data
               mountPath: /home/scanner/.cache
               readOnly: false
+          {{- if .Values.internalTLS.enabled }}
+          volumeMounts:
+          - name: trivy-internal-certs
+            mountPath: /harbor_cust_cert/harbor_internal_ca.crt
+            subPath: ca.crt
+          - name: trivy-internal-certs
+            mountPath: /etc/harbor/ssl/trivy.crt
+            subPath: tls.crt
+          - name: trivy-internal-certs
+            mountPath: /etc/harbor/ssl/trivy.key
+            subPath: tls.key
+          {{- end }}
           livenessProbe:
             httpGet:
-              scheme: HTTP
+              scheme: {{ include "harbor.component.scheme" . | upper }}
               path: /probe/healthy
               port: api-server
             initialDelaySeconds: 5
@@ -84,7 +116,7 @@ spec:
             failureThreshold: 10
           readinessProbe:
             httpGet:
-              scheme: HTTP
+              scheme: {{ include "harbor.component.scheme" . | upper }}
               path: /probe/ready
               port: api-server
             initialDelaySeconds: 5
@@ -93,6 +125,12 @@ spec:
             failureThreshold: 3
           resources:
 {{ toYaml .Values.trivy.resources | indent 12 }}
+      {{- if .Values.internalTLS.enabled }}
+      volumes:
+        - name: trivy-internal-certs
+          secret:
+            secretName: {{ template "harbor.internalTLS.trivy.secretName" . }}
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: data
