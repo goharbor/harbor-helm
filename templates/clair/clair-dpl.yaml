@@ -19,6 +19,11 @@ spec:
         component: clair
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/clair/clair-secret.yaml") . | sha256sum }}
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
+{{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/clair/clair-tls.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.clair.podAnnotations }}
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
@@ -65,19 +70,32 @@ spec:
         - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
+      {{- if .Values.internalTLS.enabled }}
+        - name: clair-internal-certs
+          mountPath: /harbor_cust_cert/harbor_internal_ca.crt
+          subPath: ca.crt
+        - name: clair-internal-certs
+          mountPath: /etc/harbor/ssl/clair_adapter.crt
+          subPath: tls.crt
+        - name: clair-internal-certs
+          mountPath: /etc/harbor/ssl/clair_adapter.key
+          subPath: tls.key
+        {{- end }}
       - name: adapter
         image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
             path: /probe/healthy
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.clairAdapter.containerPort" . }}
           initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /probe/ready
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.clairAdapter.containerPort" . }}
           initialDelaySeconds: 30
           periodSeconds: 10
         env:
@@ -94,6 +112,16 @@ spec:
               secretKeyRef:
                 name: {{ template "harbor.clair" . }}
                 key: database
+        {{- if .Values.internalTLS.enabled }}
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: SCANNER_API_SERVER_ADDR
+          value: ":8443"
+        - name: SCANNER_API_SERVER_TLS_KEY
+          value: /etc/harbor/ssl/clair_adapter.key
+        - name: SCANNER_API_SERVER_TLS_CERTIFICATE
+          value: /etc/harbor/ssl/clair_adapter.crt
+        {{- end }}
         - name: SCANNER_LOG_LEVEL
           value: "{{ .Values.logLevel }}"
 {{- if .Values.clair.adapter.resources }}
@@ -101,11 +129,28 @@ spec:
 {{ toYaml .Values.clair.adapter.resources | indent 10 }}
 {{- end }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ template "harbor.clairAdapter.containerPort" . }}
+        {{- if .Values.internalTLS.enabled }}
+        volumeMounts:
+        - name: clair-internal-certs
+          mountPath: /harbor_cust_cert/harbor_internal_ca.crt
+          subPath: ca.crt
+        - name: clair-internal-certs
+          mountPath: /etc/harbor/ssl/clair_adapter.crt
+          subPath: tls.crt
+        - name: clair-internal-certs
+          mountPath: /etc/harbor/ssl/clair_adapter.key
+          subPath: tls.key
+        {{- end }}
       volumes:
       - name: config
         secret:
           secretName: "{{ template "harbor.clair" . }}"
+      {{- if .Values.internalTLS.enabled }}
+      - name: clair-internal-certs
+        secret:
+          secretName: {{ template "harbor.internalTLS.clair.secretName" . }}
+      {{- end }}
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

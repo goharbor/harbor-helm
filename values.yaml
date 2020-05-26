@@ -100,6 +100,75 @@ expose:
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
 
+# The internal TLS used for harbor components secure communicating. In order to enable https
+# in each components tls cert files need to provided in advance.
+internalTLS:
+  # If internal TLS enabled
+  enabled: false
+  # There are three ways to provide tls
+  # 1) "auto" will generate cert automatically
+  # 2) "manual" need provide cert file manually in following value
+  # 3) "secret" internal certificates from secret
+  certSource: "auto"
+  # The content of trust ca, only available when `certSource` is "manual"
+  trustCa: ""
+  # core related cert configuration
+  core:
+    # secret name for core's tls certs
+    secretName: ""
+    # Content of core's TLS cert file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of core's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # jobservice related cert configuration
+  jobservice:
+    # secret name for jobservice's tls certs
+    secretName: ""
+    # Content of jobservice's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of jobservice's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # registry related cert configuration
+  registry:
+    # secret name for registry's tls certs
+    secretName: ""
+    # Content of registry's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of registry's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # portal related cert configuration
+  portal:
+    # secret name for portal's tls certs
+    secretName: ""
+    # Content of portal's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of portal's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # chartmuseum related cert configuration
+  chartmuseum:
+    # secret name for chartmuseum's tls certs
+    secretName: ""
+    # Content of chartmuseum's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of chartmuseum's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # clair related cert configuration
+  clair:
+    # secret name for clair's tls certs
+    secretName: ""
+    # Content of clair's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of clair's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # trivy related cert configuration
+  trivy:
+    # secret name for trivy's tls certs
+    secretName: ""
+    # Content of trivy's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of trivy's TLS key file, only available when `certSource` is "manual"
+    key: ""
+
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly.
 # Specify another StorageClass in the "storageClass" or set "existingClaim"
@@ -246,9 +315,9 @@ imagePullSecrets:
 #  - name: docker-registry-secret
 #  - name: internal-registry-secret
 
-# The update strategy for deployments with persistent volumes(jobservice, registry 
+# The update strategy for deployments with persistent volumes(jobservice, registry
 # and chartmuseum): "RollingUpdate" or "Recreate"
-# Set it as "Recreate" when "RWM" for volumes isn't supported 
+# Set it as "Recreate" when "RWM" for volumes isn't supported
 updateStrategy:
   type: RollingUpdate
 
@@ -509,6 +578,8 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 notary:
   enabled: true
