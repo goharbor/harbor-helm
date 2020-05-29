@@ -351,7 +351,7 @@ proxy:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: dev
+    tag: v2.0.0
   replicas: 1
   # resources:
   #  requests:
@@ -366,7 +366,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: dev
+    tag: v2.0.0
   replicas: 1
 # resources:
 #  requests:
@@ -381,7 +381,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: dev
+    tag: v2.0.0
   replicas: 1
   ## Liveness probe values
   livenessProbe:
@@ -412,7 +412,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: dev
+    tag: v2.0.0
   replicas: 1
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
@@ -435,7 +435,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: dev
+      tag: v2.0.0
 
     # resources:
     #  requests:
@@ -444,7 +444,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: dev
+      tag: v2.0.0
 
     # resources:
     #  requests:
@@ -489,7 +489,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: dev
+    tag: v2.0.0
   replicas: 1
   # resources:
   #  requests:
@@ -506,7 +506,7 @@ clair:
   clair:
     image:
       repository: goharbor/clair-photon
-      tag: dev
+      tag: v2.0.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -514,7 +514,7 @@ clair:
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
-      tag: dev
+      tag: v2.0.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -536,7 +536,7 @@ trivy:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: dev
+    tag: v2.0.0
   # replicas the number of Pod replicas
   replicas: 1
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
@@ -586,7 +586,7 @@ notary:
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: dev
+      tag: v2.0.0
     replicas: 1
     # resources:
     #  requests:
@@ -595,7 +595,7 @@ notary:
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: dev
+      tag: v2.0.0
     replicas: 1
     # resources:
     #  requests:
@@ -621,7 +621,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: dev
+      tag: v2.0.0
     # the image used by the init container
     initContainerImage:
       repository: busybox
@@ -669,7 +669,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: dev
+      tag: v2.0.0
     # resources:
     #  requests:
     #    memory: 256Mi
