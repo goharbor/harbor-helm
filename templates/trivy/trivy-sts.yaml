@@ -31,10 +31,17 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: false
+      initContainers:
+      - name: "change-permission-of-directory"
+        image: {{ .Values.trivy.initContainerImage.repository }}:{{ .Values.trivy.initContainerImage.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args: ["chown", "-R", "10000:10000", /home/scanner/.cache]
+        volumeMounts:
+        - name: data
+          mountPath: /home/scanner/.cache
+          readOnly: false
       containers:
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
@@ -42,6 +49,8 @@ spec:
           securityContext:
             privileged: false
             allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10000
           env:
             - name: "SCANNER_LOG_LEVEL"
               value: {{ .Values.logLevel | quote }}

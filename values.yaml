@@ -543,6 +543,9 @@ trivy:
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: v2.0.0
+  initContainerImage:
+    repository: busybox
+    tag: latest
   # replicas the number of Pod replicas
   replicas: 1
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
