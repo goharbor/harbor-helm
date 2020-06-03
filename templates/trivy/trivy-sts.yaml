@@ -37,7 +37,7 @@ spec:
       - name: "change-permission-of-directory"
         image: {{ .Values.trivy.initContainerImage.repository }}:{{ .Values.trivy.initContainerImage.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        args: ["chown", "-R", "10000:10000", /home/scanner/.cache]
+        args: ["chown", "10000:10000", /home/scanner/.cache]
         volumeMounts:
         - name: data
           mountPath: /home/scanner/.cache

@@ -34,7 +34,7 @@ spec:
       - name: "change-permission-of-directory"
         image: {{ .Values.redis.internal.initContainerImage.repository }}:{{ .Values.redis.internal.initContainerImage.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        args: ["chown", "-R", "999:999", "/var/lib/redis"]
+        args: ["chown", "999:999", "/var/lib/redis"]
         volumeMounts:
         - name: data
           mountPath: /var/lib/redis

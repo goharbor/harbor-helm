@@ -164,6 +164,9 @@ data:
         path: /etc/registry/passwd
     validation:
       disabled: true
+    compatibility:
+      schema1:	
+        enabled: true
 
     {{- if .Values.registry.middleware.enabled }}
     {{- $middleware := .Values.registry.middleware }}

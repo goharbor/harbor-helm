@@ -45,7 +45,7 @@ spec:
       - name: "change-permission-of-directory"
         image: {{ .Values.registry.registry.initContainerImage.repository }}:{{ .Values.registry.registry.initContainerImage.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        args: ["chown", "-R", "10000:10000", {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}]
+        args: ["chown", "10000:10000", {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}]
         volumeMounts:
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}

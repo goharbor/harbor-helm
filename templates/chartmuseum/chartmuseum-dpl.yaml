@@ -45,7 +45,7 @@ spec:
       - name: "change-permission-of-directory"
         image: {{ .Values.chartmuseum.initContainerImage.repository }}:{{ .Values.chartmuseum.initContainerImage.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        args: ["chown", "-R", "10000:10000", /chart_storage]
+        args: ["chown", "10000:10000", /chart_storage]
         volumeMounts:
         - name: chartmuseum-data
           mountPath: /chart_storage
