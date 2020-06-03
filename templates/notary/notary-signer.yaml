@@ -26,7 +26,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.notary.signer.extraInitContainers }}
+      {{- toYaml .Values.notary.signer.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.notary.signer.extraContainers }}
+      {{- toYaml .Values.notary.signer.extraContainers | nindent 6}}
+      {{- end }}
       - name: notary-signer
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -42,6 +49,9 @@ spec:
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
+        {{- if .Values.notary.signer.extraVolumeMounts }}
+        {{- toYaml .Values.notary.signer.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: config
           mountPath: /etc/notary/signer-config.postgres.json
           subPath: signer.json
@@ -52,6 +62,9 @@ spec:
           mountPath: /etc/ssl/notary/tls.key
           subPath: tls.key
       volumes:
+      {{- if .Values.notary.signer.extraVolumes }}
+      {{- toYaml .Values.notary.signer.extraVolumes | nindent 6}}
+      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"

@@ -30,7 +30,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.portal.extraInitContainers }}
+      {{- toYaml .Values.portal.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.portal.extraContainers }}
+      {{- toYaml .Values.portal.extraContainers | nindent 6}}
+      {{- end }}
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -55,6 +62,9 @@ spec:
         ports:
         - containerPort: {{ template "harbor.portal.containerPort" . }}
         volumeMounts:
+        {{- if .Values.portal.extraVolumeMounts }}
+        {{- toYaml .Values.portal.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: portal-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
@@ -70,6 +80,9 @@ spec:
           subPath: tls.key
         {{- end }}
       volumes:
+      {{- if .Values.portal.extraVolumes }}
+      {{- toYaml .Values.portal.extraVolumes | nindent 6}}
+      {{- end }}
       - name: portal-config
         configMap:
           name: "{{ template "harbor.portal" . }}"

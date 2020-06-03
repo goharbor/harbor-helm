@@ -30,7 +30,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.notary.server.extraInitContainers }}
+      {{- toYaml .Values.notary.server.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.notary.server.extraContainers }}
+      {{- toYaml .Values.notary.server.extraContainers | nindent 6}}
+      {{- end }}
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -44,6 +51,9 @@ spec:
         - name: DB_URL
           value: {{ template "harbor.database.notaryServer" . }}
         volumeMounts:
+        {{- if .Values.notary.server.extraVolumeMounts }}
+        {{- toYaml .Values.notary.server.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: config
           mountPath: /etc/notary/server-config.postgres.json
           subPath: server.json
@@ -54,6 +64,9 @@ spec:
           mountPath: /etc/ssl/notary/ca.crt
           subPath: ca.crt
       volumes:
+      {{- if .Values.notary.server.extraVolumes }}
+      {{- toYaml .Values.notary.server.extraVolumes | nindent 6}}
+      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"

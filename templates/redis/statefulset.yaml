@@ -30,7 +30,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.redis.extraInitContainers }}
+      {{- toYaml .Values.redis.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.redis.extraContainers }}
+      {{- toYaml .Values.redis.extraContainers | nindent 6}}
+      {{- end }}
       - name: redis
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -49,15 +56,20 @@ spec:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
 {{- end }}
         volumeMounts:
+        {{- if .Values.redis.extraVolumeMounts }}
+        {{- toYaml .Values.redis.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
-      {{- if not .Values.persistence.enabled }}
       volumes:
+      {{- if .Values.redis.extraVolumes }}
+      {{- toYaml .Values.redis.extraVolumes | nindent 6}}
+      {{- end }}
+      {{- if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
       {{- else if $redis.existingClaim }}
-      volumes:
       - name: data
         persistentVolumeClaim:
           claimName: {{ $redis.existingClaim }}

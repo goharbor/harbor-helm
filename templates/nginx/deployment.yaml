@@ -36,7 +36,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.nginx.extraInitContainers }}
+      {{- toYaml .Values.nginx.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.nginx.extraContainers }}
+      {{- toYaml .Values.nginx.extraContainers | nindent 6}}
+      {{- end }}
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
@@ -69,6 +76,9 @@ spec:
         - containerPort: 8443
         - containerPort: 4443
         volumeMounts:
+        {{- if .Values.nginx.extraVolumeMounts }}
+        {{- toYaml .Values.nginx.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
@@ -77,6 +87,9 @@ spec:
           mountPath: /etc/nginx/cert
         {{- end }}
       volumes:
+      {{- if .Values.nginx.extraVolumes }}
+      {{- toYaml .Values.nginx.extraVolumes | nindent 6}}
+      {{- end }}
       - name: config
         configMap:
           name: {{ template "harbor.nginx" . }}

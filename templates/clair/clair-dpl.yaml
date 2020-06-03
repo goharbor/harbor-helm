@@ -34,7 +34,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.clair.extraInitContainers }}
+      {{- toYaml .Values.clair.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.clair.extraContainers }}
+      {{- toYaml .Values.clair.extraContainers | nindent 6}}
+      {{- end }}
       - name: clair
         image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -67,6 +74,9 @@ spec:
         ports:
         - containerPort: 6060
         volumeMounts:
+        {{- if .Values.clair.clair.extraVolumeMounts }}
+        {{- toYaml .Values.clair.clair.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
@@ -130,8 +140,11 @@ spec:
 {{- end }}
         ports:
         - containerPort: {{ template "harbor.clairAdapter.containerPort" . }}
-        {{- if .Values.internalTLS.enabled }}
         volumeMounts:
+        {{- if .Values.clair.adapter.extraVolumeMounts }}
+        {{- toYaml .Values.clair.adapter.extraVolumeMounts | nindent 8}}
+        {{- end }}
+        {{- if .Values.internalTLS.enabled }}
         - name: clair-internal-certs
           mountPath: /harbor_cust_cert/harbor_internal_ca.crt
           subPath: ca.crt
@@ -143,6 +156,9 @@ spec:
           subPath: tls.key
         {{- end }}
       volumes:
+      {{- if .Values.clair.extraVolumes }}
+      {{- toYaml .Values.clair.extraVolumes | nindent 6}}
+      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.clair" . }}"

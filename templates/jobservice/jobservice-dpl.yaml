@@ -41,7 +41,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.jobservice.extraInitContainers }}
+      {{- toYaml .Values.jobservice.extraInitContainers | nindent 6}}
+      {{- end }}
       containers:
+      {{- if .Values.jobservice.extraContainers }}
+      {{- toYaml .Values.jobservice.extraContainers | nindent 6}}
+      {{- end }}
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -87,6 +94,9 @@ spec:
         ports:
         - containerPort: {{ template "harbor.jobservice.containerPort" . }}
         volumeMounts:
+        {{- if .Values.jobservice.extraVolumeMounts }}
+        {{- toYaml .Values.jobservice.extraVolumeMounts | nindent 8}}
+        {{- end }}
         - name: jobservice-config
           mountPath: /etc/jobservice/config.yml
           subPath: config.yml
@@ -105,6 +115,9 @@ spec:
           subPath: tls.key
         {{- end }}
       volumes:
+      {{- if .Values.jobservice.extraVolumes }}
+      {{- toYaml .Values.jobservice.extraVolumes | nindent 6}}
+      {{- end }}
       - name: jobservice-config
         configMap:
           name: "{{ template "harbor.jobservice" . }}"
