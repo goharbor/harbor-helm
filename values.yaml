@@ -339,6 +339,7 @@ proxy:
     - core
     - jobservice
     - clair
+    - trivy
 
 ## UAA Authentication Options
 # If you're using UAA for authentication behind a self-signed
