@@ -17,6 +17,11 @@ spec:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: portal
       annotations:
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
+{{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/portal/tls.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.portal.podAnnotations }}
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
 {{- end }}
@@ -43,24 +48,48 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.portal.containerPort" . }}
           initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.portal.containerPort" . }}
           initialDelaySeconds: 1
           periodSeconds: 10
         ports:
-        - containerPort: 8080
+        - containerPort: {{ template "harbor.portal.containerPort" . }}
         volumeMounts:
         {{- if .Values.portal.extraVolumeMounts }}
         {{- toYaml .Values.portal.extraVolumeMounts | nindent 8}}
         {{- end }}
+        - name: portal-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        {{- if .Values.internalTLS.enabled }}
+        - name: portal-internal-certs
+          mountPath: /harbor_cust_cert/harbor_internal_ca.crt
+          subPath: ca.crt
+        - name: portal-internal-certs
+          mountPath: /etc/harbor/tls/portal.crt
+          subPath: tls.crt
+        - name: portal-internal-certs
+          mountPath: /etc/harbor/tls/portal.key
+          subPath: tls.key
+        {{- end }}
       volumes:
       {{- if .Values.portal.extraVolumes }}
       {{- toYaml .Values.portal.extraVolumes | nindent 6}}
+      {{- end }}
+      - name: portal-config
+        configMap:
+          name: "{{ template "harbor.portal" . }}"
+      {{- if .Values.internalTLS.enabled }}
+      - name: portal-internal-certs
+        secret:
+          secretName: {{ template "harbor.internalTLS.portal.secretName" . }}
       {{- end }}
     {{- with .Values.portal.nodeSelector }}
       nodeSelector:
