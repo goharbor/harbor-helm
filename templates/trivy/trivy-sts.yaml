@@ -1,5 +1,5 @@
 {{- if .Values.trivy.enabled }}
-{{- $trivyPVC := .Values.persistence.persistentVolumeClaim.trivy }}
+{{- $trivy := .Values.persistence.persistentVolumeClaim.trivy }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -125,28 +125,39 @@ spec:
             failureThreshold: 3
           resources:
 {{ toYaml .Values.trivy.resources | indent 12 }}
-      {{- if .Values.internalTLS.enabled }}
+      {{- if or (or .Values.internalTLS.enabled (not .Values.persistence.enabled)) (and .Values.persistence.enabled $trivy.existingClaim) }}
       volumes:
-        - name: trivy-internal-certs
-          secret:
-            secretName: {{ template "harbor.internalTLS.trivy.secretName" . }}
       {{- end }}
+      {{- if .Values.internalTLS.enabled }}
+      - name: trivy-internal-certs
+        secret:
+          secretName: {{ template "harbor.internalTLS.trivy.secretName" . }}
+      {{- end }}
+      {{- if not .Values.persistence.enabled }}
+      - name: "data"
+        emptyDir: {}
+      {{- else if $trivy.existingClaim }}
+      - name: "data"
+        persistentVolumeClaim:
+          claimName: {{ $trivy.existingClaim }}
+      {{- end -}}
+{{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
-    - metadata:
-        name: data
-        labels:
-{{ include "harbor.labels" . | indent 10 }}
-      spec:
-        accessModes:
-          - {{ $trivyPVC.accessMode | quote }}
-        {{- if $trivyPVC.storageClass }}
-        {{- if (eq "-" $trivyPVC.storageClass) }}
-        storageClassName: ""
-        {{- else }}
-        storageClassName: "{{ $trivyPVC.storageClass }}"
-        {{- end }}
-        {{- end }}
-        resources:
-          requests:
-            storage: {{ $trivyPVC.size | quote }}
+  - metadata:
+      name: data
+      labels:
+{{ include "harbor.labels" . | indent 8 }}
+    spec:
+      accessModes: [{{ $trivy.accessMode | quote }}]
+      {{- if $trivy.storageClass }}
+      {{- if (eq "-" $trivy.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ $trivy.storageClass }}"
+      {{- end }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ $trivy.size | quote }}
+{{- end }}
 {{- end }}
