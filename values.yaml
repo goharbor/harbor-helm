@@ -341,6 +341,10 @@ proxy:
     - clair
     - trivy
 
+# The custom ca bundle secret, the secret must contain key named "ca.crt"
+# which will be injected into the trust store for chartmuseum, clair, core, jobservice, registry, trivy components
+# caBundleSecretName: ""
+
 ## UAA Authentication Options
 # If you're using UAA for authentication behind a self-signed
 # certificate you will need to provide the CA Cert.
