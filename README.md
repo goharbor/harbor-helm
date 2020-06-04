@@ -184,6 +184,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `persistence.imageChartStorage.type`                                        | The type of storage for images and charts: `filesystem`, `azure`, `gcs`, `s3`, `swift` or `oss`. The type must be `filesystem` if you want to use persistent volumes for registry and chartmuseum. Refer to the [guide](https://github.com/docker/distribution/blob/master/docs/configuration.md#storage) for more information about the detail | `filesystem`                    |
 | **General**                                                                 |
 | `externalURL`                                                               | The external URL for Harbor core service                                                                                                                                                                                                                                                                                                        | `https://core.harbor.domain`    |
+| `caBundleSecretName` | The custom ca bundle secret name, the secret must contain key named "ca.crt" which will be injected into the trust store for chartmuseum, clair, core, jobservice, registry, trivy components. | |
 | `uaaSecretName` | If using external UAA auth which has a self signed cert, you can provide a pre-created secret containing it under the key `ca.crt`. | |
 | `imagePullPolicy` | The image pull policy |  |
 | `imagePullSecrets` | The imagePullSecrets names for all deployments |  |
