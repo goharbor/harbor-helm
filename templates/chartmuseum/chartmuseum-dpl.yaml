@@ -37,6 +37,9 @@ spec:
     spec:
       securityContext:
         fsGroup: 10000
+{{- if .Values.chartmuseum.serviceAccountName }}
+      serviceAccountName: {{ .Values.chartmuseum.serviceAccountName }}
+{{- end -}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
