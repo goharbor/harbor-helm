@@ -43,6 +43,14 @@ spec:
             privileged: false
             allowPrivilegeEscalation: false
           env:
+          {{- if has "trivy" .Values.proxy.components }}
+            - name: HTTP_PROXY
+              value: "{{ .Values.proxy.httpProxy }}"
+            - name: HTTPS_PROXY
+              value: "{{ .Values.proxy.httpsProxy }}"
+            - name: NO_PROXY
+              value: "{{ template "harbor.noProxy" . }}"
+          {{- end }}
             - name: "SCANNER_LOG_LEVEL"
               value: {{ .Values.logLevel | quote }}
             - name: "SCANNER_TRIVY_CACHE_DIR"
