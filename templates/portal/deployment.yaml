@@ -32,7 +32,7 @@ spec:
       {{- end }}
 {{- if .Values.portal.serviceAccountName }}
       serviceAccountName: {{ .Values.portal.serviceAccountName }}
-{{- end -}}
+{{- end }}
       containers:
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
