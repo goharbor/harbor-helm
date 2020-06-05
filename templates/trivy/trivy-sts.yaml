@@ -98,11 +98,10 @@ spec:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}
           volumeMounts:
-            - name: data
-              mountPath: /home/scanner/.cache
-              readOnly: false
+          - name: data
+            mountPath: /home/scanner/.cache
+            readOnly: false
           {{- if .Values.internalTLS.enabled }}
-          volumeMounts:
           - name: trivy-internal-certs
             mountPath: /harbor_cust_cert/harbor_internal_ca.crt
             subPath: ca.crt
@@ -112,6 +111,9 @@ spec:
           - name: trivy-internal-certs
             mountPath: /etc/harbor/ssl/trivy.key
             subPath: tls.key
+          {{- end }}
+          {{- if .Values.caBundleSecretName }}
+{{ include "harbor.caBundleVolumeMount" . | indent 10 }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -133,13 +135,15 @@ spec:
             failureThreshold: 3
           resources:
 {{ toYaml .Values.trivy.resources | indent 12 }}
-      {{- if or (or .Values.internalTLS.enabled (not .Values.persistence.enabled)) (and .Values.persistence.enabled $trivy.existingClaim) }}
+      {{- if or (or .Values.internalTLS.enabled .Values.caBundleSecretName) (or (not .Values.persistence.enabled) $trivy.existingClaim) }}
       volumes:
-      {{- end }}
       {{- if .Values.internalTLS.enabled }}
       - name: trivy-internal-certs
         secret:
           secretName: {{ template "harbor.internalTLS.trivy.secretName" . }}
+      {{- end }}
+      {{- if .Values.caBundleSecretName }}
+{{ include "harbor.caBundleVolume" . | indent 6 }}
       {{- end }}
       {{- if not .Values.persistence.enabled }}
       - name: "data"
@@ -148,7 +152,8 @@ spec:
       - name: "data"
         persistentVolumeClaim:
           claimName: {{ $trivy.existingClaim }}
-      {{- end -}}
+      {{- end }}
+      {{- end }}
 {{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
