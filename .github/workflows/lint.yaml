@@ -1,0 +1,33 @@
+name: Lint
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Helm 3.2.3
+        uses: azure/setup-helm@v1
+        with:
+          version: '3.2.3'
+
+      - name: Run lint
+        run:
+          helm lint .
+
+      - name: Update dependency
+        run:
+          helm dependency update .
+
+      - name: Run template for ingress expose
+        run:
+          helm template --set "expose.type=ingress" --output-dir /tmp/ .
+
+      - name: Run template for nodePort expose
+        run:
+          helm template --set "expose.type=nodePort,expose.tls.commonName=127.0.0.1" --output-dir /tmp/ .
