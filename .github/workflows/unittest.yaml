@@ -30,6 +30,6 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Run unit tests
-        run: |
-          cd test
+        working-directory: ./test
+        run:
           go test -v github.com/goharbor/harbor-helm/unittest
