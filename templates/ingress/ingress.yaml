@@ -25,7 +25,7 @@
 {{- end }}
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: "{{ template "harbor.ingress" . }}"
@@ -88,7 +88,7 @@ spec:
 
 {{- if .Values.notary.enabled  }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: "{{ template "harbor.ingress-notary" . }}"
