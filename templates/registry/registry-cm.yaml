@@ -47,6 +47,9 @@ data:
         {{- if $storage.s3.encrypt }}
         encrypt: {{ $storage.s3.encrypt }}
         {{- end }}
+        {{- if $storage.s3.keyid }}
+        keyid: {{ $storage.s3.keyid }}
+        {{- end }}
         {{- if $storage.s3.secure }}
         secure: {{ $storage.s3.secure }}
         {{- end }}
@@ -143,8 +146,14 @@ data:
       addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
       db: {{ template "harbor.redis.registryDatabaseIndex" . }}
     http:
+      addr: :{{ template "harbor.registry.containerPort" . }}
       relativeurls: {{ .Values.registry.relativeurls }}
-      addr: :5000
+      {{- if .Values.internalTLS.enabled }}
+      tls:
+        certificate: /etc/harbor/tls/registry.crt
+        key: /etc/harbor/tls/registry.key
+        minimumtls: tls1.2
+      {{- end }}
       # set via environment variable
       # secret: placeholder
       debug:
@@ -173,6 +182,14 @@ data:
     {{- end }}
   ctl-config.yml: |+
     ---
+    {{- if .Values.internalTLS.enabled }}
+    protocol: "https"
+    port: 8443
+    https_config:
+      cert: "/etc/harbor/ssl/registryctl.crt"
+      key: "/etc/harbor/ssl/registryctl.key"
+    {{- else }}
     protocol: "http"
     port: 8080
+    {{- end }}
     log_level: {{ .Values.logLevel }}

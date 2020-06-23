@@ -6,8 +6,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: {{ template "harbor.jobservice.servicePort" . }}
+      targetPort: {{ template "harbor.jobservice.containerPort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: jobservice
