@@ -30,6 +30,12 @@ jobs:
         run:
           helm lint .
 
+      - name: Init helm 2
+        working-directory: ./harbor
+        if: ${{ matrix.helm_version == '2.16.8' }}
+        run:
+          helm init --client-only
+          
       - name: Update dependency
         working-directory: ./harbor
         run:
