@@ -16,6 +16,10 @@ jobs:
         with:
           version: '3.2.3'
 
+      - name: Update dependency
+        run:
+          helm dependency update .
+
       - name: Set up Go 1.13
         uses: actions/setup-go@v2
         with:
