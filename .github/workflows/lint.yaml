@@ -32,7 +32,7 @@ jobs:
 
       - name: Init helm 2
         working-directory: ./harbor
-        if: ${{ matrix.helm_version == '2.16.8' }}
+        if: ${{ startsWith(matrix.helm_version, '2.') }}
         run:
           helm init --client-only
           
