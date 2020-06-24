@@ -100,6 +100,75 @@ expose:
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
 
+# The internal TLS used for harbor components secure communicating. In order to enable https
+# in each components tls cert files need to provided in advance.
+internalTLS:
+  # If internal TLS enabled
+  enabled: false
+  # There are three ways to provide tls
+  # 1) "auto" will generate cert automatically
+  # 2) "manual" need provide cert file manually in following value
+  # 3) "secret" internal certificates from secret
+  certSource: "auto"
+  # The content of trust ca, only available when `certSource` is "manual"
+  trustCa: ""
+  # core related cert configuration
+  core:
+    # secret name for core's tls certs
+    secretName: ""
+    # Content of core's TLS cert file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of core's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # jobservice related cert configuration
+  jobservice:
+    # secret name for jobservice's tls certs
+    secretName: ""
+    # Content of jobservice's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of jobservice's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # registry related cert configuration
+  registry:
+    # secret name for registry's tls certs
+    secretName: ""
+    # Content of registry's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of registry's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # portal related cert configuration
+  portal:
+    # secret name for portal's tls certs
+    secretName: ""
+    # Content of portal's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of portal's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # chartmuseum related cert configuration
+  chartmuseum:
+    # secret name for chartmuseum's tls certs
+    secretName: ""
+    # Content of chartmuseum's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of chartmuseum's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # clair related cert configuration
+  clair:
+    # secret name for clair's tls certs
+    secretName: ""
+    # Content of clair's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of clair's TLS key file, only available when `certSource` is "manual"
+    key: ""
+  # trivy related cert configuration
+  trivy:
+    # secret name for trivy's tls certs
+    secretName: ""
+    # Content of trivy's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of trivy's TLS key file, only available when `certSource` is "manual"
+    key: ""
+
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly.
 # Specify another StorageClass in the "storageClass" or set "existingClaim"
@@ -246,9 +315,9 @@ imagePullSecrets:
 #  - name: docker-registry-secret
 #  - name: internal-registry-secret
 
-# The update strategy for deployments with persistent volumes(jobservice, registry 
+# The update strategy for deployments with persistent volumes(jobservice, registry
 # and chartmuseum): "RollingUpdate" or "Recreate"
-# Set it as "Recreate" when "RWM" for volumes isn't supported 
+# Set it as "Recreate" when "RWM" for volumes isn't supported
 updateStrategy:
   type: RollingUpdate
 
@@ -270,6 +339,11 @@ proxy:
     - core
     - jobservice
     - clair
+    - trivy
+
+# The custom ca bundle secret, the secret must contain key named "ca.crt"
+# which will be injected into the trust store for chartmuseum, clair, core, jobservice, registry, trivy components
+# caBundleSecretName: ""
 
 ## UAA Authentication Options
 # If you're using UAA for authentication behind a self-signed
@@ -283,6 +357,8 @@ nginx:
   image:
     repository: goharbor/nginx-photon
     tag: dev
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   replicas: 1
   # resources:
   #  requests:
@@ -298,6 +374,8 @@ portal:
   image:
     repository: goharbor/harbor-portal
     tag: dev
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   replicas: 1
 # resources:
 #  requests:
@@ -313,6 +391,8 @@ core:
   image:
     repository: goharbor/harbor-core
     tag: dev
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   replicas: 1
   ## Liveness probe values
   livenessProbe:
@@ -345,6 +425,8 @@ jobservice:
     repository: goharbor/harbor-jobservice
     tag: dev
   replicas: 1
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLogger: file
@@ -363,11 +445,12 @@ jobservice:
   secret: ""
 
 registry:
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   registry:
     image:
       repository: goharbor/registry-photon
       tag: dev
-
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -381,6 +464,8 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -416,6 +501,8 @@ registry:
 
 chartmuseum:
   enabled: true
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   # Harbor defaults ChartMuseum to returning relative urls, if you want using absolute url you should enable it by change the following value to 'true'
   absoluteUrl: false
   image:
@@ -434,6 +521,8 @@ chartmuseum:
 
 clair:
   enabled: true
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   clair:
     image:
       repository: goharbor/clair-photon
@@ -468,6 +557,8 @@ trivy:
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: dev
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   # replicas the number of Pod replicas
   replicas: 1
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
@@ -478,6 +569,8 @@ trivy:
   severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
   # ignoreUnfixed the flag to display only fixed vulnerabilities
   ignoreUnfixed: false
+  # insecure the flag to skip verifying registry certificate
+  insecure: false
   # gitHubToken the GitHub access token to download Trivy DB
   #
   # Trivy DB contains vulnerability information from NVD, Red Hat, and many other upstream vulnerability databases.
@@ -507,10 +600,14 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  ## Additional deployment annotations
+  podAnnotations: {}
 
 notary:
   enabled: true
   server:
+    # set the service account to be used, default if left empty
+    serviceAccountName: ""
     image:
       repository: goharbor/notary-server-photon
       tag: dev
@@ -520,6 +617,8 @@ notary:
     #    memory: 256Mi
     #    cpu: 100m
   signer:
+    # set the service account to be used, default if left empty
+    serviceAccountName: ""
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
@@ -546,6 +645,8 @@ database:
   # and fill the connection informations in "external" section
   type: internal
   internal:
+    # set the service account to be used, default if left empty
+    serviceAccountName: ""
     image:
       repository: goharbor/harbor-db
       tag: dev
@@ -594,6 +695,8 @@ redis:
   # and fill the connection informations in "external" section
   type: internal
   internal:
+    # set the service account to be used, default if left empty
+    serviceAccountName: ""
     image:
       repository: goharbor/redis-photon
       tag: dev

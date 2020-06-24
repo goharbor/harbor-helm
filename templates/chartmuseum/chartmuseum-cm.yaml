@@ -6,7 +6,11 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 data:
-  PORT: "9999"
+  PORT: "{{ template "harbor.chartmuseum.containerPort" . }}"
+{{- if .Values.internalTLS.enabled }}
+  TLS_CERT: "/etc/harbor/ssl/chartmuseum.crt"
+  TLS_KEY: "/etc/harbor/ssl/chartmuseum.key"
+{{- end }}
   CACHE: "redis"
   CACHE_REDIS_ADDR: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
   CACHE_REDIS_DB: "{{ template "harbor.redis.chartmuseumDatabaseIndex" . }}"
@@ -25,10 +29,7 @@ data:
   DISABLE_API: "false"
   DISABLE_STATEFILES: "false"
   ALLOW_OVERWRITE: "true"
-  #CHART_URL: {{ .Values.externalURL }}/chartrepo
   AUTH_ANONYMOUS_GET: "false"
-  TLS_CERT: ""
-  TLS_KEY: ""
   CONTEXT_PATH: ""
   INDEX_LIMIT: "0"
   MAX_STORAGE_OBJECTS: "0"

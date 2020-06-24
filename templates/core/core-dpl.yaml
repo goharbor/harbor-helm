@@ -20,12 +20,20 @@ spec:
         checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
         checksum/secret-jobservice: {{ include (print $.Template.BasePath "/jobservice/jobservice-secrets.yaml") . | sha256sum }}
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
+{{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/core/core-tls.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.core.podAnnotations }}
 {{ toYaml .Values.core.podAnnotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:
         fsGroup: 10000
+{{- if .Values.core.serviceAccountName }}
+      serviceAccountName: {{ .Values.core.serviceAccountName }}
+{{- end -}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -37,13 +45,15 @@ spec:
         livenessProbe:
           httpGet:
             path: /api/v2.0/ping
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.core.containerPort" . }}
           initialDelaySeconds: {{ .Values.core.livenessProbe.initialDelaySeconds }}
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /api/v2.0/ping
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.core.containerPort" . }}
           initialDelaySeconds: 20
           periodSeconds: 10
         envFrom:
@@ -62,8 +72,18 @@ spec:
               secretKeyRef:
                 name: "{{ template "harbor.jobservice" . }}"
                 key: JOBSERVICE_SECRET
+         {{- if .Values.internalTLS.enabled }}
+          - name: INTERNAL_TLS_ENABLED
+            value: "true"
+          - name: INTERNAL_TLS_KEY_PATH
+            value: /etc/harbor/ssl/core.key
+          - name: INTERNAL_TLS_CERT_PATH
+            value: /etc/harbor/ssl/core.crt
+          - name: INTERNAL_TLS_TRUST_CA_PATH
+            value: /harbor_cust_cert/harbor_internal_ca.crt
+         {{- end }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf
@@ -83,8 +103,22 @@ spec:
           mountPath: /etc/core/auth-ca/auth-ca.crt
           subPath: auth-ca.crt
         {{- end }}
+        {{- if .Values.internalTLS.enabled }}
+        - name: core-internal-certs
+          mountPath: /harbor_cust_cert/harbor_internal_ca.crt
+          subPath: ca.crt
+        - name: core-internal-certs
+          mountPath: /etc/harbor/ssl/core.crt
+          subPath: tls.crt
+        - name: core-internal-certs
+          mountPath: /etc/harbor/ssl/core.key
+          subPath: tls.key
+        {{- end }}
         - name: psc
           mountPath: /etc/core/token
+        {{- if .Values.caBundleSecretName }}
+{{ include "harbor.caBundleVolumeMount" . | indent 8 }}
+        {{- end }}
 {{- if .Values.core.resources }}
         resources:
 {{ toYaml .Values.core.resources | indent 10 }}
@@ -128,8 +162,16 @@ spec:
             - key: ca.crt
               path: auth-ca.crt
       {{- end }}
+      {{- if .Values.internalTLS.enabled }}
+      - name: core-internal-certs
+        secret:
+          secretName: {{ template "harbor.internalTLS.core.secretName" . }}
+      {{- end }}
       - name: psc
         emptyDir: {}
+      {{- if .Values.caBundleSecretName }}
+{{ include "harbor.caBundleVolume" . | indent 6 }}
+      {{- end }}
     {{- with .Values.core.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
