@@ -1,4 +1,6 @@
-# Upgrade Guide
+---
+title: Upgrade Guide
+---
 
 This guide is used to upgrade Harbor deployed by chart since version 0.3.0.
 

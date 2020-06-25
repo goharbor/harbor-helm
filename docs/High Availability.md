@@ -1,4 +1,6 @@
-# Harbor High Availability Guide
+---
+title: Harbor High Availability Guide
+---
 
 ## Goal
 
