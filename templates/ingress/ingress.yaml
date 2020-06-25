@@ -8,13 +8,15 @@
   {{- $_ := set . "v2_path" "/v2/*" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/*" -}}
   {{- $_ := set . "controller_path" "/c/*" -}}
+  {{- $_ := set . "notary_path" "/" -}}
 {{- else if eq .Values.expose.ingress.controller "ncp" }}
-  {{- $_ := set . "portal_path" "/" -}}
+  {{- $_ := set . "portal_path" "/.*" -}}
   {{- $_ := set . "api_path" "/api/.*" -}}
   {{- $_ := set . "service_path" "/service/.*" -}}
   {{- $_ := set . "v2_path" "/v2/.*" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/.*" -}}
   {{- $_ := set . "controller_path" "/c/.*" -}}
+  {{- $_ := set . "notary_path" "/.*" -}}
 {{- else }}
   {{- $_ := set . "portal_path" "/" -}}
   {{- $_ := set . "api_path" "/api/" -}}
@@ -22,6 +24,7 @@
   {{- $_ := set . "v2_path" "/v2/" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
   {{- $_ := set . "controller_path" "/c/" -}}
+  {{- $_ := set . "notary_path" "/" -}}
 {{- end }}
 
 ---
@@ -36,7 +39,12 @@ metadata:
 {{- if .Values.internalTLS.enabled }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 {{- end }}
-
+{{- if eq .Values.expose.ingress.controller "ncp" }}
+    ncp/use-regex: "true"
+    {{- if $tls.enabled }}
+    ncp/http-redirect: "true"
+    {{- end }}
+{{- end }}
 spec:
   {{- if $tls.enabled }}
   tls:
@@ -49,11 +57,6 @@ spec:
     hosts:
     - {{ $ingress.hosts.core }}
     {{- end }}
-  {{- end }}
-  {{- if eq .Values.expose.ingress.controller "ncp" }}
-  backend:
-    serviceName: {{ template "harbor.portal" . }}
-    servicePort: {{ template "harbor.portal.servicePort" . }}
   {{- end }}
   rules:
   - http:
@@ -96,7 +99,12 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
-
+{{- if eq .Values.expose.ingress.controller "ncp" }}
+    ncp/use-regex: "true"
+    {{- if $tls.enabled }}
+    ncp/http-redirect: "true"
+    {{- end }}
+{{- end }}
 spec:
   {{- if $tls.enabled }}
   tls:
@@ -112,15 +120,10 @@ spec:
     - {{ $ingress.hosts.notary }}
     {{- end }}
   {{- end }}
-  {{- if eq .Values.expose.ingress.controller "ncp" }}
-  backend:
-    serviceName: {{ template "harbor.notary-server" . }}
-    servicePort: 4443
-  {{- end }}
   rules:
   - http:
       paths:
-      - path: /
+      - path: {{ .notary_path }}
         backend:
           serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443
