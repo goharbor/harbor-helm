@@ -44,6 +44,16 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:                                                           
+      - name: "change-permission-of-directory"                                  
+        image: {{ .Values.registry.registry.initContainerImage.repository }}:{{ .Values.registry.registry.initContainerImage.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}                          
+        command: ["/bin/sh"]                                                    
+        args: ["-c", "chown -R 10000:10000 /storage"]                           
+        volumeMounts:                                                           
+        - name: registry-data                                                   
+          mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
+          subPath: {{ .Values.persistence.persistentVolumeClaim.registry.subPath }}
       containers:
       - name: registry
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}

@@ -33,6 +33,18 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- if eq .Values.redis.type "internal" }}                                      
+      initContainers:                                                           
+      - name: "change-permission-of-directory"                                  
+        image: {{ .Values.redis.internal.initContainerImage.repository }}:{{ .Values.redis.internal.initContainerImage.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}                          
+        command: ["/bin/sh"]                                                    
+        args: ["-c", "chown -R 999:999 /var/lib/redis"]                         
+        volumeMounts:                                                           
+        - name: data                                                            
+          mountPath: /var/lib/redis                                             
+          subPath: {{ $redis.subPath }}                                         
+{{- end }} 
       containers:
       - name: redis
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}

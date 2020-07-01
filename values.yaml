@@ -455,6 +455,9 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    initContainerImage:
+      repository: busybox
+      tag: latest
   controller:
     image:
       repository: goharbor/harbor-registryctl
@@ -700,6 +703,9 @@ redis:
     image:
       repository: goharbor/redis-photon
       tag: dev
+    initContainerImage:                                                         
+      repository: busybox                                                       
+      tag: latest 
     # resources:
     #  requests:
     #    memory: 256Mi
