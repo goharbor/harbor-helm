@@ -95,6 +95,9 @@ spec:
               secretKeyRef:
                 name: {{ template "harbor.core" . }}
                 key: secret
+          - # Needed to make AWS' client connect correctly (see https://github.com/helm/chartmuseum/issues/280)
+            name: AWS_SDK_LOAD_CONFIG
+            value: "1"
         ports:
         - containerPort: {{ template "harbor.chartmuseum.containerPort" . }}
         volumeMounts:
