@@ -180,6 +180,8 @@ persistence:
   enabled: true
   # Setting it to "keep" to avoid removing PVCs during a helm delete
   # operation. Leaving it empty will delete PVCs after the chart deleted
+  # (this does not apply for PVCs that are created for internal database
+  # and redis components, i.e. they are never deleted automatically)
   resourcePolicy: "keep"
   persistentVolumeClaim:
     registry:
