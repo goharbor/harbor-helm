@@ -65,6 +65,15 @@ data:
         {{- if $storage.s3.storageclass }}
         storageclass: {{ $storage.s3.storageclass }}
         {{- end }}
+        {{- if $storage.s3.multipartcopychunksize }}
+        multipartcopychunksize: {{ $storage.s3.multipartcopychunksize }}
+        {{- end }}
+        {{- if $storage.s3.multipartcopymaxconcurrency }}
+        multipartcopymaxconcurrency: {{ $storage.s3.multipartcopymaxconcurrency }}
+        {{- end }}
+        {{- if $storage.s3.multipartcopythresholdsize }}
+        multipartcopythresholdsize: {{ $storage.s3.multipartcopythresholdsize }}
+        {{- end }}
       {{- else if eq $type "swift" }}
       swift:
         authurl: {{ $storage.swift.authurl }}
