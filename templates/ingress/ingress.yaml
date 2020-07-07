@@ -105,7 +105,7 @@ spec:
     {{- else if $tls.secretName }}
   - secretName: {{ $tls.secretName }}
     {{- else }}
-  - secretName: "{{ template "harbor.ingress" . }}"
+  - secretName: "{{ template "harbor.ingress-notary" . }}"
     {{- end }}
     {{- if $ingress.hosts.notary }}
     hosts:
