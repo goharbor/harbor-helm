@@ -25,11 +25,11 @@
 {{- end }}
 
 ---
-{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.Version -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.Version }}
 apiVersion: extensions/v1beta1
-{{- else -}}
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
-{{- end -}}
+{{- end }}
 kind: Ingress
 metadata:
   name: "{{ template "harbor.ingress" . }}"
@@ -92,11 +92,11 @@ spec:
 
 {{- if .Values.notary.enabled  }}
 ---
-{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.Version -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.Version }}
 apiVersion: extensions/v1beta1
-{{- else -}}
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
-{{- end -}}
+{{- end }}
 kind: Ingress
 metadata:
   name: "{{ template "harbor.ingress-notary" . }}"
