@@ -27,13 +27,13 @@ spec:
       imagePullSecrets:
         - name: reg.vibrenthealth.com
       volumes:
-      - name: configure-{{ $replication.name }}-replication
+      - name: {{ $replication.name }}-replication
         configMap:
           name: {{ $replication.name }}-replication
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" $root }}
-        image: reg.vibrenthealth.com/vibrent/utils/debug-utils:master
+        image: reg.vibrenthealth.com/vibrent-base/curl:PR-31-4b4e836
         command: ['sh', '-c', './tmp/configureReplication.sh']
         env:
         - name: HARBOR_ADMIN_USERNAME
@@ -41,7 +41,7 @@ spec:
         - name: HARBOR_ADMIN_PASSWORD
           value: {{ $root.Values.harborAdminPassword }}
         volumeMounts:
-        - name: configure-{{ $replication.name }}-replication
+        - name: {{ $replication.name }}-replication
           mountPath: /tmp
 ---
 {{- end }}

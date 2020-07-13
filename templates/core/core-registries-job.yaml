@@ -33,7 +33,7 @@ spec:
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" $root }}
-        image: reg.vibrenthealth.com/vibrent/utils/debug-utils:master
+        image: reg.vibrenthealth.com/vibrent-base/curl:PR-31-4b4e836
         command: ['sh', '-c', './tmp/configureRegistry.sh']
         env:
         - name: HARBOR_ADMIN_USERNAME
