@@ -26,7 +26,7 @@ expose:
     commonName: ""
   ingress:
     hosts:
-      core: core.harbor.domain
+      core: https://harbor.ssk8s.vibrenthealth.com
       notary: notary.harbor.domain
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
@@ -342,6 +342,34 @@ core:
   secretName: ""
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
+  
+  ## configure harbor registries to use in replicationRules
+  registries: []
+  # - name: dockerhub
+  #   provider: docker-hub
+  #   desc: "registry description"
+  #   url: https://hub.docker.com
+  #   accessId: ""
+  #   accessSecret: ""
+  #   insecure: false
+  #   jobPodAnnotations: {}
+  #   jobAnnotations: {}
+
+  ## configures harbor replication rules
+  replicationRules: []
+  # - name: pull-weaveworks-helm-operator-docker-hub
+  #   desc: "pull weaveworks/helm-operator docker-hub to local harbor -- test"
+  #   mode: pull
+  #   triggerMode: manual
+  #   replicateDeletion: false
+  #   overrideExistingResources: false
+  #   srcRegistryName: dockerhub
+  #   filter:
+  #     resource: image
+  #     name: weaveworks/helm-operator
+  #     tag: 0.10.1
+  #   jobPodAnnotations: {}
+  #   jobAnnotations: {}
 
 jobservice:
   image:

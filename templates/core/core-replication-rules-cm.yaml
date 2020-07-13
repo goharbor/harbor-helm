@@ -1,0 +1,135 @@
+{{- $root := . -}}
+{{- range $replication := .Values.core.replicationRules }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $replication.name }}-replication
+data:
+  configureReplication.sh: |
+    #!/bin/sh
+    set -e
+    
+    ruleName={{ required "A replication rule name is required" $replication.name }}
+    basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
+    coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
+    triggerMode={{ required "A replication rule trigger mode is required. Valid values are: manual, event_based or scheduled" $replication.triggerMode }}
+    replicateDeletion={{ $replication.replicateDeletion | default false }}
+    overrideExistingResources={{ $replication.overrideExistingResources | default true }}
+    destNamespace={{ $replication.destinationNamespace | default "" }}
+    desc={{ $replication.desc | default "This is a replication rule description and can be overriden by chart values file" | quote }}
+    mode={{ required "A replication mode is required, valid values are pull and push" $replication.mode  | lower }}
+    destRegId=""
+    srcRegId=""
+    replicationPoliciesEndpoint="replication/policies"
+    verb=POST
+    
+
+    
+    {{- if eq $replication.mode "pull" }}
+    ## pull mode: $replication.srcRegistryName is required
+    ## Pull the resources from the remote registry to the local Harbor.
+    srcRegistryName={{ required "A src registry name is required" $replication.srcRegistryName }}
+    srcRegId=$(curl -u "${basicAuthCreds}" \
+    -H "accept: application/json" \
+    -X GET "$coreHostUrl/api/registries" \
+    --silent | jq '.[]? | select(.name=='\"${srcRegistryName}\"') | .id')
+    if [ -z $srcRegId ]; 
+    then
+      echo "The src registry ${srcRegistryName} does not exist. Please create a registry first"
+      exit 1
+    fi
+    {{- end }}
+
+
+    {{- if eq $replication.mode "push" }}
+    ## push mode: $replication.destRegistryName is required
+    ## Push the resources from the local Harbor to the remote registry.
+    destRegistryName={{ required "A destination registry name is required" $replication.destRegistryName  }}
+    destRegId=$(curl -u "${basicAuthCreds}" \
+      -H "accept: application/json" \
+      -X GET "$coreHostUrl/api/registries" \
+      --silent | jq '.[]? | select(.name=='\"${destRegistryName}\"') | .id')
+      if [ -z $destRegId ]; 
+      then
+        echo "The dest registry: ${destRegistryName} does not exist. Please create a registry first"
+        exit 1
+      fi
+    {{- end }}
+    
+    
+
+    
+  
+    id=$(curl -u "${basicAuthCreds}" \
+    -H "accept: application/json" \
+    -X GET "$coreHostUrl/api/${replicationPoliciesEndpoint}" \
+    --silent | jq '.[]? | select(.name=='\"${ruleName}\"') | .id')
+    
+
+
+    ## if id is not empty -- meaning rule exists, we need to update
+    if [ ! -z $id ];
+    then
+      verb=PUT
+      replicationPoliciesEndpoint="replication/policies/${id}"
+      echo "Replication rule ${ruleName} exist, updating now..."
+    fi
+
+    curl -u "${basicAuthCreds}" \
+       -X $verb \
+       -ki "${coreHostUrl}/api/${replicationPoliciesEndpoint}" \
+       -H  "Content-Type: application/json" \
+       -d "{
+           \"description\": \"${desc}\",
+           \"enabled\": true,
+           \"filters\": [
+             {{- if $replication.filter.resource }}
+             {
+               \"type\": \"resource\",
+               \"value\": \"{{$replication.filter.resource}}\"
+             }
+             {{- end }}
+             {{- if $replication.filter.name }}
+             ,{
+             \"type\": \"name\",
+             \"value\": \"{{$replication.filter.name}}\"
+             }
+             {{- end }}
+             {{- if $replication.filter.tag }}
+             ,{
+               \"type\": \"tag\",
+               \"value\": \"{{$replication.filter.tag}}\"
+              }
+             {{- end }}
+             {{- if $replication.filter.label }}
+             ,{
+               \"type\": \"label\",
+               \"value\": \"{{$replication.filter.label}}\"
+              }
+             {{- end }}
+            ],
+           {{- if eq $replication.mode "push" }}
+           \"dest_registry\": {
+              \"id\": $destRegId
+           },
+           {{- end }}
+           {{- if eq $replication.mode "pull" }}
+           \"src_registry\": {
+             \"id\": $srcRegId
+           },
+           {{- end }}
+           \"dest_namespace\": \"${destNamespace}\",
+           \"trigger\": {
+             \"type\": \"${triggerMode}\"
+             {{- if eq $replication.triggerMode "scheduled" }}
+             ,\"trigger_settings\": {
+               \"cron\": \"{{ $replication.cron }}\"
+              }
+              {{- end -}}
+            },
+            \"deletion\": $replicateDeletion,
+            \"override\": $overrideExistingResources,  
+            \"name\": \"${ruleName}\"
+          }"
+---
+{{- end }}

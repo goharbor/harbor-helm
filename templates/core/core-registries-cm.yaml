@@ -1,0 +1,67 @@
+{{- $root := . -}}
+{{- range $registry := .Values.core.registries }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $registry.name }}-registry-cm
+data:
+  configureRegistry.sh: |
+    #!/bin/sh
+    set -e
+    
+    registryName={{ required "A registry name is required" $registry.name }}
+    registryUrl={{ required "A registry url is required" $registry.url }}
+    registryProvider={{required "A registry provider is required" $registry.provider}}
+    coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
+    desc={{ $registry.desc | default "desc" | quote }}
+    basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
+    insecure={{$registry.insecure | default false }}
+    endpointPath="api/registries"
+
+    id=$(curl -u "${basicAuthCreds}" \
+    -H "accept: application/json" \
+    -X GET "$coreHostUrl/${endpointPath}" \
+    --silent | jq '.[]? | select(.name=='\"${registryName}\"') | .id')
+    echo "id: ${id}"
+    if [ -z $id ]; 
+    then
+      echo "creating new..."
+      curl -u "${basicAuthCreds}" \
+      -X POST \
+      -H "Content-Type: application/json" \
+      -ki $coreHostUrl/${endpointPath} \
+      -d "{ 
+        \"credential\": { 
+        \"access_key\": \"$ACCESS_KEY\",
+        \"access_secret\": \"$ACCESS_SECRET\", 
+        \"type\": \"basic\"
+      },
+      \"name\": \"$registryName\", 
+      \"url\": \"$registryUrl\", 
+      \"insecure\": $insecure,
+      \"type\": \"$registryProvider\",
+      \"description\": \"$desc\"
+      }"
+
+    else
+      echo "updating existing ${id}"
+      endpointPath="${endpointPath}/${id}"
+      curl -u "${basicAuthCreds}" \
+      -X PUT \
+      -H "Content-Type: application/json" \
+      -ki $coreHostUrl/${endpointPath} \
+      -d "{
+          \"access_key\": \"$ACCESS_KEY\",
+          \"credential_type\": \"basic\",
+          \"name\": \"$registryName\",
+          \"access_secret\": \"$ACCESS_SECRET\",
+          \"url\": \"$registryUrl\",
+          \"insecure\": $insecure,
+          \"description\": \"$desc\"
+        }"
+    fi
+
+    
+
+---
+{{- end }}

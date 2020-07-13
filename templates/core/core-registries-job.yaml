@@ -1,0 +1,47 @@
+{{- $root := . -}}
+{{- range $registry := .Values.core.registries }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $registry.name }}-registry
+  namespace: {{ $root.Release.Namespace }}
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+    {{- if $registry.jobAnnotations }}
+{{ toYaml  $registry.jobAnnotations | indent 4 }}
+    {{- end }}
+spec:
+  template:
+    metadata:
+      name: {{ $registry.name }}
+      {{- if $registry.jobPodAnnotations }}
+      annotations:
+{{ toYaml $registry.jobPodAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if $root.Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
+      {{- end }}
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: reg.vibrenthealth.com
+      volumes:
+      - name: configure-{{ $registry.name }}-registry
+        configMap:
+          name: {{ $registry.name }}-registry-cm
+          defaultMode: 0755
+      containers:
+      - name: {{ template "harbor.core" $root }}
+        image: reg.vibrenthealth.com/vibrent/utils/debug-utils:master
+        command: ['sh', '-c', './tmp/configureRegistry.sh']
+        env:
+        - name: HARBOR_ADMIN_USERNAME
+          value: {{ default "admin" $root.Values.adminUsername }}
+        - name: HARBOR_ADMIN_PASSWORD
+          value: {{ $root.Values.harborAdminPassword }}
+        volumeMounts:
+        - name: configure-{{ $registry.name }}-registry
+          mountPath: /tmp
+---
+{{- end }}
