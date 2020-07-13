@@ -349,7 +349,7 @@ core:
   #   provider: docker-hub
   #   desc: "registry description"
   #   url: https://hub.docker.com
-  #   accessId: ""
+  #   accessKey: ""
   #   accessSecret: ""
   #   insecure: false
   #   jobPodAnnotations: {}

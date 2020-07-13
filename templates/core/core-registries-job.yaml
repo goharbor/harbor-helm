@@ -40,6 +40,14 @@ spec:
           value: {{ default "admin" $root.Values.adminUsername }}
         - name: HARBOR_ADMIN_PASSWORD
           value: {{ $root.Values.harborAdminPassword }}
+        {{- if $registry.accessKey }}
+        - name: ACCESS_KEY
+          value: {{ $registry.accessKey }}
+        {{- end }}
+        {{- if $registry.accessSecret }}
+        - name: ACCESS_SECRET
+          value: {{ $registry.accessSecret }}
+        {{- end }}
         volumeMounts:
         - name: configure-{{ $registry.name }}-registry
           mountPath: /tmp
