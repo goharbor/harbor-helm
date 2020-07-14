@@ -364,8 +364,16 @@ core:
     ## Optional ( defaults to false ). Whether or not the certificate will be verified when Harbor tries to access the server.
     # insecure: false
 
-    # jobPodAnnotations: {}
-    # jobAnnotations: {}
+    ## Required. Job that actually creates the registries.
+    # job: {}
+      ## Required. Image that runs the job. The image must have curl and jq installed
+      # image: 
+      ## Optional. List of imagePullSecrets, incase using a custom image
+      # imagePullSecrets: []
+      ## Optional. Job annotations
+      # annotations: {}
+      ## Optional. Job pod annotations
+      # podAnnotations: {}
 
   ## configures harbor replication rules
   replicationRules: []
@@ -416,8 +424,16 @@ core:
           ## For more patterns, please refer to the user guide.Filter the resources according to labels.
           #tag: 0.10.1
 
-      #jobPodAnnotations: {}
-      #jobAnnotations: {}
+      ## Required. Job that actually creates the replication rules
+      # job: {}
+        ## Required. Image that runs the job. The image must have curl and jq installed
+        # image: 
+        ## Optional. List of imagePullSecrets, incase using a custom image
+        # imagePullSecrets: []
+        ## Optional. Job annotations
+        # annotations: {}
+        ## Optional. Job pod annotations
+        # podAnnotations: {}
 
 jobservice:
   image:

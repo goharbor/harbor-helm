@@ -8,24 +8,26 @@ metadata:
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    {{- if $replication.jobAnnotations }}
-{{ toYaml  $replication.jobAnnotations | indent 4 }}
+    {{- if $replication.job.annotations }}
+{{ toYaml  $replication.job.annotations | indent 4 }}
     {{- end }}
 spec:
   template:
     metadata:
       name: {{ $replication.name }}
-      {{- if $replication.jobPodAnnotations }}
+      {{- if $replication.job.podAnnotations }}
       annotations:
-{{ toYaml $replication.jobPodAnnotations | indent 8 }}
+{{ toYaml $replication.job.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if $root.Values.serviceAccount.enabled }}
       serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
       {{- end }}
       restartPolicy: Never
+      {{- if $replication.job.imagePullSecrets }}
       imagePullSecrets:
-        - name: reg.vibrenthealth.com
+{{ toYaml $replication.job.imagePullSecrets | indent 6 }}
+      {{- end }}
       volumes:
       - name: {{ $replication.name }}-replication
         configMap:
@@ -33,7 +35,7 @@ spec:
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" $root }}
-        image: reg.vibrenthealth.com/vibrent-base/curl:master-77c8ca6
+        image: {{ required "A image is required to run the job that creates replication rules. The image must have curl and jq installed." $replication.job.image }}
         command: ['sh', '-c', './tmp/configureReplication.sh']
         env:
         - name: HARBOR_ADMIN_USERNAME

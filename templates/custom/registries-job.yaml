@@ -8,24 +8,26 @@ metadata:
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    {{- if $registry.jobAnnotations }}
-{{ toYaml  $registry.jobAnnotations | indent 4 }}
+    {{- if $registry.job.annotations }}
+{{ toYaml  $registry.job.annotations | indent 4 }}
     {{- end }}
 spec:
   template:
     metadata:
       name: {{ $registry.name }}
-      {{- if $registry.jobPodAnnotations }}
+      {{- if $registry.job.podAnnotations }}
       annotations:
-{{ toYaml $registry.jobPodAnnotations | indent 8 }}
+{{ toYaml $registry.job.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if $root.Values.serviceAccount.enabled }}
       serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
       {{- end }}
       restartPolicy: Never
+      {{- if $registry.job.imagePullSecrets }}
       imagePullSecrets:
-        - name: reg.vibrenthealth.com
+{{ toYaml $registry.job.imagePullSecrets | indent 6 }}
+      {{- end }}
       volumes:
       - name: configure-{{ $registry.name }}-registry
         configMap:
@@ -33,7 +35,7 @@ spec:
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" $root }}
-        image: reg.vibrenthealth.com/vibrent-base/curl:master-77c8ca6
+        image: {{  required "A image is required to run the job that creates registries. The image must have curl and jq installed." $registry.job.image }}
         command: ['sh', '-c', './tmp/configureRegistry.sh']
         env:
         - name: HARBOR_ADMIN_USERNAME
