@@ -650,10 +650,6 @@ database:
     image:
       repository: goharbor/harbor-db
       tag: dev
-    # the image used by the init container
-    initContainerImage:
-      repository: busybox
-      tag: latest
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
