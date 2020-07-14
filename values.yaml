@@ -345,31 +345,79 @@ core:
   
   ## configure harbor registries to use in replicationRules
   registries: []
-  # - name: dockerhub
-  #   provider: docker-hub
-  #   desc: "registry description"
-  #   url: https://hub.docker.com
-  #   accessKey: ""
-  #   accessSecret: ""
-  #   insecure: false
-  #   jobPodAnnotations: {}
-  #   jobAnnotations: {}
+  #- name: dockerhub ## Required. The registry name
+    ## Type of the registry, e.g. 'harbor'.
+    # provider: docker-hub
+
+    ## Optional ( defaults to "desc" ). The description of the registry
+    # desc: "registry description"
+
+    ## Required. The url of the registry
+    # url: https://hub.docker.com
+    
+    ## Optional ( defaults to "" ). Username to access registry
+    # accessKey: ""
+
+    ## Optional ( defaults to "" ). Password to access registry
+    # accessSecret: ""
+
+    ## Optional ( defaults to false ). Whether or not the certificate will be verified when Harbor tries to access the server.
+    # insecure: false
+    
+    # jobPodAnnotations: {}
+    # jobAnnotations: {}
 
   ## configures harbor replication rules
   replicationRules: []
-  # - name: pull-weaveworks-helm-operator-docker-hub
-  #   desc: "pull weaveworks/helm-operator docker-hub to local harbor -- test"
-  #   mode: pull
-  #   triggerMode: manual
-  #   replicateDeletion: false
-  #   overrideExistingResources: false
-  #   srcRegistryName: dockerhub
-  #   filter:
-  #     resource: image
-  #     name: weaveworks/helm-operator
-  #     tag: 0.10.1
-  #   jobPodAnnotations: {}
-  #   jobAnnotations: {}
+  # - name: pull-weaveworks-helm-operator-docker-hub ## Required. Name of the replication rule
+
+      ## description of the replication rule.
+      #desc: "pull weaveworks/helm-operator docker-hub to local harbor -- test" 
+     
+      ## Replication mode. Valid values are pull and push
+      ## Push mode: when pushing from local harbor to remote registry
+      ## Pull mode: when pulling from remote registry to local harbor
+      #mode: pull 
+
+      ## The replication policy trigger type. The valid values are manual, event_based and scheduled.
+      #triggerMode: scheduled 
+
+      ## Required when triggerMode is set to scheduled.
+      ## The cron string for scheduled trigger
+      #cron: "0 0 * * 0" # every sunday
+
+      ## Whether to replicate the deletion operation.
+      #replicateDeletion: false
+
+      ## Whether to override the resources on the destination registry.
+      #overrideExistingResources: false
+
+      ## Required if mode is set to pull. 
+      ## This registry MUST already be configured in harbor registries
+      #srcRegistryName: dockerhub
+
+      ## Required if mode is set to push
+      ## This registry MUST already be configured in harbor registries
+      #destRegistryName
+
+      ## Used to filter resources to replicate 
+      # filter:
+      
+          ## Resource type to replicate.
+          ## valid values are image, chart, both
+          #resource: image
+      
+          ## the artifact name to replicate
+          #name: weaveworks/helm-operator
+
+          ## Filter the tag/version part of the resources. 
+          ## Leave empty or use '**' to match all. 
+          ## '1.0*' only matches the tags that starts with '1.0'. 
+          ## For more patterns, please refer to the user guide.Filter the resources according to labels.
+          #tag: 0.10.1
+
+      #jobPodAnnotations: {}
+      #jobAnnotations: {}
 
 jobservice:
   image:

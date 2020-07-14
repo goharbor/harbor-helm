@@ -28,7 +28,7 @@ data:
     {{- if eq $replication.mode "pull" }}
     ## pull mode: $replication.srcRegistryName is required
     ## Pull the resources from the remote registry to the local Harbor.
-    srcRegistryName={{ required "A src registry name is required" $replication.srcRegistryName }}
+    srcRegistryName={{ required "A src registry name is required when replication mode is set to pull" $replication.srcRegistryName }}
     srcRegId=$(curl -u "${basicAuthCreds}" \
     -H "accept: application/json" \
     -X GET "$coreHostUrl/api/registries" \
@@ -44,7 +44,7 @@ data:
     {{- if eq $replication.mode "push" }}
     ## push mode: $replication.destRegistryName is required
     ## Push the resources from the local Harbor to the remote registry.
-    destRegistryName={{ required "A destination registry name is required" $replication.destRegistryName  }}
+    destRegistryName={{ required "A destination registry name is required when replication mode is set to push" $replication.destRegistryName  }}
     destRegId=$(curl -u "${basicAuthCreds}" \
       -H "accept: application/json" \
       -X GET "$coreHostUrl/api/registries" \
