@@ -26,7 +26,7 @@ expose:
     commonName: ""
   ingress:
     hosts:
-      core: https://harbor.ssk8s.vibrenthealth.com
+      core: core.harbor.domain
       notary: notary.harbor.domain
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
@@ -363,7 +363,7 @@ core:
 
     ## Optional ( defaults to false ). Whether or not the certificate will be verified when Harbor tries to access the server.
     # insecure: false
-    
+
     # jobPodAnnotations: {}
     # jobAnnotations: {}
 
