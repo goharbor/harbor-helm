@@ -20,8 +20,10 @@ spec:
       serviceAccountName: {{ include "harbor.serviceAccountName" . }}
       {{- end }}
       restartPolicy: Never
+      {{- if .Values.oidc.jobImagePullSecrets }}
       imagePullSecrets:
-        - name: reg.vibrenthealth.com
+{{ toYaml .Values.oidc.jobImagePullSecrets | indent 6 }}
+      {{- end }}
       volumes:
       - name: configure-oidc-script
         configMap:
@@ -29,7 +31,7 @@ spec:
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" . }}
-        image: reg.vibrenthealth.com/vibrent/utils/debug-utils:master
+        image: {{  required "A image is required to run the job that configures OIDC. The image must have curl and jq installed." .Values.oidc.jobImage }}
         command: ['sh', '-c', 'ls -lrt /tmp && ./tmp/configureOidc.sh']
         env:
         - name: AUTH_MODE

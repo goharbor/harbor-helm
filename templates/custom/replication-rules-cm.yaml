@@ -1,5 +1,5 @@
 {{- $root := . -}}
-{{- range $replication := .Values.core.replicationRules }}
+{{- range $replication := .Values.custom.replicationRules }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
