@@ -43,4 +43,4 @@ jobs:
       - name: Run template for nodePort expose
         working-directory: ./harbor
         run:
-          helm template --set "expose.type=nodePort,expose.tls.commonName=127.0.0.1" --output-dir $(mktemp -d -t output-XXXXXXXXXX) .
+          helm template --set "expose.type=nodePort,expose.tls.auto.commonName=127.0.0.1" --output-dir $(mktemp -d -t output-XXXXXXXXXX) .

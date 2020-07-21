@@ -146,12 +146,12 @@ spec:
       {{- if .Values.expose.tls.enabled }}
       - name: ca-download
         secret:
-        {{- if eq (include "harbor.autoGenCertForIngress" .) "true" }}
+        {{- if .Values.caSecretName }}
+          secretName: {{ .Values.caSecretName }}
+        {{- else if eq (include "harbor.autoGenCertForIngress" .) "true" }}
           secretName: "{{ template "harbor.ingress" . }}"
         {{- else if eq (include "harbor.autoGenCertForNginx" .) "true" }}
-          secretName: {{ template "harbor.nginx" . }}
-        {{- else }}
-          secretName: {{ .Values.expose.tls.secretName }}
+          secretName: {{ template "harbor.tlsSecretForNginx" . }}
         {{- end }}
       {{- end }}
       {{- if .Values.uaaSecretName }}
