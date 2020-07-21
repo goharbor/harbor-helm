@@ -1,0 +1,49 @@
+{{- $root := . -}}
+{{- range $project := .Values.projects.project }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $project.name }}-projects
+  namespace: {{ $root.Release.Namespace }}
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+    {{- if $root.Values.projects.job.annotations }}
+{{ toYaml  $root.Values.projects.job.annotations | indent 4 }}
+    {{- end }}
+spec:
+  template:
+    metadata:
+      name: {{ $root.Values.projects.name }}
+      {{- if $root.Values.projects.job.podAnnotations }}
+      annotations:
+{{ toYaml $root.Values.projects.job.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if $root.Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
+      {{- end }}
+      restartPolicy: Never
+      {{- if $root.Values.projects.job.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml $root.Values.projects.job.imagePullSecrets | indent 6 }}
+      {{- end }}
+      volumes:
+      - name: configure-{{ $project.name }}-project
+        configMap:
+          name: {{ $project.name }}-project-cm
+          defaultMode: 0755
+      containers:
+      - name: {{ template "harbor.core" $root }}
+        image: {{  required "A image is required to run the job that creates registries. The image must have curl and jq installed." $root.Values.projects.job.image }}
+        command: ['sh', '-c', './tmp/projects.sh']
+        env:
+        - name: HARBOR_ADMIN_USERNAME
+          value: {{ default "admin" $root.Values.adminUsername }}
+        - name: HARBOR_ADMIN_PASSWORD
+          value: {{ $root.Values.harborAdminPassword }}
+        volumeMounts:
+        - name: configure-{{ $project.name }}-project
+          mountPath: /tmp
+---
+{{- end }}

@@ -1,0 +1,91 @@
+{{- $root := . -}}
+{{- range $project := .Values.projects.project }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $project.name}}-project-cm
+data:
+  projects.sh: |
+   #!/usr/bin/env bash
+
+    # exit when any command fails
+    set -e
+
+    coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
+    basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
+
+    function isProjectExists(){
+      # call project API and return the value.
+      res=$(curl -I HEAD "$coreHostUrl/api/projects?project_name=$1" \
+      -H "accept: application/json" \
+      -u $basicAuthCreds)
+      echo "response: " $res
+    }
+
+    function createProject() {
+      # call Project API and create the project with the values taken from the values yaml
+      project=$(curl -X POST "$coreHostUrl/api/projects" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -u "${HARBOR_ADMIN_USERNAME}":"${HARBOR_PASSWORD}" \
+      -d "{ \"project_name\": \"$1\"}")
+      echo "Project created : ${project}"
+      echo ${project}
+    }
+
+    function updateProjectWithMemberGroup() {
+      projectName=$1
+      name=$(IFS=$',' && echo $1 | awk -F '-' '{print $1}')
+      role_id=$(IFS=$',' && echo $1 | awk -F '-' '{print $2}')
+
+      # Get projecid for the given projectname.
+      projectID=$(curl -X GET "$coreHostUrl/api/projects?name=$projectName" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -u "${HARBOR_USER_NAME}":"${HARBOR_ADMIN_PASSWORD}"  | jq '.[].project_id ')
+
+      echo "Project ID : ${projectID}"
+
+      # Get member id for the given group
+      memberID=$(curl -X GET "$coreHostUrl/api/usergroups" \
+      -H "accept: application/json" \
+      -u "${HARBOR_USER_NAME}":"${HARBOR_PASSWORD}" \
+      | jq '.[] | map(select(.group_name == $name) | .id)'
+      echo "Member ID : ${memberID}")
+
+      # Updating project with member id
+      echo "Updating project ${projectID} with ${memberID} "
+      id=$(curl -X PUT "$coreHostUrl/api/projects/${projectID}/members/${memberID}" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+      -u "${HARBOR_USER_NAME}":"${HARBOR_PASSWORD}" \
+      -d "{ \"role_id\": $role_id}")
+
+      echo $id
+    }
+
+    function main() {
+      echo "running in namespace: ${NAMESPACE}"
+      projectName={{ $project.name | quote }}
+      if [[ $(isProjectExists $projectName)  == *"404"* ]]; then
+         createProject $projectName
+      fi
+
+      groupDetails=""
+
+      {{- range $group := .groups }}
+        {{ $group.name | quote }} : {{ $group.role | quote }}
+        groupDetails+={{ $group.name | quote }}
+        groupDetails+=":"
+        groupDetails+={{ $group.role | quote }}
+        groupDetails+=";"
+      {{ end }}
+
+      echo $groupDetails
+
+      IFS=$',' && echo $groupDetails | awk -v totalValues="$totalCount" -F ";" '{for (i=1;i<=totalValues;i++)print $i}' | while read line; do updateProjectWithMemberGroup $line; done
+    }
+    main
+---
+  {{ end }}
