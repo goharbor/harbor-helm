@@ -19,7 +19,7 @@ data:
       # call project API and return the value.
       res=$(curl -I HEAD "$coreHostUrl/api/projects?project_name=$1" \
       -H "accept: application/json" \
-      -u $basicAuthCreds)
+      -u "${basicAuthCreds}" )
       echo "response: " $res
     }
 
@@ -28,7 +28,7 @@ data:
       project=$(curl -X POST "$coreHostUrl/api/projects" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
-      -u "${HARBOR_ADMIN_USERNAME}":"${HARBOR_PASSWORD}" \
+      -u "${basicAuthCreds}" \
       -d "{ \"project_name\": \"$1\"}")
       echo "Project created : ${project}"
       echo ${project}
@@ -43,14 +43,14 @@ data:
       projectID=$(curl -X GET "$coreHostUrl/api/projects?name=$projectName" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
-      -u "${HARBOR_USER_NAME}":"${HARBOR_ADMIN_PASSWORD}"  | jq '.[].project_id ')
+      -u "${basicAuthCreds}"  | jq '.[].project_id ')
 
       echo "Project ID : ${projectID}"
 
       # Get member id for the given group
       memberID=$(curl -X GET "$coreHostUrl/api/usergroups" \
       -H "accept: application/json" \
-      -u "${HARBOR_USER_NAME}":"${HARBOR_PASSWORD}" \
+      -u "${basicAuthCreds}" \
       | jq '.[] | map(select(.group_name == $name) | .id)'
       echo "Member ID : ${memberID}")
 
@@ -59,7 +59,7 @@ data:
       id=$(curl -X PUT "$coreHostUrl/api/projects/${projectID}/members/${memberID}" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
-      -u "${HARBOR_USER_NAME}":"${HARBOR_PASSWORD}" \
+      -u "${basicAuthCreds}" \
       -d "{ \"role_id\": $role_id}")
 
       echo $id
