@@ -2,5 +2,5 @@ docs/*
 .git/*
 .gitignore
 CONTRIBUTING.md
-.travis.yaml
+.travis.yml
 test/*
