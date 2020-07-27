@@ -1,5 +1,5 @@
 {{- $root := . -}}
-{{- range $project := .Values.projects.project }}
+{{- range $project := .Values.custom.projects }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -74,7 +74,7 @@ data:
 
       groupDetails=""
 
-      {{- range $group := .groups }}
+      {{- range $group := $project.groups }}
         {{ $group.name | quote }} : {{ $group.role | quote }}
         groupDetails+={{ $group.name | quote }}
         groupDetails+=":"

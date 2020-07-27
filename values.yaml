@@ -691,3 +691,4 @@ custom:
         # annotations: {}
         ## Optional. Job pod annotations
         # podAnnotations: {}
+  #projects: []

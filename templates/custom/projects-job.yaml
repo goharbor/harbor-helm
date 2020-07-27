@@ -1,5 +1,5 @@
 {{- $root := . -}}
-{{- range $project := .Values.projects.project }}
+{{- range $project := .Values.custom.projects }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -8,25 +8,25 @@ metadata:
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    {{- if $root.Values.projects.job.annotations }}
-{{ toYaml  $root.Values.projects.job.annotations | indent 4 }}
+    {{- if $project.job.annotations }}
+{{ toYaml  $project.job.annotations | indent 4 }}
     {{- end }}
 spec:
   template:
     metadata:
-      name: {{ $root.Values.projects.name }}
-      {{- if $root.Values.projects.job.podAnnotations }}
+      name: {{ $project.name }}
+      {{- if $project.job.podAnnotations }}
       annotations:
-{{ toYaml $root.Values.projects.job.podAnnotations | indent 8 }}
+{{ toYaml $project.job.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if $root.Values.serviceAccount.enabled }}
+      {{- if $project.serviceAccount.enabled }}
       serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
       {{- end }}
       restartPolicy: Never
-      {{- if $root.Values.projects.job.imagePullSecrets }}
+      {{- if $project.job.imagePullSecrets }}
       imagePullSecrets:
-{{ toYaml $root.Values.projects.job.imagePullSecrets | indent 6 }}
+{{ toYaml $project.job.imagePullSecrets | indent 6 }}
       {{- end }}
       volumes:
       - name: configure-{{ $project.name }}-project
@@ -35,7 +35,7 @@ spec:
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" $root }}
-        image: {{  required "A image is required to run the job that creates registries. The image must have curl and jq installed." $root.Values.projects.job.image }}
+        image: {{  required "A image is required to run the job that creates proejcts. The image must have curl and jq installed." $project.job.image }}
         command: ['sh', '-c', './tmp/projects.sh']
         env:
         - name: HARBOR_ADMIN_USERNAME
