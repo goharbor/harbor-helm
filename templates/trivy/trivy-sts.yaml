@@ -161,6 +161,18 @@ spec:
           claimName: {{ $trivy.existingClaim }}
       {{- end }}
       {{- end }}
+      {{- with .Values.trivy.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.trivy.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.trivy.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
 {{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
