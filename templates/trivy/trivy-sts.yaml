@@ -107,6 +107,7 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /home/scanner/.cache
+            subPath: {{ .Values.persistence.persistentVolumeClaim.trivy.subPath }}
             readOnly: false
           {{- if .Values.internalTLS.enabled }}
           - name: trivy-internal-certs
