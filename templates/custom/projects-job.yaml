@@ -20,7 +20,7 @@ spec:
 {{ toYaml $project.job.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if $project.serviceAccount.enabled }}
+      {{- if $root.Values.serviceAccount.enabled }}
       serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
       {{- end }}
       restartPolicy: Never

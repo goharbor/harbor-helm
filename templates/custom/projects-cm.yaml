@@ -16,6 +16,7 @@ data:
     basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
 
     function isProjectExists(){
+      echo "In the isProjectExists function"
       # call project API and return the value.
       res=$(curl -I HEAD "$coreHostUrl/api/projects?project_name=$1" \
       -H "accept: application/json" \
@@ -24,6 +25,7 @@ data:
     }
 
     function createProject() {
+       echo "In the createProject function"
       # call Project API and create the project with the values taken from the values yaml
       project=$(curl -X POST "$coreHostUrl/api/projects" \
       -H "accept: application/json" \
@@ -35,9 +37,14 @@ data:
     }
 
     function updateProjectWithMemberGroup() {
-      projectName=$1
-      name=$(IFS=$',' && echo $1 | awk -F '-' '{print $1}')
-      role_id=$(IFS=$',' && echo $1 | awk -F '-' '{print $2}')
+      echo "In the updateProjectWithMemberGroup function"
+      projectName={{ $project.name | quote }}
+
+      name=$(IFS=$',' && echo $1 | awk -F ':' '{print $1}')
+      role_id=$(IFS=$',' && echo $1 | awk -F ':' '{print $2}')
+
+      echo "Name : $name"
+      echo "role_id : $role_id"
 
       # Get projecid for the given projectname.
       projectID=$(curl -X GET "$coreHostUrl/api/projects?name=$projectName" \
@@ -51,31 +58,32 @@ data:
       memberID=$(curl -X GET "$coreHostUrl/api/usergroups" \
       -H "accept: application/json" \
       -u "${basicAuthCreds}" \
-      | jq '.[] | map(select(.group_name == $name) | .id)'
-      echo "Member ID : ${memberID}")
+      --silent | jq '.[]? | select(.group_name=='\"${name}\"') | .id')
+
+      echo "Member ID : ${memberID}"
 
       # Updating project with member id
       echo "Updating project ${projectID} with ${memberID} "
-      id=$(curl -X PUT "$coreHostUrl/api/projects/${projectID}/members/${memberID}" \
+      resp=$(curl -X POST "$coreHostUrl/api/projects/${projectID}/members" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
-      -d "{ \"role_id\": $role_id}")
+      -d "{\"role_id\":$role_id},\"member_group\":{\"group_type\":3,\"group_name\":\"${name}\"}}")
 
-      echo $id
+      echo "{\"role_id\":$role_id},\"member_group\":{\"group_type\":3,\"group_name\":${name}}"
+      echo "Project ${projectID} updated with member group $role_id and response is $resp"
     }
 
     function main() {
       echo "running in namespace: ${NAMESPACE}"
       projectName={{ $project.name | quote }}
+
       if [[ $(isProjectExists $projectName)  == *"404"* ]]; then
          createProject $projectName
       fi
 
       groupDetails=""
-
       {{- range $group := $project.groups }}
-        {{ $group.name | quote }} : {{ $group.role | quote }}
         groupDetails+={{ $group.name | quote }}
         groupDetails+=":"
         groupDetails+={{ $group.role | quote }}
@@ -83,8 +91,9 @@ data:
       {{ end }}
 
       echo $groupDetails
-
-      IFS=$',' && echo $groupDetails | awk -v totalValues="$totalCount" -F ";" '{for (i=1;i<=totalValues;i++)print $i}' | while read line; do updateProjectWithMemberGroup $line; done
+      totalCount=$(echo $groupDetails | awk -F ";" '{print NF}')
+      echo "Total Group : " $totalCount
+      IFS=$',' && echo $groupDetails | awk -v totalValues="$totalCount" -F ";" '{for (i=1;i<totalValues;i++)print $i}' | while read line; do updateProjectWithMemberGroup $line; done
     }
     main
 ---
