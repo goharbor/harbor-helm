@@ -91,6 +91,11 @@ spec:
             - name: SCANNER_API_SERVER_TLS_CERTIFICATE
               value: /etc/harbor/ssl/trivy.crt
             {{- end }}
+            - name: "SCANNER_REDIS_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "harbor.trivy" . }}
+                  key: redisURL
             - name: "SCANNER_STORE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
