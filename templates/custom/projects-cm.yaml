@@ -15,8 +15,8 @@ data:
     coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
     basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
     declare -A mroles
-    {{- range $roles := $root.Values.custom.roles }}
-       mroles[{{ $roles.name }}]={{ $roles.id }}
+    {{- range $roles := $root.Values.roles }}
+    mroles[{{ $roles.name }}]={{ $roles.id }}
     {{ end }}
 
     function isProjectExists(){
@@ -91,10 +91,10 @@ data:
 
       groupDetails=""
       {{- range $group := $project.groups }}
-        groupDetails+={{ $group.name | quote }}
-        groupDetails+=":"
-        groupDetails+={{ $group.role | quote }}
-        groupDetails+=";"
+      groupDetails+={{ $group.name | quote }}
+      groupDetails+=":"
+      groupDetails+={{ $group.role | quote }}
+      groupDetails+=";"
       {{ end }}
 
       echo $groupDetails
