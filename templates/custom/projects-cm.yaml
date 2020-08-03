@@ -14,6 +14,10 @@ data:
 
     coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
     basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
+    declare -A mroles
+    {{- range $roles := $root.Values.custom.roles }}
+       mroles[{{ $roles.name }}]={{ $roles.id }}
+    {{ end }}
 
     function isProjectExists(){
       echo "In the isProjectExists function"
@@ -39,12 +43,10 @@ data:
     function updateProjectWithMemberGroup() {
       echo "In the updateProjectWithMemberGroup function"
       projectName={{ $project.name | quote }}
-
-      name=$(IFS=$',' && echo $1 | awk -F ':' '{print $1}')
-      role_id=$(IFS=$',' && echo $1 | awk -F ':' '{print $2}')
-
-      echo "Name : $name"
-      echo "role_id : $role_id"
+      grpName=$(IFS=$',' && echo $1 | awk -F ':' '{print $1}')
+      grpRole=$(IFS=$',' && echo $1 | awk -F ':' '{print $2}')
+      echo "grpName : $grpName"
+      echo "grpRole : $grpRole"
 
       # Get projecid for the given projectname.
       projectID=$(curl -X GET "$coreHostUrl/api/projects?name=$projectName" \
@@ -55,33 +57,32 @@ data:
       echo "Project ID : ${projectID}"
 
       # Get member id for the given group
-      memberID=$(curl -X GET "$coreHostUrl/api/usergroups" \
-      -H "accept: application/json" \
-      -u "${basicAuthCreds}" \
-      --silent | jq '.[]? | select(.group_name=='\"${name}\"') | .id')
-
-      echo "Member ID : ${memberID}"
+      #memberID=$(curl -X GET "$coreHostUrl/api/usergroups" \
+      #-H "accept: application/json" \
+      #-u "${basicAuthCreds}" \
+      #--silent | jq '.[]? | select(.group_name=='\"${grpName}\"') | .id')
+      #echo "Member ID : ${memberID}"
 
       # Updating project with member id
-      echo "Updating project ${projectID} with ${memberID} "
+      echo "Adding group ${grpName} to project ${projectID} with grpRole $grpRole"
       resp=$(curl -X POST "$coreHostUrl/api/projects/${projectID}/members" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
       -d "{
-            \"role_id\":$role_id,
+            \"role_id\": ${mroles[$grpRole]},
             \"member_group\":
                 {\"group_type\":3,
-                \"group_name\":\"${name}\"
+                \"group_name\":\"${grpName}\"
                 }
            } ")
 
-      echo "{\"role_id\":$role_id},\"member_group\":{\"group_type\":3,\"group_name\":${name}}"
-      echo "Project ${projectID} updated with member group $role_id and response is $resp"
+      echo "Project ${projectID} updated with member group $grpRole and response is $resp"
     }
 
     function main() {
       echo "running in namespace: ${NAMESPACE}"
+      echo "Bash version ::::: $(bash --version)"
       projectName={{ $project.name | quote }}
 
       if [[ $(isProjectExists $projectName)  == *"404"* ]]; then
