@@ -599,6 +599,20 @@ oidc:
   # jobImage:
   # jobImagePullSecrets: []
 
+  ## DO NOT CHANGE THIS VALUES. THESE ARE MASTER VALUES.CHANGE
+  ## ONLY WHEN IT CHANGE FROM HARBOR SIDE.
+roles:
+  - name: projectAdmin
+    id: 1
+  - name: developer
+    id: 2
+  - name: guest
+    id: 3
+  - name: master
+    id: 4
+  - name: limitedGuest
+    id: 5
+
 custom:
   ## configure harbor registries to use in replicationRules
   registries: []
@@ -611,7 +625,7 @@ custom:
 
     ## Required. The url of the registry
     # url: https://hub.docker.com
-    
+
     ## Optional ( defaults to "" ). Username to access registry
     # accessKey: ""
 
@@ -624,7 +638,7 @@ custom:
     ## Required. Job that actually creates the registries.
     # job: {}
       ## Required. Image that runs the job. The image must have curl and jq installed
-      # image: 
+      # image:
       ## Optional. List of imagePullSecrets, incase using a custom image
       # imagePullSecrets: []
       ## Optional. Job annotations
@@ -637,15 +651,15 @@ custom:
   # - name: pull-weaveworks-helm-operator-docker-hub ## Required. Name of the replication rule
 
       ## description of the replication rule.
-      #desc: "pull weaveworks/helm-operator docker-hub to local harbor -- test" 
-     
+      #desc: "pull weaveworks/helm-operator docker-hub to local harbor -- test"
+
       ## Replication mode. Valid values are pull and push
       ## Push mode: when pushing from local harbor to remote registry
       ## Pull mode: when pulling from remote registry to local harbor
-      #mode: pull 
+      #mode: pull
 
       ## The replication policy trigger type. The valid values are manual, event_based and scheduled.
-      #triggerMode: scheduled 
+      #triggerMode: scheduled
 
       ## Required when triggerMode is set to scheduled.
       ## The cron string for scheduled trigger
@@ -657,7 +671,7 @@ custom:
       ## Whether to override the resources on the destination registry.
       #overrideExistingResources: false
 
-      ## Required if mode is set to pull. 
+      ## Required if mode is set to pull.
       ## This registry MUST already be configured in harbor registries
       #srcRegistryName: dockerhub
 
@@ -665,29 +679,50 @@ custom:
       ## This registry MUST already be configured in harbor registries
       #destRegistryName
 
-      ## Used to filter resources to replicate 
+      ## Used to filter resources to replicate
       # filter:
-      
+
           ## Resource type to replicate.
           ## valid values are image, chart, both
           #resource: image
-      
+
           ## the artifact name to replicate
           #name: weaveworks/helm-operator
 
-          ## Filter the tag/version part of the resources. 
-          ## Leave empty or use '**' to match all. 
-          ## '1.0*' only matches the tags that starts with '1.0'. 
+          ## Filter the tag/version part of the resources.
+          ## Leave empty or use '**' to match all.
+          ## '1.0*' only matches the tags that starts with '1.0'.
           ## For more patterns, please refer to the user guide.Filter the resources according to labels.
           #tag: 0.10.1
 
       ## Required. Job that actually creates the replication rules
       # job: {}
         ## Required. Image that runs the job. The image must have curl and jq installed
-        # image: 
+        # image:
         ## Optional. List of imagePullSecrets, incase using a custom image
         # imagePullSecrets: []
         ## Optional. Job annotations
         # annotations: {}
         ## Optional. Job pod annotations
         # podAnnotations: {}
+
+  ## configure harbor projects and its group member with specific roles.
+  projects: []
+  ## harbor project name i.e analytics
+  #- name:
+  ## OIDC group details i.e name and role
+  # groups: []
+    ## OIDC group name that wanted to add in the harbor project as member group.
+    #- name:
+    ## Project specific role for group memnbers i.e projectAdmin, devops, developer, guest etc.
+    #role: projectAdmin
+  ## Required. Job that actually creates the replication rules
+  # job: {}
+  ## Required. Image that runs the job. The image must have curl and jq installed
+  # image:
+  ## Optional. List of imagePullSecrets, incase using a custom image
+  # imagePullSecrets: []
+  ## Optional. Job annotations
+  # annotations: {}
+  ## Optional. Job pod annotations
+  # podAnnotations: {}
