@@ -8,6 +8,13 @@
   {{- $_ := set . "v2_path" "/v2/*" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/*" -}}
   {{- $_ := set . "controller_path" "/c/*" -}}
+{{- else if eq .Values.expose.ingress.controller "gce-internal" }}
+  {{- $_ := set . "portal_path" "/*" -}}
+  {{- $_ := set . "api_path" "/api/*" -}}
+  {{- $_ := set . "service_path" "/service/*" -}}
+  {{- $_ := set . "v2_path" "/v2/*" -}}
+  {{- $_ := set . "chartrepo_path" "/chartrepo/*" -}}
+  {{- $_ := set . "controller_path" "/c/*" -}}
 {{- else if eq .Values.expose.ingress.controller "ncp" }}
   {{- $_ := set . "portal_path" "/" -}}
   {{- $_ := set . "api_path" "/api/.*" -}}
@@ -35,6 +42,9 @@ metadata:
 {{ toYaml $ingress.annotations | indent 4 }}
 {{- if .Values.internalTLS.enabled }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+{{- end }}
+{{- if eq .Values.expose.ingress.controller "gce-internal" }}
+    kubernetes.io/ingress.class: "gce-internal"
 {{- end }}
 
 spec:
