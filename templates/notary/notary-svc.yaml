@@ -14,6 +14,10 @@ spec:
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: notary-server
+{{- if  (eq .Values.expose.ingress.controller "gce-internal") }}
+  annotations:
+    cloud.google.com/neg: '{ "ingress": true }'
+{{- end }}
 
 ---
 apiVersion: v1
