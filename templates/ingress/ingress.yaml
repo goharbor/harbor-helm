@@ -106,6 +106,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
+{{- if eq .Values.expose.ingress.controller "gce-internal" }}
+    kubernetes.io/ingress.class: "gce-internal"
+{{- end }}
 
 spec:
   {{- if $tls.enabled }}
