@@ -5,6 +5,10 @@ metadata:
   name: {{ template "harbor.notary-server" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if  (eq .Values.expose.ingress.controller "gce-internal") }}
+  annotations:
+    cloud.google.com/neg: '{ "ingress": true }'
+{{- end }}
 spec:
 {{- if  (eq .Values.expose.ingress.controller "gce") }}
   type: NodePort
@@ -14,10 +18,6 @@ spec:
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: notary-server
-{{- if  (eq .Values.expose.ingress.controller "gce-internal") }}
-  annotations:
-    cloud.google.com/neg: '{ "ingress": true }'
-{{- end }}
 
 ---
 apiVersion: v1
