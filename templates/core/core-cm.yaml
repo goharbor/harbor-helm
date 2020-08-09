@@ -7,10 +7,10 @@ metadata:
 data:
   app.conf: |+
     appname = Harbor
-    runmode = dev
+    runmode = {{ .Values.core.runmode }}
     enablegzip = true
 
-    [dev]
+    [{{ .Values.core.runmode }}]
     httpport = 8080
   DATABASE_TYPE: "postgresql"
   POSTGRESQL_HOST: "{{ template "harbor.database.host" . }}"
