@@ -78,6 +78,42 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.database.clairUsername" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- printf "%s" "postgres" -}}
+  {{- else -}}
+    {{- if eq .Values.database.external.clairUsername "" -}}
+        {{- .Values.database.external.username -}}
+    {{- else -}}
+        {{- .Values.database.external.clairUsername -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.notaryServerUsername" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- printf "%s" "postgres" -}}
+  {{- else -}}
+    {{- if eq .Values.database.external.notaryServerUsername "" -}}
+        {{- .Values.database.external.username -}}
+    {{- else -}}
+        {{- .Values.database.external.notaryServerUsername -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.notarySignerUsername" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- printf "%s" "postgres" -}}
+  {{- else -}}
+    {{- if eq .Values.database.external.notarySignerUsername "" -}}
+        {{- .Values.database.external.username -}}
+    {{- else -}}
+        {{- .Values.database.external.notarySignerUsername -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.database.rawPassword" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- .Values.database.internal.password -}}
@@ -86,12 +122,72 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.database.clairRawPassword" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- .Values.database.internal.password -}}
+  {{- else -}}
+    {{- if eq .Values.database.external.clairPassword "" -}}
+        {{- .Values.database.external.password -}}
+    {{- else -}}
+        {{- .Values.database.external.clairPassword -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.notaryServerRawPassword" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- .Values.database.internal.password -}}
+  {{- else -}}
+    {{- if eq .Values.database.external.notaryServerPassword "" -}}
+        {{- .Values.database.external.password -}}
+    {{- else -}}
+        {{- .Values.database.external.notaryServerPassword -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.notarySignerRawPassword" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- .Values.database.internal.password -}}
+  {{- else -}}
+    {{- if eq .Values.database.external.notarySignerPassword "" -}}
+        {{- .Values.database.external.password -}}
+    {{- else -}}
+        {{- .Values.database.external.notarySignerPassword -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.database.escapedRawPassword" -}}
   {{- include "harbor.database.rawPassword" . | urlquery | replace "+" "%20" -}}
 {{- end -}}
 
+{{- define "harbor.database.escapedClairRawPassword" -}}
+  {{- include "harbor.database.clairRawPassword" . | urlquery | replace "+" "%20" -}}
+{{- end -}}
+
+{{ define "harbor.database.escapedNotaryServerRawPassword" -}}
+  {{- include "harbor.database.notaryServerRawPassword" . | urlquery | replace "+" "%20" -}}
+{{- end -}}
+
+{{- define "harbor.database.escapedNotarySignerRawPassword" -}}
+  {{- include "harbor.database.notarySignerRawPassword" . | urlquery | replace "+" "%20" -}}
+{{- end -}}
+
 {{- define "harbor.database.encryptedPassword" -}}
   {{- include "harbor.database.rawPassword" . | b64enc | quote -}}
+{{- end -}}
+
+{{- define "harbor.database.encryptedClairPassword" -}}
+  {{- include "harbor.database.clairRawPassword" . | b64enc | quote -}}
+{{- end -}}
+
+{{- define "harbor.database.encryptedNotaryServerPassword" -}}
+  {{- include "harbor.database.notaryServerRawPassword" . | b64enc | quote -}}
+{{- end -}}
+
+{{- define "harbor.database.encryptedNotarySignerPassword" -}}
+  {{- include "harbor.database.notarySignerRawPassword" . | b64enc | quote -}}
 {{- end -}}
 
 {{- define "harbor.database.coreDatabase" -}}
