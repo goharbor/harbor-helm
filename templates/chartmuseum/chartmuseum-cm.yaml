@@ -8,8 +8,8 @@ metadata:
 data:
   PORT: "{{ template "harbor.chartmuseum.containerPort" . }}"
 {{- if .Values.internalTLS.enabled }}
-  TLS_CERT: "/etc/harbor/ssl/chartmuseum.crt"
-  TLS_KEY: "/etc/harbor/ssl/chartmuseum.key"
+  TLS_CERT: "/etc/harbor/ssl/chartmuseum/tls.crt"
+  TLS_KEY: "/etc/harbor/ssl/chartmuseum/tls.key"
 {{- end }}
   {{- if eq "redis" (include "harbor.redis.scheme" .) }}
   CACHE: "redis"
