@@ -14,10 +14,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Helm 3.2.3
-        uses: azure/setup-helm@v1
+      - name: Setup Docker
+        uses: docker-practice/actions-setup-docker@0.0.1
         with:
-          version: '3.2.3'
+          docker_version: 18.09
+          docker_channel: stable
+          docker_daemon_json: '{"insecure-registries":["0.0.0.0/0"]}'
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.0.0-rc.1
@@ -27,7 +29,7 @@ jobs:
           cluster_name: kind-cluster-${{ matrix.k8s_version }}
           config: test/integration/kind-cluster.yaml
 
-      - name: Install ingress nginx
+      - name: Install Nginx ingress controller
         run: |
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ingress-nginx-2.3.0/deploy/static/provider/kind/deploy.yaml
           kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
@@ -44,6 +46,11 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
+
+      - name: Set /etc/hosts
+        run: |
+         sudo -- sh -c "echo '127.0.0.1 harbor.local' >> /etc/hosts"
+         sudo -- sh -c "echo '127.0.0.1 notary.harbor.local' >> /etc/hosts"
 
       - name: Run integration tests
         working-directory: ./test
