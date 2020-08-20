@@ -4,6 +4,10 @@ metadata:
   name: "{{ template "harbor.portal" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if  (eq .Values.expose.ingress.controller "gce-internal") }}
+  annotations:
+    cloud.google.com/neg: '{ "ingress": true }'
+{{- end }}
 spec:
   ports:
     - port: {{ template "harbor.portal.servicePort" . }}
