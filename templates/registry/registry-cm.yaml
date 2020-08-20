@@ -143,8 +143,11 @@ data:
       redirect:
         disable: {{ $storage.disableredirect }}
     redis:
-      addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
-      db: {{ template "harbor.redis.registryDatabaseIndex" . }}
+      addr: {{ template "harbor.redis.addr" . }}
+      {{- if eq "redis+sentinel" (include "harbor.redis.scheme" .) }}
+      sentinelMasterSet: {{ template "harbor.redis.masterSet" . }}
+      {{- end }}
+      db: {{ template "harbor.redis.dbForRegistry" . }}
     http:
       addr: :{{ template "harbor.registry.containerPort" . }}
       relativeurls: {{ .Values.registry.relativeurls }}
