@@ -602,6 +602,9 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
 
