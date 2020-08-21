@@ -1,5 +1,5 @@
 {{- $root := . -}}
-{{- range $registry := .Values.core.registries }}
+{{- range $registry := .Values.custom.registries }}
 apiVersion: batch/v1
 kind: Job
 metadata:
