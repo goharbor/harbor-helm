@@ -10,7 +10,6 @@ data:
     set -e
     
     registryName={{ required "A registry name is required" $registry.name }}
-    registryUrl={{ required "A registry url is required" $registry.url }}
     registryProvider={{required "A registry provider is required" $registry.provider}}
     coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
     desc={{ $registry.desc | default "desc" | quote }}
@@ -37,7 +36,7 @@ data:
         \"type\": \"basic\"
       },
       \"name\": \"$registryName\", 
-      \"url\": \"$registryUrl\", 
+      \"url\": \"$REGISTRY_URL\", 
       \"insecure\": $insecure,
       \"type\": \"$registryProvider\",
       \"description\": \"$desc\"
@@ -55,7 +54,7 @@ data:
           \"credential_type\": \"basic\",
           \"name\": \"$registryName\",
           \"access_secret\": \"$ACCESS_SECRET\",
-          \"url\": \"$registryUrl\",
+          \"url\": \"$REGISTRY_URL\",
           \"insecure\": $insecure,
           \"description\": \"$desc\"
         }"

@@ -42,6 +42,8 @@ spec:
           value: {{ default "admin" $root.Values.adminUsername }}
         - name: HARBOR_ADMIN_PASSWORD
           value: {{ $root.Values.harborAdminPassword }}
+        - name: REGISTRY_URL
+          value: {{ required "A registry url is required" $registry.url }}
         {{- if $registry.accessKey }}
         - name: ACCESS_KEY
           value: {{ $registry.accessKey }}
