@@ -8,7 +8,13 @@ data:
   config.yml: |+
     version: 0.1
     log:
+      {{- if eq .Values.logLevel "warning" }}
+      level: warn
+      {{- else if eq .Values.logLevel "fatal" }}
+      level: error
+      {{- else }}
       level: {{ .Values.logLevel }}
+      {{- end }}
       fields:
         service: registry
     storage:
