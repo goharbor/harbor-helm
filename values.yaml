@@ -312,6 +312,9 @@ persistence:
 
 imagePullPolicy: IfNotPresent
 
+# Set the registry to use for all images
+imageRegistry: docker.io
+
 # Use this set to assign a list of default pullSecrets
 imagePullSecrets:
 #  - name: docker-registry-secret

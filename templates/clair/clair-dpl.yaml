@@ -39,7 +39,7 @@ spec:
       {{- end }}
       containers:
       - name: clair
-        image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
+        image: {{ .Values.imageRegistry }}/{{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -88,7 +88,7 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       - name: adapter
-        image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
+        image: {{ .Values.imageRegistry }}/{{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

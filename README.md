@@ -188,6 +188,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `uaaSecretName` | If using external UAA auth which has a self signed cert, you can provide a pre-created secret containing it under the key `ca.crt`. | |
 | `imagePullPolicy` | The image pull policy |  |
 | `imagePullSecrets` | The imagePullSecrets names for all deployments |  |
+| `imageRegistry` | The image registry to use | docker.io |
 | `updateStrategy.type` | The update strategy for deployments with persistent volumes(jobservice, registry and chartmuseum): `RollingUpdate` or `Recreate`. Set it as `Recreate` when `RWM` for volumes isn't supported  | `RollingUpdate` |
 | `logLevel` | The log level: `debug`, `info`, `warning`, `error` or `fatal` | `info` |
 | `harborAdminPassword`                                                       | The initial password of Harbor admin. Change it from portal after launching Harbor                                                                                                                                                                                                                                                              | `Harbor12345`                   |

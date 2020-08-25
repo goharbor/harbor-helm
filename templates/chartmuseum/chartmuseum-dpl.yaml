@@ -46,7 +46,7 @@ spec:
       {{- end }}
       containers:
       - name: chartmuseum
-        image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}
+        image: {{ .Values.imageRegistry }}/{{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

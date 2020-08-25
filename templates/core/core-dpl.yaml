@@ -40,7 +40,7 @@ spec:
       {{- end }}
       containers:
       - name: core
-        image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+        image: {{ .Values.imageRegistry }}/{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
