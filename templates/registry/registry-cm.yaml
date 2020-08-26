@@ -148,6 +148,9 @@ data:
       sentinelMasterSet: {{ template "harbor.redis.masterSet" . }}
       {{- end }}
       db: {{ template "harbor.redis.dbForRegistry" . }}
+      readtimeout: 10s
+      writetimeout: 10s
+      dialtimeout: 10s
     http:
       addr: :{{ template "harbor.registry.containerPort" . }}
       relativeurls: {{ .Values.registry.relativeurls }}
