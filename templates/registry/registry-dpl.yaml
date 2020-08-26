@@ -157,7 +157,6 @@ spec:
         resources:
 {{ toYaml .Values.registry.controller.resources | indent 10 }}
 {{- end }}
-        args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
