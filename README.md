@@ -11,7 +11,7 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://
 ## Prerequisites
 
 - Kubernetes cluster 1.10+
-- Helm 2.8.0+
+- Helm 2.10.0+
 
 ## Installation
 
@@ -54,15 +54,6 @@ If Harbor is deployed behind the proxy, set it as the URL of proxy.
 - **Disable**: The data does not survive the termination of a pod.
 - **Persistent Volume Claim(default)**: A default `StorageClass` is needed in the Kubernetes cluster to dynamic provision the volumes. Specify another StorageClass in the `storageClass` or set `existingClaim` if you have already existing persistent volumes to use.
 - **External Storage(only for images and charts)**: For images and charts, the external storages are supported: `azure`, `gcs`, `s3` `swift` and `oss`.
-
-#### Configure the secrets
-
-- **Secret keys**: Secret keys are used for secure communication between components. Fill `core.secret`, `jobservice.secret` and `registry.secret` to configure.
-- **Certificates**:
-  - *notary*: Used for authentication during communications. Fill `notary.secretName` to configure. Notary server certificate must be issued with notary service name as subject alternative name.
-  - *core*: Used for token encryption/decryption. Fill `core.secretName` to configure.
-
-Secrets and certificates must be setup to avoid changes on every Helm upgrade (see: [#107](https://github.com/goharbor/harbor-helm/issues/107)).
 
 #### Configure the other items listed in [configuration](#configuration) section
 
