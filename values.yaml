@@ -326,7 +326,7 @@ imagePullSecrets:
 updateStrategy:
   type: RollingUpdate
 
-# debug, info, warning, error or fatal
+# debug, info, warn, error, or fatal
 logLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
