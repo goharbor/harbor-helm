@@ -28,8 +28,7 @@ data:
   TOKEN_SERVICE_URL: "{{ template "harbor.tokenServiceURL" . }}"
   WITH_NOTARY: "{{ .Values.notary.enabled }}"
   NOTARY_URL: "http://{{ template "harbor.notary-server" . }}:4443"
-  CFG_EXPIRATION: "5"
-  ADMIRAL_URL: "NA"
+  CORE_LOCAL_URL: "{{ ternary "https://127.0.0.1:8443" "http://127.0.0.1:8080" .Values.internalTLS.enabled }}"
   WITH_CLAIR: "{{ .Values.clair.enabled }}"
   CLAIR_ADAPTER_URL: "{{ template "harbor.clairAdapterURL" . }}"
   WITH_TRIVY: {{ .Values.trivy.enabled | quote }}
@@ -39,7 +38,6 @@ data:
   CHART_REPOSITORY_URL: "{{ template "harbor.component.scheme" . }}://{{ template "harbor.chartmuseum" . }}"
   LOG_LEVEL: "{{ .Values.logLevel }}"
   CONFIG_PATH: "/etc/core/app.conf"
-  SYNC_REGISTRY: "false"
   CHART_CACHE_DRIVER: "redis"
   _REDIS_URL_CORE: "{{ template "harbor.redis.urlForCore" . }}"
   _REDIS_URL_REG: "{{ template "harbor.redis.urlForRegistry" . }}"
