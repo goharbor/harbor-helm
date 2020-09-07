@@ -31,7 +31,7 @@ app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{- define "harbor.autoGenCert" -}}
-  {{- if and .Values.expose.tls.enabled (not .Values.expose.tls.secretName) -}}
+  {{- if and .Values.expose.tls.enabled (eq .Values.expose.tls.certSource "auto") -}}
     {{- printf "true" -}}
   {{- else -}}
     {{- printf "false" -}}
@@ -551,5 +551,33 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
     {{- .Values.internalTLS.trivy.secretName -}}
   {{- else -}}
     {{- printf "%s-trivy-internal-tls" (include "harbor.fullname" .) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.tlsCoreSecretForIngress" -}}
+  {{- if eq .Values.expose.tls.certSource "none" -}}
+    {{- printf "" -}}
+  {{- else if eq .Values.expose.tls.certSource "secret" -}}
+    {{- .Values.expose.tls.secret.secretName -}}
+  {{- else -}}
+    {{- include "harbor.ingress" . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.tlsNotarySecretForIngress" -}}
+  {{- if eq .Values.expose.tls.certSource "none" -}}
+    {{- printf "" -}}
+  {{- else if eq .Values.expose.tls.certSource "secret" -}}
+    {{- .Values.expose.tls.secret.notarySecretName -}}
+  {{- else -}}
+    {{- include "harbor.ingress" . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.tlsSecretForNginx" -}}
+  {{- if eq .Values.expose.tls.certSource "secret" -}}
+    {{- .Values.expose.tls.secret.secretName -}}
+  {{- else -}}
+    {{- include "harbor.nginx" . -}}
   {{- end -}}
 {{- end -}}

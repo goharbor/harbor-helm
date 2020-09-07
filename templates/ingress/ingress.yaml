@@ -48,11 +48,7 @@ metadata:
 spec:
   {{- if $tls.enabled }}
   tls:
-    {{- if $tls.secretName }}
-  - secretName: {{ $tls.secretName }}
-    {{- else }}
-  - secretName: "{{ template "harbor.ingress" . }}"
-    {{- end }}
+  - secretName: {{ template "harbor.tlsCoreSecretForIngress" . }}
     {{- if $ingress.hosts.core }}
     hosts:
     - {{ $ingress.hosts.core }}
@@ -108,13 +104,7 @@ metadata:
 spec:
   {{- if $tls.enabled }}
   tls:
-    {{- if $tls.notarySecretName }}
-  - secretName: {{ $tls.notarySecretName }}
-    {{- else if $tls.secretName }}
-  - secretName: {{ $tls.secretName }}
-    {{- else }}
-  - secretName: "{{ template "harbor.ingress" . }}"
-    {{- end }}
+  - secretName: {{ template "harbor.tlsNotarySecretForIngress" . }}
     {{- if $ingress.hosts.notary }}
     hosts:
     - {{ $ingress.hosts.notary }}
