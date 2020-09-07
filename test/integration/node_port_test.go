@@ -20,7 +20,7 @@ func TestNodePortTestSuite(t *testing.T) {
 	suite.Run(t, &NodePortTestSuite{
 		BaseTestSuite: NewBaseTestSuite(map[string]string{
 			"expose.type":                          "nodePort",
-			"expose.tls.commonName":                "127.0.0.1",
+			"expose.tls.auto.commonName":           "127.0.0.1",
 			"expose.nodePort.ports.https.nodePort": "30003",
 			"externalURL":                          "https://127.0.0.1:30003",
 		}),
