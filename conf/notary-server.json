@@ -7,7 +7,7 @@
     "hostname": "{{ template "harbor.notary-signer" . }}",
     "port": "7899",
     "tls_ca_file": "/etc/ssl/notary/ca.crt",
-    "key_algorithm": "ecdsa"
+    "key_algorithm": "rsa"
   },
   "logging": {
     "level": "{{ .Values.logLevel }}"
