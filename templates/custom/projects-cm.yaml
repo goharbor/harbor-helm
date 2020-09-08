@@ -52,7 +52,8 @@ data:
       projectID=$(curl -X GET "$coreHostUrl/api/projects?name=$projectName" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
-      -u "${basicAuthCreds}"  | jq '.[].project_id ')
+      -u "${basicAuthCreds}" \
+      --silent | jq '.[]? | select(.name=='\"${project_name}\"') | .project_id')')
 
       echo "Project ID : ${projectID}"
 
