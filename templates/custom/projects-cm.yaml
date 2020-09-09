@@ -8,7 +8,6 @@ metadata:
 data:
   projects.sh: |
    #!/usr/bin/env bash
-
     # exit when any command fails
     set -e
 
@@ -25,7 +24,8 @@ data:
       res=$(curl -I HEAD "$coreHostUrl/api/projects?project_name=$1" \
       -H "accept: application/json" \
       -u "${basicAuthCreds}" )
-      echo "response: " $res
+      echo "Info logs : response :: " ${res}
+      echo ${res}
     }
 
     function createProject() {
@@ -36,36 +36,31 @@ data:
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
       -d "{ \"project_name\": \"$1\"}")
-      echo "Project created : ${project}"
+      echo "Info logs : Project created :: ${project}"
       echo ${project}
     }
 
     function updateProjectWithMemberGroup() {
       echo "In the updateProjectWithMemberGroup function"
+      echo " ------------- Info logs --------------------"
       projectName={{ $project.name | quote }}
       grpName=$(IFS=$',' && echo $1 | awk -F ':' '{print $1}')
       grpRole=$(IFS=$',' && echo $1 | awk -F ':' '{print $2}')
       echo "grpName : $grpName"
       echo "grpRole : $grpRole"
+      echo " ------------- Info logs --------------------"
 
       # Get projecid for the given projectname.
       projectID=$(curl -X GET "$coreHostUrl/api/projects?name=$projectName" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
-      --silent | jq '.[]? | select(.name=='\"${project_name}\"') | .project_id )
+      | jq '.[]? | select(.name=='\"${project_name}\"') | .project_id )
 
-      echo "Project ID : ${projectID}"
-
-      # Get member id for the given group
-      #memberID=$(curl -X GET "$coreHostUrl/api/usergroups" \
-      #-H "accept: application/json" \
-      #-u "${basicAuthCreds}" \
-      #--silent | jq '.[]? | select(.group_name=='\"${grpName}\"') | .id')
-      #echo "Member ID : ${memberID}"
+      echo "Info logs : Project ID for ${project_name} :: ${projectID}"
+      echo "Info logs :  Adding group ${grpName} to project ${projectID} with grpRole $grpRole"
 
       # Updating project with member id
-      echo "Adding group ${grpName} to project ${projectID} with grpRole $grpRole"
       resp=$(curl -X POST "$coreHostUrl/api/projects/${projectID}/members" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
@@ -78,12 +73,12 @@ data:
                 }
            } ")
 
-      echo "Project ${projectID} updated with member group $grpRole and response is $resp"
+      echo "Info logs : Project ${projectID} updated with member group $grpRole and response is $resp"
     }
 
     function main() {
-      echo "running in namespace: ${NAMESPACE}"
-      echo "Bash version ::::: $(bash --version)"
+      echo "Info logs : running in namespace: ${NAMESPACE}"
+      echo "Info logs : Bash version ::::: $(bash --version)"
       projectName={{ $project.name | quote }}
 
       if [[ $(isProjectExists $projectName)  == *"404"* ]]; then
@@ -98,9 +93,9 @@ data:
       groupDetails+=";"
       {{ end }}
 
-      echo $groupDetails
+      echo "Info logs : $groupDetails "
       totalCount=$(echo $groupDetails | awk -F ";" '{print NF}')
-      echo "Total Group : " $totalCount
+      echo "Info logs : Total Group : " $totalCount
       IFS=$',' && echo $groupDetails | awk -v totalValues="$totalCount" -F ";" '{for (i=1;i<totalValues;i++)print $i}' | while read line; do updateProjectWithMemberGroup $line; done
     }
     main
