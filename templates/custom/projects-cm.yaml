@@ -55,7 +55,7 @@ data:
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
-      | jq '.[]? | select(.name=='\"${project_name}\"') | .project_id )
+      | jq '.[]? | select(.name=='\"${project_name}\"') | .project_id' )
 
       echo "Info logs : Project ID for ${project_name} :: ${projectID}"
       echo "Info logs :  Adding group ${grpName} to project ${projectID} with grpRole $grpRole"
