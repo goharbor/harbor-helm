@@ -53,6 +53,9 @@ spec:
     hosts:
     - {{ $ingress.hosts.core }}
     {{- end }}
+    {{- if $ingress.hosts.coreSANS }}
+    {{ toYaml $ingress.hosts.coreSANS }}
+    {{- end }}
   {{- end }}
   rules:
   - http:
@@ -84,7 +87,35 @@ spec:
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
     {{- end }}
-
+    {{- range $hostnames := $ingress.hosts.coreSANS }}
+  - http:
+      paths:
+      - path: {{ print $.portal_path }}
+        backend:
+          serviceName: {{ template "harbor.portal" $ }}
+          servicePort: {{ template "harbor.portal.servicePort" $ }}
+      - path: {{ print $.api_path }}
+        backend:
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ print $.service_path }}
+        backend:
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ print $.v2_path }}
+        backend:
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ print $.chartrepo_path }}
+        backend:
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ print $.controller_path }}
+        backend:
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+    host: {{ $hostnames }}    
+    {{- end }}
 {{- if .Values.notary.enabled  }}
 ---
 apiVersion: extensions/v1beta1
