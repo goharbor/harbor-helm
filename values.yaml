@@ -482,8 +482,6 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
-  # set the service account to be used, default if left empty
-  serviceAccountName: ""
   replicas: 1
   nodeSelector: {}
   tolerations: []
