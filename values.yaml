@@ -412,9 +412,9 @@ core:
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
-  ## Liveness probe values
-  livenessProbe:
-    initialDelaySeconds: 300
+  ## Startup probe values
+  startupProbe:
+    initialDelaySeconds: 10
   # resources:
   #  requests:
   #    memory: 256Mi
