@@ -42,12 +42,13 @@ data:
 
     function updateProjectWithMemberGroup() {
       echo "In the updateProjectWithMemberGroup function"
-      echo " ------------- Info logs --------------------"
       projectName={{ $project.name | quote }}
+      echo " ------------- Info logs --------------------"
       grpName=$(IFS=$',' && echo $1 | awk -F ':' '{print $1}')
       grpRole=$(IFS=$',' && echo $1 | awk -F ':' '{print $2}')
       echo "grpName : $grpName"
       echo "grpRole : $grpRole"
+      echo "projectName : $projectName"
       echo " ------------- Info logs --------------------"
 
       # Get projecid for the given projectname.
@@ -55,9 +56,9 @@ data:
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
-      | jq '.[]? | select(.name=='\"${project_name}\"') | .project_id' )
+      | jq '.[]? | select(.name=='\"${projectName}\"') | .project_id' )
 
-      echo "Info logs : Project ID for ${project_name} :: ${projectID}"
+      echo "Info logs : Project ID for ${projectName} :: ${projectID}"
       echo "Info logs :  Adding group ${grpName} to project ${projectID} with grpRole $grpRole"
 
       # Updating project with member id
