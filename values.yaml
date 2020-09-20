@@ -42,7 +42,9 @@ expose:
     controller: default
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
+      ingress.kubernetes.io/proxy-body-size: "1m"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "1m"
   clusterIP:
     # The name of ClusterIP service
     name: harbor
