@@ -50,7 +50,7 @@ Configure the new chart to make sure that the configuration items have the same 
     kubectl create -f secret.yaml
     ```
 
-5) Configure the chart to use the new secret by setting `expose.tls.secretName` as the value you set in step **3**
+5) Configure the chart to use the new secret by setting `expose.tls.certSource` as `secret` and `expose.tls.secret.secretName` as the value you set in step **3**
 
 ### 4. Upgrade
 
