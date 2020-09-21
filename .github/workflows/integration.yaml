@@ -55,4 +55,4 @@ jobs:
       - name: Run integration tests
         working-directory: ./test
         run:
-          go test -v github.com/goharbor/harbor-helm/integration
+          go test -v -timeout 30m github.com/goharbor/harbor-helm/integration
