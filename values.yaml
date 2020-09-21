@@ -374,7 +374,7 @@ proxy:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: dev
+    tag: v2.1.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
@@ -391,7 +391,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: dev
+    tag: v2.1.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
@@ -408,7 +408,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: dev
+    tag: v2.1.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
@@ -441,7 +441,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: dev
+    tag: v2.1.0
   replicas: 1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -468,7 +468,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: dev
+      tag: v2.1.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -476,7 +476,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: dev
+      tag: v2.1.0
 
     # resources:
     #  requests:
@@ -523,7 +523,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: dev
+    tag: v2.1.0
   replicas: 1
   # resources:
   #  requests:
@@ -542,7 +542,7 @@ clair:
   clair:
     image:
       repository: goharbor/clair-photon
-      tag: dev
+      tag: v2.1.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -550,7 +550,7 @@ clair:
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
-      tag: dev
+      tag: v2.1.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -572,7 +572,7 @@ trivy:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: dev
+    tag: v2.1.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # replicas the number of Pod replicas
@@ -629,7 +629,7 @@ notary:
     serviceAccountName: ""
     image:
       repository: goharbor/notary-server-photon
-      tag: dev
+      tag: v2.1.0
     replicas: 1
     # resources:
     #  requests:
@@ -640,7 +640,7 @@ notary:
     serviceAccountName: ""
     image:
       repository: goharbor/notary-signer-photon
-      tag: dev
+      tag: v2.1.0
     replicas: 1
     # resources:
     #  requests:
@@ -668,7 +668,7 @@ database:
     serviceAccountName: ""
     image:
       repository: goharbor/harbor-db
-      tag: dev
+      tag: v2.1.0
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -714,7 +714,7 @@ redis:
     serviceAccountName: ""
     image:
       repository: goharbor/redis-photon
-      tag: dev
+      tag: v2.1.0
     # resources:
     #  requests:
     #    memory: 256Mi
