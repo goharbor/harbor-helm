@@ -179,6 +179,9 @@ data:
         key: /etc/harbor/ssl/registry/tls.key
         minimumtls: tls1.2
       {{- end }}
+      {{- if eq .Values.expose.type "ingress" }}
+      host: {{ .Values.expose.ingress.hosts  }}
+      {{- end }}
       # set via environment variable
       # secret: placeholder
       debug:
