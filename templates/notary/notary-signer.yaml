@@ -31,7 +31,7 @@ spec:
       {{- end }}
       containers:
       - name: notary-signer
-        image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
+        image: {{ .Values.imageRegistry }}/{{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
 {{- if .Values.notary.signer.resources }}
         resources:
