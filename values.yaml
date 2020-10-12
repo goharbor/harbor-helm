@@ -716,6 +716,8 @@ redis:
     image:
       repository: goharbor/redis-photon
       tag: dev
+    # The password for internal redis.
+    password: "changeit"
     # resources:
     #  requests:
     #    memory: 256Mi

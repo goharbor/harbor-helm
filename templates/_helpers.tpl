@@ -167,15 +167,19 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 
 {{- define "harbor.redis.password" -}}
   {{- with .Values.redis }}
-    {{- ternary "" .external.password (eq .type "internal") }}
+    {{- ternary .internal.password .external.password (eq .type "internal") }}
   {{- end }}
+{{- end -}}
+
+{{- define "harbor.redis.encryptedPassword" -}}
+  {{- include "harbor.redis.password" . | b64enc | quote -}}
 {{- end -}}
 
 /*scheme://[redis:password@]host:port[/master_set]*/
 {{- define "harbor.redis.url" -}}
   {{- with .Values.redis }}
     {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
-    {{- $cred := ternary (printf "redis:%s@" (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
+    {{- $cred := ternary (printf "redis:%s@" ((include "harbor.redis.password" $) | urlquery)) "" (not (not (include "harbor.redis.addr" $))) }}
     {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) $cred (include "harbor.redis.addr" $) $path -}}
   {{- end }}
 {{- end -}}

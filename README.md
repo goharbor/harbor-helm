@@ -327,6 +327,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.type` | If external redis is used, set it to `external` | `internal` |
 | `redis.internal.image.repository` | Repository for redis image | `goharbor/redis-photon` |
 | `redis.internal.image.tag` | Tag for redis image | `dev` |
+| `redis.internal.password` | The password for redis | `changeit` |
 | `redis.internal.resources` | The [resources] to allocate for container | undefined |
 | `redis.internal.nodeSelector` | Node labels for pod assignment | `{}` |
 | `redis.internal.tolerations` | Tolerations for pod assignment | `[]` |
