@@ -21,6 +21,7 @@ spec:
         component: trivy
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/trivy/trivy-secret.yaml") . | sha256sum }}
+        checksum/secret-redis: {{ include (print $.Template.BasePath "/redis/secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
         checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
 {{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
@@ -94,18 +95,18 @@ spec:
             - name: "SCANNER_REDIS_URL"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
-                  key: redisURL
+                  name: {{ template "harbor.redis" . }}
+                  key: REDIS_URL_TRIVY
             - name: "SCANNER_STORE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
-                  key: redisURL
+                  name: {{ template "harbor.redis" . }}
+                  key: REDIS_URL_TRIVY
             - name: "SCANNER_JOB_QUEUE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
-                  key: redisURL
+                  name: {{ template "harbor.redis" . }}
+                  key: REDIS_URL_TRIVY
           ports:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}

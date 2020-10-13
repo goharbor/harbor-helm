@@ -717,7 +717,8 @@ redis:
       repository: goharbor/redis-photon
       tag: dev
     # The password for internal redis.
-    password: "changeit"
+    # If a password is not specified, Helm will generate one.
+    password: ""
     # resources:
     #  requests:
     #    memory: 256Mi

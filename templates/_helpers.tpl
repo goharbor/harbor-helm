@@ -165,23 +165,20 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end }}
 {{- end -}}
 
-{{- define "harbor.redis.password" -}}
-  {{- with .Values.redis }}
-    {{- ternary .internal.password .external.password (eq .type "internal") }}
-  {{- end }}
-{{- end -}}
-
-{{- define "harbor.redis.encryptedPassword" -}}
-  {{- include "harbor.redis.password" . | b64enc | quote -}}
+{{- define "harbor.redis.internalPassword" -}}
+  {{- $prevSecret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.redis" $)) }}
+  {{- if $prevSecret -}}
+    {{- $prevSecret.data.REDIS_PASSWORD | b64dec }}
+  {{- else -}}
+    {{- randAlphaNum 16 }}
+  {{- end -}}
 {{- end -}}
 
 /*scheme://[redis:password@]host:port[/master_set]*/
 {{- define "harbor.redis.url" -}}
-  {{- with .Values.redis }}
-    {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
-    {{- $cred := ternary (printf "redis:%s@" ((include "harbor.redis.password" $) | urlquery)) "" (not (not (include "harbor.redis.addr" $))) }}
-    {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) $cred (include "harbor.redis.addr" $) $path -}}
-  {{- end }}
+  {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
+  {{- $cred := ternary (printf "redis:%s@" (.redisPassword | urlquery)) "" (not (not (include "harbor.redis.addr" $))) }}
+  {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) $cred (include "harbor.redis.addr" $) $path -}}
 {{- end -}}
 
 /*scheme://[redis:password@]addr/db_index?idle_timeout_seconds=30*/
