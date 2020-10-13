@@ -346,7 +346,8 @@ harborAdminPassword: "Harbor12345"
 caSecretName: ""
 
 # The secret key used for encryption. Must be a string of 16 chars.
-secretKey: "not-a-secure-key"
+# If a value is not specified, Helm will generate one.
+secretKey: ""
 
 # The proxy settings for updating clair vulnerabilities from the Internet and replicating
 # artifacts from/to the registries that cannot be reached directly
