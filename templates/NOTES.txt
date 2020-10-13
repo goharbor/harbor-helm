@@ -1,3 +1,15 @@
 Please wait for several minutes for Harbor deployment to complete.
 Then you should be able to visit the Harbor portal at {{ .Values.externalURL }}
 For more details, please visit https://github.com/goharbor/harbor
+
+{{ "" }}
+{{- if .Release.IsInstall }}
+  {{- if eq "Harbor12345" .Values.harborAdminPassword }}
+The default password was set for Administrator user. Change it as soon as you log in to the Portal service.
+  {{- else if eq "" .Values.harborAdminPassword }}
+The password for Portal Administrator user was generated randomly. Fetch it by running this command:
+{{ "" }}
+kubectl get secret {{ template "harbor.core" . }} -n {{.Release.Namespace}} -o jsonpath="{.data.HARBOR_ADMIN_PASSWORD}" | base64 --decode
+{{ "" }}
+ {{- end }}
+{{- end }}
