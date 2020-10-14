@@ -387,6 +387,7 @@ nginx:
   tolerations: []
   affinity: {}
   ## Additional deployment annotations
+  deploymentAnnotations: {}
   podAnnotations: {}
 
 portal:
