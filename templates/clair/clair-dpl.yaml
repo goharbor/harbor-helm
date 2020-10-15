@@ -19,6 +19,7 @@ spec:
         component: clair
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/clair/clair-secret.yaml") . | sha256sum }}
+        checksum/secret-database: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
         checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
 {{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
@@ -39,6 +40,29 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: false
+      initContainers:
+      - name: "inject-config-db-url"
+        securityContext:
+          runAsUser: 0
+        image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: DB_URL
+          valueFrom:
+              secretKeyRef:
+                name: {{ template "harbor.database" . }}
+                key: POSTGRES_URL_CLAIR
+        command: [
+            "sh",
+            "-ce",
+            'cp /tmp/config-in/config.yaml /tmp/config/config.yaml &&
+             sed -i \"s,\$DB_URL,$DB_URL,g\" /tmp/config/config.yaml' ]
+        volumeMounts:
+        - name: config-in
+          mountPath: /tmp/config-in/config.yaml
+          subPath: config.yaml
+        - name: config
+          mountPath: /tmp/config
       containers:
       - name: clair
         image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
@@ -111,8 +135,8 @@ spec:
         - name: SCANNER_CLAIR_DATABASE_URL
           valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.clair" . }}
-                key: database
+                name: {{ template "harbor.database" . }}
+                key: POSTGRES_URL_CLAIR
         {{- if .Values.internalTLS.enabled }}
         - name: INTERNAL_TLS_ENABLED
           value: "true"
@@ -142,9 +166,11 @@ spec:
         {{- end }}
         {{- end }}
       volumes:
-      - name: config
+      - name: config-in
         secret:
           secretName: "{{ template "harbor.clair" . }}"
+      - name: config
+        emptyDir: {}
       {{- if .Values.internalTLS.enabled }}
       - name: clair-internal-certs
         secret:

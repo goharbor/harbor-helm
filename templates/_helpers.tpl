@@ -78,20 +78,25 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
-{{- define "harbor.database.rawPassword" -}}
+{{- define "harbor.database.internalPassword" -}}
+  {{- $prevSecret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.database" $)) }}
+  {{- if $prevSecret -}}
+    {{- $prevSecret.data.POSTGRES_PASSWORD | b64dec }}
+  {{- else -}}
+    {{- randAlphaNum 16 }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.password" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- .Values.database.internal.password -}}
+    {{- .Values.database.internal.password | default (include "harbor.database.internalPassword" .) -}}
   {{- else -}}
     {{- .Values.database.external.password -}}
   {{- end -}}
 {{- end -}}
 
 {{- define "harbor.database.escapedRawPassword" -}}
-  {{- include "harbor.database.rawPassword" . | urlquery | replace "+" "%20" -}}
-{{- end -}}
-
-{{- define "harbor.database.encryptedPassword" -}}
-  {{- include "harbor.database.rawPassword" . | b64enc | quote -}}
+  {{- .databasePassword | urlquery | replace "+" "%20" -}}
 {{- end -}}
 
 {{- define "harbor.database.coreDatabase" -}}
