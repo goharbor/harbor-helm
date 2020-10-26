@@ -177,7 +177,7 @@ internalTLS:
     key: ""
 
 # The persistence is enabled by default and a default StorageClass
-# is needed in the k8s cluster to provision volumes dynamicly.
+# is needed in the k8s cluster to provision volumes dynamically.
 # Specify another StorageClass in the "storageClass" or set "existingClaim"
 # if you have already existing persistent volumes to use
 #
