@@ -88,5 +88,5 @@ spec:
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: nginx
+    app.kubernetes.io/component: nginx
 {{- end }}

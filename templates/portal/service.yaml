@@ -10,4 +10,4 @@ spec:
       targetPort: {{ template "harbor.portal.containerPort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: portal
+    app.kubernetes.io/component: portal

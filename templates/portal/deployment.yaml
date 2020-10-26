@@ -4,18 +4,18 @@ metadata:
   name: "{{ template "harbor.portal" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: portal
+    app.kubernetes.io/component: portal
 spec:
   replicas: {{ .Values.portal.replicas }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: portal
+      app.kubernetes.io/component: portal
   template:
     metadata:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
-        component: portal
+        app.kubernetes.io/component: portal
       annotations:
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
         checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}

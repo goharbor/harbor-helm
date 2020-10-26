@@ -4,7 +4,7 @@ metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: registry
+    app.kubernetes.io/component: registry
 spec:
   replicas: {{ .Values.registry.replicas }}
   strategy:
@@ -15,12 +15,12 @@ spec:
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: registry
+      app.kubernetes.io/component: registry
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: registry
+        app.kubernetes.io/component: registry
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/registry/registry-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/registry/registry-secret.yaml") . | sha256sum }}

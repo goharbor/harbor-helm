@@ -6,19 +6,19 @@ metadata:
   name: "{{ template "harbor.database" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: database
+    app.kubernetes.io/component: database
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.database" . }}"
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: database
+      app.kubernetes.io/component: database
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: database
+        app.kubernetes.io/component: database
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.database.podAnnotations }}

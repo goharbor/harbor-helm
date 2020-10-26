@@ -5,18 +5,18 @@ metadata:
   name: {{ template "harbor.notary-server" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: notary-server
+    app.kubernetes.io/component: notary-server
 spec:
   replicas: {{ .Values.notary.server.replicas }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: notary-server
+      app.kubernetes.io/component: notary-server
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: notary-server
+        app.kubernetes.io/component: notary-server
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
         checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}

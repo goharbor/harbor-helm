@@ -13,7 +13,7 @@ spec:
   - port: 4443
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: notary-server
+    app.kubernetes.io/component: notary-server
 
 ---
 apiVersion: v1
@@ -27,5 +27,5 @@ spec:
   - port: 7899
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: notary-signer
+    app.kubernetes.io/component: notary-signer
 {{ end }}

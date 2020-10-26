@@ -11,5 +11,5 @@ spec:
       targetPort: {{ template "harbor.chartmuseum.containerPort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: chartmuseum
+    app.kubernetes.io/component: chartmuseum
 {{- end }}

@@ -13,4 +13,4 @@ spec:
       targetPort: {{ template "harbor.core.containerPort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: core
+    app.kubernetes.io/component: core
