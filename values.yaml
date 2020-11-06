@@ -21,6 +21,10 @@ expose:
       # The common name used to generate the certificate, it's necessary
       # when the type isn't "ingress"
       commonName: ""
+      # Set to "true" to generate new TLS certificates on the next helm run, or "false" to
+      # keep the existing TLS certificates.
+      # Only available if "certSource" is set to "auto". Has no effect on new installations.
+      rotateCert: true
     secret:
       # The name of secret which contains keys named:
       # "tls.crt" - the certificate
@@ -117,6 +121,10 @@ internalTLS:
   # 2) "manual" need provide cert file manually in following value
   # 3) "secret" internal certificates from secret
   certSource: "auto"
+  # Set to "true" to generate new certificates for internal TLS on the next
+  # helm run, or "false" to keep the existing TLS certificates.
+  # Only available if "certSource" is set to "auto". Has no effect on new installations.
+  rotateCert: true
   # The content of trust ca, only available when `certSource` is "manual"
   trustCa: ""
   # core related cert configuration
@@ -434,8 +442,12 @@ core:
   # The secret must contain keys named:
   # "tls.crt" - the certificate
   # "tls.key" - the private key
-  # The default key pair will be used if it isn't set
+  # They will be automatically generated if not set
   secretName: ""
+  # Set to "true" to generate a new TLS certificate and private key for token encryption/decription
+  # on the next helm run, or "false" to keep the existing TLS certificate and private key.
+  # Only available if "secretName" is unset. Has no effect on new installations.
+  rotateCert: false
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
 
@@ -659,6 +671,10 @@ notary:
   # contain the CA, certificate and private key.
   # They will be generated if not set.
   secretName: ""
+  # Set to "true" to generate new TLS certificates for notary communications
+  # on the next helm run, or "false" to keep the existing TLS certificates.
+  # Only available if "secretName" is unset. Has no effect on new installations.
+  rotateCert: true
 
 database:
   # if external database is used, set "type" to "external"

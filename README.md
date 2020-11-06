@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.tls.enabled` | Enable the tls or not | `true` |
 | `expose.tls.certSource` | The source of the tls certificate. Set it as `auto`, `secret` or `none` and fill the information in the corresponding section: 1) auto: generate the tls certificate automatically 2) secret: read the tls certificate from the specified secret. The tls certificate can be generated manually or by cert manager 3) none: configure no tls certificate for the ingress. If the default tls certificate is configured in the ingress controller, choose this option | `auto` |
 | `expose.tls.auto.commonName` | The common name used to generate the certificate, it's necessary when the type isn't `ingress` | |
+| `expose.tls.auto.rotateCert` | Set to `true` to generate new TLS certificates on the next helm run, or `false` to keep existing TLS certificates. Only available when `certSource` is `auto` | true |
 | `expose.tls.secret.secretName` | The name of secret which contains keys named: `tls.crt` - the certificate; `tls.key` - the private key | |
 | `expose.tls.secret.notarySecretName` | The name of secret which contains keys named: `tls.crt` - the certificate; `tls.key` - the private key. Only needed when the `expose.type` is `ingress` | |
 | `expose.ingress.hosts.core` | The host of Harbor core service in ingress rule | `core.harbor.domain` |
@@ -121,6 +122,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | **Internal TLS** |
 | `internalTLS.enabled` | Enable the tls for the components (chartmuseum, clair, core, jobservice, portal, registry, trivy) | `false` |
 | `internalTLS.certSource` | Method to provide tls for the components, options is `auto`, `manual`, `secret`. | `auto` |
+| `internalTLS.rotateCert` | Set to `true` to generate new certificates for internal TLS on the next helm run, or `false` to keep existing TLS certificates. Only available when `certSource` is `auto` | true |
 | `internalTLS.trustCa` | The content of trust ca, only available when `certSrouce` is `manual`. **Note**: all the internal certificates of the components must be issued by this ca |  |
 | `internalTLS.core.secretName` | The secret name for core component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
 | `internalTLS.core.crt` | Content of core's TLS cert file, only available when `certSource` is `manual` | |
@@ -219,6 +221,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `core.podAnnotations` | Annotations to add to the core pod | `{}` |
 | `core.secret` | Secret is used when core server communicates with other components. If a secret key is not specified, Helm will generate one. Must be a string of 16 chars. | |
 | `core.secretName` | Fill the name of a kubernetes secret if you want to use your own TLS certificate and private key for token encryption/decryption. The secret must contain keys named: `tls.crt` - the certificate and `tls.key` - the private key. The default key pair will be used if it isn't set | |
+| `core.rotateCert` | Set to `true` to generate a new TLS certificate and private key for token encryption/decryption on the next helm run, or `false` to keep the existing TLS certificate and private key. Only available when `secretName` is unset. | false |
 | `core.xsrfKey` | The XSRF key. Will be generated automatically if it isn't specified | |
 | **Jobservice**                                                              |
 | `jobservice.image.repository`                                               | Repository for jobservice image                                                                                                                                                                                                                                                                                                                 | `goharbor/harbor-jobservice`    |
@@ -302,6 +305,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `notary.affinity`                                                           | Node/Pod affinities                                                                                                                                                                                                                                                                                                                             | `{}`                            |
 | `notary.podAnnotations`                                                     | Annotations to add to the notary pod                                                                                                                                                                                                                                                                                                            | `{}`                            |
 | `notary.secretName`                                                         | Fill the name of a kubernetes secret if you want to use your own TLS certificate authority, certificate and private key for notary communications. The secret must contain keys named `tls.ca`, `tls.crt` and `tls.key` that contain the CA, certificate and private key. They will be generated if not set.                                    |                                 |
+| `notary.rotateCert` | Set to `true` to generate new TLS certificates for notary communications on the next helm run, or `false` to keep the existing TLS certificates. Only available when `secretName` is unset. | true |
 | **Database** |
 | `database.type` | If external database is used, set it to `external` | `internal` |
 | `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |

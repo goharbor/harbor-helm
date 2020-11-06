@@ -54,6 +54,28 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.getGenCertOrLoadFromSecret" -}}
+  {{- $certData := dict "tls_crt" (.cert.Cert | b64enc) "tls_key" (.cert.Key | b64enc) -}}
+  {{- if .ca -}}
+    {{- $_ := set $certData "ca_crt" (.ca.Cert | b64enc) -}}
+  {{- end -}}
+  {{- if not .rotateCert -}}
+    {{- $prevSecret := (lookup "v1" "Secret" .Release.Namespace .secret) -}}
+    {{- if $prevSecret -}}
+      {{- $_ := set $certData "tls_crt" (index $prevSecret.data "tls.crt") -}}
+      {{- $_ := set $certData "tls_key" (index $prevSecret.data "tls.key") -}}
+      {{- if .ca -}}
+        {{- $_ := set $certData "ca_crt" (index $prevSecret.data "ca.crt") -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if .ca -}}
+ca.crt: {{ get $certData "ca_crt" | quote }}
+  {{- end }}
+tls.crt: {{ get $certData "tls_crt" | quote }}
+tls.key: {{ get $certData "tls_key" | quote }}
+{{- end -}}
+
 {{- define "harbor.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- template "harbor.database" . }}

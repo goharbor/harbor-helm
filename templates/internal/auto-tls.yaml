@@ -18,9 +18,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $coreCrt.Cert | b64enc | quote }}
-  tls.key: {{ $coreCrt.Key | b64enc | quote }}
+  {{- $certCtx := (merge (dict "ca" $ca "cert" $coreCrt "secret" (include "harbor.internalTLS.core.secretName" .) "rotateCert" .Values.internalTLS.rotateCert ) .) }}
+{{ include "harbor.getGenCertOrLoadFromSecret" $certCtx | indent 2 }}
 
 ---
 apiVersion: v1
@@ -31,9 +30,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $jsCrt.Cert | b64enc | quote }}
-  tls.key: {{ $jsCrt.Key | b64enc | quote }}
+  {{- $certCtx := (merge (dict "ca" $ca "cert" $jsCrt "secret" (include "harbor.internalTLS.jobservice.secretName" .) "rotateCert" .Values.internalTLS.rotateCert ) .) }}
+{{ include "harbor.getGenCertOrLoadFromSecret" $certCtx | indent 2 }}
 
 ---
 apiVersion: v1
@@ -44,9 +42,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $regCrt.Cert | b64enc | quote }}
-  tls.key: {{ $regCrt.Key | b64enc | quote }}
+  {{- $certCtx := (merge (dict "ca" $ca "cert" $regCrt "secret" (include "harbor.internalTLS.registry.secretName" .) "rotateCert" .Values.internalTLS.rotateCert ) .) }}
+{{ include "harbor.getGenCertOrLoadFromSecret" $certCtx | indent 2 }}
 
 ---
 apiVersion: v1
@@ -57,9 +54,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $portalCrt.Cert | b64enc | quote }}
-  tls.key: {{ $portalCrt.Key | b64enc | quote }}
+  {{- $certCtx := (merge (dict "ca" $ca "cert" $portalCrt "secret" (include "harbor.internalTLS.portal.secretName" .) "rotateCert" .Values.internalTLS.rotateCert ) .) }}
+{{ include "harbor.getGenCertOrLoadFromSecret" $certCtx | indent 2 }}
 
 {{- if .Values.chartmuseum.enabled }}
 ---
@@ -73,9 +69,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $chartCrt.Cert | b64enc | quote }}
-  tls.key: {{ $chartCrt.Key | b64enc | quote }}
+  {{- $certCtx := (merge (dict "ca" $ca "cert" $chartCrt "secret" (include "harbor.internalTLS.chartmuseum.secretName" .) "rotateCert" .Values.internalTLS.rotateCert ) .) }}
+{{ include "harbor.getGenCertOrLoadFromSecret" $certCtx | indent 2 }}
 {{- end }}
 
 {{- if .Values.clair.enabled }}
@@ -90,9 +85,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $clairCrt.Cert | b64enc | quote }}
-  tls.key: {{ $clairCrt.Key | b64enc | quote }}
+  {{- $certCtx := (merge (dict "ca" $ca "cert" $clairCrt "secret" (include "harbor.internalTLS.clair.secretName" .) "rotateCert" .Values.internalTLS.rotateCert ) .) }}
+{{ include "harbor.getGenCertOrLoadFromSecret" $certCtx | indent 2 }}
 {{- end }}
 
 {{- if and .Values.trivy.enabled}}
@@ -107,9 +101,8 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $trivyCrt.Cert | b64enc | quote }}
-  tls.key: {{ $trivyCrt.Key | b64enc | quote }}
+  {{- $certCtx := (merge (dict "ca" $ca "cert" $trivyCrt "secret" (include "harbor.internalTLS.trivy.secretName" .) "rotateCert" .Values.internalTLS.rotateCert ) .) }}
+{{ include "harbor.getGenCertOrLoadFromSecret" $certCtx | indent 2 }}
 {{- end }}
 
 {{- end }}
