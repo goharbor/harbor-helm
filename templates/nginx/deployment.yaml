@@ -34,6 +34,7 @@ spec:
       serviceAccountName: {{ .Values.nginx.serviceAccountName }}
 {{- end }}
       securityContext:
+        runAsUser: 10000
         fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
