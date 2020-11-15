@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $registry.name }}-registry-cm
+  name: configure-registry-{{ $registry.name }}
 data:
   configureRegistry.sh: |
     #!/bin/sh
@@ -15,7 +15,7 @@ data:
     desc={{ $registry.desc | default "desc" | quote }}
     basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
     insecure={{$registry.insecure | default false }}
-    endpointPath="api/registries"
+    endpointPath="api/v2.0/registries"
 
     id=$(curl -u "${basicAuthCreds}" \
     -H "accept: application/json" \

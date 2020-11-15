@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $replication.name }}-replication
+  name: {{ $replication.name }}
 data:
   configureReplication.sh: |
     #!/bin/sh
@@ -31,7 +31,7 @@ data:
     srcRegistryName={{ required "A src registry name is required when replication mode is set to pull" $replication.srcRegistryName }}
     srcRegId=$(curl -u "${basicAuthCreds}" \
     -H "accept: application/json" \
-    -X GET "$coreHostUrl/api/registries" \
+    -X GET "$coreHostUrl/api/v2.0/registries" \
     --silent | jq '.[]? | select(.name=='\"${srcRegistryName}\"') | .id')
     if [ -z $srcRegId ]; 
     then
@@ -47,7 +47,7 @@ data:
     destRegistryName={{ required "A destination registry name is required when replication mode is set to push" $replication.destRegistryName  }}
     destRegId=$(curl -u "${basicAuthCreds}" \
       -H "accept: application/json" \
-      -X GET "$coreHostUrl/api/registries" \
+      -X GET "$coreHostUrl/api/v2.0/registries" \
       --silent | jq '.[]? | select(.name=='\"${destRegistryName}\"') | .id')
       if [ -z $destRegId ]; 
       then
@@ -62,7 +62,7 @@ data:
   
     id=$(curl -u "${basicAuthCreds}" \
     -H "accept: application/json" \
-    -X GET "$coreHostUrl/api/${replicationPoliciesEndpoint}" \
+    -X GET "$coreHostUrl/api/v2.0/${replicationPoliciesEndpoint}" \
     --silent | jq '.[]? | select(.name=='\"${ruleName}\"') | .id')
     
 
@@ -77,7 +77,7 @@ data:
 
     curl -u "${basicAuthCreds}" \
        -X $verb \
-       -ki "${coreHostUrl}/api/${replicationPoliciesEndpoint}" \
+       -ki "${coreHostUrl}/api/v2.0/${replicationPoliciesEndpoint}" \
        -H  "Content-Type: application/json" \
        -d "{
            \"description\": \"${desc}\",

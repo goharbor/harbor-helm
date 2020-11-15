@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ $registry.name }}-registry
+  name: configure-registry-{{ $registry.name }}
   namespace: {{ $root.Release.Namespace }}
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
@@ -21,7 +21,7 @@ spec:
       {{- end }}
     spec:
       {{- if $root.Values.serviceAccount.enabled }}
-      serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
+      serviceAccountName: {{ include "harbor.serviceAccountName" $ }}
       {{- end }}
       restartPolicy: Never
       {{- if $registry.job.imagePullSecrets }}
@@ -29,14 +29,14 @@ spec:
 {{ toYaml $registry.job.imagePullSecrets | indent 6 }}
       {{- end }}
       volumes:
-      - name: configure-{{ $registry.name }}-registry
+      - name: configure-registry-{{ $registry.name }}
         configMap:
-          name: {{ $registry.name }}-registry-cm
+          name: configure-registry-{{ $registry.name }}
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" $root }}
         image: {{  required "A image is required to run the job that creates registries. The image must have curl and jq installed." $registry.job.image }}
-        command: ['sh', '-c', './tmp/configureRegistry.sh']
+        command: ['sh', '-c', 'cat /tmp/configureRegistry.sh && ./tmp/configureRegistry.sh']
         env:
         - name: HARBOR_ADMIN_USERNAME
           value: {{ default "admin" $root.Values.adminUsername }}
@@ -53,7 +53,7 @@ spec:
           value: {{ $registry.accessSecret }}
         {{- end }}
         volumeMounts:
-        - name: configure-{{ $registry.name }}-registry
+        - name: configure-registry-{{ $registry.name }}
           mountPath: /tmp
 ---
 {{- end }}

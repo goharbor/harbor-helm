@@ -4,4 +4,4 @@ kind: ServiceAccount
 metadata:
   name: {{ include "harbor.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end }}  
+{{- end }}

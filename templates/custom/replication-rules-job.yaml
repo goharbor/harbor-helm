@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ $replication.name }}-replication
+  name: {{ $replication.name }}
   namespace: {{ $root.Release.Namespace }}
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
@@ -21,7 +21,7 @@ spec:
       {{- end }}
     spec:
       {{- if $root.Values.serviceAccount.enabled }}
-      serviceAccountName: {{ include "harbor.serviceAccountName" $root }}
+      serviceAccountName: {{ include "harbor.serviceAccountName" $ }}
       {{- end }}
       restartPolicy: Never
       {{- if $replication.job.imagePullSecrets }}
@@ -29,9 +29,9 @@ spec:
 {{ toYaml $replication.job.imagePullSecrets | indent 6 }}
       {{- end }}
       volumes:
-      - name: {{ $replication.name }}-replication
+      - name: {{ $replication.name }}
         configMap:
-          name: {{ $replication.name }}-replication
+          name: {{ $replication.name }}
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" $root }}
@@ -43,7 +43,7 @@ spec:
         - name: HARBOR_ADMIN_PASSWORD
           value: {{ $root.Values.harborAdminPassword }}
         volumeMounts:
-        - name: {{ $replication.name }}-replication
+        - name: {{ $replication.name }}
           mountPath: /tmp
 ---
 {{- end }}

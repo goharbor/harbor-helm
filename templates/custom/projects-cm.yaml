@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $project.name}}-project-cm
+  name: configure-project-{{ $project.name}}
 data:
   projects.sh: |
    #!/usr/bin/env bash
@@ -21,7 +21,7 @@ data:
     function isProjectExists(){
       echo "In the isProjectExists function"
       # call project API and return the value.
-      res=$(curl -I HEAD "$coreHostUrl/api/projects?project_name=$1" \
+      res=$(curl -I HEAD "$coreHostUrl/api/v2.0/projects?project_name=$1" \
       -H "accept: application/json" \
       -u "${basicAuthCreds}" )
       echo "Info logs : response :: " ${res}
@@ -31,7 +31,7 @@ data:
     function createProject() {
        echo "In the createProject function"
       # call Project API and create the project with the values taken from the values yaml
-      project=$(curl -X POST "$coreHostUrl/api/projects" \
+      project=$(curl -X POST "$coreHostUrl/api/v2.0/projects" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
@@ -52,7 +52,7 @@ data:
       echo " ------------- Info logs --------------------"
 
       # Get projecid for the given projectname.
-      projectID=$(curl -X GET "$coreHostUrl/api/projects?name=$projectName" \
+      projectID=$(curl -X GET "$coreHostUrl/api/v2.0/projects?name=$projectName" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
@@ -62,7 +62,7 @@ data:
       echo "Info logs :  Adding group ${grpName} to project ${projectID} with grpRole $grpRole"
 
       # Updating project with member id
-      resp=$(curl -X POST "$coreHostUrl/api/projects/${projectID}/members" \
+      resp=$(curl -X POST "$coreHostUrl/api/v2.0/projects/${projectID}/members" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \

@@ -19,15 +19,20 @@ spec:
         component: clair
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/clair/clair-secret.yaml") . | sha256sum }}
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
+{{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/clair/clair-tls.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.clair.podAnnotations }}
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 10000
       {{- if .Values.serviceAccount.enabled }}
       serviceAccountName: {{ include "harbor.serviceAccountName" . }}
       {{- end }}
-      securityContext:
-        fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -74,8 +79,12 @@ spec:
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
         {{- end }}
-        {{- if .Values.clair.volumeMounts }}
-{{ toYaml .Values.clair.volumeMounts | indent 8 }}
+        {{- if .Values.internalTLS.enabled }}
+        - name: clair-internal-certs
+          mountPath: /etc/harbor/ssl/clair
+        {{- end }}
+        {{- if .Values.caBundleSecretName }}
+{{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       - name: adapter
         image: {{ .Values.clair.adapter.image.repository }}:{{ .Values.clair.adapter.image.tag }}
@@ -83,13 +92,15 @@ spec:
         livenessProbe:
           httpGet:
             path: /probe/healthy
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.clairAdapter.containerPort" . }}
           initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /probe/ready
-            port: 8080
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.clairAdapter.containerPort" . }}
           initialDelaySeconds: 30
           periodSeconds: 10
         env:
@@ -102,7 +113,20 @@ spec:
                 name: {{ template "harbor.clair" . }}
                 key: redis
         - name: SCANNER_CLAIR_DATABASE_URL
-          value: {{ include "harbor.database.clair" .}}
+          valueFrom:
+              secretKeyRef:
+                name: {{ template "harbor.clair" . }}
+                key: database
+        {{- if .Values.internalTLS.enabled }}
+        - name: INTERNAL_TLS_ENABLED
+          value: "true"
+        - name: SCANNER_API_SERVER_ADDR
+          value: ":8443"
+        - name: SCANNER_API_SERVER_TLS_KEY
+          value: /etc/harbor/ssl/clair/tls.key
+        - name: SCANNER_API_SERVER_TLS_CERTIFICATE
+          value: /etc/harbor/ssl/clair/tls.crt
+        {{- end }}
         - name: SCANNER_LOG_LEVEL
           value: "{{ .Values.logLevel }}"
 {{- if .Values.clair.adapter.resources }}
@@ -110,13 +134,28 @@ spec:
 {{ toYaml .Values.clair.adapter.resources | indent 10 }}
 {{- end }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ template "harbor.clairAdapter.containerPort" . }}
+        {{- if or .Values.internalTLS.enabled .Values.caBundleSecretName }}
+        volumeMounts:
+        {{- if .Values.internalTLS.enabled }}
+        - name: clair-internal-certs
+          mountPath: /etc/harbor/ssl/clair
+        {{- end }}
+        {{- if .Values.caBundleSecretName }}
+{{ include "harbor.caBundleVolumeMount" . | indent 8 }}
+        {{- end }}
+        {{- end }}
       volumes:
       - name: config
         secret:
           secretName: "{{ template "harbor.clair" . }}"
-      {{- if .Values.clair.volumes }}
-{{ toYaml .Values.deployment.volumes | indent 6 }}
+      {{- if .Values.internalTLS.enabled }}
+      - name: clair-internal-certs
+        secret:
+          secretName: {{ template "harbor.internalTLS.clair.secretName" . }}
+      {{- end }}
+      {{- if .Values.caBundleSecretName }}
+{{ include "harbor.caBundleVolume" . | indent 6 }}
       {{- end }}
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:

@@ -8,13 +8,15 @@
   {{- $_ := set . "v2_path" "/v2/*" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/*" -}}
   {{- $_ := set . "controller_path" "/c/*" -}}
+  {{- $_ := set . "notary_path" "/" -}}
 {{- else if eq .Values.expose.ingress.controller "ncp" }}
-  {{- $_ := set . "portal_path" "/" -}}
+  {{- $_ := set . "portal_path" "/.*" -}}
   {{- $_ := set . "api_path" "/api/.*" -}}
   {{- $_ := set . "service_path" "/service/.*" -}}
   {{- $_ := set . "v2_path" "/v2/.*" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/.*" -}}
   {{- $_ := set . "controller_path" "/c/.*" -}}
+  {{- $_ := set . "notary_path" "/.*" -}}
 {{- else }}
   {{- $_ := set . "portal_path" "/" -}}
   {{- $_ := set . "api_path" "/api/" -}}
@@ -22,8 +24,15 @@
   {{- $_ := set . "v2_path" "/v2/" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
   {{- $_ := set . "controller_path" "/c/" -}}
+  {{- $_ := set . "notary_path" "/" -}}
 {{- end }}
+
+---
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: "{{ template "harbor.ingress" . }}"
@@ -31,36 +40,23 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
+{{- if .Values.internalTLS.enabled }}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+{{- end }}
+{{- if eq .Values.expose.ingress.controller "ncp" }}
+    ncp/use-regex: "true"
+    {{- if $tls.enabled }}
+    ncp/http-redirect: "true"
+    {{- end }}
+{{- end }}
 spec:
   {{- if $tls.enabled }}
   tls:
-    {{- if $tls.secretName }}
-  - secretName: {{ $tls.secretName }}
-    {{- else }}
-  - secretName: "{{ template "harbor.ingress" . }}"
-    {{- end }}
+  - secretName: {{ template "harbor.tlsCoreSecretForIngress" . }}
     {{- if $ingress.hosts.core }}
     hosts:
     - {{ $ingress.hosts.core }}
     {{- end }}
-  {{- if .Values.notary.enabled }}
-    {{- if $tls.notarySecretName }}
-  - secretName: {{ $tls.notarySecretName }}
-    {{- else if $tls.secretName }}
-  - secretName: {{ $tls.secretName }}
-    {{- else }}
-  - secretName: "{{ template "harbor.ingress" . }}"
-    {{- end }}
-    {{- if $ingress.hosts.notary }}
-    hosts:
-    - {{ $ingress.hosts.notary }}
-    {{- end }}
-  {{- end }}
-  {{- end }}
-  {{- if eq .Values.expose.ingress.controller "ncp" }}
-  backend:
-    serviceName: {{ template "harbor.portal" . }}
-    servicePort: 80
   {{- end }}
   rules:
   - http:
@@ -68,39 +64,70 @@ spec:
       - path: {{ .portal_path }}
         backend:
           serviceName: {{ template "harbor.portal" . }}
-          servicePort: 80
+          servicePort: {{ template "harbor.portal.servicePort" . }}
       - path: {{ .api_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
+          servicePort: {{ template "harbor.core.servicePort" . }}
       - path: {{ .service_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
+          servicePort: {{ template "harbor.core.servicePort" . }}
       - path: {{ .v2_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
+          servicePort: {{ template "harbor.core.servicePort" . }}
       - path: {{ .chartrepo_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
+          servicePort: {{ template "harbor.core.servicePort" . }}
       - path: {{ .controller_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
+          servicePort: {{ template "harbor.core.servicePort" . }}
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
     {{- end }}
-  {{- if .Values.notary.enabled }}
+
+{{- if .Values.notary.enabled  }}
+---
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: "{{ template "harbor.ingress-notary" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+  annotations:
+{{ toYaml $ingress.annotations | indent 4 }}
+{{- if eq .Values.expose.ingress.controller "ncp" }}
+    ncp/use-regex: "true"
+    {{- if $tls.enabled }}
+    ncp/http-redirect: "true"
+    {{- end }}
+{{- end }}
+spec:
+  {{- if $tls.enabled }}
+  tls:
+  - secretName: {{ template "harbor.tlsNotarySecretForIngress" . }}
+    {{- if $ingress.hosts.notary }}
+    hosts:
+    - {{ $ingress.hosts.notary }}
+    {{- end }}
+  {{- end }}
+  rules:
   - http:
       paths:
-      - path: /
+      - path: {{ .notary_path }}
         backend:
           serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443
     {{- if $ingress.hosts.notary }}
     host: {{ $ingress.hosts.notary }}
     {{- end }}
-  {{- end }}
+{{- end }}
+
 {{- end }}

@@ -23,11 +23,11 @@ spec:
 {{ toYaml .Values.notary.signer.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 10000
       {{- if .Values.serviceAccount.enabled }}
       serviceAccountName: {{ include "harbor.serviceAccountName" . }}
       {{- end }}
-      securityContext:
-        fsGroup: 10000
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -48,7 +48,7 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
         - name: DB_URL
-          value: {{ include "harbor.database.notarySigner" . }}
+          value: {{ template "harbor.database.notarySigner" . }}
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
@@ -63,13 +63,7 @@ spec:
         - name: signer-certificate
           mountPath: /etc/ssl/notary/tls.key
           subPath: tls.key
-        {{- if .Values.notary.signer.volumeMounts }}
-{{ toYaml .Values.notary.signer.volumeMounts | indent 8 }}
-        {{- end }}
       volumes:
-      {{- if .Values.notary.signer.volumes }}
-{{ toYaml .Values.notary.signer.volumes | indent 6 }}
-      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"

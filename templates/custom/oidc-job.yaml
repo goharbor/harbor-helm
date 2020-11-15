@@ -1,8 +1,8 @@
-{{- if .Values.oidc.enabled }}
+{{- if .Values.custom.oidc.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: oidc-job
+  name: configure-oidc
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
@@ -11,18 +11,18 @@ spec:
   template:
     metadata:
       name: {{ template "harbor.core" . }}
-      {{- if .Values.oidc.oidcJobPodAnnotations }}
+      {{- if .Values.custom.oidc.oidcJobPodAnnotations }}
       annotations:
-{{ toYaml .Values.oidc.oidcJobPodAnnotations | indent 8 }}
+{{ toYaml .Values.custom.oidc.oidcJobPodAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.serviceAccount.enabled }}
       serviceAccountName: {{ include "harbor.serviceAccountName" . }}
       {{- end }}
       restartPolicy: Never
-      {{- if .Values.oidc.jobImagePullSecrets }}
+      {{- if .Values.custom.oidc.jobImagePullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.oidc.jobImagePullSecrets | indent 6 }}
+{{ toYaml .Values.custom.oidc.jobImagePullSecrets | indent 6 }}
       {{- end }}
       volumes:
       - name: configure-oidc-script
@@ -31,23 +31,23 @@ spec:
           defaultMode: 0755
       containers:
       - name: {{ template "harbor.core" . }}
-        image: {{  required "A image is required to run the job that configures OIDC. The image must have curl and jq installed." .Values.oidc.jobImage }}
+        image: {{  required "A image is required to run the job that configures OIDC. The image must have curl and jq installed." .Values.custom.oidc.jobImage }}
         command: ['sh', '-c', 'ls -lrt /tmp && ./tmp/configureOidc.sh']
         env:
         - name: AUTH_MODE
           value: oidc_auth
         - name: OIDC_NAME
-          value: {{ .Values.oidc.name }}
+          value: {{ .Values.custom.oidc.name }}
         - name: OIDC_ENDPOINT
-          value: {{ .Values.oidc.endpoint }}
+          value: {{ .Values.custom.oidc.endpoint }}
         - name: OIDC_CLIENT_ID
-          value: {{ .Values.oidc.clientId }}
+          value: {{ .Values.custom.oidc.clientId }}
         - name: OIDC_CLIENT_SECRET
-          value: {{ .Values.oidc.clientSecret }}
+          value: {{ .Values.custom.oidc.clientSecret }}
         - name: OIDC_SCOPE
-          value: {{ .Values.oidc.scope }}
+          value: {{ .Values.custom.oidc.scope }}
         - name: OIDC_GROUPS_CLAIM
-          value: {{ .Values.oidc.groupsClaim }}
+          value: {{ .Values.custom.oidc.groupsClaim }}
         - name: HARBOR_ADMIN_USERNAME
           value: {{ default "admin" .Values.adminUsername }}
         - name: HARBOR_ADMIN_PASSWORD
