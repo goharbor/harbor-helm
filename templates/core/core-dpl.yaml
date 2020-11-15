@@ -42,6 +42,28 @@ spec:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        startupProbe:
+          httpGet:
+            path: /api/v2.0/ping
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.core.containerPort" . }}
+          failureThreshold: 360
+          initialDelaySeconds: {{ .Values.core.startupProbe.initialDelaySeconds }}
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/v2.0/ping
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.core.containerPort" . }}
+          failureThreshold: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/v2.0/ping
+            scheme: {{ include "harbor.component.scheme" . | upper }}
+            port: {{ template "harbor.core.containerPort" . }}
+          failureThreshold: 2
+          periodSeconds: 10
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.core" . }}"
