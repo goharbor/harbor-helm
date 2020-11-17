@@ -31,11 +31,27 @@ data:
     function createProject() {
        echo "In the createProject function"
       # call Project API and create the project with the values taken from the values yaml
+
+      {{- if $project.proxyRegistry }}
+      registryID=$(curl -X GET \
+        -u "${basicAuthCreds}" \
+        -H "accept: application/json" \
+        "$coreHostUrl/api/v2.0/registries?q=exact%20match(name%3D{{$project.proxyRegistry}})" | jq -r '.[] | select(.name == {{$project.proxyRegistry|quote}}).id' )
+      {{- end }}
+
       project=$(curl -X POST "$coreHostUrl/api/v2.0/projects" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
       -u "${basicAuthCreds}" \
-      -d "{ \"project_name\": \"$1\"}")
+      -d "{ 
+            \"project_name\": \"$1\"
+            {{- if $project.public -}}
+            ,\"public\": {{ $project.public }}
+            {{- end -}}
+            {{- if $project.proxyRegistry }}
+            ,\"registry_id\": $registryID
+            {{- end }}
+          }")
       echo "Info logs : Project created :: ${project}"
       echo ${project}
     }
