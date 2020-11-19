@@ -39,7 +39,8 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
-{{ toYaml $ingress.annotations | indent 4 }}
+{{ toYaml $ingress.shared.annotations | indent 4 }}
+{{ toYaml $ingress.core.annotations | indent 4 }}
 {{- if .Values.internalTLS.enabled }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 {{- end }}
@@ -102,7 +103,8 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
-{{ toYaml $ingress.annotations | indent 4 }}
+{{ toYaml $ingress.shared.annotations | indent 4 }}
+{{ toYaml $ingress.notary.annotations | indent 4 }}
 {{- if eq .Values.expose.ingress.controller "ncp" }}
     ncp/use-regex: "true"
     {{- if $tls.enabled }}
