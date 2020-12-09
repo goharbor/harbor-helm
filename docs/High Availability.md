@@ -8,7 +8,7 @@ Deploy Harbor on K8S via helm to make it highly available, that is, if one of no
 
 ## Prerequisites
 
-- Kubernetes cluster 1.10+
+- Kubernetes cluster 1.16+
 - Helm 2.10.0+
 - High available ingress controller (Harbor does not manage the external endpoint)
 - High available PostgreSQL database (Harbor does not handle the deployment of HA of database)
