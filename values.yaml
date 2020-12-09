@@ -540,6 +540,10 @@ registry:
     # e.g. "htpasswd -nbBC10 $username $password"
     htpasswd: "harbor_registry_user:$2y$10$9L4Tc0DJbFFMB6RdSCunrOpTHdwhid4ktBJmLD00bYgqkkGOvll3m"
 
+  # Overrides registry host. Omit if empty. Required if X-Forwarded-For or Forwarded header incorrectly implemented on infrastructure side.
+  # protocol and port is required. Example: http://core.harbor.domain:8080
+  host: ""
+
   middleware:
     enabled: false
     type: cloudFront
