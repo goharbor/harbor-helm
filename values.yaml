@@ -388,6 +388,8 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 portal:
   image:
@@ -405,6 +407,8 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 core:
   image:
@@ -425,6 +429,8 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -458,6 +464,8 @@ jobservice:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -489,6 +497,8 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -535,6 +545,8 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 clair:
   enabled: true
@@ -622,6 +634,8 @@ trivy:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 notary:
   enabled: true
@@ -652,6 +666,8 @@ notary:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.
@@ -705,6 +721,8 @@ database:
   maxOpenConns: 1000
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -741,3 +759,5 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}

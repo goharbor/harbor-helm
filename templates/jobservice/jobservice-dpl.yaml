@@ -20,6 +20,9 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{- if .Values.jobservice.podLabels }}
+{{ toYaml .Values.jobservice.podLabels | indent 8 }}
+{{- end }}
         component: jobservice
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
