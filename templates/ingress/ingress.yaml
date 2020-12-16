@@ -19,11 +19,11 @@
   {{- $_ := set . "notary_path" "/.*" -}}
 {{- else }}
   {{- $_ := set . "portal_path" "/" -}}
-  {{- $_ := set . "api_path" "/api/" -}}
-  {{- $_ := set . "service_path" "/service/" -}}
-  {{- $_ := set . "v2_path" "/v2/" -}}
-  {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
-  {{- $_ := set . "controller_path" "/c/" -}}
+  {{- $_ := set . "api_path" "/api" -}}
+  {{- $_ := set . "service_path" "/service" -}}
+  {{- $_ := set . "v2_path" "/v2" -}}
+  {{- $_ := set . "chartrepo_path" "/chartrepo" -}}
+  {{- $_ := set . "controller_path" "/c" -}}
   {{- $_ := set . "notary_path" "/" -}}
 {{- end }}
 

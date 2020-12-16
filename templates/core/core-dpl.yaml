@@ -42,6 +42,7 @@ spec:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
           httpGet:
             path: /api/v2.0/ping
@@ -50,6 +51,7 @@ spec:
           failureThreshold: 360
           initialDelaySeconds: {{ .Values.core.startupProbe.initialDelaySeconds }}
           periodSeconds: 10
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /api/v2.0/ping

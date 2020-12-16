@@ -9,7 +9,7 @@ expose:
     # images. Refer to https://github.com/goharbor/harbor/issues/5291
     # for the detail.
     enabled: true
-    # The source of the tls certificate. Set it as "auto", "secret" 
+    # The source of the tls certificate. Set it as "auto", "secret"
     # or "none" and fill the information in the corresponding section
     # 1) auto: generate the tls certificate automatically
     # 2) secret: read the tls certificate from the specified secret.
@@ -415,6 +415,7 @@ core:
   replicas: 1
   ## Startup probe values
   startupProbe:
+    enabled: true
     initialDelaySeconds: 10
   # resources:
   #  requests:
