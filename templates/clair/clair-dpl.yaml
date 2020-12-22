@@ -38,6 +38,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      automountServiceAccountToken: false
       containers:
       - name: clair
         image: {{ .Values.clair.clair.image.repository }}:{{ .Values.clair.clair.image.tag }}
