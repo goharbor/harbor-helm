@@ -637,6 +637,11 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    ## Additional deployment annotations
+    podAnnotations: {}
   signer:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -648,11 +653,11 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  ## Additional deployment annotations
-  podAnnotations: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    ## Additional deployment annotations
+    podAnnotations: {}
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.
