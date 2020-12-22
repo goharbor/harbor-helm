@@ -280,6 +280,10 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- printf "%s-nginx" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{- define "harbor.exporter" -}}
+  {{- printf "%s-exporter" (include "harbor.fullname" .) -}}
+{{- end -}}
+
 {{- define "harbor.ingress" -}}
   {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
@@ -289,7 +293,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{- end -}}
 
 {{- define "harbor.noProxy" -}}
-  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.clair" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) .Values.proxy.noProxy -}}
+  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.clair" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) (include "harbor.exporter" .) .Values.proxy.noProxy -}}
 {{- end -}}
 
 {{- define "harbor.caBundleVolume" -}}

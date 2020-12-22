@@ -53,6 +53,14 @@ data:
   NO_PROXY: "{{ template "harbor.noProxy" . }}"
   {{- end }}
   PERMITTED_REGISTRY_TYPES_FOR_PROXY_CACHE: "docker-hub,harbor"
+  {{- if .Values.metrics.enabled}}
+  METRIC_ENABLE: "true"
+  METRIC_PATH: "{{ .Values.metrics.core.path }}"
+  METRIC_PORT: "{{ .Values.metrics.core.port }}"
+  METRIC_NAMESPACE: harbor
+  METRIC_SUBSYSTEM: core
+  {{- end }}
+
   {{- if hasKey .Values.core "gcTimeWindowHours" }}
   #make the GC time window configurable for testing
   GC_TIME_WINDOW_HOURS: "{{ .Values.core.gcTimeWindowHours }}"
