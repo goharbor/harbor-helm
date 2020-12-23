@@ -184,7 +184,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `logLevel` | The log level: `debug`, `info`, `warning`, `error` or `fatal` | `info` |
 | `harborAdminPassword` | The initial password of Harbor admin. Change it from portal after launching Harbor | `Harbor12345` |
 | `caSecretName` | The name of the secret which contains key named `ca.crt`. Setting this enables the download link on portal to download the certificate of CA when the certificate isn't generated automatically | |
-| `secretkey` | The key used for encryption. Must be a string of 16 chars | `not-a-secure-key` |
+| `secretKey` | The key used for encryption. Must be a string of 16 chars | `not-a-secure-key` |
 | `proxy.httpProxy` | The URL of the HTTP proxy server | |
 | `proxy.httpsProxy` | The URL of the HTTPS proxy server | |
 | `proxy.noProxy` | The URLs that the proxy settings not apply to | 127.0.0.1,localhost,.local,.internal |
