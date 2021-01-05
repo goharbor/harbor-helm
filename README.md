@@ -342,6 +342,24 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.external.trivyAdapterIndex` | The database index for trivy adapter | `5` |
 | `redis.external.password` | The password of external Redis | |
 | `redis.podAnnotations` | Annotations to add to the redis pod | `{}` |
+| **Exporter** |
+| `exporter.replicas` ｜ The replica count | `1` |
+| `exporter.podAnnotations` | Annotations to add to the exporter pod | `{}` |
+| `exporter.image.repository` | Repository for redis image | `goharbor/harbor-exporter` |
+| `exporter.image.tag` | Tag for exporter image | `dev` |
+| `exporter.nodeSelector` |  Node labels for pod assignment | `{}` |
+| `exporter.tolerations` | Tolerations for pod assignment | `[]` |
+| `exporter.affinity` | Node/Pod affinities | `{}` |
+| `exporter.cacheDuration` | the cache duration for infomation that exporter collected from Harbor | `30` |
+| `exporter.cacheCleanInterval` | cache clean interval for infomation that exporter collected from Harbor | `14400` |
+| **Metrics** |
+| `metrics.enabled`| if enable harbor metrics | `false` |
+| `metrics.core.path`| the url path for core metrics | `/metrics` |
+| `metrics.core.port` | the port for core metrics | `8001` |
+| `metrics.registry.path` | the url path for registry metrics | `/metrics` |
+| `metrics.registry.port` | the port for registry metrics | `8001` |
+| `metrics.exporter.path` | the url path for exporter metrics | `/metrics` |
+| `metrics.exporter.port` | the port for exporter metrics | `8001` |
 
 [resources]: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
 [trivy]: https://github.com/aquasecurity/trivy
