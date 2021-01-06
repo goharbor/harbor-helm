@@ -63,6 +63,7 @@ spec:
   rules:
   - http:
       paths:
+{{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.GitVersion }}
       - path: {{ .portal_path }}
         backend:
           serviceName: {{ template "harbor.portal" . }}
@@ -87,6 +88,50 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: {{ template "harbor.core.servicePort" . }}
+{{- else }}
+      - path: {{ .portal_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.portal" . }}
+            port:
+              number: {{ template "harbor.portal.servicePort" . }}
+      - path: {{ .api_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .service_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .v2_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .chartrepo_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .controller_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+{{- end }}
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
     {{- end }}
@@ -127,8 +172,15 @@ spec:
       paths:
       - path: {{ .notary_path }}
         backend:
+{{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.GitVersion }}
           serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443
+{{- else }}
+          service:
+            name: {{ template "harbor.notary-server" . }}
+            port:
+              number: 4443
+{{- end -}}
     {{- if $ingress.hosts.notary }}
     host: {{ $ingress.hosts.notary }}
     {{- end }}
