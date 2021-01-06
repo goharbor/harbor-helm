@@ -9,22 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        k8s_version: [v1.18.2, v1.17.5, v1.16.9]
+        k8s_version: [v1.20.0, v1.19.4, v1.18.8, v1.17.11, v1.16.15]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup Docker
-        uses: docker-practice/actions-setup-docker@0.0.1
+        uses: docker-practice/actions-setup-docker@v1
         with:
-          docker_version: 18.09
+          docker_version: "20.10"
           docker_channel: stable
           docker_daemon_json: '{"insecure-registries":["0.0.0.0/0"]}'
 
       - name: Create kind cluster
-        uses: helm/kind-action@v1.0.0-rc.1
+        uses: helm/kind-action@v1.1.0
         with:
-          version: v0.8.1
+          version: v0.9.0
           node_image: kindest/node:${{ matrix.k8s_version }}
           cluster_name: kind-cluster-${{ matrix.k8s_version }}
           config: test/integration/kind-cluster.yaml
@@ -37,7 +37,7 @@ jobs:
       - name: Set up Go 1.13
         uses: actions/setup-go@v2
         with:
-          go-version: 1.13
+          go-version: "1.13"
 
       - name: Cache go mod
         uses: actions/cache@v2
