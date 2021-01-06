@@ -1,7 +1,6 @@
 package integration
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/k8s"
@@ -13,8 +12,8 @@ type IngressTestSuite struct {
 }
 
 func (i *IngressTestSuite) TestIngress() {
-	k8s.GetIngress(i.T(), i.Options.KubectlOptions, fmt.Sprintf("%s-harbor-ingress", i.ReleaseName))
-	k8s.GetIngress(i.T(), i.Options.KubectlOptions, fmt.Sprintf("%s-harbor-ingress-notary", i.ReleaseName))
+	k8s.GetIngress(i.T(), i.Options.KubectlOptions, "harbor-ingress")
+	k8s.GetIngress(i.T(), i.Options.KubectlOptions, "harbor-ingress-notary")
 }
 
 func TestIngressTestSuite(t *testing.T) {

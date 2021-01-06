@@ -89,6 +89,9 @@ The following table lists the configurable parameters of the Harbor chart and th
 
 | Parameter                                                                   | Description                                                                                                                                                                                                                                                                                                                                     | Default                         |
 | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| **Chart** |
+| `nameOverride` | | `harbor` |
+| `fullnameOverride` |
 | **Expose** |
 | `expose.type` | The way how to expose the service: `ingress`, `clusterIP`, `nodePort` or `loadBalancer`, other values will be ignored and the creation of service will be skipped. | `ingress` |
 | `expose.tls.enabled` | Enable the tls or not. Delete the `ssl-redirect` annotations in `expose.ingress.annotations` when TLS is disabled and `expose.type` is `ingress`. Note: if the `expose.type` is `ingress` and the tls is disabled, the port must be included in the command when pull/push images. Refer to https://github.com/goharbor/harbor/issues/5291 for the detail. | `true` |
