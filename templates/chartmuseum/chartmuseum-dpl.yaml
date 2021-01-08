@@ -5,7 +5,7 @@ metadata:
   name: "{{ template "harbor.chartmuseum" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: chartmuseum
+    app.kubernetes.io/component: chartmuseum
 spec:
   replicas: {{ .Values.chartmuseum.replicas }}
   strategy:
@@ -16,12 +16,12 @@ spec:
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: chartmuseum
+      app.kubernetes.io/component: chartmuseum
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: chartmuseum
+        app.kubernetes.io/component: chartmuseum
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/chartmuseum/chartmuseum-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/chartmuseum/chartmuseum-secret.yaml") . | sha256sum }}

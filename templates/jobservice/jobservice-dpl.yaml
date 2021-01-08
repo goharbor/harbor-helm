@@ -4,7 +4,7 @@ metadata:
   name: "{{ template "harbor.jobservice" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: jobservice
+    app.kubernetes.io/component: jobservice
 spec:
   replicas: {{ .Values.jobservice.replicas }}
   strategy:
@@ -15,12 +15,12 @@ spec:
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: jobservice
+      app.kubernetes.io/component: jobservice
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: jobservice
+        app.kubernetes.io/component: jobservice
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
         checksum/configmap-env: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm-env.yaml") . | sha256sum }}

@@ -16,4 +16,4 @@ spec:
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: registry
+    app.kubernetes.io/component: registry

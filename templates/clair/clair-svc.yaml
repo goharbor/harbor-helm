@@ -11,5 +11,5 @@ spec:
       port: {{ include "harbor.clairAdapter.servicePort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: clair
+    app.kubernetes.io/component: clair
 {{ end }}

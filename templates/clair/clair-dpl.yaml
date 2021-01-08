@@ -5,18 +5,18 @@ metadata:
   name: {{ template "harbor.clair" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: clair
+    app.kubernetes.io/component: clair
 spec:
   replicas: {{ .Values.clair.replicas }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: clair
+      app.kubernetes.io/component: clair
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: clair
+        app.kubernetes.io/component: clair
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/clair/clair-secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}

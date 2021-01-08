@@ -6,19 +6,19 @@ metadata:
   name: {{ template "harbor.trivy" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: trivy
+    app.kubernetes.io/component: trivy
 spec:
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: trivy
+      app.kubernetes.io/component: trivy
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: trivy
+        app.kubernetes.io/component: trivy
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/trivy/trivy-secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}

@@ -18,16 +18,16 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{/* Helm required labels */}}
 {{- define "harbor.labels" -}}
-heritage: {{ .Release.Service }}
-release: {{ .Release.Name }}
-chart: {{ .Chart.Name }}
-app: "{{ template "harbor.name" . }}"
+app.kubernetes.io/name: {{ template "harbor.name" . }}
+helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/* matchLabels */}}
 {{- define "harbor.matchLabels" -}}
-release: {{ .Release.Name }}
-app: "{{ template "harbor.name" . }}"
+app.kubernetes.io/name: "{{ template "harbor.name" . }}"
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "harbor.autoGenCert" -}}
