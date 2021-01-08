@@ -2,7 +2,8 @@ clair:
   database:
     type: pgsql
     options:
-      source: "{{ template "harbor.database.clair" . }}"
+      # Postgresql connection URL (filled in at runtime by entrypoint)
+      source: ""
       # Number of elements kept in the cache
       # Values unlikely to change (e.g. namespaces) are cached in order to save prevent needless roundtrips to the database.
       cachesize: 16384

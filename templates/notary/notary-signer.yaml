@@ -19,6 +19,7 @@ spec:
         component: notary-signer
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
+        checksum/secret-database: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.notary.signer.podAnnotations }}
 {{ toYaml .Values.notary.signer.podAnnotations | indent 8 }}
 {{- end }}
@@ -34,6 +35,27 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: false
+      initContainers:
+      - name: "inject-config-db-url"
+        image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "harbor.database" . }}"
+              key: POSTGRES_URL_NOTARY_SIGNER
+        command: [
+            "sh",
+            "-ce",
+            'cp /tmp/config-in/signer.json /tmp/config/signer.json &&
+             sed -i "s,\$DB_URL,$DB_URL,g" /tmp/config/signer.json' ]
+        volumeMounts:
+        - name: config-in
+          mountPath: /tmp/config-in/signer.json
+          subPath: signer.json
+        - name: config
+          mountPath: /tmp/config
       containers:
       - name: notary-signer
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
@@ -46,7 +68,10 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
         - name: DB_URL
-          value: {{ template "harbor.database.notarySigner" . }}
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "harbor.database" . }}"
+              key: POSTGRES_URL_NOTARY_SIGNER
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
@@ -60,9 +85,11 @@ spec:
           mountPath: /etc/ssl/notary/tls.key
           subPath: tls.key
       volumes:
-      - name: config
+      - name: config-in
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"
+      - name: config
+        emptyDir: {}
       - name: signer-certificate
         secret:
           {{- if .Values.notary.secretName }}

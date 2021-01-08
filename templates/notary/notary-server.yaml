@@ -20,6 +20,7 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
         checksum/secret-core: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
+        checksum/secret-database: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.notary.server.podAnnotations }}
 {{ toYaml .Values.notary.server.podAnnotations | indent 8 }}
 {{- end }}
@@ -35,6 +36,27 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: false
+      initContainers:
+      - name: "inject-config-db-url"
+        image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "harbor.database" . }}"
+              key: POSTGRES_URL_NOTARY_SERVER
+        command: [
+            "sh",
+            "-ce",
+            'cp /tmp/config-in/server.json /tmp/config/server.json &&
+             sed -i "s,\$DB_URL,$DB_URL,g" /tmp/config/server.json' ]
+        volumeMounts:
+        - name: config-in
+          mountPath: /tmp/config-in/server.json
+          subPath: server.json
+        - name: config
+          mountPath: /tmp/config
       containers:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
@@ -47,7 +69,10 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
         - name: DB_URL
-          value: {{ template "harbor.database.notaryServer" . }}
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "harbor.database" . }}"
+              key: POSTGRES_URL_NOTARY_SERVER
         volumeMounts:
         - name: config
           mountPath: /etc/notary/server-config.postgres.json
@@ -59,9 +84,11 @@ spec:
           mountPath: /etc/ssl/notary/ca.crt
           subPath: ca.crt
       volumes:
-      - name: config
+      - name: config-in
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"
+      - name: config
+        emptyDir: {}
       - name: token-service-certificate
         secret:
           {{- if .Values.core.secretName }}

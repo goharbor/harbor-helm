@@ -64,6 +64,11 @@ spec:
           # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.database" . }}"
+                key: POSTGRES_PASSWORD
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data

@@ -14,7 +14,7 @@
   },
   "storage": {
     "backend": "postgres",
-    "db_url": "{{ template "harbor.database.notaryServer" . }}"
+    "db_url": "$DB_URL"
   },
   "auth": {
     "type": "token",

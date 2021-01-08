@@ -679,6 +679,7 @@ database:
       repository: goharbor/harbor-db
       tag: dev
     # The initial superuser password for internal database
+    # If a password is not specified, Helm will generate one.
     password: "changeit"
     # resources:
     #  requests:
