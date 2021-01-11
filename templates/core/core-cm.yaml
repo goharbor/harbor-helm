@@ -29,8 +29,6 @@ data:
   WITH_NOTARY: "{{ .Values.notary.enabled }}"
   NOTARY_URL: "http://{{ template "harbor.notary-server" . }}:4443"
   CORE_LOCAL_URL: "{{ ternary "https://127.0.0.1:8443" "http://127.0.0.1:8080" .Values.internalTLS.enabled }}"
-  WITH_CLAIR: "{{ .Values.clair.enabled }}"
-  CLAIR_ADAPTER_URL: "{{ template "harbor.clairAdapterURL" . }}"
   WITH_TRIVY: {{ .Values.trivy.enabled | quote }}
   TRIVY_ADAPTER_URL: "{{ template "harbor.trivyAdapterURL" . }}"
   REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.persistence.imageChartStorage.type }}"

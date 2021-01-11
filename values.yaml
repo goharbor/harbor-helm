@@ -161,14 +161,6 @@ internalTLS:
     crt: ""
     # Content of chartmuseum's TLS key file, only available when `certSource` is "manual"
     key: ""
-  # clair related cert configuration
-  clair:
-    # secret name for clair's tls certs
-    secretName: ""
-    # Content of clair's TLS key file, only available when `certSource` is "manual"
-    crt: ""
-    # Content of clair's TLS key file, only available when `certSource` is "manual"
-    key: ""
   # trivy related cert configuration
   trivy:
     # secret name for trivy's tls certs
@@ -350,7 +342,7 @@ caSecretName: ""
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
 
-# The proxy settings for updating clair vulnerabilities from the Internet and replicating
+# The proxy settings for updating trivy vulnerabilities from the Internet and replicating
 # artifacts from/to the registries that cannot be reached directly
 proxy:
   httpProxy:
@@ -359,11 +351,10 @@ proxy:
   components:
     - core
     - jobservice
-    - clair
     - trivy
 
 # The custom ca bundle secret, the secret must contain key named "ca.crt"
-# which will be injected into the trust store for chartmuseum, clair, core, jobservice, registry, trivy components
+# which will be injected into the trust store for chartmuseum, core, jobservice, registry, trivy components
 # caBundleSecretName: ""
 
 ## UAA Authentication Options
@@ -539,36 +530,6 @@ chartmuseum:
   ## Additional deployment annotations
   podAnnotations: {}
 
-clair:
-  enabled: true
-  # set the service account to be used, default if left empty
-  serviceAccountName: ""
-  clair:
-    image:
-      repository: goharbor/clair-photon
-      tag: dev
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
-  adapter:
-    image:
-      repository: goharbor/clair-adapter-photon
-      tag: dev
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
-  replicas: 1
-  # The interval of clair updaters, the unit is hour, set to 0 to
-  # disable the updaters
-  updatersInterval: 12
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  ## Additional deployment annotations
-  podAnnotations: {}
-
 trivy:
   # enabled the flag to enable Trivy scanner
   enabled: true
@@ -693,7 +654,6 @@ database:
     username: "user"
     password: "password"
     coreDatabase: "registry"
-    clairDatabase: "clair"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
     # "disable" - No SSL
@@ -744,7 +704,6 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     chartmuseumDatabaseIndex: "3"
-    clairAdapterIndex: "4"
     trivyAdapterIndex: "5"
     password: ""
   ## Additional deployment annotations
