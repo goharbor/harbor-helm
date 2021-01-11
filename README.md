@@ -119,7 +119,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.loadBalancer.annotations` | The annotations attached to the loadBalancer service | {} |
 | `expose.loadBalancer.sourceRanges` | List of IP address ranges to assign to loadBalancerSourceRanges | [] |
 | **Internal TLS** |
-| `internalTLS.enabled` | Enable the tls for the components (chartmuseum, clair, core, jobservice, portal, registry, trivy) | `false` |
+| `internalTLS.enabled` | Enable the tls for the components (chartmuseum, core, jobservice, portal, registry, trivy) | `false` |
 | `internalTLS.certSource` | Method to provide tls for the components, options is `auto`, `manual`, `secret`. | `auto` |
 | `internalTLS.trustCa` | The content of trust ca, only available when `certSrouce` is `manual`. **Note**: all the internal certificates of the components must be issued by this ca |  |
 | `internalTLS.core.secretName` | The secret name for core component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
@@ -137,9 +137,6 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `internalTLS.chartmuseum.secretName` | The secret name for chartmuseum component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
 | `internalTLS.chartmuseum.crt` | Content of chartmuseum's TLS cert file, only available when `certSource` is `manual` | |
 | `internalTLS.chartmuseum.key` | Content of chartmuseum's TLS key file, only available when `certSource` is `manual` | |
-| `internalTLS.clair.secretName` | The secret name for clair component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
-| `internalTLS.clair.crt` | Content of clair's TLS cert file, only available when `certSource` is `manual` | |
-| `internalTLS.clair.key` | Content of clair's TLS key file, only available when `certSource` is `manual` | |
 | `internalTLS.trivy.secretName` | The secret name for trivy component, only available when `certSource` is `secret`. The secret must contain keys named: `ca.crt` - the certificate of CA which is used to issue internal key and crt pair for components and all Harbor components must issued by the same CA , `tls.crt` - the content of the TLS cert file, `tls.key` - the content of the TLS key file. | |
 | `internalTLS.trivy.crt` | Content of trivy's TLS cert file, only available when `certSource` is `manual` | |
 | `internalTLS.trivy.key` | Content of trivy's TLS key file, only available when `certSource` is `manual` | |
@@ -176,7 +173,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `persistence.imageChartStorage.type`                                        | The type of storage for images and charts: `filesystem`, `azure`, `gcs`, `s3`, `swift` or `oss`. The type must be `filesystem` if you want to use persistent volumes for registry and chartmuseum. Refer to the [guide](https://github.com/docker/distribution/blob/master/docs/configuration.md#storage) for more information about the detail | `filesystem`                    |
 | **General**                                                                 |
 | `externalURL`                                                               | The external URL for Harbor core service                                                                                                                                                                                                                                                                                                        | `https://core.harbor.domain`    |
-| `caBundleSecretName` | The custom ca bundle secret name, the secret must contain key named "ca.crt" which will be injected into the trust store for chartmuseum, clair, core, jobservice, registry, trivy components. | |
+| `caBundleSecretName` | The custom ca bundle secret name, the secret must contain key named "ca.crt" which will be injected into the trust store for chartmuseum, core, jobservice, registry, trivy components. | |
 | `uaaSecretName` | If using external UAA auth which has a self signed cert, you can provide a pre-created secret containing it under the key `ca.crt`. | |
 | `imagePullPolicy` | The image pull policy |  |
 | `imagePullSecrets` | The imagePullSecrets names for all deployments |  |
@@ -188,7 +185,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `proxy.httpProxy` | The URL of the HTTP proxy server | |
 | `proxy.httpsProxy` | The URL of the HTTPS proxy server | |
 | `proxy.noProxy` | The URLs that the proxy settings not apply to | 127.0.0.1,localhost,.local,.internal |
-| `proxy.components` | The component list that the proxy settings apply to | core, jobservice, clair |
+| `proxy.components` | The component list that the proxy settings apply to | core, jobservice, trivy |
 | **Nginx** (if expose the service via `ingress`, the Nginx will not be used) |
 | `nginx.image.repository`                                                    | Image repository                                                                                                                                                                                                                                                                                                                                | `goharbor/nginx-photon`         |
 | `nginx.image.tag`                                                           | Image tag                                                                                                                                                                                                                                                                                                                                       | `dev`                           |
@@ -261,20 +258,6 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `chartmuseum.tolerations`                                                   | Tolerations for pod assignment                                                                                                                                                                                                                                                                                                                  | `[]`                            |
 | `chartmuseum.affinity`                                                      | Node/Pod affinities                                                                                                                                                                                                                                                                                                                             | `{}`                            |
 | `chartmuseum.podAnnotations`                                                | Annotations to add to the chart museum pod                                                                                                                                                                                                                                                                                                      | `{}`                            |
-| **Clair** |
-| `clair.enabled` | Enable Clair | `true` |
-| `clair.clair.image.repository`  | Repository for clair image | `goharbor/clair-photon` |
-| `clair.clair.image.tag` | Tag for clair image | `dev` |
-| `clair.clair.resources` | The [resources] to allocate for clair container | |
-| `clair.adapter.image.repository`  | Repository for clair adapter image | `goharbor/clair-adapter-photon` |
-| `clair.adapter.image.tag` | Tag for clair adapter image | `dev` |
-| `clair.adapter.resources` | The [resources] to allocate for clair adapter container | |
-| `clair.replicas` | The replica count | `1` |
-| `clair.updatersInterval` | The interval of clair updaters, the unit is hour, set to 0 to disable the updaters | `12` |
-| `clair.nodeSelector` | Node labels for pod assignment | `{}` |
-| `clair.tolerations` | Tolerations for pod assignment | `[]` |
-| `clair.affinity` | Node/Pod affinities | `{}` |
-| `clair.podAnnotations` | Annotations to add to the clair pod | `{}` |
 | **[Trivy][trivy]** |
 | `trivy.enabled`          | The flag to enable Trivy scanner                                                                           | `true` |
 | `trivy.image.repository` | Repository for Trivy adapter image                                                                         | `goharbor/trivy-adapter-photon` |
@@ -317,7 +300,6 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `database.external.username`                                                | The username of external database                                                                                                                                                                                                                                                                                                               | `user`                          |
 | `database.external.password`                                                | The password of external database                                                                                                                                                                                                                                                                                                               | `password`                      |
 | `database.external.coreDatabase`                                            | The database used by core service                                                                                                                                                                                                                                                                                                               | `registry`                      |
-| `database.external.clairDatabase`                                           | The database used by clair                                                                                                                                                                                                                                                                                                                      | `clair`                         |
 | `database.external.notaryServerDatabase`                                    | The database used by Notary server                                                                                                                                                                                                                                                                                                              | `notary_server`                 |
 | `database.external.notarySignerDatabase`                                    | The database used by Notary signer                                                                                                                                                                                                                                                                                                              | `notary_signer`                 |
 | `database.external.sslmode`                                                 | Connection method of external database (require, verify-full, verify-ca, disable)                                                                                                                                                                                                                                                               | `disable` |
@@ -338,7 +320,6 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `redis.external.jobserviceDatabaseIndex` | The database index for jobservice | `1` |
 | `redis.external.registryDatabaseIndex` | The database index for registry | `2` |
 | `redis.external.chartmuseumDatabaseIndex` | The database index for chartmuseum | `3` |
-| `redis.external.clairAdapterIndex` | The database index for clair adapter | `4` |
 | `redis.external.trivyAdapterIndex` | The database index for trivy adapter | `5` |
 | `redis.external.password` | The password of external Redis | |
 | `redis.podAnnotations` | Annotations to add to the redis pod | `{}` |
