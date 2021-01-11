@@ -166,7 +166,9 @@ data:
       sentinelMasterSet: {{ template "harbor.redis.masterSet" . }}
       {{- end }}
       db: {{ template "harbor.redis.dbForRegistry" . }}
+      {{- if not (eq (include "harbor.redis.password" .) "") }}
       password: {{ template "harbor.redis.password" . }}
+      {{- end }}
       readtimeout: 10s
       writetimeout: 10s
       dialtimeout: 10s
