@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        k8s_version: [v1.18.2, v1.17.5, v1.16.9]
+        k8s_version: [v1.20.0, v1.19.4, v1.18.8]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
