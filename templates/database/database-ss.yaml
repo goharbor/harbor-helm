@@ -36,6 +36,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: false
+      initContainers:
+      # as we change the data directory to a sub folder to support psp, the init container here
+      # is used to migrate the existing data. See https://github.com/goharbor/harbor-helm/issues/756
+      # for more detail.
+      # we may remove it after several releases
+      - name: "data-migrator"
+        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", "[ -e /var/lib/postgresql/data/postgresql.conf ] && [ ! -d /var/lib/postgresql/data/pgdata ] && mkdir -m 0700 /var/lib/postgresql/data/pgdata && mv /var/lib/postgresql/data/* /var/lib/postgresql/data/pgdata/ || true"]
+        volumeMounts:
+          - name: database-data
+            mountPath: /var/lib/postgresql/data
+            subPath: {{ $database.subPath }}
       containers:
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
