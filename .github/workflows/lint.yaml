@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        helm_version: [3.2.3, 2.16.8]
+        helm_version: [3.2.3, 2.16.12]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,6 +26,7 @@ jobs:
           helm version -c
 
       - name: Run lint
+        continue-on-error: ${{ startsWith(matrix.helm_version, '2.') }}
         working-directory: ./harbor
         run:
           helm lint .
