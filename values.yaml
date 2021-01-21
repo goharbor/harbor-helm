@@ -4,7 +4,9 @@ expose:
   # in the corresponding section
   type: ingress
   tls:
-    # Enable the tls or not. Note: if the type is "ingress" and the tls
+    # Enable the tls or not.
+    # Delete the "ssl-redirect" annotations in "expose.ingress.annotations" when TLS is disabled and "expose.type" is "ingress"
+    # Note: if the "expose.type" is "ingress" and the tls
     # is disabled, the port must be included in the command when pull/push
     # images. Refer to https://github.com/goharbor/harbor/issues/5291
     # for the detail.
