@@ -444,7 +444,11 @@ jobservice:
   serviceAccountName: ""
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
-  jobLogger: file
+  jobLoggers:
+    - file
+    # - database
+    # - stdout
+
   # resources:
   #   requests:
   #     memory: 256Mi
