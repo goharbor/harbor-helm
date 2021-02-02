@@ -383,6 +383,10 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # podDisruptionBudget:
+  #   minAvailable: 25%
+  # or
+  #   maxUnavailable: 25%
 
 portal:
   image:
@@ -400,6 +404,10 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # podDisruptionBudget:
+  #   minAvailable: 25%
+  # or
+  #   maxUnavailable: 25%
 
 core:
   image:
@@ -434,6 +442,10 @@ core:
   secretName: ""
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
+  # podDisruptionBudget:
+  #   minAvailable: 25%
+  # or
+  #   maxUnavailable: 25%
 
 jobservice:
   image:
@@ -462,6 +474,10 @@ jobservice:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # podDisruptionBudget:
+  #   minAvailable: 25%
+  # or
+  #   maxUnavailable: 25%
 
 registry:
   # set the service account to be used, default if left empty
@@ -515,6 +531,10 @@ registry:
       # The secret key that should be present is CLOUDFRONT_KEY_DATA, which should be the encoded private key
       # that allows access to CloudFront
       privateKeySecret: "my-secret"
+  # podDisruptionBudget:
+  #   minAvailable: 25%
+  # or
+  #   maxUnavailable: 25%
 
 chartmuseum:
   enabled: true
@@ -535,6 +555,10 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # podDisruptionBudget:
+  #   minAvailable: 25%
+  # or
+  #   maxUnavailable: 25%
 
 trivy:
   # enabled the flag to enable Trivy scanner
@@ -592,6 +616,10 @@ trivy:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # podDisruptionBudget:
+  #   minAvailable: 25%
+  # or
+  #   maxUnavailable: 25%
 
 notary:
   enabled: true
@@ -743,4 +771,3 @@ metrics:
   exporter:
     path: /metrics
     port: 8001
-

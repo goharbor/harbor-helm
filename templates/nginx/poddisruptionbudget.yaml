@@ -1,0 +1,20 @@
+{{- if .Values.nginx.podDisruptionBudget }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.nginx" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: nginx
+spec:
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: nginx
+{{- if .Values.nginx.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: "{{ .Values.nginx.podDisruptionBudget.maxUnavailable }}"
+{{- end }}
+{{- if .Values.nginx.podDisruptionBudget.minAvailable }}
+  minAvailable: "{{ .Values.nginx.podDisruptionBudget.minAvailable }}"
+{{- end }}
+{{- end }}
