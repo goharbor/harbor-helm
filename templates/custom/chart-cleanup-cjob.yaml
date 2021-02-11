@@ -1,4 +1,3 @@
----
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -7,7 +6,6 @@ metadata:
     labels:
       app: harbor
       service: chart-cleaner
-      tier: data
 spec:
   # Weekly - Run once a week at midnight on Sunday morning
   schedule: '0 0 * * 0'
@@ -16,7 +14,6 @@ spec:
       labels:
         app: harbor
         service: chart-cleaner
-        tier: data
     spec:
       template:
         metadata:
@@ -24,7 +21,6 @@ spec:
           labels:
             app: harbor
             service: chart-cleaner
-            tier: data
         spec:
           {{- if .Values.serviceAccount.enabled }}
           serviceAccountName: {{ include "harbor.serviceAccountName" . }}
