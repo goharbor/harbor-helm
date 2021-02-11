@@ -1,3 +1,4 @@
+{{- if .Values.custom.chartCleaner.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -32,7 +33,7 @@ spec:
           {{- end }}
           containers:
           - name: chart-cleaner
-            image: {{  required "A image is required to run the job that configures OIDC. The image must have curl and jq installed." .Values.custom.chartCleaner.jobImage }}
+            image: {{  required "A image is required to run the chart cleanup job." .Values.custom.chartCleaner.jobImage }}
             imagePullPolicy: IfNotPresent
             env:
             - name: coreHostUrl
@@ -51,3 +52,4 @@ spec:
               value: {{ default "0.1.0-release-|0.1.0-develop" .Values.acadiaPatterns }}
             - name: SERVICE_PATTERNS
               value: {{ default "-PR-|-fix-|-feature-" .Values.custom.chartCleaner.serviceChartPattern }}
+{{- end }}

@@ -901,6 +901,7 @@ custom:
 
   ## Helm chart clearner configurations
   chartCleaner: {}
+  # enabled: true
   # coreHostUrl: Harbor server url
   # adminUser: Admin User
   # adminPassword: Admin Password
