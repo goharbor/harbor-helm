@@ -49,7 +49,7 @@ spec:
             - name: NO_OF_DAYS
               value: {{ default "7" .Values.custom.chartCleaner.noOfDaysToRetainsCharts }}
             - name: ACADIA_PATTERNS
-              value: {{ default "0.1.0-release-|0.1.0-master-|0.1.0-develop-" .Values.acadiaPatterns }}
+              value: {{ default "0.1.0-release-|0.1.0-master-" .Values.acadiaPatterns }}
             - name: SERVICE_PATTERNS
               value: {{ default "-PR-|-fix-|-feature-|-AC-" .Values.custom.chartCleaner.serviceChartPattern }}
 {{- end }}
