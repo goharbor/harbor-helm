@@ -898,3 +898,21 @@ custom:
   # annotations: {}
   ## Optional. Job pod annotations
   # podAnnotations: {}
+
+  ## Helm chart clearner configurations
+  chartCleaner: {}
+  # enabled: true
+  # coreHostUrl: Harbor server url
+  # adminUser: Admin User
+  # adminPassword: Admin Password
+  # dryRun: Dry for chart cleanup
+  # projectNames: Project Names of the charts
+  # noOfDaysToRetainsCharts:
+  # serviceChartPattern: Pattern to search the charts to cleanup.
+  # jobImage: job image.
+  ## Optional. List of imagePullSecrets, incase using a custom image
+  # imagePullSecrets: []
+  ## Optional. Job annotations
+  # annotations: {}
+  ## Optional. Job pod annotations
+  # podAnnotations: {}

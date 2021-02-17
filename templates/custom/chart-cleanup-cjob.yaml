@@ -1,0 +1,55 @@
+{{- if .Values.custom.chartCleaner.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+    name: helm-chart-cleaner
+    namespace: {{ .Release.Namespace }}
+    labels:
+      app: harbor
+      service: chart-cleaner
+spec:
+  # Weekly - Run once a week at midnight on Sunday morning
+  schedule: '0 0 * * 0'
+  jobTemplate:
+    metadata:
+      labels:
+        app: harbor
+        service: chart-cleaner
+    spec:
+      template:
+        metadata:
+          name: helm-chart-cleaner
+          labels:
+            app: harbor
+            service: chart-cleaner
+        spec:
+          {{- if .Values.serviceAccount.enabled }}
+          serviceAccountName: {{ include "harbor.serviceAccountName" . }}
+          {{- end }}
+          restartPolicy: Never
+          {{- if .Values.custom.chartCleaner.jobImagePullSecrets }}
+          imagePullSecrets:
+          {{ toYaml .Values.custom.chartCleaner.jobImagePullSecrets | indent 6 }}
+          {{- end }}
+          containers:
+          - name: chart-cleaner
+            image: {{  required "A image is required to run the chart cleanup job." .Values.custom.chartCleaner.jobImage }}
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: coreHostUrl
+              value: {{ default "harbor.com" .Values.custom.chartCleaner.coreHostUrl }}
+            - name: HARBOR_ADMIN_USERNAME
+              value: {{ default "admin" .Values.custom.chartCleaner.adminUser }}
+            - name: HARBOR_ADMIN_PASSWORD
+              value: {{ default "Harbor12345" .Values.custom.chartCleaner.adminPassword }}
+            - name: DRY_RUN
+              value: {{ default "True" .Values.custom.chartCleaner.dryRun }}
+            - name: PROJECT_NAMES
+              value: {{ default "vibrent,vibrent-ops,vibrent-base" .Values.custom.chartCleaner.projectNames }}
+            - name: NO_OF_DAYS
+              value: {{ default "7" .Values.custom.chartCleaner.noOfDaysToRetainsCharts }}
+            - name: ACADIA_PATTERNS
+              value: {{ default "0.1.0-release-|0.1.0-master-" .Values.acadiaPatterns }}
+            - name: SERVICE_PATTERNS
+              value: {{ default "-PR-|-fix-|-feature-|-AC-" .Values.custom.chartCleaner.serviceChartPattern }}
+{{- end }}
