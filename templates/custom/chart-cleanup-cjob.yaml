@@ -37,7 +37,7 @@ spec:
             imagePullPolicy: IfNotPresent
             env:
             - name: coreHostUrl
-              value: {{ default "harbor.ssk8s.vibrenthealth.com" .Values.expose.ingress.hosts.core  | quote }}
+              value: {{ default "harbor.com" .Values.expose.ingress.hosts.core  | quote }}
             - name: HARBOR_ADMIN_USERNAME
               value: {{ default "admin" .Values.custom.chartCleaner.adminUser  | quote }}
             - name: HARBOR_ADMIN_PASSWORD
