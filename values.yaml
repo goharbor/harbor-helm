@@ -911,7 +911,7 @@ custom:
   # serviceChartPattern: Pattern to search the charts to cleanup.
   # jobImage: job image.
   ## Optional. List of imagePullSecrets, incase using a custom image
-  # imagePullSecrets: []
+  # jobImagePullSecrets: []
   ## Optional. Job annotations
   # annotations: {}
   ## Optional. Job pod annotations

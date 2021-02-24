@@ -37,19 +37,19 @@ spec:
             imagePullPolicy: IfNotPresent
             env:
             - name: coreHostUrl
-              value: {{ default "harbor.com" .Values.custom.chartCleaner.coreHostUrl }}
+              value: {{ default "harbor.com" .Values.expose.ingress.hosts.core  | quote }}
             - name: HARBOR_ADMIN_USERNAME
-              value: {{ default "admin" .Values.custom.chartCleaner.adminUser }}
+              value: {{ default "admin" .Values.custom.chartCleaner.adminUser  | quote }}
             - name: HARBOR_ADMIN_PASSWORD
-              value: {{ default "Harbor12345" .Values.custom.chartCleaner.adminPassword }}
+              value: {{ default "Harbor12345" .Values.harborAdminPassword  | quote }}
             - name: DRY_RUN
-              value: {{ default "True" .Values.custom.chartCleaner.dryRun }}
+              value: {{ default "True" .Values.custom.chartCleaner.dryRun  | quote }}
             - name: PROJECT_NAMES
-              value: {{ default "vibrent,vibrent-ops,vibrent-base" .Values.custom.chartCleaner.projectNames }}
+              value: {{ default "vibrent,vibrent-ops,vibrent-base" .Values.custom.chartCleaner.projectNames  | quote }}
             - name: NO_OF_DAYS
-              value: {{ default "7" .Values.custom.chartCleaner.noOfDaysToRetainsCharts }}
+              value: {{ default "7" .Values.custom.chartCleaner.noOfDaysToRetainsCharts  | quote }}
             - name: ACADIA_PATTERNS
-              value: {{ default "0.1.0-release-|0.1.0-master-" .Values.acadiaPatterns }}
+              value: {{ default "0.1.0-release-|0.1.0-master-" .Values.custom.chartCleaner.acadiaPatterns  | quote }}
             - name: SERVICE_PATTERNS
-              value: {{ default "-PR-|-fix-|-feature-|-AC-" .Values.custom.chartCleaner.serviceChartPattern }}
+              value: {{ default "-PR-|-fix-|-feature-|-AC-" .Values.custom.chartCleaner.serviceChartPattern  | quote }}
 {{- end }}
