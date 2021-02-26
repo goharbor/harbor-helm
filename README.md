@@ -104,6 +104,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.clusterIP.ports.httpPort` | The service port Harbor listens on when serving with HTTP | `80` |
 | `expose.clusterIP.ports.httpsPort` | The service port Harbor listens on when serving with HTTPS | `443` |
 | `expose.clusterIP.ports.notaryPort` | The service port Notary listens on. Only needed when `notary.enabled` is set to `true` | `4443` |
+| `expose.clusterIP.annotations` | The annotations used in clusterIP |  |
 | `expose.nodePort.name` | The name of NodePort service | `harbor` |
 | `expose.nodePort.ports.http.port` | The service port Harbor listens on when serving with HTTP | `80` |
 | `expose.nodePort.ports.http.nodePort` | The node port Harbor listens on when serving with HTTP | `30002` |
