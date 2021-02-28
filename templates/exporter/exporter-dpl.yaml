@@ -60,6 +60,10 @@ spec:
 {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
+        {{- if .Values.metrics.enabled}}
+        - name: metrics
+          containerPort: {{ .Values.metrics.exporter.port }}
+        {{- end }}
         volumeMounts:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}

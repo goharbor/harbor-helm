@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: {{ template "harbor.core" . }}
   labels:
+    component: core
 {{ include "harbor.labels" . | indent 4 }}
 spec:
 {{- if  (eq .Values.expose.ingress.controller "gce") }}

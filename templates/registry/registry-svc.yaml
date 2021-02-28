@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
+    component: registry
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   ports:

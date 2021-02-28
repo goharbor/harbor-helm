@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: "{{ template "harbor.exporter" . }}"
   labels:
+    component: exporter
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   ports:
