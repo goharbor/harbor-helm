@@ -133,7 +133,7 @@ data:
         region: {{ $storage.oss.region }}
         bucket: {{ $storage.oss.bucket }}
         {{- if $storage.oss.endpoint }}
-        endpoint: {{ $storage.oss.endpoint }}
+        endpoint: {{ $storage.oss.bucket }}.{{ $storage.oss.endpoint }}
         {{- end }}
         {{- if $storage.oss.internal }}
         internal: {{ $storage.oss.internal }}
