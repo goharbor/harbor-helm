@@ -503,6 +503,14 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.internalTLS.exporter.secretName" -}}
+  {{- if eq .Values.internalTLS.certSource "secret" -}}
+    {{- .Values.internalTLS.exporter.secretName -}}
+  {{- else -}}
+    {{- printf "%s-trivy-internal-tls" (include "harbor.fullname" .) -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.tlsCoreSecretForIngress" -}}
   {{- if eq .Values.expose.tls.certSource "none" -}}
     {{- printf "" -}}

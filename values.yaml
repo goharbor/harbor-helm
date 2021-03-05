@@ -171,6 +171,13 @@ internalTLS:
     crt: ""
     # Content of trivy's TLS key file, only available when `certSource` is "manual"
     key: ""
+  exporter:
+    # secret name for exporter's tls certs
+    secretName: ""
+    # Content of exporter's TLS key file, only available when `certSource` is "manual"
+    crt: ""
+    # Content of exporter's TLS key file, only available when `certSource` is "manual"
+    key: ""
 
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly.
@@ -743,4 +750,3 @@ metrics:
   exporter:
     path: /metrics
     port: 8001
-
