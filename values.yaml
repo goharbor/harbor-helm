@@ -381,6 +381,8 @@ nginx:
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
   replicas: 1
   # resources:
   #  requests:
@@ -400,6 +402,8 @@ portal:
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
   replicas: 1
   # resources:
   #  requests:
@@ -419,6 +423,8 @@ core:
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
   replicas: 1
   ## Startup probe values
   startupProbe:
@@ -456,6 +462,8 @@ jobservice:
   replicas: 1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLoggers:
@@ -482,6 +490,8 @@ jobservice:
 registry:
   # set the service account to be used, default if left empty
   serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
   registry:
     image:
       repository: goharbor/registry-photon
@@ -538,6 +548,8 @@ chartmuseum:
   enabled: true
   # set the service account to be used, default if left empty
   serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
   # Harbor defaults ChartMuseum to returning relative urls, if you want using absolute url you should enable it by change the following value to 'true'
   absoluteUrl: false
   image:
@@ -566,6 +578,8 @@ trivy:
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
   # replicas the number of Pod replicas
   replicas: 1
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
@@ -620,6 +634,8 @@ notary:
   server:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
+    # mount the service account token
+    automountServiceAccountToken: false
     image:
       repository: goharbor/notary-server-photon
       tag: dev
@@ -638,6 +654,8 @@ notary:
   signer:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
+    # mount the service account token
+    automountServiceAccountToken: false
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
@@ -668,6 +686,8 @@ database:
   internal:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
+    # mount the service account token
+    automountServiceAccountToken: false
     image:
       repository: goharbor/harbor-db
       tag: dev
@@ -726,6 +746,8 @@ redis:
   internal:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
+    # mount the service account token
+    automountServiceAccountToken: false
     image:
       repository: goharbor/redis-photon
       tag: dev
@@ -764,6 +786,8 @@ exporter:
   #    cpu: 100m
     podAnnotations: {}
     serviceAccountName: ""
+    # mount the service account token
+    automountServiceAccountToken: false
     image:
       repository: goharbor/harbor-exporter
       tag: dev

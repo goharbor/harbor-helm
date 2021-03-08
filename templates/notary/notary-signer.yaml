@@ -33,7 +33,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.notary.signer.automountServiceAccountToken | default false }}
       containers:
       - name: notary-signer
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
