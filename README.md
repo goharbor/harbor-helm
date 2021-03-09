@@ -273,6 +273,9 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `trivy.vulnType`         | Comma-separated list of vulnerability types. Possible values `os` and `library`.                           | `os,library` |
 | `trivy.severity`         | Comma-separated list of severities to be checked                                                           | `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL` |
 | `trivy.ignoreUnfixed`    | The flag to display only fixed vulnerabilities                                                             | `false` |
+| `trivy.opa.enabled`      | The flag to enabled OPA policies. This is an EXPERIMENTAL feature of Trivy                                 | `false` |
+| `trivy.opa.policy`       | The OPA rego file which will be added to a ConfigMap and mapped into Trivy                                 | `     ` |
+| `trivy.ignoreUnfixed`    | The flag to display only fixed vulnerabilities                                                             | `false` |
 | `trivy.insecure`         | The flag to skip verifying registry certificate                                                            | `false` |
 | `trivy.skipUpdate`       | The flag to disable [Trivy DB][trivy-db] downloads from GitHub                                             | `false` |
 | `trivy.gitHubToken`      | The GitHub access token to download [Trivy DB][trivy-db] (see [GitHub rate limiting][trivy-rate-limiting]) | |
