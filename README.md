@@ -349,6 +349,11 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `metrics.registry.port` | the port for registry metrics | `8001` |
 | `metrics.exporter.path` | the url path for exporter metrics | `/metrics` |
 | `metrics.exporter.port` | the port for exporter metrics | `8001` |
+| `metrics.serviceMonitor.enabled`           | create prometheus serviceMonitor. Requires prometheus CRD's | `false` |
+| `metrics.serviceMonitor.additionalLabels`  | additional labels to upsert to the manifest                 | `""`    |
+| `metrics.serviceMonitor.interval`          | scrape period for harbor metrics                            | `""`    |
+| `metrics.serviceMonitor.metricRelabelings` | metrics relabel to add/mod/del before ingestion             | `[]`    |
+| `metrics.serviceMonitor.relabelings`       | relabels to add/mod/del to sample before scrape             | `[]`    |
 
 [resources]: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
 [trivy]: https://github.com/aquasecurity/trivy
