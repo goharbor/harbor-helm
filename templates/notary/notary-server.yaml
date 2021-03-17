@@ -25,6 +25,7 @@ spec:
 {{- end }}
     spec:
       securityContext:
+        runAsUser: 10000
         fsGroup: 10000
 {{- if .Values.notary.server.serviceAccountName }}
       serviceAccountName: {{ .Values.notary.server.serviceAccountName }}
