@@ -163,6 +163,14 @@ spec:
             secretKeyRef:
               name: {{ template "harbor.jobservice" . }}
               key: JOBSERVICE_SECRET
+        {{- if has "registry" .Values.proxy.components }}
+        - name: HTTP_PROXY
+          value: "{{ .Values.proxy.httpProxy }}"
+        - name: HTTPS_PROXY
+          value: "{{ .Values.proxy.httpsProxy }}"
+        - name: NO_PROXY
+          value: "{{ template "harbor.noProxy" . }}"
+        {{- end }}
         {{- if .Values.internalTLS.enabled }}
         - name: INTERNAL_TLS_ENABLED
           value: "true"
