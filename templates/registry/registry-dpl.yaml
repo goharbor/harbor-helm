@@ -7,11 +7,13 @@ metadata:
     component: registry
 spec:
   replicas: {{ .Values.registry.replicas }}
+  {{- if (eq .Values.persistence.imageChartStorage.type "filesystem") }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
     {{- if eq .Values.updateStrategy.type "Recreate" }}
     rollingUpdate: null
     {{- end }}
+  {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
