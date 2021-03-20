@@ -326,6 +326,8 @@ imagePullSecrets:
 
 # The update strategy for deployments with persistent volumes(jobservice, registry
 # and chartmuseum): "RollingUpdate" or "Recreate"
+# This is disabled for registry and chartmuseum when
+# persistence.imageChartStorage.type	is not set to "filesystem"
 # Set it as "Recreate" when "RWM" for volumes isn't supported
 updateStrategy:
   type: RollingUpdate
