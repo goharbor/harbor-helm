@@ -31,7 +31,7 @@ Configure the new chart to make sure that the configuration items have the same 
     kubectl get secret
     ```
 
-    Find the secret whose name ends with `-harbor-ingress` (expose service via `Ingress`) or `-harbor-nginx`(expose service via `ClusterIP` or `NodePort`)
+    Find the secret whose name ends with `-ingress` (expose service via `Ingress`) or `-harbor-nginx`(expose service via `ClusterIP` or `NodePort`)
 
 2) Export the secret as yaml file:
 

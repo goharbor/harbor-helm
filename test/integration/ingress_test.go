@@ -13,8 +13,8 @@ type IngressTestSuite struct {
 }
 
 func (i *IngressTestSuite) TestIngress() {
-	k8s.GetIngress(i.T(), i.Options.KubectlOptions, fmt.Sprintf("%s-harbor-ingress", i.ReleaseName))
-	k8s.GetIngress(i.T(), i.Options.KubectlOptions, fmt.Sprintf("%s-harbor-ingress-notary", i.ReleaseName))
+	k8s.GetIngress(i.T(), i.Options.KubectlOptions, fmt.Sprintf("%s-ingress", i.ReleaseName))
+	k8s.GetIngress(i.T(), i.Options.KubectlOptions, fmt.Sprintf("%s-ingress-notary", i.ReleaseName))
 }
 
 func TestIngressTestSuite(t *testing.T) {
