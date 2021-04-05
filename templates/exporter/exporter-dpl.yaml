@@ -68,11 +68,6 @@ spec:
       - name: config
         secret:
           secretName: "{{ template "harbor.exporter" . }}"
-      {{- if .Values.internalTLS.enabled }}
-      - name: exporter-internal-certs
-        secret:
-          secretName: {{ template "harbor.internalTLS.exporter.secretName" . }}
-      {{- end }}
       {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolume" . | indent 6 }}
       {{- end }}
