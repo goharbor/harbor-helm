@@ -52,6 +52,8 @@ expose:
   clusterIP:
     # The name of ClusterIP service
     name: harbor
+    # Annotations on the ClusterIP service
+    annotations: {}
     ports:
       # The service port Harbor listens on when serving with HTTP
       httpPort: 80
