@@ -654,6 +654,17 @@ database:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    initContainer:
+      migrator: {}
+      # resources:
+      #  requests:
+      #    memory: 128Mi
+      #    cpu: 100m
+      permissions: {}
+      # resources:
+      #  requests:
+      #    memory: 128Mi
+      #    cpu: 100m
   external:
     host: "192.168.0.1"
     port: "5432"
@@ -743,4 +754,3 @@ metrics:
   exporter:
     path: /metrics
     port: 8001
-
