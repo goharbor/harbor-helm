@@ -168,6 +168,7 @@ spec:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
         env:
+<<<<<<< HEAD
         {{- if and (eq $storageType "s3") (hasKey $storage.s3 "existingSecretName") }}
         - name: REGISTRY_STORAGE_S3_ACCESSKEY
           valueFrom:
@@ -180,6 +181,8 @@ spec:
               name: {{ $storage.s3.existingSecretName }}
               key: {{ $storage.s3.secretkey }}
         {{- end }}
+=======
+>>>>>>> v1.5.2
         - name: CORE_SECRET
           valueFrom:
             secretKeyRef:
