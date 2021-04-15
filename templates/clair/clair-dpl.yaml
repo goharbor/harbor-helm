@@ -78,10 +78,7 @@ spec:
         - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
-<<<<<<< HEAD
         {{- end }}
-=======
->>>>>>> v1.5.2
         {{- if .Values.internalTLS.enabled }}
         - name: clair-internal-certs
           mountPath: /etc/harbor/ssl/clair

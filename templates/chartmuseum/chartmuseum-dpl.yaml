@@ -74,7 +74,6 @@ spec:
         - secretRef:
             name: "{{ template "harbor.chartmuseum" . }}"
         env:
-<<<<<<< HEAD
           {{- if and (eq $storageType "s3") (hasKey $storage.s3 "existingSecretName")}}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
@@ -87,8 +86,6 @@ spec:
                 name: {{ $storage.s3.existingSecretName }}
                 key: {{ $storage.s3.secretkey }}
           {{- end }}
-=======
->>>>>>> v1.5.2
           {{- if has "chartmuseum" .Values.proxy.components }}
           - name: HTTP_PROXY
             value: "{{ .Values.proxy.httpProxy }}"
