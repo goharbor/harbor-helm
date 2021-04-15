@@ -101,6 +101,7 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.ingress.controller` | The ingress controller type. Currently supports `default`, `gce` and `ncp` | `default` |
 | `expose.ingress.annotations` | The annotations used in ingress |  |
 | `expose.clusterIP.name` | The name of ClusterIP service | `harbor` |
+| `expose.clusterIP.annotations` | The annotations attached to the ClusterIP service | {} |
 | `expose.clusterIP.ports.httpPort` | The service port Harbor listens on when serving with HTTP | `80` |
 | `expose.clusterIP.ports.httpsPort` | The service port Harbor listens on when serving with HTTPS | `443` |
 | `expose.clusterIP.ports.notaryPort` | The service port Notary listens on. Only needed when `notary.enabled` is set to `true` | `4443` |
