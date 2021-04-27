@@ -99,7 +99,9 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `expose.ingress.hosts.core` | The host of Harbor core service in ingress rule | `core.harbor.domain` |
 | `expose.ingress.hosts.notary` | The host of Harbor Notary service in ingress rule | `notary.harbor.domain` |
 | `expose.ingress.controller` | The ingress controller type. Currently supports `default`, `gce` and `ncp` | `default` |
-| `expose.ingress.annotations` | The annotations used in ingress |  |
+| `expose.ingress.annotations` | The annotations used commonly for ingresses |  |
+| `expose.ingress.harbor.annotations` | The annotations specific to harbor ingress | {} |
+| `expose.ingress.notary.annotations` | The annotations specific to notary ingress | {} |
 | `expose.clusterIP.name` | The name of ClusterIP service | `harbor` |
 | `expose.clusterIP.annotations` | The annotations attached to the ClusterIP service | {} |
 | `expose.clusterIP.ports.httpPort` | The service port Harbor listens on when serving with HTTP | `80` |
