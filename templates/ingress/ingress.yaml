@@ -64,12 +64,6 @@ spec:
   - http:
       paths:
 {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.GitVersion }}
-      {{- if ne .Values.expose.ingress.controller "alb" }}
-      - path: {{ .portal_path }}
-        backend:
-          serviceName: {{ template "harbor.portal" . }}
-          servicePort: {{ template "harbor.portal.servicePort" . }}
-      {{- end }}
       - path: {{ .api_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
@@ -90,22 +84,11 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: {{ template "harbor.core.servicePort" . }}
-      {{- if eq .Values.expose.ingress.controller "alb" }}
       - path: {{ .portal_path }}
         backend:
           serviceName: {{ template "harbor.portal" . }}
           servicePort: {{ template "harbor.portal.servicePort" . }}
-      {{- end }}
 {{- else }}
-      {{- if ne .Values.expose.ingress.controller "alb" }}
-      - path: {{ .portal_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.portal" . }}
-            port:
-              number: {{ template "harbor.portal.servicePort" . }}
-      {{- end}}
       - path: {{ .api_path }}
         pathType: Prefix
         backend:
@@ -141,7 +124,6 @@ spec:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
-      {{- if eq .Values.expose.ingress.controller "alb" }}
       - path: {{ .portal_path }}
         pathType: Prefix
         backend:
@@ -149,7 +131,6 @@ spec:
             name: {{ template "harbor.portal" . }}
             port:
               number: {{ template "harbor.portal.servicePort" . }}
-      {{- end}}
 {{- end }}
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
