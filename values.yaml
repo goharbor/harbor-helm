@@ -683,10 +683,10 @@ database:
     # server was signed by a trusted CA and the server host name matches the one
     # in the certificate)
     sslmode: "disable"
-  # The maximum number of connections in the idle connection pool.
+  # The maximum number of connections in the idle connection pool per pod (core+exporter).
   # If it <=0, no idle connections are retained.
   maxIdleConns: 50
-  # The maximum number of open connections to the database.
+  # The maximum number of open connections to the database per pod (core+exporter).
   # If it <= 0, then there is no limit on the number of open connections.
   # Note: the default number of connections is 1024 for postgre of harbor.
   maxOpenConns: 1000
