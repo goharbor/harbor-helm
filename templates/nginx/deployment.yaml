@@ -6,6 +6,10 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: nginx
+{{- if .Values.nginx.deploymentAnnotations }}
+  annotations:
+    {{ toYaml .Values.nginx.deploymentAnnotations | nindent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.nginx.replicas }}
   selector:
