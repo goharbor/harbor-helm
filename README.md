@@ -44,7 +44,7 @@ Format: `protocol://domain[:port]`. Usually:
 
 - if expose the service via `Ingress`, the `domain` should be the value of `expose.ingress.hosts.core`
 - if expose the service via `ClusterIP`, the `domain` should be the value of `expose.clusterIP.name`
-- if expose the service via `NodePort`, the `domain` should be the IP address of one Kubernetes node
+- if expose the service via `NodePort`, the `domain` should be the IP address or DNS of one Kubernetes node and the nodePort number (default 30003)
 - if expose the service via `LoadBalancer`, set the `domain` as your own domain name and add a CNAME record to map the domain name to the one you got from the cloud provider
 
 If Harbor is deployed behind the proxy, set it as the URL of proxy.
