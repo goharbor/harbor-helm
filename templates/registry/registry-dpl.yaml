@@ -270,3 +270,6 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.registry.priorityClassName }}
+      priorityClassName: {{ .Values.registry.priorityClassName }}
+    {{- end }}

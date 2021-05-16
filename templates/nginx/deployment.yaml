@@ -101,4 +101,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.nginx.priorityClassName }}
+      priorityClassName: {{ .Values.nginx.priorityClassName }}
+    {{- end }}
 {{- end }}

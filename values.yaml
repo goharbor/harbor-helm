@@ -385,6 +385,8 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## The priority class to run the pod as
+  priorityClassName:
 
 portal:
   image:
@@ -402,6 +404,8 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## The priority class to run the pod as
+  priorityClassName:
 
 core:
   image:
@@ -436,6 +440,8 @@ core:
   secretName: ""
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
+  ## The priority class to run the pod as
+  priorityClassName:
 
 jobservice:
   image:
@@ -464,6 +470,8 @@ jobservice:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  ## The priority class to run the pod as
+  priorityClassName:
 
 registry:
   # set the service account to be used, default if left empty
@@ -491,6 +499,8 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## The priority class to run the pod as
+  priorityClassName:
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -537,6 +547,8 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## The priority class to run the pod as
+  priorityClassName:
 
 trivy:
   # enabled the flag to enable Trivy scanner
@@ -594,6 +606,8 @@ trivy:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## The priority class to run the pod as
+  priorityClassName:
 
 notary:
   enabled: true
@@ -613,6 +627,8 @@ notary:
     affinity: {}
     ## Additional deployment annotations
     podAnnotations: {}
+    ## The priority class to run the pod as
+    priorityClassName:
   signer:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -629,6 +645,8 @@ notary:
     affinity: {}
     ## Additional deployment annotations
     podAnnotations: {}
+    ## The priority class to run the pod as
+    priorityClassName:
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.
@@ -656,6 +674,8 @@ database:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    ## The priority class to run the pod as
+    priorityClassName:
     initContainer:
       migrator: {}
       # resources:
@@ -710,6 +730,8 @@ redis:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    ## The priority class to run the pod as
+    priorityClassName:
   external:
     # support redis, redis+sentinel
     # addr for redis: <host_redis>:<port_redis>
@@ -744,6 +766,8 @@ exporter:
     affinity: {}
     cacheDuration: 30
     cacheCleanInterval: 14400
+    ## The priority class to run the pod as
+    priorityClassName:
 
 metrics:
   enabled: false
