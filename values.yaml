@@ -911,6 +911,7 @@ custom:
   # noOfDaysToRetainsCharts:
   # serviceChartPattern: Pattern to search the charts to cleanup.
   # jobImage: job image.
+  # schedule: chron job schedule i.e '0 0 * * 0'  # Weekly - Run once a week at midnight on Sunday morning
   ## Optional. List of imagePullSecrets, incase using a custom image
   # jobImagePullSecrets: []
   ## Optional. Job annotations

@@ -8,8 +8,7 @@ metadata:
       app: harbor
       service: chart-cleaner
 spec:
-  # Weekly - Run once a week at midnight on Sunday morning
-  schedule: '0 0 * * 0'
+  schedule:  "{{ .Values.custom.chartCleaner.schedule }}"
   jobTemplate:
     metadata:
       labels:
@@ -24,7 +23,7 @@ spec:
             service: chart-cleaner
           {{- if .Values.custom.chartCleaner.podAnnotations }}
           annotations:
-          {{ toYaml .Values.custom.chartCleaner.podAnnotations | indent 8 }}
+{{ toYaml .Values.custom.chartCleaner.podAnnotations | indent 12 }}
           {{- end }}
         spec:
           {{- if .Values.serviceAccount.enabled }}
@@ -33,7 +32,7 @@ spec:
           restartPolicy: Never
           {{- if .Values.custom.chartCleaner.jobImagePullSecrets }}
           imagePullSecrets:
-          {{ toYaml .Values.custom.chartCleaner.jobImagePullSecrets | indent 6 }}
+{{ toYaml .Values.custom.chartCleaner.jobImagePullSecrets | indent 12 }}
           {{- end }}
           containers:
           - name: chart-cleaner
