@@ -742,7 +742,7 @@ exporter:
     nodeSelector: {}
     tolerations: []
     affinity: {}
-    cacheDuration: 30
+    cacheDuration: 23
     cacheCleanInterval: 14400
 
 metrics:
