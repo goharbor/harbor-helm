@@ -51,7 +51,9 @@ metadata:
     ncp/http-redirect: "true"
     {{- end }}
 {{- end }}
+{{- if $ingress.harbor.annotations }}
 {{ toYaml $ingress.harbor.annotations | indent 4 }}
+{{- end }}
 spec:
   {{- if $tls.enabled }}
   tls:
@@ -159,7 +161,9 @@ metadata:
     ncp/http-redirect: "true"
     {{- end }}
 {{- end }}
+{{- if $ingress.notary.annotations }}
 {{ toYaml $ingress.notary.annotations | indent 4 }}
+{{- end }}
 spec:
   {{- if $tls.enabled }}
   tls:
