@@ -1,0 +1,21 @@
+{{- if .Values.notary.enabled }}
+{{- if .Values.notary.server.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.notary-server" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: notary-server
+spec:
+  {{- if .Values.notary.server.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.notary.server.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.notary.server.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.notary.server.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: notary-server
+{{- end }}
+{{- end }}

@@ -1,0 +1,19 @@
+{{- if .Values.jobservice.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.jobservice" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: jobservice 
+spec:
+  {{- if .Values.jobservice.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.jobservice.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.jobservice.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.jobservice.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: jobservice
+{{- end }}
