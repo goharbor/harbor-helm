@@ -213,7 +213,7 @@ spec:
       volumes:
       - name: registry-htpasswd
         secret:
-          secretName: {{ template "harbor.registry" . }}
+          secretName: {{ template "harbor.registry" . }}-htpasswd
           items:
             - key: REGISTRY_HTPASSWD
               path: passwd
