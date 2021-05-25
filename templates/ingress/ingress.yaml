@@ -90,42 +90,42 @@ spec:
           servicePort: {{ template "harbor.portal.servicePort" . }}
 {{- else }}
       - path: {{ .api_path }}
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .service_path }}
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .v2_path }}
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .chartrepo_path }}
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .controller_path }}
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .portal_path }}
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ template "harbor.portal" . }}
@@ -176,7 +176,7 @@ spec:
           serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443
 {{- else }}
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: {{ template "harbor.notary-server" . }}
