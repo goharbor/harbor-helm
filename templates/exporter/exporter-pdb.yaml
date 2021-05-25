@@ -1,0 +1,19 @@
+{{- if .Values.exporter.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.exporter" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: exporter 
+spec:
+  {{- if .Values.exporter.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.exporter.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.exporter.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.exporter.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: exporter
+{{- end }}

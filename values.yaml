@@ -385,6 +385,11 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
 
 portal:
   image:
@@ -402,6 +407,11 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
 
 core:
   image:
@@ -423,6 +433,11 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -460,6 +475,11 @@ jobservice:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -491,6 +511,11 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -537,6 +562,11 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
 
 trivy:
   # enabled the flag to enable Trivy scanner
@@ -594,6 +624,11 @@ trivy:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
 
 notary:
   enabled: true
@@ -613,6 +648,11 @@ notary:
     affinity: {}
     ## Additional deployment annotations
     podAnnotations: {}
+    ## Enable a PDB
+    ## specify only a maxUnavailable or minAvailable
+    # podDisruptionBudget:
+    #  maxUnavailable: 1
+    #  minAvailable: 1
   signer:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -629,6 +669,11 @@ notary:
     affinity: {}
     ## Additional deployment annotations
     podAnnotations: {}
+    ## Enable a PDB
+    ## specify only a maxUnavailable or minAvailable
+    # podDisruptionBudget:
+    #  maxUnavailable: 1
+    #  minAvailable: 1
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.
@@ -692,6 +737,11 @@ database:
   maxOpenConns: 1000
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -727,6 +777,11 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Enable a PDB
+  ## specify only a maxUnavailable or minAvailable
+  # podDisruptionBudget:
+  #  maxUnavailable: 1
+  #  minAvailable: 1
 
 exporter:
     replicas: 1
@@ -735,6 +790,11 @@ exporter:
   #    memory: 256Mi
   #    cpu: 100m
     podAnnotations: {}
+    ## Enable a PDB
+    ## specify only a maxUnavailable or minAvailable
+    # podDisruptionBudget:
+    #  maxUnavailable: 1
+    #  minAvailable: 1
     serviceAccountName: ""
     image:
       repository: goharbor/harbor-exporter

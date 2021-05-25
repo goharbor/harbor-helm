@@ -1,0 +1,21 @@
+{{- if eq .Values.database.type "internal" -}}
+{{- if .Values.database.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.database" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: database 
+spec:
+  {{- if .Values.database.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.database.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.database.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.database.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: database 
+{{- end }}
+{{- end }}

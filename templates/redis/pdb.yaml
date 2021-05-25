@@ -1,0 +1,21 @@
+{{- if eq .Values.redis.type "internal" -}}
+{{- if .Values.redis.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.redis" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: redis 
+spec:
+  {{- if .Values.redis.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.redis.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.redis.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.redis.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: redis
+{{- end }}
+{{- end }}
