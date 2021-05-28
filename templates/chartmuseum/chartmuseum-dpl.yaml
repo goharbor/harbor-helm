@@ -164,4 +164,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- if .Values.chartmuseum.priorityClassName }}
+      priorityClassName: {{ .Values.chartmuseum.priorityClassName }}
+      {{- end }}
 {{- end }}

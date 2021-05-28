@@ -94,4 +94,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.exporter.priorityClassName }}
+      priorityClassName: {{ .Values.exporter.priorityClassName }}
+    {{- end }}
 {{ end }}

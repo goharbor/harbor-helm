@@ -102,4 +102,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.notary.server.priorityClassName }}
+      priorityClassName: {{ .Values.notary.server.priorityClassName }}
+    {{- end }}
 {{ end }}
