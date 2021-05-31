@@ -35,7 +35,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.database.internal.automountServiceAccountToken | default false }}
       initContainers:
       # as we change the data directory to a sub folder to support psp, the init container here
       # is used to migrate the existing data. See https://github.com/goharbor/harbor-helm/issues/756

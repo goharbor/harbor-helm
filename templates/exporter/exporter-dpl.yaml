@@ -32,6 +32,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      automountServiceAccountToken: {{ .Values.exporter.automountServiceAccountToken | default false }}
       containers:
       - name: exporter
         image: {{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}
