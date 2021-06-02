@@ -35,6 +35,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.redis.internal.automountServiceAccountToken | default false }}
+      terminationGracePeriodSeconds: 120
       containers:
       - name: redis
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
