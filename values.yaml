@@ -807,6 +807,9 @@ metrics:
   registry:
     path: /metrics
     port: 8001
+  jobservice:
+    path: /metrics
+    port: 8001
   exporter:
     path: /metrics
     port: 8001
