@@ -530,3 +530,11 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
     {{- include "harbor.nginx" . -}}
   {{- end -}}
 {{- end -}}
+
+{{- define "harbor.metricsPortName" -}}
+  {{- if .Values.internalTLS.enabled }}
+    {{- printf "https-metrics" -}}
+  {{- else -}}
+    {{- printf "http-metrics" -}}
+  {{- end -}}
+{{- end -}}

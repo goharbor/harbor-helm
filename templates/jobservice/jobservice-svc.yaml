@@ -10,7 +10,7 @@ spec:
       port: {{ template "harbor.jobservice.servicePort" . }}
       targetPort: {{ template "harbor.jobservice.containerPort" . }}
 {{- if .Values.metrics.enabled }}
-    - name: {{ ternary "https-metrics" "http-metrics" .Values.internalTLS.enabled }}
+    - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.jobservice.port }}
 {{- end }}
   selector:
