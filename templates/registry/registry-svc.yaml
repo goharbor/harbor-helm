@@ -12,7 +12,7 @@ spec:
     - name: {{ ternary "https-controller" "http-controller" .Values.internalTLS.enabled }}
       port: {{ template "harbor.registryctl.servicePort" . }}
 {{- if .Values.metrics.enabled}}
-    - name: {{ ternary "https-metrics" "http-metrics" .Values.internalTLS.enabled }}
+    - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.registry.port }}
 {{- end }}
   selector:
