@@ -178,6 +178,9 @@ data:
         idletimeout: 60s
     http:
       addr: :{{ template "harbor.registry.containerPort" . }}
+      {{- if .Values.registry.host }}
+      host: {{.Values.registry.host | quote }}
+      {{- end }}
       relativeurls: {{ .Values.registry.relativeurls }}
       {{- if .Values.internalTLS.enabled }}
       tls:
@@ -205,7 +208,7 @@ data:
     compatibility:
       schema1:
         enabled: true
-    
+
     {{- if .Values.registry.middleware.enabled }}
     {{- $middleware := .Values.registry.middleware }}
     {{- $middlewareType := $middleware.type }}
