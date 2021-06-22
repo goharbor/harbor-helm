@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ns-02-cl01-pvc-redis
+  annotations:
+    volume.beta.kubernetes.io/storage-class: pw-sc-db-persistent-sec
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+

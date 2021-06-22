@@ -8,9 +8,6 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: redis
 spec:
-{{- if .Values.redis.schedulerName }}
-  schedulerName: {{ .Values.redis.schedulerName}}
-{{- end -}}
   replicas: 1
   serviceName: {{ template "harbor.redis" . }}
   selector:
@@ -27,6 +24,9 @@ spec:
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.core.schedulerName }}
+      schedulerName: {{ .Values.core.schedulerName}}
+{{- end }}
       securityContext:
         runAsUser: 999
         fsGroup: 999

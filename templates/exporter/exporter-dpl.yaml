@@ -7,9 +7,6 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: exporter
 spec:
-{{- if .Values.exporter.schedulerName }}
-  schedulerName: {{ .Values.exporter.schedulerName}}
-{{- end -}}
   replicas: {{ .Values.exporter.replicas }}
   selector:
     matchLabels:
@@ -25,6 +22,9 @@ spec:
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.core.schedulerName }}
+      schedulerName: {{ .Values.core.schedulerName}}
+{{- end }}
       securityContext:
         runAsUser: 10000
         fsGroup: 10000

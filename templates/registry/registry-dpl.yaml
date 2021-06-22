@@ -6,9 +6,6 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
 spec:
-{{- if .Values.registry.schedulerName }}
-  schedulerName: {{ .Values.registry.schedulerName}}
-{{- end -}}
   replicas: {{ .Values.registry.replicas }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
@@ -38,6 +35,9 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.core.schedulerName }}
+      schedulerName: {{ .Values.core.schedulerName}}
+{{- end }}
       securityContext:
         runAsUser: 10000
         fsGroup: 10000

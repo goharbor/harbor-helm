@@ -6,9 +6,6 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
 spec:
-{{- if .Values.jobservice.schedulerName }}
-  schedulerName: {{ .Values.jobservice.schedulerName}}
-{{- end -}}
   replicas: {{ .Values.jobservice.replicas }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
@@ -38,6 +35,9 @@ spec:
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.core.schedulerName }}
+      schedulerName: {{ .Values.core.schedulerName}}
+{{- end }}
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
