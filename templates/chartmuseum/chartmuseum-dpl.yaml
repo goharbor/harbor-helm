@@ -7,6 +7,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: chartmuseum
 spec:
+{{- if .Values.chartmuseum.schedulerName }}
+  schedulerName: {{ .Values.chartmuseum.schedulerName}}
+{{- end -}}
   replicas: {{ .Values.chartmuseum.replicas }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
