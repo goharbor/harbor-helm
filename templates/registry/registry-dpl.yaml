@@ -6,6 +6,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
 spec:
+{{- if .Values.registry.schedulerName }}
+  schedulerName: {{ .Values.registry.schedulerName}}
+{{- end -}}
   replicas: {{ .Values.registry.replicas }}
   strategy:
     type: {{ .Values.updateStrategy.type }}

@@ -8,6 +8,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: database
 spec:
+{{- if .Values.database.schedulerName }}
+  schedulerName: {{ .Values.database.schedulerName}}
+{{- end -}}
   replicas: 1
   serviceName: "{{ template "harbor.database" . }}"
   selector:

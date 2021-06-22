@@ -8,6 +8,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: trivy
 spec:
+{{- if .Values.trivy.schedulerName }}
+  schedulerName: {{ .Values.trivy.schedulerName}}
+{{- end -}}
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
   selector:

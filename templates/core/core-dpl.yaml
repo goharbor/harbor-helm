@@ -6,6 +6,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: core
 spec:
+{{- if .Values.core.schedulerName }}
+  schedulerName: {{ .Values.core.schedulerName}}
+{{- end -}}
   replicas: {{ .Values.core.replicas }}
   selector:
     matchLabels:

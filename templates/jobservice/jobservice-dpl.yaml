@@ -6,6 +6,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
 spec:
+{{- if .Values.jobservice.schedulerName }}
+  schedulerName: {{ .Values.jobservice.schedulerName}}
+{{- end -}}
   replicas: {{ .Values.jobservice.replicas }}
   strategy:
     type: {{ .Values.updateStrategy.type }}

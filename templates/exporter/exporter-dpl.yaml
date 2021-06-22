@@ -7,6 +7,9 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: exporter
 spec:
+{{- if .Values.exporter.schedulerName }}
+  schedulerName: {{ .Values.exporter.schedulerName}}
+{{- end -}}
   replicas: {{ .Values.exporter.replicas }}
   selector:
     matchLabels:
