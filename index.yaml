@@ -2,6 +2,32 @@ apiVersion: v1
 entries:
   harbor:
   - apiVersion: v1
+    appVersion: 2.3.0
+    created: "2021-06-23T17:52:51.069072+08:00"
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
+    digest: 84359ae693605428d21a8d3759d081f1a76b0d9914bc994f87f0d4f15c520244
+    home: https://goharbor.io
+    icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
+    keywords:
+    - docker
+    - registry
+    - harbor
+    maintainers:
+    - email: yinw@vmware.com
+      name: Wenkai Yin
+    - email: hweiwei@vmware.com
+      name: Weiwei He
+    - email: dengq@vmware.com
+      name: Qian Deng
+    name: harbor
+    sources:
+    - https://github.com/goharbor/harbor
+    - https://github.com/goharbor/harbor-helm
+    urls:
+    - harbor-1.7.0.tgz
+    version: 1.7.0
+  - apiVersion: v1
     appVersion: 2.2.2
     created: "2021-05-24T16:28:08.323888+08:00"
     description: An open source trusted cloud native registry that stores, signs,
@@ -607,7 +633,8 @@ entries:
     urls:
     - harbor-1.3.0.tgz
     version: 1.3.0
-  - appVersion: 1.9.4
+  - apiVersion: v1
+    appVersion: 1.9.4
     created: "2020-01-02T21:19:25.206133+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -631,7 +658,8 @@ entries:
     urls:
     - harbor-1.2.4.tgz
     version: 1.2.4
-  - appVersion: 1.9.3
+  - apiVersion: v1
+    appVersion: 1.9.3
     created: "2019-11-18T18:20:14.410118+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -655,7 +683,8 @@ entries:
     urls:
     - harbor-1.2.3.tgz
     version: 1.2.3
-  - appVersion: 1.9.2
+  - apiVersion: v1
+    appVersion: 1.9.2
     created: "2019-11-07T14:39:07.980396+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -679,7 +708,8 @@ entries:
     urls:
     - harbor-1.2.2.tgz
     version: 1.2.2
-  - appVersion: 1.9.1
+  - apiVersion: v1
+    appVersion: 1.9.1
     created: "2019-10-25T16:01:17.032138+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -703,7 +733,8 @@ entries:
     urls:
     - harbor-1.2.1.tgz
     version: 1.2.1
-  - appVersion: 1.9.0
+  - apiVersion: v1
+    appVersion: 1.9.0
     created: "2019-10-25T16:01:17.030306+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -727,7 +758,8 @@ entries:
     urls:
     - harbor-1.2.0.tgz
     version: 1.2.0
-  - appVersion: 1.8.6
+  - apiVersion: v1
+    appVersion: 1.8.6
     created: "2019-11-18T20:30:27.317399+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -751,7 +783,8 @@ entries:
     urls:
     - harbor-1.1.6.tgz
     version: 1.1.6
-  - appVersion: 1.8.5
+  - apiVersion: v1
+    appVersion: 1.8.5
     created: "2019-11-07T14:39:07.977251+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -775,7 +808,8 @@ entries:
     urls:
     - harbor-1.1.5.tgz
     version: 1.1.5
-  - appVersion: 1.8.4
+  - apiVersion: v1
+    appVersion: 1.8.4
     created: "2019-10-25T16:01:17.027057+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -799,7 +833,8 @@ entries:
     urls:
     - harbor-1.1.4.tgz
     version: 1.1.4
-  - appVersion: 1.8.3
+  - apiVersion: v1
+    appVersion: 1.8.3
     created: "2019-09-19T14:40:21.693628+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -823,7 +858,8 @@ entries:
     urls:
     - harbor-1.1.3.tgz
     version: 1.1.3
-  - appVersion: 1.8.2
+  - apiVersion: v1
+    appVersion: 1.8.2
     created: "2019-08-16T18:15:51.742168+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -847,7 +883,8 @@ entries:
     urls:
     - harbor-1.1.2.tgz
     version: 1.1.2
-  - appVersion: 1.8.1
+  - apiVersion: v1
+    appVersion: 1.8.1
     created: "2019-06-19T13:55:22.297012+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -871,7 +908,8 @@ entries:
     urls:
     - harbor-1.1.1.tgz
     version: 1.1.1
-  - appVersion: 1.8.0
+  - apiVersion: v1
+    appVersion: 1.8.0
     created: "2019-05-22T13:12:41.689108+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -895,7 +933,8 @@ entries:
     urls:
     - harbor-1.1.0.tgz
     version: 1.1.0
-  - appVersion: 1.7.5
+  - apiVersion: v1
+    appVersion: 1.7.5
     created: "2019-05-13T14:06:06.244579+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -919,7 +958,8 @@ entries:
     urls:
     - harbor-1.0.1.tgz
     version: 1.0.1
-  - appVersion: 1.7.0
+  - apiVersion: v1
+    appVersion: 1.7.0
     created: "2019-05-13T14:06:06.242958+08:00"
     description: An open source trusted cloud native registry that stores, signs,
       and scans content
@@ -943,4 +983,4 @@ entries:
     urls:
     - harbor-1.0.0.tgz
     version: 1.0.0
-generated: "2021-06-01T14:03:37.723741+08:00"
+generated: "2021-06-23T17:52:51.065343+08:00"
