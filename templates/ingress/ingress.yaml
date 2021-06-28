@@ -22,7 +22,7 @@
 {{- else }}
   {{- $_ := set . "api_path" "/api/" -}}
   {{- $_ := set . "service_path" "/service/" -}}
-  {{- $_ := set . "v2_path" "/v2" -}}
+  {{- $_ := set . "v2_path" "/v2/" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
   {{- $_ := set . "controller_path" "/c/" -}}
   {{- $_ := set . "portal_path" "/" -}}
@@ -43,7 +43,9 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
+{{- if $ingress.annotations }}
 {{ toYaml $ingress.annotations | indent 4 }}
+{{- end }}
 {{- if .Values.internalTLS.enabled }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 {{- end }}
@@ -156,7 +158,9 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
+{{- if $ingress.annotations }}
 {{ toYaml $ingress.annotations | indent 4 }}
+{{- end }}
 {{- if eq .Values.expose.ingress.controller "ncp" }}
     ncp/use-regex: "true"
     {{- if $tls.enabled }}
