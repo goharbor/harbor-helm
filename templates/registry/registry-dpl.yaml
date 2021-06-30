@@ -35,9 +35,9 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-{{- if .Values.core.schedulerName }}
-      schedulerName: {{ .Values.core.schedulerName}}
-{{- end }}
+{{- if .Values.schedulerName }}
+  schedulerName: {{ .Values.schedulerName}}
+{{- end -}}
       securityContext:
         runAsUser: 10000
         fsGroup: 10000

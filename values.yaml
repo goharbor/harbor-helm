@@ -119,6 +119,9 @@ expose:
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
 
+# Scheduler name defined for all the pods in each deployment. Useful when using solutions that require their own shceduler  like Portworx with Harbor.
+schedulerName: ""
+
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each components tls cert files need to provided in advance.
 internalTLS:
@@ -423,8 +426,6 @@ core:
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-  schedulerName: ""
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
@@ -461,8 +462,6 @@ jobservice:
   image:
     repository: goharbor/harbor-jobservice
     tag: dev
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-  schedulerName: ""
   replicas: 1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -496,8 +495,6 @@ registry:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-  schedulerName: ""
   registry:
     image:
       repository: goharbor/registry-photon
@@ -573,9 +570,6 @@ chartmuseum:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-  schedulerName: ""
-
 trivy:
   # enabled the flag to enable Trivy scanner
   enabled: true
@@ -584,8 +578,6 @@ trivy:
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: dev
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-  schedulerName: ""
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -693,8 +685,6 @@ database:
   # if external database is used, set "type" to "external"
   # and fill the connection informations in "external" section
   type: internal
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-  schedulerName: ""
   internal:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -759,8 +749,6 @@ redis:
   # if external Redis is used, set "type" to "external"
   # and fill the connection informations in "external" section
   type: internal
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-  schedulerName: ""
   internal:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -803,8 +791,6 @@ exporter:
   #    memory: 256Mi
   #    cpu: 100m
     podAnnotations: {}
-  # Use this parameter to set the schedulername for this element. Useful to use Portworx with Harbor
-    schedulerName: ""
     serviceAccountName: ""
     # mount the service account token
     automountServiceAccountToken: false
