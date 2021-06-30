@@ -36,7 +36,10 @@ spec:
 {{- end }}
 {{- if .Values.trivy.serviceAccountName }}
       serviceAccountName: {{ .Values.trivy.serviceAccountName }}
-{{- end }}
+{{- end }} 
+{{- if .Values.schedulerName }}
+  schedulerName: {{ .Values.schedulerName}}
+{{- end -}}
       securityContext:
         runAsUser: 10000
         fsGroup: 10000

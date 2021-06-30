@@ -29,6 +29,9 @@ spec:
 {{ toYaml .Values.core.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.schedulerName }}
+  schedulerName: {{ .Values.schedulerName}}
+{{- end -}}
       securityContext:
         runAsUser: 10000
         fsGroup: 10000

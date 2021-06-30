@@ -119,6 +119,9 @@ expose:
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
 
+# Scheduler name defined for all the pods in each deployment. Useful when using solutions that require their own shceduler  like Portworx with Harbor.
+schedulerName: ""
+
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each components tls cert files need to provided in advance.
 internalTLS:
@@ -567,7 +570,6 @@ chartmuseum:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
-
 trivy:
   # enabled the flag to enable Trivy scanner
   enabled: true
