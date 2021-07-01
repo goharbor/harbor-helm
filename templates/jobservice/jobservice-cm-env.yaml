@@ -14,6 +14,9 @@ data:
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
   HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
   NO_PROXY: "{{ template "harbor.noProxy" . }}"
+  http_proxy: "{{ .Values.proxy.httpProxy }}"
+  https_proxy: "{{ .Values.proxy.httpsProxy }}"
+  no_proxy: "{{ template "harbor.noProxy" . }}"
   {{- end }}
   {{- if .Values.metrics.enabled}}
   METRIC_NAMESPACE: harbor

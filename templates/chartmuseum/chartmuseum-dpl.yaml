@@ -81,6 +81,12 @@ spec:
             value: "{{ .Values.proxy.httpsProxy }}"
           - name: NO_PROXY
             value: "{{ template "harbor.noProxy" . }}"
+          - name: http_proxy
+            value: "{{ .Values.proxy.httpProxy }}"
+          - name: https_proxy
+            value: "{{ .Values.proxy.httpsProxy }}"
+          - name: no_proxy
+            value: "{{ template "harbor.noProxy" . }}"
           {{- end }}
           {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
