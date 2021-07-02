@@ -11,7 +11,7 @@ data:
     
     ruleName={{ required "A replication rule name is required" $replication.name }}
     basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
-    coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
+    coreHostUrl={{ template "harbor.core" $ }}
     triggerMode={{ required "A replication rule trigger mode is required. Valid values are: manual, event_based or scheduled" $replication.triggerMode }}
     replicateDeletion={{ $replication.replicateDeletion | default false }}
     overrideExistingResources={{ $replication.overrideExistingResources | default true }}

@@ -11,7 +11,7 @@ data:
     # exit when any command fails
     set -e
 
-    coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
+    coreHostUrl={{ template "harbor.core" $ }}
     basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
     declare -A mroles
     {{- range $roles := $root.Values.roles }}

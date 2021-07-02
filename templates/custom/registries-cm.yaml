@@ -11,7 +11,7 @@ data:
     
     registryName={{ required "A registry name is required" $registry.name }}
     registryProvider={{required "A registry provider is required" $registry.provider}}
-    coreHostUrl={{ $root.Values.expose.ingress.hosts.core }}
+    coreHostUrl={{ template "harbor.core" $ }}
     desc={{ $registry.desc | default "desc" | quote }}
     basicAuthCreds="${HARBOR_ADMIN_USERNAME}:${HARBOR_ADMIN_PASSWORD}"
     insecure={{$registry.insecure | default false }}
