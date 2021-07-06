@@ -599,3 +599,8 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   TRACE_JAEGER_PASSWORD: "{{ .Values.trace.jaeger.password | default "" | b64enc }}"
   {{- end }}
 {{- end -}}
+
+{{/* Allow KubeVersion to be overridden. */}}
+{{- define "harbor.ingress.kubeVersion" -}}
+  {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
+{{- end -}}
