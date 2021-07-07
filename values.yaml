@@ -688,6 +688,8 @@ database:
     serviceAccountName: ""
     # mount the service account token
     automountServiceAccountToken: false
+    # if true, creates a headless service
+    headless: false
     image:
       repository: goharbor/harbor-db
       tag: dev
@@ -742,6 +744,8 @@ database:
   maxOpenConns: 900
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional service annotations 
+  serviceAnnotations: {}
 
 redis:
   # if external Redis is used, set "type" to "external"

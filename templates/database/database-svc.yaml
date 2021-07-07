@@ -3,11 +3,18 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{{ template "harbor.database" . }}"
+  annotations:
+    {{ with .Values.database.serviceAnnotations }}
+    {{- toYaml . | indent 4 }}
+    {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   ports:
     - port: 5432
+{{-if .Values.database.internal.headless }}
+  clusterIp: "None"
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: database
