@@ -37,7 +37,7 @@ spec:
           containers:
           - name: chart-cleaner
             image: {{  required "A image is required to run the chart cleanup job." .Values.custom.chartCleaner.jobImage }}
-            imagePullPolicy: IfNotPresent
+            imagePullPolicy: Always
             env:
             - name: coreHostUrl
               value: {{ default "harbor.com" .Values.expose.ingress.hosts.core  | quote }}
