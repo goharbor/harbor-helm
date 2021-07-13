@@ -547,3 +547,8 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
     {{- printf "http-metrics" -}}
   {{- end -}}
 {{- end -}}
+
+{{/* Allow KubeVersion to be overridden. */}}
+{{- define "harbor.ingress.kubeVersion" -}}
+  {{- default .Capabilities.KubeVersion.Version .Values.ingress.kubeVersionOverride -}}
+{{- end -}}
