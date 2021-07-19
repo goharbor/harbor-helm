@@ -65,3 +65,5 @@ helm upgrade release-name --force .
 ## Known issues
 
 - The job logs will be lost if you upgrade from version 0.3.0 as the logs are store in a `emptyDir` in 0.3.0.
+- Installing the Harbor chart(1.6-) with a release name that contains `harbor`, e.g. `my-harbor`, and trying to upgrade it to 1.7+ you will get the issue https://github.com/goharbor/harbor-helm/issues/987.  
+  The workaround is performing the upgrade by setting the configuration `fullnameOverride` with value `release_name-harbor`, e.g. `my-harbor-harbor`, in `values.yaml` or `--set` option
