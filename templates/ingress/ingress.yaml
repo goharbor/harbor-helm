@@ -1,8 +1,15 @@
 {{- if eq .Values.expose.type "ingress" }}
 {{- $ingress := .Values.expose.ingress -}}
 {{- $tls := .Values.expose.tls -}}
-{{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.GitVersion }}
-{{- if eq .Values.expose.ingress.controller "ncp" }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+  {{- $_ := set . "api_path" "/api/" -}}
+  {{- $_ := set . "service_path" "/service/" -}}
+  {{- $_ := set . "v2_path" "/v2/" -}}
+  {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
+  {{- $_ := set . "controller_path" "/c/" -}}
+  {{- $_ := set . "portal_path" "/" -}}
+  {{- $_ := set . "notary_path" "/" -}}
+{{- else if eq .Values.expose.ingress.controller "ncp" }}
   {{- $_ := set . "api_path" "/api/.*" -}}
   {{- $_ := set . "service_path" "/service/.*" -}}
   {{- $_ := set . "v2_path" "/v2/.*" -}}
@@ -18,15 +25,6 @@
   {{- $_ := set . "controller_path" "/c/*" -}}
   {{- $_ := set . "portal_path" "/*" -}}
   {{- $_ := set . "notary_path" "/*" -}}
-{{- end }}
-{{- else }}
-  {{- $_ := set . "api_path" "/api/" -}}
-  {{- $_ := set . "service_path" "/service/" -}}
-  {{- $_ := set . "v2_path" "/v2/" -}}
-  {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
-  {{- $_ := set . "controller_path" "/c/" -}}
-  {{- $_ := set . "portal_path" "/" -}}
-  {{- $_ := set . "notary_path" "/" -}}
 {{- end }}
 
 ---
