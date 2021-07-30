@@ -119,6 +119,13 @@ expose:
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://core.harbor.domain
 
+# Whether to listen on IPv6 port ([::]) for the processes which use nginx (nginx and portal)
+# Defaults to off, since nginx will crash on start on a system with ipv6 deliberately
+# disabled (i.e., with ipv6.disable=1 kernel option), which may be a requirement in some
+# environments (i.e., corporate / hardened installs)
+nginxIpv6:
+  enabled: false 
+
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each components tls cert files need to provided in advance.
 internalTLS:

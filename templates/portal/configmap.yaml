@@ -20,7 +20,9 @@ data:
         server {
     {{- if .Values.internalTLS.enabled }}
             listen {{ template "harbor.portal.containerPort" . }} ssl;
+            {{- if .Values.nginxIpv6.enabled }}
             listen [::]:{{ template "harbor.portal.containerPort" . }} ssl;
+            {{- end }}
             # SSL
             ssl_certificate /etc/harbor/ssl/portal/tls.crt;
             ssl_certificate_key /etc/harbor/ssl/portal/tls.key;
@@ -32,7 +34,9 @@ data:
             ssl_session_cache shared:SSL:10m;
     {{- else }}
             listen {{ template "harbor.portal.containerPort" . }};
+            {{- if .Values.nginxIpv6.enabled }}            
             listen [::]:{{ template "harbor.portal.containerPort" . }};
+            {{- end }}
     {{- end }}
             server_name  localhost;
             root   /usr/share/nginx/html;

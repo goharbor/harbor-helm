@@ -57,7 +57,9 @@ data:
       {{- if .Values.notary.enabled }}
       server {
         listen 4443 ssl;
+        {{- if .Values.nginxIpv6.enabled }}
         listen [::]:4443 ssl;
+        {{- end }}        
         server_tokens off;
         # ssl
         ssl_certificate /etc/nginx/cert/tls.crt;
@@ -90,7 +92,9 @@ data:
 
       server {
         listen 8443 ssl;
+        {{- if .Values.nginxIpv6.enabled }}
         listen [::]:8443 ssl;
+        {{- end }}  
     #    server_name harbordomain.com;
         server_tokens off;
         # SSL
@@ -207,7 +211,9 @@ data:
       }
         server {
           listen 8080;
+          {{- if .Values.nginxIpv6.enabled }}
           listen [::]:8080;
+          {{- end }}  
           #server_name harbordomain.com;
           return 301 https://$host$request_uri;
       }
