@@ -374,6 +374,12 @@ proxy:
 # contains a base64 encoded CA Certificate named `ca.crt`.
 # uaaSecretName:
 
+# Configure Harbor settings as a single JSON object containing values for the `/api/v2.0/configurations` endpoint.
+# { "auth_mode": "oidc_auth", "oidc_auto_onboard": "true", ... }
+configOverwriteJSON:
+  enabled: false
+  config: ""
+
 # If expose the service via "ingress", the Nginx will not be used
 nginx:
   image:
