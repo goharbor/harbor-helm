@@ -567,6 +567,8 @@ chartmuseum:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## limit the number of parallel indexers
+  indexLimit: 0
 
 trivy:
   # enabled the flag to enable Trivy scanner
