@@ -8,6 +8,7 @@ metadata:
     component: nginx
 spec:
   replicas: {{ .Values.nginx.replicas }}
+  revisionHistoryLimit: {{ .Values.nginx.revisionHistoryLimit }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

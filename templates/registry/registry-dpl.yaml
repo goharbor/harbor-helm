@@ -7,6 +7,7 @@ metadata:
     component: registry
 spec:
   replicas: {{ .Values.registry.replicas }}
+  revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
     {{- if eq .Values.updateStrategy.type "Recreate" }}
