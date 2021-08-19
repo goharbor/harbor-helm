@@ -56,3 +56,31 @@ jobs:
         working-directory: ./test
         run:
           go test -v -timeout 30m github.com/goharbor/harbor-helm/integration
+
+      - name: fetch harbor logs
+        if: failure()
+        run: |
+          df -h
+          free -m
+          mkdir -p /tmp/harbor
+          for name in core jobservice registry registryctl trivy chartmuseum notaryserver notarysigner portal redis database; do \
+            kubectl -n default logs -l "component=$name" --all-containers > /tmp/harbor/$name.log ; \
+          done
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: harbor_${{ matrix.k8s_version }}_${{ runner.os }}
+          path: /tmp/harbor
+
+      - name: fetch logs
+        if: failure()
+        run: |
+          mkdir -p /tmp/logs
+          kind export logs --name kind-cluster-${{ matrix.k8s_version }} /tmp/logs
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: kind_v${{ matrix.k8s_version }}
+          path: /tmp/logs
