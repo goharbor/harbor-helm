@@ -180,6 +180,14 @@ internalTLS:
     # Content of trivy's TLS key file, only available when `certSource` is "manual"
     key: ""
 
+ipFamily:
+  # ipv6Enabled set to true if ipv6 is enabled in cluster, currently it affected the nginx related component
+  ipv6:
+    enabled: true
+  # ipv4Enabled set to true if ipv4 is enabled in cluster, currently it affected the nginx related component
+  ipv4:
+    enabled: true
+
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamicly.
 # Specify another StorageClass in the "storageClass" or set "existingClaim"
