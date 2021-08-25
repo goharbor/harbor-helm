@@ -36,7 +36,9 @@ data:
       {{- else if eq $type "gcs" }}
       gcs:
         bucket: {{ $storage.gcs.bucket }}
+        {{- if $storage.gcs.encodedkey }}
         keyfile: /etc/registry/gcs-key.json
+        {{- end }}
         {{- if $storage.gcs.rootdirectory }}
         rootdirectory: {{ $storage.gcs.rootdirectory }}
         {{- end }}

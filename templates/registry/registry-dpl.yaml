@@ -204,9 +204,11 @@ spec:
           subPath: ca.crt
         {{- end }}
         {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
+        {{- if .Values.persistence.imageChartStorage.gcs.encodedkey }}
         - name: gcs-key
           mountPath: /etc/registry/gcs-key.json
           subPath: gcs-key.json
+        {{- end }}
         {{- end }}
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
@@ -234,12 +236,14 @@ spec:
           secretName: {{ template "harbor.internalTLS.registry.secretName" . }}
       {{- end }}
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
+      {{- if .Values.persistence.imageChartStorage.gcs.encodedkey }}
       - name: gcs-key
         secret:
           secretName: {{ template "harbor.registry" . }}
           items:
             - key: GCS_KEY_DATA
               path: gcs-key.json
+      {{- end }}
       {{- end }}
       {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
       - name: storage-service-ca
