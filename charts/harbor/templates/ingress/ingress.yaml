@@ -1,7 +1,8 @@
 {{- if eq .Values.expose.type "ingress" }}
 {{- $ingress := .Values.expose.ingress -}}
 {{- $tls := .Values.expose.tls -}}
-{{- if eq .Values.expose.ingress.controller "gce" }}
+{{- $using_alb := (eq .Values.expose.ingress.controller "alb") }}
+{{- if or (eq .Values.expose.ingress.controller "gce") (eq .Values.expose.ingress.controller "alb") }}
   {{- $_ := set . "portal_path" "/*" -}}
   {{- $_ := set . "api_path" "/api/*" -}}
   {{- $_ := set . "service_path" "/service/*" -}}
@@ -42,6 +43,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
+{{- if $using_alb }}
+    alb.ingress.kubernetes.io/healthcheck-path: /v2
+    alb.ingress.kubernetes.io/success-codes: "401"
+{{- end }}
 {{- if .Values.internalTLS.enabled }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 {{- end }}
@@ -67,10 +72,6 @@ spec:
   - http:
       paths:
 {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.GitVersion }}
-      - path: {{ .portal_path }}
-        backend:
-          serviceName: {{ template "harbor.portal" . }}
-          servicePort: {{ template "harbor.portal.servicePort" . }}
       - path: {{ .api_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
@@ -91,49 +92,53 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: {{ template "harbor.core.servicePort" . }}
-{{- else }}
       - path: {{ .portal_path }}
-        pathType: Prefix
+        backend:
+          serviceName: {{ template "harbor.portal" . }}
+          servicePort: {{ template "harbor.portal.servicePort" . }}
+{{- else }}
+      - path: {{ .api_path }}
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .service_path }}
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .v2_path }}
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .chartrepo_path }}
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .controller_path }}
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .portal_path }}
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
         backend:
           service:
             name: {{ template "harbor.portal" . }}
             port:
               number: {{ template "harbor.portal.servicePort" . }}
-      - path: {{ .api_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .service_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .v2_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .chartrepo_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .controller_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
 {{- end }}
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
@@ -182,7 +187,7 @@ spec:
           serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443
 {{- else }}
-        pathType: Prefix
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
         backend:
           service:
             name: {{ template "harbor.notary-server" . }}
