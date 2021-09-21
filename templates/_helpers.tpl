@@ -27,10 +27,9 @@ If release name contains chart name it will be used as a full name.
 
 {{/* Helm required labels */}}
 {{- define "harbor.labels" -}}
+{{ include "harbor.matchLabels" . }}
 heritage: {{ .Release.Service }}
-release: {{ .Release.Name }}
 chart: {{ .Chart.Name }}
-app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{/* matchLabels */}}
