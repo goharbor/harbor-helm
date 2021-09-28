@@ -849,3 +849,31 @@ metrics:
       #   targetLabel: nodename
       #   replacement: $1
       #   action: replace
+
+trace:
+  enabled: false
+  # trace provider: jaeger or otel
+  provider: jaeger
+  # set sample_rate to 1 if you wanna sampling 100% of trace data; set 0.5 if you wanna sampling 50% of trace data, and so forth
+  sample_rate: 1
+  # namespace used to differentiate different harbor services
+  # namespace:
+  # attributes is a key value dict contains user defined attributes used to initialize trace provider
+  # attributes:
+  #   application: harbor
+  jaeger:
+    # jaeger supports two modes:
+    #   agent mode(uncomment endpoint and uncomment username, password if needed)
+    #   collector mode(uncomment agent_host and agent_port)
+    endpoint: http://hostname:14268/api/traces
+    # username:
+    # password:
+    # agent_host: hostname
+    # agent_port: 6832
+  otel:
+    endpoint: hostname:4318
+    url_path: /v1/traces
+    compression: false
+    insecure: true
+    timeout: 10s
+
