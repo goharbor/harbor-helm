@@ -1,0 +1,77 @@
+name: Lint and Test Charts
+
+on:
+  pull_request:
+    paths:
+      - 'charts/**'
+
+jobs:
+  lint-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Run chart-testing (lint)
+        uses: helm/chart-testing-action@master
+        with:
+          command: lint
+          config: .github/ct.yaml
+  lint-docs:
+    runs-on: ubuntu-latest
+    needs: lint-chart
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Run helm-docs
+        run: .github/helm-docs.sh
+  kubeval-chart:
+    runs-on: ubuntu-latest
+    needs:
+      - lint-chart
+      - lint-docs
+    strategy:
+      matrix:
+        k8s:
+          - v1.12.10
+          - v1.13.11
+          - v1.14.10
+          - v1.15.7
+          - v1.16.4
+          - v1.17.4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Run kubeval
+        env:
+          KUBERNETES_VERSION: ${{ matrix.k8s }}
+        run: .github/kubeval.sh
+  # install-chart:
+  #   name: install-chart
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - lint-chart
+  #     - lint-docs
+  #     - kubeval-chart
+  #   strategy:
+  #     matrix:
+  #       k8s:
+  #         - v1.12.10
+  #         - v1.13.12
+  #         - v1.14.10
+  #         - v1.15.12
+  #         - v1.16.15
+  #         - v1.17.11
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v1
+  #     - name: Create kind ${{ matrix.k8s }} cluster
+  #       uses: helm/kind-action@master
+  #       with:
+  #         node_image: kindest/node:${{ matrix.k8s }}
+      # - name: Run chart-testing (install)
+      #   uses: helm/chart-testing-action@master
+      #   env:
+      #     CR_TOKEN: '${{ secrets.CR_TOKEN }}'
+      #   with:
+      #     command: install
+      #     config: .github/ct.yaml
