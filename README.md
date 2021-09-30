@@ -10,8 +10,8 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://
 
 ## Prerequisites
 
-- Kubernetes cluster 1.18+
-- Helm 2.10.0+
+- Kubernetes cluster 1.20+
+- Helm v3
 
 ## Installation
 
@@ -60,15 +60,6 @@ If Harbor is deployed behind the proxy, set it as the URL of proxy.
 ### Install the chart
 
 Install the Harbor helm chart with a release name `my-release`:
-
-helm 2:
-
-```bash
-helm install --name my-release harbor/harbor
-```
-
-helm 3:
-
 ```bash
 helm install my-release harbor/harbor
 ```
@@ -76,15 +67,6 @@ helm install my-release harbor/harbor
 ## Uninstallation
 
 To uninstall/delete the `my-release` deployment:
-
-helm 2:
-
-```bash
-helm delete --purge my-release
-```
-
-helm 3:
-
 ```
 helm uninstall my-release
 ```
