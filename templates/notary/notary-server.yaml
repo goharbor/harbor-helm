@@ -39,6 +39,12 @@ spec:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ['sh', '-c', 'cp /db/certs/..data/* /certs; chmod -R 600 /certs; ls -al /certs']
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /_notary_server/health
@@ -62,6 +68,14 @@ spec:
           value: migrations/server/postgresql
         - name: DB_URL
           value: {{ template "harbor.database.notaryServer" . }}
+        {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+        - name: PGSSLCERT
+          value: /certs/harbor-client-cert.pem
+        - name: PGSSLKEY
+          value: /certs/harbor-client-key.pem
+        - name: PGSSLROOTCERT
+          value: /certs/harbor-ca-cert.pem
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/notary/server-config.postgres.json
@@ -72,6 +86,12 @@ spec:
         - name: signer-certificate
           mountPath: /etc/ssl/notary/ca.crt
           subPath: ca.crt
+        {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+        - name: db-certs-keys
+          mountPath: /db/certs
+        - name: certs
+          mountPath: /certs
+        {{- end }}
       volumes:
       - name: config
         secret:
@@ -90,6 +110,18 @@ spec:
           {{- else }}
           secretName: {{ template "harbor.notary-server" . }}
           {{- end }}
+      {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+      - name: db-certs-keys
+        secret:
+          {{- if not .Values.database.external.secretNameCertsKeys }}
+          secretName: db-cert-key
+          {{- else }}
+          secretName: {{ .Values.database.external.secretNameCertsKeys }}
+          {{- end }}
+          defaultMode: 400
+      - name: certs
+        emptyDir: {}
+      {{- end }}
     {{- with .Values.notary.server.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -51,6 +51,12 @@ spec:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ['sh', '-c', 'cp /db/certs/..data/* /certs; chmod -R 600 /certs; ls -al /certs']
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /api/v1/stats
@@ -85,6 +91,14 @@ spec:
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/jobservice/ca.crt
           {{- end }}
+          {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+          - name: PGSSLCERT
+            value: /certs/harbor-client-cert.pem
+          - name: PGSSLKEY
+            value: /certs/harbor-client-key.pem
+          - name: PGSSLROOTCERT
+            value: /certs/harbor-ca-cert.pem
+        {{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.jobservice" . }}-env"
@@ -102,6 +116,12 @@ spec:
         {{- if .Values.internalTLS.enabled }}
         - name: jobservice-internal-certs
           mountPath: /etc/harbor/ssl/jobservice
+        {{- end }}
+        {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+        - name: db-certs-keys
+          mountPath: /db/certs
+        - name: certs
+          mountPath: /certs
         {{- end }}
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
@@ -121,6 +141,18 @@ spec:
       - name: jobservice-internal-certs
         secret:
           secretName: {{ template "harbor.internalTLS.jobservice.secretName" . }}
+      {{- end }}
+      {{- if or (eq .Values.database.external.sslmode "require") (eq .Values.database.external.sslmode "verify-ca") (eq .Values.database.external.sslmode "verify-full") }}
+      - name: db-certs-keys
+        secret:
+          {{- if not .Values.database.external.secretNameCertsKeys }}
+          secretName: db-cert-key
+          {{- else }}
+          secretName: {{ .Values.database.external.secretNameCertsKeys }}
+          {{- end }}
+          defaultMode: 400
+      - name: certs
+        emptyDir: {}
       {{- end }}
       {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolume" . | indent 6 }}

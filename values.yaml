@@ -743,6 +743,13 @@ database:
     # server was signed by a trusted CA and the server host name matches the one
     # in the certificate)
     sslmode: "disable"
+    # The name of the secret containing the certificate and key with literal, "harbor-ca-cert.pem", "harbor-client-cert.pem" & "harbor-client-key.pem", or providing the base64 encoded secret of the certificate and key..
+    secretNameCertsKeys: 
+    # The base64 encoded certificate and key if the name of the secret containing the certificate and key is not provided.
+    certskeys:
+      rootCert: 
+      clientCert: 
+      clientKey: 
   # The maximum number of connections in the idle connection pool per pod (core+exporter).
   # If it <=0, no idle connections are retained.
   maxIdleConns: 100
