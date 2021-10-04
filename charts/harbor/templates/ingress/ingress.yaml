@@ -98,42 +98,42 @@ spec:
           servicePort: {{ template "harbor.portal.servicePort" . }}
 {{- else }}
       - path: {{ .api_path }}
-        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb }}
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .service_path }}
-        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb }}
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .v2_path }}
-        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb }}
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .chartrepo_path }}
-        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb }}
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .controller_path }}
-        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb }}
         backend:
           service:
             name: {{ template "harbor.core" . }}
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .portal_path }}
-        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb }}
         backend:
           service:
             name: {{ template "harbor.portal" . }}
@@ -187,7 +187,7 @@ spec:
           serviceName: {{ template "harbor.notary-server" . }}
           servicePort: 4443
 {{- else }}
-        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb
+        pathType: {{ ternary "ImplementationSpecific" "Prefix" $using_alb }}
         backend:
           service:
             name: {{ template "harbor.notary-server" . }}
