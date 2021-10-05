@@ -39,6 +39,7 @@ expose:
       notary: notary.harbor.domain
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
+    # set to `alb` if using the AWS Load Balancer Controller
     # set to `gce` if using the GCE ingress controller
     # set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
     controller: default
