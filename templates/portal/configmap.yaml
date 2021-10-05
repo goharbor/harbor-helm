@@ -22,7 +22,7 @@ data:
             {{- if .Values.ipFamily.ipv4.enabled}}
             listen {{ template "harbor.portal.containerPort" . }} ssl;
             {{- end }}
-            {{- if .Values.ipFamily.ipv6.eanbled}}
+            {{- if .Values.ipFamily.ipv6.enabled}}
             listen [::]:{{ template "harbor.portal.containerPort" . }} ssl;
             {{- end }}
             # SSL
