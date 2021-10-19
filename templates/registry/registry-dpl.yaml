@@ -151,8 +151,12 @@ spec:
 {{ toYaml .Values.registry.controller.resources | indent 10 }}
 {{- end }}
         envFrom:
+        - configMapRef:
+            name: "{{ template "harbor.registryCtl" . }}"
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+        - secretRef:
+            name: "{{ template "harbor.registryCtl" . }}"
         env:
         - name: CORE_SECRET
           valueFrom:
