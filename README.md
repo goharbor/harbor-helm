@@ -11,7 +11,7 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [Harbor](https://
 ## Prerequisites
 
 - Kubernetes cluster 1.20+
-- Helm v3
+- Helm v3.2.0+
 
 ## Installation
 
