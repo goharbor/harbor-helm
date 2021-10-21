@@ -1,3 +1,4 @@
+{{- if .Values.expose.enabled }}
 {{- if eq .Values.expose.type "ingress" }}
 {{- $ingress := .Values.expose.ingress -}}
 {{- $tls := .Values.expose.tls -}}
@@ -198,6 +199,8 @@ spec:
     {{- if $ingress.hosts.notary }}
     host: {{ $ingress.hosts.notary }}
     {{- end }}
+{{- end }}
+
 {{- end }}
 
 {{- end }}
