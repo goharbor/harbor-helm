@@ -63,9 +63,18 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{/* common service domain <ns>.svc.local */}}
+{{- define "harbor.svc.domain" -}}
+  {{- if .Values.clusterDomain -}}
+    {{- printf "%s.%s" ( .Release.Namespace ) ( .Values.clusterDomain) -}}
+  {{- else -}}
+    {{- printf "%s.%s" ( .Release.Namespace ) "svc.cluster.local" -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- template "harbor.database" . }}
+    {{- printf "%s.%s" (include "harbor.database" .) (include "harbor.svc.domain" .) -}}
   {{- else -}}
     {{- .Values.database.external.host -}}
   {{- end -}}
@@ -152,7 +161,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 /*host:port*/
 {{- define "harbor.redis.addr" -}}
   {{- with .Values.redis }}
-    {{- ternary (printf "%s:6379" (include "harbor.redis" $ )) .external.addr (eq .type "internal") }}
+    {{- ternary (printf "%s.%s:6379" (include "harbor.redis" $ ) (include "harbor.svc.domain" $)) .external.addr (eq .type "internal") }}
   {{- end }}
 {{- end -}}
 
@@ -282,7 +291,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{- end -}}
 
 {{- define "harbor.noProxy" -}}
-  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) (include "harbor.exporter" .) .Values.proxy.noProxy -}}
+  {{- printf "%s" .Values.proxy.noProxy -}}
 {{- end -}}
 
 {{- define "harbor.caBundleVolume" -}}
@@ -435,27 +444,47 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{/* CORE_URL */}}
 {{/* port is included in this url as a workaround for issue https://github.com/aquasecurity/harbor-scanner-trivy/issues/108 */}}
 {{- define "harbor.coreURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.core" .) (include "harbor.core.servicePort" .) -}}
+  {{- printf "%s://%s.%s:%s" (include "harbor.component.scheme" .) (include "harbor.core" .) (include "harbor.svc.domain" .) (include "harbor.core.servicePort" .) -}}
+{{- end -}}
+
+{{- define "harbor.core.host" -}}
+  {{- printf "%s.%s" (include "harbor.core" .) (include "harbor.svc.domain" .) -}}
+{{- end -}}
+
+
+{{/* CHART_REPOSITORY_URL */}}
+{{- define "harbor.chartRepositoryURL" -}}
+  {{- printf "%s://%s-chartmuseum.%s" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) (include "harbor.svc.domain" .) -}}
 {{- end -}}
 
 {{/* JOBSERVICE_URL */}}
 {{- define "harbor.jobserviceURL" -}}
-  {{- printf "%s://%s-jobservice" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) -}}
+  {{- printf "%s://%s-jobservice.%s" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) (include "harbor.svc.domain" .) -}}
+{{- end -}}
+
+{{/* NOTARY_URL */}}
+{{- define "harbor.notaryURL" -}}
+  {{- printf "%s://%s-notary-server.%s:4443" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) (include "harbor.svc.domain" .) -}}
+{{- end -}}
+
+{{/* NOTARY_SIGNER_URL */}}
+{{- define "harbor.notarySignerURL" -}}
+  {{- printf "%s://%s-notary-signer.%s" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) (include "harbor.svc.domain" .) -}}
 {{- end -}}
 
 {{/* PORTAL_URL */}}
 {{- define "harbor.portalURL" -}}
-  {{- printf "%s://%s" (include "harbor.component.scheme" .) (include "harbor.portal" .) -}}
+  {{- printf "%s://%s.%s" (include "harbor.component.scheme" .) (include "harbor.portal" .) (include "harbor.svc.domain" .) -}}
 {{- end -}}
 
 {{/* REGISTRY_URL */}}
 {{- define "harbor.registryURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.registry.servicePort" .) -}}
+  {{- printf "%s://%s.%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.svc.domain" .) (include "harbor.registry.servicePort" .) -}}
 {{- end -}}
 
 {{/* REGISTRY_CONTROLLER_URL */}}
 {{- define "harbor.registryControllerURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.registryctl.servicePort" .) -}}
+  {{- printf "%s://%s.%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.svc.domain" .) (include "harbor.registryctl.servicePort" .) -}}
 {{- end -}}
 
 {{/* TOKEN_SERVICE_URL */}}
@@ -465,7 +494,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 
 {{/* TRIVY_ADAPTER_URL */}}
 {{- define "harbor.trivyAdapterURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.trivy" .) (include "harbor.trivy.servicePort" .) -}}
+  {{- printf "%s://%s.%s:%s" (include "harbor.component.scheme" .) (include "harbor.trivy" .) (include "harbor.svc.domain" .) (include "harbor.trivy.servicePort" .) -}}
 {{- end -}}
 
 {{- define "harbor.internalTLS.chartmuseum.secretName" -}}
