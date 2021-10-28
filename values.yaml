@@ -852,6 +852,7 @@ metrics:
 trace:
   enabled: false
   # trace provider: jaeger or otel
+  # jaeger should be 1.26+
   provider: jaeger
   # set sample_rate to 1 if you wanna sampling 100% of trace data; set 0.5 if you wanna sampling 50% of trace data, and so forth
   sample_rate: 1
@@ -868,7 +869,8 @@ trace:
     # username:
     # password:
     # agent_host: hostname
-    # agent_port: 6832
+    # export trace data by jaeger.thrift in compact mode
+    # agent_port: 6831
   otel:
     endpoint: hostname:4318
     url_path: /v1/traces
