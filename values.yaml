@@ -621,6 +621,8 @@ trivy:
   # If the value is set to `true` you have to manually download the `trivy.db` file and mount it in the
   # `/home/scanner/.cache/trivy/db/trivy.db` path.
   skipUpdate: false
+  # The duration to wait for scan completion
+  timeout: 5m0s
   resources:
     requests:
       cpu: 200m
