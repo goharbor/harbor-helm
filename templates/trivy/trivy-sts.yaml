@@ -67,6 +67,8 @@ spec:
               value: {{ .Values.trivy.debugMode | quote }}
             - name: "SCANNER_TRIVY_VULN_TYPE"
               value: {{ .Values.trivy.vulnType | quote }}
+            - name: "SCANNER_TRIVY_TIMEOUT"
+              value: {{ .Values.trivy.timeout | quote }}
             - name: "SCANNER_TRIVY_GITHUB_TOKEN"
               valueFrom:
                 secretKeyRef:
