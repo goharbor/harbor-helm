@@ -6,7 +6,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   ports:
-    - name: {{ ternary "https-jobservice" "http-jobservice" .Values.internalTLS.enabled }}
+    - name: {{ ternary "tcp-https-jobservice" "tcp-http-jobservice" .Values.internalTLS.enabled }}
       port: {{ template "harbor.jobservice.servicePort" . }}
       targetPort: {{ template "harbor.jobservice.containerPort" . }}
 {{- if .Values.metrics.enabled }}

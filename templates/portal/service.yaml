@@ -11,6 +11,7 @@ spec:
   ports:
     - port: {{ template "harbor.portal.servicePort" . }}
       targetPort: {{ template "harbor.portal.containerPort" . }}
+      name: tcp-portal
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: portal

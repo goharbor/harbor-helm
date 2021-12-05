@@ -6,10 +6,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
   ports:
-    - name: {{ ternary "https-registry" "http-registry" .Values.internalTLS.enabled }}
+    - name: {{ ternary "tcp-https-registry" "tcp-http-registry" .Values.internalTLS.enabled }}
       port: {{ template "harbor.registry.servicePort" . }}
 
-    - name: {{ ternary "https-controller" "http-controller" .Values.internalTLS.enabled }}
+    - name: {{ ternary "tcp-https-controller" "tcp-http-controller" .Values.internalTLS.enabled }}
       port: {{ template "harbor.registryctl.servicePort" . }}
 {{- if .Values.metrics.enabled}}
     - name: {{ template "harbor.metricsPortName" . }}
