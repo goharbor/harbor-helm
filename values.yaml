@@ -42,6 +42,10 @@ expose:
     # set to `gce` if using the GCE ingress controller
     # set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
     controller: default
+    # In Kubernetes > 1.18, ingress class is identified by spec.ingressClassName rather
+    # than using an annotation. In many cases, an ingress controller will assume responsibility
+    # for any "unclassed" Ingress resources, but use this to set the ingress className explicitly.
+    className: "" 
     ## Allow .Capabilities.KubeVersion.Version to be overridden while creating ingress
     kubeVersionOverride: ""
     annotations:
