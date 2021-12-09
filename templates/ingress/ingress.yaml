@@ -55,6 +55,9 @@ metadata:
 {{ toYaml $ingress.harbor.annotations | indent 4 }}
 {{- end }}
 spec:
+  {{- if $ingress.className }}
+  ingressClassName: {{ $ingress.className }}
+  {{- end }}
   {{- if $tls.enabled }}
   tls:
   - secretName: {{ template "harbor.tlsCoreSecretForIngress" . }}
@@ -165,6 +168,9 @@ metadata:
 {{ toYaml $ingress.notary.annotations | indent 4 }}
 {{- end }}
 spec:
+  {{- if $ingress.className }}
+  ingressClassName: {{ $ingress.className }}
+  {{- end }}
   {{- if $tls.enabled }}
   tls:
   - secretName: {{ template "harbor.tlsNotarySecretForIngress" . }}
