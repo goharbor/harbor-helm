@@ -4,7 +4,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.4.1
     created: "2021-12-20T14:38:21.834483+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 4f6600437d4a83ad7ee6adbc04ea47eb68e27fe0f66ced3e46cc1aa9bee273e2
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
@@ -29,7 +30,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.4.0
     created: "2021-11-03T12:39:51.075613+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 8685223d03ab682ee204335721ba546683df8cc041611da315c3ba9fb4954eca
     engine: gotpl
     home: https://goharbor.io
@@ -53,9 +55,36 @@ entries:
     - harbor-1.8.0.tgz
     version: 1.8.0
   - apiVersion: v1
+    appVersion: 2.3.5
+    created: "2021-12-21T16:46:02.425011+08:00"
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
+    digest: e038b5c62e8e606d60e3168b116f5bc02dae112008defc8f88aecb77c297c675
+    home: https://goharbor.io
+    icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
+    keywords:
+    - docker
+    - registry
+    - harbor
+    maintainers:
+    - email: yinw@vmware.com
+      name: Wenkai Yin
+    - email: hweiwei@vmware.com
+      name: Weiwei He
+    - email: dengq@vmware.com
+      name: Qian Deng
+    name: harbor
+    sources:
+    - https://github.com/goharbor/harbor
+    - https://github.com/goharbor/harbor-helm
+    urls:
+    - harbor-1.7.5.tgz
+    version: 1.7.5
+  - apiVersion: v1
     appVersion: 2.3.4
     created: "2021-11-14T14:09:14.586056+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 9fb48fda92d938f422eb8688e7de2de9fb962a62a196a810ce179be06361906b
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
@@ -80,7 +109,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.3.3
     created: "2021-09-30T10:44:51.985081+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 23490de828263f048f1c34ff15540dcfc587b732e9b0419d10a6174893ae408f
     engine: gotpl
     home: https://goharbor.io
@@ -106,7 +136,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.3.2
     created: "2021-08-26T00:08:36.984662+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: d5109a8df32c75e18c9774ae42762f43d684c91c8012bc547676dd98e121ed57
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
@@ -131,7 +162,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.3.1
     created: "2021-07-26T15:42:11.953623+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 04f0879c110ff9aa2d837d063bdc77158631e8398f34f19510f88b59a12f4e12
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
@@ -156,7 +188,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.3.0
     created: "2021-06-23T17:52:51.069072+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 84359ae693605428d21a8d3759d081f1a76b0d9914bc994f87f0d4f15c520244
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
@@ -181,7 +214,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.2.4
     created: "2021-10-28T08:54:24.992778+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: e8fd01132ee73565604642ecab2e993e78a6e3f96a316bc23200de33e339c182
     engine: gotpl
     home: https://goharbor.io
@@ -207,7 +241,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.2.3
     created: "2021-07-08T23:15:54.938527+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: ee10a79ca31eb6e4f6c0577263cd98faabb9f4e606798d75d15177a0773784c6
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
@@ -232,7 +267,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.2.2
     created: "2021-05-24T16:28:08.323888+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: d0c2291c94a3d2d9d0fc19d7747e11a4b54b36e7f8636b9272de2abe7d891d1b
     engine: gotpl
     home: https://goharbor.io
@@ -258,7 +294,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.2.1
     created: "2021-04-01T09:17:37.190635+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: c47e2220f6383dfc0156f413ca8387a972decc3c6cfc9371aa452ddb3f58fa2e
     engine: gotpl
     home: https://goharbor.io
@@ -284,7 +321,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.2.0
     created: "2021-02-26T10:59:49.609022+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: ebb2c8cb130a14fa2e83532eabbc432db71d278ca6def11170db22d5b7aed422
     engine: gotpl
     home: https://goharbor.io
@@ -310,7 +348,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.1.6
     created: "2021-07-19T01:31:33.287354+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 521dea759b7abd0dc1e66c933a0baeb0abd5d5316fd6ba0ce53c8d11f5a9a2d6
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
@@ -335,7 +374,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.1.5
     created: "2021-04-30T09:08:49.688482+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 74af40624e9dbcebe0f64db3e7de6fbbd3baec46420e8dc255fe2f6ec3d36a70
     engine: gotpl
     home: https://goharbor.io
@@ -361,7 +401,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.1.4
     created: "2021-03-19T11:16:56.555955+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 4e72a94ea436ba9583287f7b4171c5da456581a68560aa4db00ff1aaad2701ff
     engine: gotpl
     home: https://goharbor.io
@@ -387,7 +428,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.1.3
     created: "2021-01-12T15:33:22.822226+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 556f741fb7bd88b193eeff44b44e7c4affdb097fa1440872f9c513d5d4d6327c
     engine: gotpl
     home: https://goharbor.io
@@ -413,7 +455,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.1.2
     created: "2020-12-17T14:18:01.514032+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: e0f948e1f4cb4bdac4158d19206e91dab678b367aba2d3b8e7db6c49b9a352a5
     engine: gotpl
     home: https://goharbor.io
@@ -439,7 +482,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.1.1
     created: "2020-10-30T10:49:48.657998+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: c2e79dd6ab1d2a2778331dbd9a4e4251871bab2ab57cdaeae917d889c68123e1
     engine: gotpl
     home: https://goharbor.io
@@ -465,7 +509,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.1.0
     created: "2020-09-23T13:45:51.252889+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 3a93c03a65ab678903045b9b39d07c93a05f904157652d64bd45b87f6ecae51c
     engine: gotpl
     home: https://goharbor.io
@@ -491,7 +536,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.0.6
     created: "2021-02-10T16:36:43.145483+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 4f99d63aef066237d4a0ffc3bed1c53021efdf0cc976360720d06b349d62e4fa
     engine: gotpl
     home: https://goharbor.io
@@ -517,7 +563,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.0.5
     created: "2020-12-14T14:19:20.8985+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: a040b7ea2752274ad66c88352e93f45e5e9e8faa0a938f2d344a5f6eede8b809
     engine: gotpl
     home: https://goharbor.io
@@ -543,7 +590,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.0.4
     created: "2020-11-25T16:57:47.414187+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 893c13cdf83de92d958e4e5d77569be5c1663fb91ffa2e72e371ffa7f40d58c1
     engine: gotpl
     home: https://goharbor.io
@@ -569,7 +617,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.0.3
     created: "2020-09-25T13:55:36.924848+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: e069f3347388596474ed730911fc8647a6728a753b937cf9a13ec10552c6e2a4
     engine: gotpl
     home: https://goharbor.io
@@ -595,7 +644,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.0.2
     created: "2020-08-06T11:59:46.726714+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: cfc7e8ff8fc5a7a07a47c821f7aeaab09c6ba57e87ffd87f9eb3f4d33c974a49
     engine: gotpl
     home: https://goharbor.io
@@ -621,7 +671,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.0.1
     created: "2020-07-06T15:01:10.28406+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 38aeee04330c51680b66141667c0bc23cbdb7401a80e600c659dd5d2abf56608
     engine: gotpl
     home: https://goharbor.io
@@ -647,7 +698,8 @@ entries:
   - apiVersion: v1
     appVersion: 2.0.0
     created: "2020-05-29T17:53:42.120241+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: d74dc03e6b45186dea59ce833021c64538c1feee2cc8551798b002aca4398f75
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
@@ -672,7 +724,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.9
     created: "2021-10-29T16:02:03.625805+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: f21156cbae034ca30e0705a12eeed47a003c22456bdfaae3d2599e61da711415
     engine: gotpl
     home: https://goharbor.io
@@ -696,7 +749,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.8
     created: "2021-06-30T15:19:33.734172+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 84f71a5c0d95e68fab8bfbbbcbb83bc82a3ed3e92f2b99ba13419bc769cc1667
     home: https://goharbor.io
     icon: https://raw.githubusercontent.com/goharbor/harbor/master/docs/img/harbor_logo.png
@@ -719,7 +773,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.7
     created: "2021-06-01T14:03:37.727855+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: ae842d40cf3a596a1e2c6b30291620491f6d7d5571e3a22e6862c3b4c7eaa1f5
     engine: gotpl
     home: https://goharbor.io
@@ -743,7 +798,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.6
     created: "2020-11-20T09:22:50.302124+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 61e613debd634d03f99f24927168fc3e4926cebe2c35032ed084812d9c418b59
     engine: gotpl
     home: https://goharbor.io
@@ -767,7 +823,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.5
     created: "2020-09-16T14:58:04.971779+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: ab70cb57834a3405794c18837db3913b367597962ea36f3e4d50915b00c93c21
     engine: gotpl
     home: https://goharbor.io
@@ -791,7 +848,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.4
     created: "2020-07-17T14:15:37.132905+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: e98498d10a7458dc792f2d4b1157ddb75b5dcfaac371332ef85b5358423dc8fb
     engine: gotpl
     home: https://goharbor.io
@@ -815,7 +873,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.2
     created: "2020-04-17T11:55:26.645194+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 3e0c6691b53f4eb60766684fbf549edf60abc13c3e1c44719ad2172e4c1220d6
     engine: gotpl
     home: https://goharbor.io
@@ -839,7 +898,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.1
     created: "2020-02-20T21:50:13.904815+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 995afb041b16ba458887244f1cf60173c7dc68af006d42f982ae75532773b2f1
     engine: gotpl
     home: https://goharbor.io
@@ -863,7 +923,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.10.0
     created: "2019-12-18T10:32:07.127031+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 98da28a80f21d5892a53a2dc9d52bd47ec1f46c723c2dea66ed2f9c765637de4
     engine: gotpl
     home: https://goharbor.io
@@ -887,7 +948,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.9.4
     created: "2020-01-02T21:19:25.206133+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: d0a3b9b5d25b9ab79a58999dd0ed212204ad99a8e239897c877394c83ea20ca3
     engine: gotpl
     home: https://goharbor.io
@@ -911,7 +973,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.9.3
     created: "2019-11-18T18:20:14.410118+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 5d8a68a318569b3f497e2f9d62ab1a1a13f0d475b6ab6226e9f00b8de78866e8
     engine: gotpl
     home: https://goharbor.io
@@ -935,7 +998,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.9.2
     created: "2019-11-07T14:39:07.980396+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 798773a6ca226cfbc3bac17c21b25df0d96eaa0577d3e4481995858fdba09e7f
     engine: gotpl
     home: https://goharbor.io
@@ -959,7 +1023,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.9.1
     created: "2019-10-25T16:01:17.032138+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 8293aa0c63b467b4566de2a8c5434bfc53878703d4c99ccf34dd9365e38b62c2
     engine: gotpl
     home: https://goharbor.io
@@ -983,7 +1048,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.9.0
     created: "2019-10-25T16:01:17.030306+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 9a76025db44cc81ecbafe487437f50db69b29d79e48d048f97edcb2501792cd2
     engine: gotpl
     home: https://goharbor.io
@@ -1007,7 +1073,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.8.6
     created: "2019-11-18T20:30:27.317399+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 51c033cbcd67a118a09cd921af519fc6d4171ed624817045c3943b449ab2b1e3
     engine: gotpl
     home: https://goharbor.io
@@ -1031,7 +1098,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.8.5
     created: "2019-11-07T14:39:07.977251+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 451ac7311041a22d25bbdf52b7c3e6b1e3999d645babef0cc0cdf5c8be50636e
     engine: gotpl
     home: https://goharbor.io
@@ -1055,7 +1123,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.8.4
     created: "2019-10-25T16:01:17.027057+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 37dff7db277ab195bda0e1d03858ecbab4ce46c3cad6e00e7c00c77cb91b5811
     engine: gotpl
     home: https://goharbor.io
@@ -1079,7 +1148,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.8.3
     created: "2019-09-19T14:40:21.693628+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 70dae661000d2e94fc9a30b1e2f43acac4afac5a5f633f892221433dc4519627
     engine: gotpl
     home: https://goharbor.io
@@ -1103,7 +1173,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.8.2
     created: "2019-08-16T18:15:51.742168+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: ee33fc8110c5d9ae67b8e4ea1e95ec255366c5a74c9b88203b9d921d72b6298a
     engine: gotpl
     home: https://goharbor.io
@@ -1127,7 +1198,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.8.1
     created: "2019-06-19T13:55:22.297012+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: cf6e8ab0af1f3d51660d180def52f965d9108d4866e99d97594eb8ee989df736
     engine: gotpl
     home: https://goharbor.io
@@ -1151,7 +1223,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.8.0
     created: "2019-05-22T13:12:41.689108+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: c5771c861a37e1933bf2bfbbbd2d60b1b18a6a9d5260698211a2d0874b86262e
     engine: gotpl
     home: https://goharbor.io
@@ -1175,7 +1248,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.7.5
     created: "2019-05-13T14:06:06.244579+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: cb67a449113126fea868aaafe7ae24db177925378e5d6d057b41701b7b2a1f8b
     engine: gotpl
     home: https://goharbor.io
@@ -1199,7 +1273,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.7.0
     created: "2019-05-13T14:06:06.242958+08:00"
-    description: An open source trusted cloud native registry that stores, signs, and scans content
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
     digest: 7d24a18a4a2d82df12f811658a73ca51e8458d939822beaf266cd00cc0d43769
     engine: gotpl
     home: https://goharbor.io
@@ -1220,4 +1295,4 @@ entries:
     urls:
     - harbor-1.0.0.tgz
     version: 1.0.0
-generated: "2021-12-20T14:38:21.828327+08:00"
+generated: "2021-12-21T16:46:02.420594+08:00"
