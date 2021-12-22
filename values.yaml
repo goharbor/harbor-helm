@@ -511,6 +511,23 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+
+    # registry livenessProbe options: initialDelaySeconds, periodSeconds, timeoutSeconds, failureThreshold, successThreshold. More details see [official docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+    livenessProbeOptions: {}
+      # initialDelaySeconds: 300
+      # periodSeconds: 10
+      # timeoutSeconds: 1
+      # failureThreshold: 3
+      # successThreshold: 1
+
+    # registry readinessProbe options: initialDelaySeconds, periodSeconds, timeoutSeconds, failureThreshold, successThreshold. More details see [official docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+    readinessProbeOptions: {}
+      # initialDelaySeconds: 1
+      # periodSeconds: 10
+      # timeoutSeconds: 1
+      # failureThreshold: 3
+      # successThreshold: 1
+
   controller:
     image:
       repository: goharbor/harbor-registryctl

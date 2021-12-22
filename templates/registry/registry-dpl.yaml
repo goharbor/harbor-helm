@@ -56,15 +56,21 @@ spec:
             path: /
             scheme: {{ include "harbor.component.scheme" . | upper }}
             port: {{ template "harbor.registry.containerPort" . }}
-          initialDelaySeconds: 300
-          periodSeconds: 10
+          initialDelaySeconds: {{ .Values.registry.registry.livenessProbeOptions.initialDelaySeconds | default 300 }}
+          periodSeconds: {{ .Values.registry.registry.livenessProbeOptions.periodSeconds | default 10 }}
+          timeoutSeconds: {{ .Values.registry.registry.livenessProbeOptions.timeoutSeconds | default 1 }}
+          failureThreshold: {{ .Values.registry.registry.livenessProbeOptions.failureThreshold | default 3 }}
+          successThreshold: {{ .Values.registry.registry.livenessProbeOptions.successThreshold | default 1 }}
         readinessProbe:
           httpGet:
             path: /
             scheme: {{ include "harbor.component.scheme" . | upper }}
             port: {{ template "harbor.registry.containerPort" . }}
-          initialDelaySeconds: 1
-          periodSeconds: 10
+          initialDelaySeconds: {{ .Values.registry.registry.readinessProbeOptions.initialDelaySeconds | default 1 }}
+          periodSeconds: {{ .Values.registry.registry.readinessProbeOptions.periodSeconds | default 10 }}
+          timeoutSeconds: {{ .Values.registry.registry.readinessProbeOptions.timeoutSeconds | default 1 }}
+          failureThreshold: {{ .Values.registry.registry.readinessProbeOptions.failureThreshold | default 3 }}
+          successThreshold: {{ .Values.registry.registry.readinessProbeOptions.successThreshold | default 1 }}
 {{- if .Values.registry.registry.resources }}
         resources:
 {{ toYaml .Values.registry.registry.resources | indent 10 }}
