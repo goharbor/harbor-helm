@@ -73,8 +73,16 @@ spec:
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
+                {{- if .Values.core.existingSecret }}
+                name: {{ .Values.core.existingSecret }}
+                {{- else }}
                 name: {{ template "harbor.core" . }}
+                {{- end }}
+                {{- if .Values.core.existingSecretKey }}
+                key: {{ .Values.core.existingSecretKey }}
+                {{- else }}
                 key: secret
+                {{- end }}
           {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
             value: "true"

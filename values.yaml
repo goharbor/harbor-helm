@@ -285,6 +285,11 @@ persistence:
       bucket: bucketname
       # The base64 encoded json file which contains the key
       encodedkey: base64-encoded-json-key-file
+      # if existingSecret is provided encodedKey is ignored
+      # this is usefull if external-secret or sealedsecrets (or any other secret manager) are used
+      existingSecret: 
+      # default key if not specified should be GCS_KEY_DATA
+      existingSecretKey: 
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
     s3:
@@ -352,9 +357,10 @@ updateStrategy:
 # debug, info, warning, error or fatal
 logLevel: info
 
-# The initial password of Harbor admin. Change it from portal after launching Harbor
+# The initial password of Harbor admin . Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
-
+exsistingSecretAdminPassword: 
+exsistingSecretAdminPasswordKey: 
 # The name of the secret which contains key named "ca.crt". Setting this enables the
 # download link on portal to download the certificate of CA when the certificate isn't
 # generated automatically
@@ -362,6 +368,10 @@ caSecretName: ""
 
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
+# If existingSecret is provided above secretKey is ignored
+# this is usefull if external-secret or sealedsecrets (or any other secret manager) are used
+existingSecret:
+existingSecretKey:
 
 # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
 # artifacts from/to the registries that cannot be reached directly
@@ -453,7 +463,12 @@ core:
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
-  secret: ""
+  secret:
+  # if existingSecret or existingSecretKey is provided secret is ignored and those are used
+  # this is usefull if external-secret or sealedsecrets (or any other secret manager) are used
+  existingSecret:
+  # if existingSecret is specified existingSecretKey is mandatory
+  existingSecretKey:
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
   # The secret must contain keys named:
@@ -461,8 +476,10 @@ core:
   # "tls.key" - the private key
   # The default key pair will be used if it isn't set
   secretName: ""
-  # The XSRF key. Will be generated automatically if it isn't specified
+  # The XSRF key. Will be generated automatically if core.xsrfKey or core.existingxsrfKey it isn't specified
   xsrfKey: ""
+  # The XSRF key. xsrfKey in existing core.existingSecret
+  existingxsrfKey:
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -494,9 +511,13 @@ jobservice:
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used when job service communicates with other components.
-  # If a secret key is not specified, Helm will generate one.
+  # If a secret key or existingSecret is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # if existingSecret is provided above secret is ignored
+  # this is usefull if external-secret or sealedsecrets (or any other secret manager) are used
+  existingSecret:
+  existingSecretKey:
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -536,11 +557,18 @@ registry:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # if existingSecret is provided secret is ignored
+  # this is usefull if external-secret or sealedsecrets (or any other secret manager) are used
+  existingSecret:   
+  existingSecretKey: 
   # If true, the registry returns relative URLs in Location headers. The client is responsible for resolving the correct URL.
   relativeurls: false
   credentials:
     username: "harbor_registry_user"
     password: "harbor_registry_password"
+    # if existing secret is provided `registry.credentials.username` and `registry.credentials.password` is ignored
+    existingSecret: ""
+    existingSecretKey: ""
 
   middleware:
     enabled: false
@@ -736,6 +764,9 @@ database:
     port: "5432"
     username: "user"
     password: "password"
+    # use existing secret for database password if some operator is used
+    existingSecret: 
+    existingSecretKey: 
     coreDatabase: "registry"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
@@ -793,6 +824,9 @@ redis:
     chartmuseumDatabaseIndex: "3"
     trivyAdapterIndex: "5"
     password: ""
+    # when existingSecret is set previous `redis.external.password` is ignored
+    existingSecret: ""
+    existingSecretKey: ""
   ## Additional deployment annotations
   podAnnotations: {}
 

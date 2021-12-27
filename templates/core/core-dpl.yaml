@@ -75,16 +75,46 @@ spec:
         - secretRef:
             name: "{{ template "harbor.core" . }}"
         env:
+          {{- if .Values.database.external.existingSecret }}
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.database.external.existingSecret }}
+                key: {{ .Values.database.external.existingSecretKey }}
+          {{- end }}
+          {{- if .Values.exsistingSecretAdminPassword }}
+          - name: HARBOR_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.exsistingSecretAdminPassword }}
+                key: {{ .Values.exsistingSecretAdminPasswordKey }}
+          {{- end }}
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
+                {{- if .Values.core.existingSecret }}
+                name: {{ .Values.core.existingSecret }}
+                {{- else }}
                 name: {{ template "harbor.core" . }}
+                {{- end }}
+                {{- if .Values.core.existingSecretKey }}
+                key: {{ .Values.core.existingSecretKey }}
+                {{- else }}
                 key: secret
+                {{- end }}
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
+                {{- if .Values.jobservice.existingSecret }}
+                name: {{ .Values.jobservice.existingSecret }}
+                {{- else }}
                 name: "{{ template "harbor.jobservice" . }}"
+                {{- end }}
+                {{- if .Values.jobservice.existingSecretKey }}
+                key: {{ .Values.jobservice.existingSecretKey }}
+                {{- else }}
                 key: JOBSERVICE_SECRET
+                {{- end }}
          {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
             value: "true"
@@ -138,9 +168,17 @@ spec:
               path: app.conf
       - name: secret-key
         secret:
+          {{- if .Values.existingSecret }}
+          secretName: {{ .Values.existingSecret }}
+          {{- else }}
           secretName: {{ template "harbor.core" . }}
+          {{- end }}
           items:
+            {{- if .Values.existingSecretKey }}
+            - key: {{ .Values.existingSecretKey }}
+            {{- else }}
             - key: secretKey
+            {{- end }}
               path: key
       - name: token-service-private-key
         secret:

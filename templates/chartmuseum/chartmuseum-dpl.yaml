@@ -95,8 +95,16 @@ spec:
           - name: BASIC_AUTH_PASS
             valueFrom:
               secretKeyRef:
+                {{- if .Values.core.existingSecret }}
+                name: {{ .Values.core.existingSecret }}
+                {{- else }}
                 name: {{ template "harbor.core" . }}
+                {{- end }}
+                {{- if .Values.core.existingSecretKey }}
+                key: {{ .Values.core.existingSecretKey }}
+                {{- else }}
                 key: secret
+                {{- end }}
           - # Needed to make AWS' client connect correctly (see https://github.com/helm/chartmuseum/issues/280)
             name: AWS_SDK_LOAD_CONFIG
             value: "1"
@@ -138,10 +146,17 @@ spec:
       {{- end }}
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
       - name: gcs-key
-        secret:
+        {{- if .Values.persistence.imageChartStorage.gcs.existingSecret }}
+          secretName: {{ .Values.persistence.imageChartStorage.gcs.existingSecret }}
+        {{- else }}
           secretName: {{ template "harbor.registry" . }}
+        {{- end }}
           items:
+            {{- if .Values.persistence.imageChartStorage.gcs.existingSecretKey }}
+            - key: {{ .Values.persistence.imageChartStorage.gcs.existingSecretKey }}
+            {{- else }}
             - key: GCS_KEY_DATA
+            {{- end }}
               path: gcs-key.json
       {{- end }}
       {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}

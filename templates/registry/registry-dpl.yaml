@@ -158,16 +158,46 @@ spec:
         - secretRef:
             name: "{{ template "harbor.registryCtl" . }}"
         env:
+        {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: {{ .Values.redis.external.existingSecretKey }}
+        {{- end }}
+        {{- if .Values.registry.existingSecret }}
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.registry.existingSecret }}
+              key: {{ .Values.registry.existingSecretKey }}
+        {{- end }}
         - name: CORE_SECRET
           valueFrom:
             secretKeyRef:
+              {{- if .Values.core.existingSecret }}
+              name: {{ .Values.core.existingSecret }}
+              {{- else }}
               name: {{ template "harbor.core" . }}
+              {{- end }}
+              {{- if .Values.core.existingSecretKey }}
+              key: {{ .Values.core.existingSecretKey }}
+              {{- else }}
               key: secret
+              {{- end }}
         - name: JOBSERVICE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "harbor.jobservice" . }}
+              {{- if .Values.jobservice.existingSecret }}
+              name: {{ .Values.jobservice.existingSecret }}
+              {{- else }}
+              name: "{{ template "harbor.jobservice" . }}"
+              {{- end }}
+              {{- if .Values.jobservice.existingSecretKey }}
+              key: {{ .Values.jobservice.existingSecretKey }}
+              {{- else }}
               key: JOBSERVICE_SECRET
+              {{- end }}
         {{- if has "registry" .Values.proxy.components }}
         - name: HTTP_PROXY
           value: "{{ .Values.proxy.httpProxy }}"
@@ -218,9 +248,17 @@ spec:
       volumes:
       - name: registry-htpasswd
         secret:
+          {{- if .Values.registry.credentials.existingSecret }}
+          secretName: {{ .Values.registry.credentials.existingSecret }}
+          {{- else }}
           secretName: {{ template "harbor.registry" . }}-htpasswd
+          {{- end }}
           items:
+            {{- if .Values.registry.credentials.existingSecretKey }}
+            - key: {{ .Values.registry.credentials.existingSecretKey }}
+            {{- else }}
             - key: REGISTRY_HTPASSWD
+            {{- end }}
               path: passwd
       - name: registry-config
         configMap:
@@ -240,9 +278,17 @@ spec:
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
       - name: gcs-key
         secret:
+        {{- if .Values.persistence.imageChartStorage.gcs.existingSecret }}
+          secretName: {{ .Values.persistence.imageChartStorage.gcs.existingSecret }}
+        {{- else }}
           secretName: {{ template "harbor.registry" . }}
+        {{- end }}
           items:
+            {{- if .Values.persistence.imageChartStorage.gcs.existingSecretKey }}
+            - key: {{ .Values.persistence.imageChartStorage.gcs.existingSecretKey }}
+            {{- else }}
             - key: GCS_KEY_DATA
+            {{- end }}
               path: gcs-key.json
       {{- end }}
       {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
