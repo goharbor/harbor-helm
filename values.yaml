@@ -374,6 +374,9 @@ proxy:
     - jobservice
     - trivy
 
+# Run the migration job via helm hook
+enableMigrateHelmHook: false
+
 # The custom ca bundle secret, the secret must contain key named "ca.crt"
 # which will be injected into the trust store for chartmuseum, core, jobservice, registry, trivy components
 # caBundleSecretName: ""
