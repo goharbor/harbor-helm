@@ -70,10 +70,6 @@ spec:
   - http:
       paths:
 {{- if semverCompare "<1.19-0" (include "harbor.ingress.kubeVersion" .) }}
-      - path: {{ .portal_path }}
-        backend:
-          serviceName: {{ template "harbor.portal" . }}
-          servicePort: {{ template "harbor.portal.servicePort" . }}
       - path: {{ .api_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
@@ -94,7 +90,46 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .portal_path }}
+        backend:
+          serviceName: {{ template "harbor.portal" . }}
+          servicePort: {{ template "harbor.portal.servicePort" . }}
 {{- else }}
+      - path: {{ .api_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .service_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .v2_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .chartrepo_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
+      - path: {{ .controller_path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "harbor.core" . }}
+            port:
+              number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .portal_path }}
         pathType: Prefix
         backend:
@@ -102,41 +137,6 @@ spec:
             name: {{ template "harbor.portal" . }}
             port:
               number: {{ template "harbor.portal.servicePort" . }}
-      - path: {{ .api_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .service_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .v2_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .chartrepo_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .controller_path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
 {{- end }}
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
