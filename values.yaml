@@ -716,21 +716,21 @@ redis:
   podAnnotations: {}
 
 exporter:
-    replicas: 1
+  replicas: 1
   # resources:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
-    podAnnotations: {}
-    serviceAccountName: ""
-    image:
-      repository: goharbor/harbor-exporter
-      tag: dev
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-    cacheDuration: 30
-    cacheCleanInterval: 14400
+  podAnnotations: {}
+  serviceAccountName: ""
+  image:
+    repository: goharbor/harbor-exporter
+    tag: dev
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  cacheDuration: 30
+  cacheCleanInterval: 14400
 
 metrics:
   enabled: false
