@@ -626,6 +626,14 @@ trivy:
   # If the value is set to `true` you have to manually download the `trivy.db` file and mount it in the
   # `/home/scanner/.cache/trivy/db/trivy.db` path.
   skipUpdate: false
+  # The offlineScan option prevents Trivy from sending API requests to identify dependencies.
+  #
+  # Scanning JAR files and pom.xml may require Internet access for better detection, but this option tries to avoid it.
+  # For example, the offline mode will not try to resolve transitive dependencies in pom.xml when the dependency doesn't
+  # exist in the local repositories. It means a number of detected vulnerabilities might be fewer in offline mode.
+  # It would work if all the dependencies are in local.
+  # This option doesn’t affect DB download. You need to specify skipUpdate as well as offlineScan in an air-gapped environment.
+  offlineScan: false
   # The duration to wait for scan completion
   timeout: 5m0s
   resources:
