@@ -541,6 +541,8 @@ registry:
   credentials:
     username: "harbor_registry_user"
     password: "harbor_registry_password"
+    # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
+    # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
 
   middleware:
     enabled: false
