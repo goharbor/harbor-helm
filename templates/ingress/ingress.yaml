@@ -40,6 +40,9 @@ metadata:
   name: "{{ template "harbor.ingress" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if $ingress.harbor.labels }}
+{{ toYaml $ingress.harbor.labels | indent 4 }}
+{{- end }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
 {{- if .Values.internalTLS.enabled }}
@@ -156,6 +159,9 @@ metadata:
   name: "{{ template "harbor.ingress-notary" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if $ingress.notary.labels }}
+{{ toYaml $ingress.notary.labels | indent 4 }}
+{{- end }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
 {{- if eq .Values.expose.ingress.controller "ncp" }}
