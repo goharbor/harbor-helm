@@ -53,11 +53,15 @@ expose:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
     notary:
-      # notary-specific annotations
+      # notary ingress-specific annotations
       annotations: {}
+      # notary ingress-specific labels
+      labels: {}
     harbor:
       # harbor ingress-specific annotations
       annotations: {}
+      # harbor ingress-specific labels
+      labels: {}
   clusterIP:
     # The name of ClusterIP service
     name: harbor
