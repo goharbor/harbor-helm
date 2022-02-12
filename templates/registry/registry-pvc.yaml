@@ -11,6 +11,7 @@ metadata:
   {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.registry.labels" . | indent 4 }}
     component: registry
 spec:
   accessModes: 

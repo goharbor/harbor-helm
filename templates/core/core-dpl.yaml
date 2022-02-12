@@ -4,18 +4,18 @@ metadata:
   name: {{ template "harbor.core" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: core
+{{ include "harbor.core.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.core.replicas }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: core
+{{ include "harbor.core.matchLabels" . | indent 6 }}
   template:
     metadata:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
-        component: core
+{{ include "harbor.core.matchLabels" . | indent 8 }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}

@@ -5,6 +5,7 @@ metadata:
   name: "{{ template "harbor.exporter" . }}-env"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.exporter.labels" . | indent 4 }}
 data:
   {{- if has "jobservice" .Values.proxy.components }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"

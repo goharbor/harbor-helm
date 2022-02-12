@@ -4,6 +4,7 @@ metadata:
   name: "{{ template "harbor.jobservice" . }}-env"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.jobservice.labels" . | indent 4 }}
 data:
   CORE_URL: "{{ template "harbor.coreURL" . }}"
   TOKEN_SERVICE_URL: "{{ template "harbor.tokenServiceURL" . }}"

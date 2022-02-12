@@ -13,7 +13,7 @@ metadata:
   {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: chartmuseum
+{{ include "harbor.chartmuseum.labels" . | indent 4 }}
 spec:
   accessModes: 
     - {{ $chartmuseum.accessMode }}

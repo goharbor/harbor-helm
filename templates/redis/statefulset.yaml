@@ -6,19 +6,19 @@ metadata:
   name: {{ template "harbor.redis" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: redis
+{{ include "harbor.redis.labels" . | indent 4 }}
 spec:
   replicas: 1
   serviceName: {{ template "harbor.redis" . }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: redis
+{{ include "harbor.redis.matchLabels" . | indent 6 }}
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: redis
+{{ include "harbor.redis.labels" . | indent 8 }}
 {{- if .Values.redis.podAnnotations }}
       annotations:
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
@@ -89,6 +89,7 @@ spec:
       name: data
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.redis.labels" . | indent 8 }}
     spec:
       accessModes: [{{ $redis.accessMode | quote }}]
       {{- if $redis.storageClass }}

@@ -6,6 +6,7 @@ metadata:
   name: "{{ template "harbor.internalTLS.jobservice.secretName" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.jobservice.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
   ca.crt: {{ (required "The \"internalTLS.trustCa\" is required!" .Values.internalTLS.trustCa) | b64enc | quote }}

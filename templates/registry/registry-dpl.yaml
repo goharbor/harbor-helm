@@ -4,7 +4,7 @@ metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: registry
+{{ include "harbor.registry.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.registry.replicas }}
   strategy:
@@ -20,6 +20,7 @@ spec:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.registry.labels" . | indent 8 }}
         component: registry
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/registry/registry-cm.yaml") . | sha256sum }}

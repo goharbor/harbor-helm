@@ -5,6 +5,7 @@ metadata:
   name: "{{ template "harbor.chartmuseum" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.chartmuseum.labels" . | indent 4 }}
 data:
   PORT: "{{ template "harbor.chartmuseum.containerPort" . }}"
 {{- if .Values.internalTLS.enabled }}

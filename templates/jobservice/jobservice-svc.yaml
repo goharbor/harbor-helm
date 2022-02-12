@@ -4,6 +4,7 @@ metadata:
   name: "{{ template "harbor.jobservice" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.jobservice.labels" . | indent 4 }}
 spec:
   ports:
     - name: {{ ternary "https-jobservice" "http-jobservice" .Values.internalTLS.enabled }}
@@ -15,4 +16,4 @@ spec:
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: jobservice
+{{ include "harbor.jobservice.matchLabels" . | indent 4 }}

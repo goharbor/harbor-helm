@@ -5,18 +5,16 @@ metadata:
   name: {{ template "harbor.notary-signer" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: notary-signer
+{{ include "harbor.notary-signer.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.notary.signer.replicas }}
   selector:
     matchLabels:
-{{ include "harbor.matchLabels" . | indent 6 }}
-      component: notary-signer
+{{ include "harbor.notary-signer.matchLabels" . | indent 6 }}
   template:
     metadata:
       labels:
-{{ include "harbor.labels" . | indent 8 }}
-        component: notary-signer
+{{ include "harbor.notary-signer.labels" . | indent 8 }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
 {{- if .Values.notary.signer.podAnnotations }}

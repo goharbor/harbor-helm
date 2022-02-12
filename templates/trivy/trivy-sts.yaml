@@ -6,19 +6,19 @@ metadata:
   name: {{ template "harbor.trivy" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: trivy
+{{ include "harbor.trivy.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: trivy
+{{ include "harbor.trivy.matchLabels" . | indent 6 }}
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: trivy
+{{ include "harbor.trivy.labels" . | indent 8 }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/trivy/trivy-secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
@@ -184,6 +184,7 @@ spec:
       name: data
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.trivy.labels" . | indent 8 }}
     spec:
       accessModes: [{{ $trivy.accessMode | quote }}]
       {{- if $trivy.storageClass }}

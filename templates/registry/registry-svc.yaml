@@ -4,6 +4,7 @@ metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.registry.labels" . | indent 4 }}
 spec:
   ports:
     - name: {{ ternary "https-registry" "http-registry" .Values.internalTLS.enabled }}
@@ -16,5 +17,4 @@ spec:
       port: {{ .Values.metrics.registry.port }}
 {{- end }}
   selector:
-{{ include "harbor.matchLabels" . | indent 4 }}
-    component: registry
+{{ include "harbor.registry.matchLabels" . | indent 4 }}

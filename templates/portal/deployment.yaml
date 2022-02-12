@@ -4,18 +4,16 @@ metadata:
   name: "{{ template "harbor.portal" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: portal
+{{ include "harbor.portal.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.portal.replicas }}
   selector:
     matchLabels:
-{{ include "harbor.matchLabels" . | indent 6 }}
-      component: portal
+{{ include "harbor.portal.matchLabels" . | indent 6 }}
   template:
     metadata:
       labels:
-{{ include "harbor.matchLabels" . | indent 8 }}
-        component: portal
+{{ include "harbor.portal.matchLabels" . | indent 8 }}
       annotations:
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
         checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}

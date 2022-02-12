@@ -4,6 +4,7 @@ metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.registry.labels" . | indent 4 }}
 data:
   config.yml: |+
     version: 0.1

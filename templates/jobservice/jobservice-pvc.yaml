@@ -10,7 +10,7 @@ metadata:
   {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: jobservice
+{{ include "harbor.jobservice.labels" . | indent 4 }}
 spec:
   accessModes: 
     - {{ $jobservice.accessMode }}

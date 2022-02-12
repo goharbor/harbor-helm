@@ -4,6 +4,7 @@ metadata:
   name: "{{ template "harbor.jobservice" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.jobservice.labels" . | indent 4 }}
     component: jobservice
 spec:
   replicas: {{ .Values.jobservice.replicas }}
@@ -15,12 +16,12 @@ spec:
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: jobservice
+{{ include "harbor.jobservice.matchLabels" . | indent 6 }}
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: jobservice
+{{ include "harbor.jobservice.labels" . | indent 8 }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
         checksum/configmap-env: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm-env.yaml") . | sha256sum }}

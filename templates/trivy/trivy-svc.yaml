@@ -5,6 +5,7 @@ metadata:
   name: "{{ template "harbor.trivy" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.trivy.labels" . | indent 4 }}
 spec:
   ports:
     - name: {{ ternary "https-trivy" "http-trivy" .Values.internalTLS.enabled }}
@@ -12,5 +13,5 @@ spec:
       port: {{ template "harbor.trivy.servicePort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: trivy
+{{ include "harbor.trivy.matchLabels" . | indent 4 }}
 {{ end }}

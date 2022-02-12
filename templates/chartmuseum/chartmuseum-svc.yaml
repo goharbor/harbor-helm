@@ -5,11 +5,12 @@ metadata:
   name: "{{ template "harbor.chartmuseum" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.chartmuseum.labels" . | indent 4 }}
 spec:
   ports:
     - port: {{ template "harbor.chartmuseum.servicePort" . }}
       targetPort: {{ template "harbor.chartmuseum.containerPort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
-    component: chartmuseum
+{{ include "harbor.chartmuseum.matchLabels" . | indent 4 }}
 {{- end }}

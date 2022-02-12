@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: "{{ template "harbor.portal" . }}"
   labels:
-{{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.portal.labels" . | indent 4 }}
 spec:
 {{- if  (eq .Values.expose.ingress.controller "gce") }}
   type: NodePort
@@ -12,5 +12,4 @@ spec:
     - port: {{ template "harbor.portal.servicePort" . }}
       targetPort: {{ template "harbor.portal.containerPort" . }}
   selector:
-{{ include "harbor.matchLabels" . | indent 4 }}
-    component: portal
+{{ include "harbor.portal.matchLabels" . | indent 4 }}

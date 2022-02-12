@@ -6,6 +6,7 @@ metadata:
   name: "{{ template "harbor.internalTLS.chartmuseum.secretName" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.chartmuseum.labels" . | indent 4 }}
 type: kubernetes.io/tls
 data:
   tls.ca: {{ (required "The \"internalTLS.trustCa\" is required!" .Values.internalTLS.trustCa) | b64enc | quote }}

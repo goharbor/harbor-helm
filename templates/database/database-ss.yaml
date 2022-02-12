@@ -6,19 +6,19 @@ metadata:
   name: "{{ template "harbor.database" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-    component: database
+{{ include "harbor.database.labels" . | indent 4 }}
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.database" . }}"
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
-      component: database
+{{ include "harbor.database.matchLabels" . | indent 6 }}
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
-        component: database
+{{ include "harbor.database.labels" . | indent 8 }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.database.podAnnotations }}
@@ -140,6 +140,7 @@ spec:
       name: "database-data"
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.database.labels" . | indent 8 }}
     spec:
       accessModes: [{{ $database.accessMode | quote }}]
       {{- if $database.storageClass }}

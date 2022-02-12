@@ -25,8 +25,17 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "harbor.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{/* Helm required labels */}}
 {{- define "harbor.labels" -}}
+helm.sh/chart: {{ include "harbor.chart" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ include "harbor.matchLabels" . }}
 heritage: {{ .Release.Service }}
 chart: {{ .Chart.Name }}
@@ -34,8 +43,217 @@ chart: {{ .Chart.Name }}
 
 {{/* matchLabels */}}
 {{- define "harbor.matchLabels" -}}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "harbor.name" . }}
 release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
+{{- end -}}
+
+{{/*
+Labels for harbor-chartmuseum
+*/}}
+{{- define "harbor.chartmuseum.labels" -}}
+app.kubernetes.io/version: {{ .Values.chartmuseum.image.tag }}
+{{ include "harbor.chartmuseum.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-chartmuseum
+*/}}
+{{- define "harbor.chartmuseum.matchLabels" -}}
+app.kubernetes.io/component: chartmuseum
+component: chartmuseum
+{{- end -}}
+
+{{/*
+Labels for harbor-core
+*/}}
+{{- define "harbor.core.labels" -}}
+app.kubernetes.io/version: {{ .Values.core.image.tag }}
+{{ include "harbor.core.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-core
+*/}}
+{{- define "harbor.core.matchLabels" -}}
+app.kubernetes.io/component: core
+component: core
+{{- end -}}
+
+{{/*
+Labels for harbor-database
+*/}}
+{{- define "harbor.database.labels" -}}
+app.kubernetes.io/version: {{ .Values.database.internal.image.tag }}
+{{ include "harbor.database.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-database
+*/}}
+{{- define "harbor.database.matchLabels" -}}
+app.kubernetes.io/component: database
+component: database
+{{- end -}}
+
+{{/*
+Labels for harbor-exporter
+*/}}
+{{- define "harbor.exporter.labels" -}}
+app.kubernetes.io/version: {{ .Values.exporter.image.tag }}
+{{ include "harbor.exporter.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-exporter
+*/}}
+{{- define "harbor.exporter.matchLabels" -}}
+app.kubernetes.io/component: exporter
+component: exporter
+{{- end -}}
+
+{{/*
+Labels for harbor-jobservice
+*/}}
+{{- define "harbor.jobservice.labels" -}}
+app.kubernetes.io/version: {{ .Values.jobservice.image.tag }}
+{{ include "harbor.jobservice.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-jobservice
+*/}}
+{{- define "harbor.jobservice.matchLabels" -}}
+app.kubernetes.io/component: jobservice
+component: jobservice
+{{- end -}}
+
+{{/*
+Labels for harbor-nginx
+*/}}
+{{- define "harbor.nginx.labels" -}}
+app.kubernetes.io/version: {{ .Values.nginx.image.tag }}
+{{ include "harbor.nginx.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-nginx
+*/}}
+{{- define "harbor.nginx.matchLabels" -}}
+app.kubernetes.io/component: nginx
+component: nginx
+{{- end -}}
+
+{{/*
+Labels for harbor-notary
+*/}}
+{{- define "harbor.notary.labels" -}}
+{{ include "harbor.notary.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-notary
+*/}}
+{{- define "harbor.notary.matchLabels" -}}
+app.kubernetes.io/component: notary
+component: notary
+{{- end -}}
+
+{{/*
+Labels for harbor-notary-server
+*/}}
+{{- define "harbor.notary-server.labels" -}}
+app.kubernetes.io/version: {{ .Values.notary.server.image.tag }}
+{{ include "harbor.notary-server.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-notary-server
+*/}}
+{{- define "harbor.notary-server.matchLabels" -}}
+app.kubernetes.io/component: notary-server
+component: notary-server
+{{- end -}}
+
+{{/*
+Labels for harbor-notary-signer
+*/}}
+{{- define "harbor.notary-signer.labels" -}}
+app.kubernetes.io/version: {{ .Values.notary.signer.image.tag }}
+{{ include "harbor.notary-signer.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-notary-signer
+*/}}
+{{- define "harbor.notary-signer.matchLabels" -}}
+app.kubernetes.io/component: notary-signer
+component: notary-signer
+{{- end -}}
+
+{{/*
+Labels for harbor-portal
+*/}}
+{{- define "harbor.portal.labels" -}}
+app.kubernetes.io/version: {{ .Values.portal.image.tag }}
+{{ include "harbor.portal.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-portal
+*/}}
+{{- define "harbor.portal.matchLabels" -}}
+app.kubernetes.io/component: portal
+component: portal
+{{- end -}}
+
+{{/*
+Labels for harbor-redis
+*/}}
+{{- define "harbor.redis.labels" -}}
+app.kubernetes.io/version: {{ .Values.redis.internal.image.tag }}
+{{ include "harbor.redis.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-redis
+*/}}
+{{- define "harbor.redis.matchLabels" -}}
+app.kubernetes.io/component: redis
+component: redis
+{{- end -}}
+
+{{/*
+Labels for harbor-registry
+*/}}
+{{- define "harbor.registry.labels" -}}
+app.kubernetes.io/version: {{ .Values.registry.registry.image.tag }}
+{{ include "harbor.registry.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-registry
+*/}}
+{{- define "harbor.registry.matchLabels" -}}
+app.kubernetes.io/component: registry
+component: registry
+{{- end -}}
+
+{{/*
+Labels for harbor-trivy
+*/}}
+{{- define "harbor.trivy.labels" -}}
+app.kubernetes.io/version: {{ .Values.trivy.image.tag }}
+{{ include "harbor.trivy.matchLabels" . }}
+{{- end -}}
+
+{{/*
+Matchlabels for harbor-trivy
+*/}}
+{{- define "harbor.trivy.matchLabels" -}}
+app.kubernetes.io/component: trivy
+component: trivy
 {{- end -}}
 
 {{- define "harbor.autoGenCert" -}}

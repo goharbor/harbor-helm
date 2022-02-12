@@ -5,11 +5,11 @@ metadata:
   name: "{{ template "harbor.exporter" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.exporter.labels" . | indent 4 }}
 spec:
   ports:
     - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.exporter.port }}
   selector:
-{{ include "harbor.matchLabels" . | indent 4 }}
-    component: exporter
+{{ include "harbor.exporter.matchLabels" . | indent 4 }}
 {{ end }}

@@ -5,10 +5,10 @@ metadata:
   name: {{ template "harbor.redis" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{ include "harbor.redis.labels" . | indent 4 }}
 spec:
   ports:
     - port: 6379
   selector:
-{{ include "harbor.matchLabels" . | indent 4 }}
-    component: redis
+{{ include "harbor.redis.matchLabels" . | indent 4 }}
 {{- end -}}
