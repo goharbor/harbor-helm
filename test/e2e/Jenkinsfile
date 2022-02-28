@@ -1,0 +1,113 @@
+@Library('harbor@main') _
+import io.goharbor.*
+
+class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecutor implements Serializable {
+    Script script
+    String context
+    String namespace
+    String coreHostname
+    String ingressControllerIP
+
+    HarborChartFreshInstallPipelineExecutor(Script script) {
+       this.script = script
+       this.context = script.params.cluster
+       this.namespace = "harbor-chart"
+       this.coreHostname = "harbor.chart.local"
+    }
+
+    // clean up the previously installed harbor chart
+    void preInstall(){
+        script.withCredentials([
+            script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH"),
+            script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD")]) {
+            script.sh """
+                # login Docker Hub to avoid the pull limit
+                docker login -u \${DOCKER_HUB_USERNAME} -p \${DOCKER_HUB_PASSWORD}
+                # build the image
+                docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
+                # clean up the namespace
+                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                    kubectl delete namespace ${namespace} --ignore-not-found --context ${context}
+                docker logout
+            """
+       }
+    }
+
+    HarborInstance install(){
+        // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
+        script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
+            // get the IP address of the ingress controller
+            ingressControllerIP = script.sh(
+                returnStdout: true,
+                script:"""
+                    docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                        sh -c 'host \$(kubectl get svc nginx-ingress-controller-controller --context ${context} -n ingress-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                """).trim()
+            // install harbor chart
+            script.sh """
+                # insert the hostAliases to run the replication test
+                sed -i -r "s|    spec:|    spec:\\n      hostAliases:\\n      - ip: ${ingressControllerIP}\\n        hostnames:\\n        - ${coreHostname}|g" ./templates/core/core-dpl.yaml
+                # install harbor chart
+                docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
+                    helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
+                        --set "expose.ingress.hosts.core=${coreHostname},expose.ingress.hosts.notary=notary.${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
+            """
+        }
+
+        HarborInstance instance = new HarborInstance()
+        instance.coreServiceURL = "https://" + coreHostname
+        instance.notaryServiceURL = "https://notary." + coreHostname
+        instance.adminPassword = "Harbor12345"
+        instance.authMode = "database"
+        instance.components = "trivy,notary,chartmuseum"
+        instance.hostIPMappings = "${coreHostname}:${ingressControllerIP},notary.${coreHostname}:${ingressControllerIP}"
+
+        script.currentBuild.description = """
+            Kubernetes: ${context}
+            Namespace: ${namespace}
+            Core Service: $instance.coreServiceURL
+            Notary Service: $instance.notaryServiceURL
+            Ingress Controller IP: ${ingressControllerIP}
+        """
+
+        return instance
+    }
+
+    void preTest(){
+        script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
+            script.import_trivy_db(script.env.KUBE_CONFIG_FILE_PATH, context, namespace, "")
+        }
+    }
+}
+
+def properties = {
+    // read context names from the kube config file
+    def names = []
+    withCredentials([file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
+        def kubeConfig = readYaml file: env.KUBE_CONFIG_FILE_PATH
+        kubeConfig.contexts.each {
+            names.add(it.name)
+        }
+    }
+    return [
+        parameters([
+            string(name: 'branch', defaultValue: 'master', description: 'The branch/tag to run for'),
+            choice(name: "cluster", choices: names, description: 'The Kubernetes cluster that the Harbor is deployed on')
+        ]),
+        buildDiscarder(strategy: logRotator(numToKeepStr: "15")),
+        pipelineTriggers(triggers: [cron('TZ=Asia/Hong_Kong\n0 0 * * *')])
+    ]
+}
+
+def caseSettings = {
+    CaseSettings settings = new CaseSettings()
+    settings.cases = "gc,common,database,trivy,notary,chartmuseum"
+    return settings
+}
+
+FreshInstallPipelineSettings settings = new FreshInstallPipelineSettings()
+settings.properties = properties
+settings.executor = new HarborChartFreshInstallPipelineExecutor(this)
+settings.caseSettings = caseSettings
+
+run_fresh_install_pipeline(settings)
