@@ -408,6 +408,7 @@ nginx:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  revisionHistoryLimit: 10
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -429,6 +430,7 @@ portal:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  revisionHistoryLimit: 10
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -450,6 +452,7 @@ core:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  revisionHistoryLimit: 10
   ## Startup probe values
   startupProbe:
     enabled: true
@@ -484,6 +487,7 @@ jobservice:
     repository: goharbor/harbor-jobservice
     tag: dev
   replicas: 1
+  revisionHistoryLimit: 10
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -536,6 +540,7 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
   replicas: 1
+  revisionHistoryLimit: 10
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -581,6 +586,7 @@ chartmuseum:
     repository: goharbor/chartmuseum-photon
     tag: dev
   replicas: 1
+  revisionHistoryLimit: 10
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -820,25 +826,26 @@ redis:
   podAnnotations: {}
 
 exporter:
-    replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
-    podAnnotations: {}
-    serviceAccountName: ""
-    # mount the service account token
-    automountServiceAccountToken: false
-    image:
-      repository: goharbor/harbor-exporter
-      tag: dev
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-    cacheDuration: 23
-    cacheCleanInterval: 14400
-    ## The priority class to run the pod as
-    priorityClassName:
+  replicas: 1
+  revisionHistoryLimit: 10
+# resources:
+#  requests:
+#    memory: 256Mi
+#    cpu: 100m
+  podAnnotations: {}
+  serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
+  image:
+    repository: goharbor/harbor-exporter
+    tag: dev
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  cacheDuration: 23
+  cacheCleanInterval: 14400
+  ## The priority class to run the pod as
+  priorityClassName:
 
 metrics:
   enabled: false
