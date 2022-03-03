@@ -565,7 +565,6 @@ registry:
     password: "harbor_registry_password"
     # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
     # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
-
   middleware:
     enabled: false
     type: cloudFront
@@ -577,6 +576,14 @@ registry:
       # The secret key that should be present is CLOUDFRONT_KEY_DATA, which should be the encoded private key
       # that allows access to CloudFront
       privateKeySecret: "my-secret"
+  # enable purge _upload directories
+  upload_purging:
+    enabled: true
+    # remove files in _upload directories which exist for a period of time, default is one week.
+    age: 168h
+    # the interval of the purge operations
+    interval: 24h
+    dryrun: false
 
 chartmuseum:
   enabled: true
@@ -916,4 +923,3 @@ trace:
     compression: false
     insecure: true
     timeout: 10s
-
