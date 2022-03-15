@@ -119,11 +119,43 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.database.notaryServerUsername" -}}
+  {{- if .Values.database.external.notaryServerUsername -}}
+    {{- .Values.database.external.notaryServerUsername -}}
+  {{- else -}}
+    {{- include "harbor.database.username" . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.notaryServerEscapedPassword" -}}
+  {{- if .Values.database.external.notaryServerPassword -}}
+    {{- .Values.database.external.notaryServerPassword | urlquery | replace "+" "%20" -}}
+  {{- else -}}
+    {{- include "harbor.database.escapedRawPassword" . -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.database.notarySignerDatabase" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "notarysigner" -}}
   {{- else -}}
     {{- .Values.database.external.notarySignerDatabase -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.notarySignerUsername" -}}
+  {{- if .Values.database.external.notarySignerUsername -}}
+    {{- .Values.database.external.notarySignerUsername -}}
+  {{- else -}}
+    {{- include "harbor.database.username" . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.database.notarySignerEscapedPassword" -}}
+  {{- if .Values.database.external.notarySignerPassword -}}
+    {{- .Values.database.external.notarySignerPassword | urlquery | replace "+" "%20" -}}
+  {{- else -}}
+    {{- include "harbor.database.escapedRawPassword" . -}}
   {{- end -}}
 {{- end -}}
 
@@ -136,11 +168,11 @@ app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{- define "harbor.database.notaryServer" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+postgres://{{ template "harbor.database.notaryServerUsername" . }}:{{ template "harbor.database.notaryServerEscapedPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.database.notarySigner" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+postgres://{{ template "harbor.database.notarySignerUsername" . }}:{{ template "harbor.database.notarySignerEscapedPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.redis.scheme" -}}
