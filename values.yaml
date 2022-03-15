@@ -779,6 +779,12 @@ database:
     coreDatabase: "registry"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
+    # Custom credentials for Notary Server database. If empty the username/password above will be used.
+    notaryServerUsername:
+    notaryServerPassword:
+    # Custom credentials for Notary Signer. If empty the username/password above will be used.
+    notarySignerUsername:
+    notarySignerPassword:
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
