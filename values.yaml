@@ -520,6 +520,8 @@ jobservice:
   secret: ""
   ## The priority class to run the pod as
   priorityClassName:
+  ## Redis namespace
+  redisNamespace: harbor_job_service_namespace
 
 registry:
   # set the service account to be used, default if left empty
