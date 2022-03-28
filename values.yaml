@@ -297,7 +297,8 @@ persistence:
       #chunksize: "5242880"
     s3:
       # Set an existing secret for S3 accesskey and secretkey
-      # keys in the secret should be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+      # keys in the secret should be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY for chartmuseum
+      # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
       #existingSecret: ""
       region: us-west-1
       bucket: bucketname
