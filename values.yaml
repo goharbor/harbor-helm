@@ -296,6 +296,9 @@ persistence:
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
     s3:
+      # Set an existing secret for S3 accesskey and secretkey
+      # keys in the secret should be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+      #existingSecret: ""
       region: us-west-1
       bucket: bucketname
       #accesskey: awsaccesskey
