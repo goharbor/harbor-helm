@@ -138,6 +138,12 @@ internalTLS:
   certSource: "auto"
   # The content of trust ca, only available when `certSource` is "manual"
   trustCa: ""
+  certValidity:
+    # Number of days self-signed certificate is valid
+    caCert: 365
+    # CA certificate validity in days
+    clientCert: 365
+    # Client certificate validity in days
   # core related cert configuration
   core:
     # secret name for core's tls certs

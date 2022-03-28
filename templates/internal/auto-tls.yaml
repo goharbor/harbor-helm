@@ -1,13 +1,13 @@
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
-{{- $ca := genCA "harbor-internal-ca" 365 }}
+{{- $ca := genCA "harbor-internal-ca" .Values.internalTLS.certValidity.caCert }}
 {{- $coreCN := (include "harbor.core" .) }}
-{{- $coreCrt := genSignedCert $coreCN (list "127.0.0.1") (list "localhost" $coreCN) 365 $ca }}
+{{- $coreCrt := genSignedCert $coreCN (list "127.0.0.1") (list "localhost" $coreCN) .Values.internalTLS.certValidity.clientCert $ca }}
 {{- $jsCN := (include "harbor.jobservice" .) }}
-{{- $jsCrt := genSignedCert $jsCN nil (list $jsCN) 365 $ca }}
+{{- $jsCrt := genSignedCert $jsCN nil (list $jsCN) .Values.internalTLS.certValidity.clientCert $ca }}
 {{- $regCN := (include "harbor.registry" .) }}
-{{- $regCrt := genSignedCert $regCN nil (list $regCN) 365 $ca }}
+{{- $regCrt := genSignedCert $regCN nil (list $regCN) .Values.internalTLS.certValidity.clientCert $ca }}
 {{- $portalCN := (include "harbor.portal" .) }}
-{{- $portalCrt := genSignedCert $portalCN nil (list $portalCN) 365 $ca }}
+{{- $portalCrt := genSignedCert $portalCN nil (list $portalCN) .Values.internalTLS.certValidity.clientCert $ca }}
 
 ---
 apiVersion: v1
@@ -64,7 +64,7 @@ data:
 {{- if .Values.chartmuseum.enabled }}
 ---
 {{- $chartCN := (include "harbor.chartmuseum" .) }}
-{{- $chartCrt := genSignedCert $chartCN nil (list $chartCN) 365 $ca }}
+{{- $chartCrt := genSignedCert $chartCN nil (list $chartCN) .Values.internalTLS.certValidity.clientCert $ca }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -81,7 +81,7 @@ data:
 {{- if and .Values.trivy.enabled}}
 ---
 {{- $trivyCN := (include "harbor.trivy" .) }}
-{{- $trivyCrt := genSignedCert $trivyCN nil (list $trivyCN) 365 $ca }}
+{{- $trivyCrt := genSignedCert $trivyCN nil (list $trivyCN) .Values.internalTLS.certValidity.clientCert $ca }}
 apiVersion: v1
 kind: Secret
 metadata:
