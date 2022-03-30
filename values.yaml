@@ -909,8 +909,8 @@ trace:
   #   application: harbor
   jaeger:
     # jaeger supports two modes:
-    #   agent mode(uncomment endpoint and uncomment username, password if needed)
-    #   collector mode(uncomment agent_host and agent_port)
+    #   collector mode(uncomment endpoint and uncomment username, password if needed)
+    #   agent mode(uncomment agent_host and agent_port)
     endpoint: http://hostname:14268/api/traces
     # username:
     # password:
