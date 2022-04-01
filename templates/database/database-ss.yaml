@@ -55,6 +55,20 @@ spec:
           - name: database-data
             mountPath: /var/lib/postgresql/data
             subPath: {{ $database.subPath }}
+      # if the volumn group is an NFS mount-point we need to ensure the postgres user will own the data directory. command
+      - name: "data-ownership-ensurer"
+        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", "chown -R 999:999 /var/lib/postgresql/data/pgdata || true"]
+{{- if .Values.database.internal.initContainer.permissions.resources }}
+        resources:
+{{ toYaml .Values.database.internal.initContainer.permissions.resources | indent 10 }}
+{{- end }}
+        volumeMounts:
+          - name: database-data
+            mountPath: /var/lib/postgresql/data
+            subPath: {{ $database.subPath }}
       # with "fsGroup" set, each time a volume is mounted, Kubernetes must recursively chown() and chmod() all the files and directories inside the volume
       # this causes the postgresql reports the "data directory /var/lib/postgresql/data/pgdata has group or world access" issue when using some CSIs e.g. Ceph
       # use this init container to correct the permission
