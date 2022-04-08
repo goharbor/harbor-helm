@@ -109,6 +109,10 @@ spec:
                 secretKeyRef:
                   name: {{ template "harbor.trivy" . }}
                   key: redisURL
+            {{- if .Values.caBundleSecretName }}
+            - name: "SSL_CERT_DIR"
+              value: /harbor_cust_cert
+            {{- end }}
           ports:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}
