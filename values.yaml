@@ -280,7 +280,7 @@ persistence:
     # "oss" and fill the information needed in the corresponding section. The type
     # must be "filesystem" if you want to use persistent volumes for registry
     # and chartmuseum
-    type: filesystem
+    type: gcs
     filesystem:
       rootdirectory: /storage
       #maxthreads: 100
@@ -295,6 +295,8 @@ persistence:
       encodedkey: base64-encoded-json-key-file
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
+      # To use existing secret, the key must be gcs-key.json
+      existingSecret: ""
     s3:
       region: us-west-1
       bucket: bucketname
@@ -370,6 +372,8 @@ caSecretName: ""
 
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
+# If using existingSecretSecretKey, the key must be sercretKey
+existingSecretSecretKey: ""
 
 # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
 # artifacts from/to the registries that cannot be reached directly
@@ -777,6 +781,8 @@ database:
     coreDatabase: "registry"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
+    # if using existing secret, the key must be POSTGRESQL_PASSWORD
+    existingSecret: ""
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
@@ -831,16 +837,18 @@ redis:
     chartmuseumDatabaseIndex: "3"
     trivyAdapterIndex: "5"
     password: ""
+    # If using existingSecret, the key must be REDIS_PASSWORD
+    existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}
 
 exporter:
   replicas: 1
   revisionHistoryLimit: 10
-# resources:
-#  requests:
-#    memory: 256Mi
-#    cpu: 100m
+  # resources:
+  #  requests:
+  #    memory: 256Mi
+  #    cpu: 100m
   podAnnotations: {}
   serviceAccountName: ""
   # mount the service account token
@@ -880,12 +888,14 @@ metrics:
     # Scrape interval. If not set, the Prometheus default scrape interval is used.
     interval: ""
     # Metric relabel configs to apply to samples before ingestion.
-    metricRelabelings: []
+    metricRelabelings:
+      []
       # - action: keep
       #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
       #   sourceLabels: [__name__]
     # Relabel configs to apply to samples before ingestion.
-    relabelings: []
+    relabelings:
+      []
       # - sourceLabels: [__meta_kubernetes_pod_node_name]
       #   separator: ;
       #   regex: ^(.*)$
