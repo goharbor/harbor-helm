@@ -1,3 +1,5 @@
+{{- $storage := .Values.persistence.imageChartStorage }}
+{{- $type := $storage.type }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -192,6 +194,13 @@ spec:
         - name: INTERNAL_TLS_TRUST_CA_PATH
           value: /etc/harbor/ssl/registry/ca.crt
         {{- end }}
+        {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: REDIS_PASSWORD
+        {{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
         volumeMounts:
@@ -246,7 +255,11 @@ spec:
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
       - name: gcs-key
         secret:
+          {{- if and (eq $type "gcs") $storage.gcs.existingSecret }}
+          secretName: {{ $storage.gcs.existingSecret }}
+          {{- else }}
           secretName: {{ template "harbor.registry" . }}
+          {{- end }}
           items:
             - key: GCS_KEY_DATA
               path: gcs-key.json
