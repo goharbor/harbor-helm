@@ -280,7 +280,7 @@ persistence:
     # "oss" and fill the information needed in the corresponding section. The type
     # must be "filesystem" if you want to use persistent volumes for registry
     # and chartmuseum
-    type: gcs
+    type: filesystem
     filesystem:
       rootdirectory: /storage
       #maxthreads: 100
