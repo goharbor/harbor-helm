@@ -39,6 +39,7 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+        runAsNonRoot: {{ .Values.chartmuseum.runAsNonRoot }}
 {{- if .Values.chartmuseum.serviceAccountName }}
       serviceAccountName: {{ .Values.chartmuseum.serviceAccountName }}
 {{- end -}}

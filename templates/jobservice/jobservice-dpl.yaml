@@ -39,6 +39,7 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+        runAsNonRoot: {{ .Values.jobservice.runAsNonRoot }}
 {{- if .Values.jobservice.serviceAccountName }}
       serviceAccountName: {{ .Values.jobservice.serviceAccountName }}
 {{- end -}}

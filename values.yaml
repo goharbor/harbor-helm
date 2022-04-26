@@ -405,6 +405,8 @@ nginx:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
@@ -427,6 +429,8 @@ portal:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
@@ -449,6 +453,8 @@ core:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   replicas: 1
   revisionHistoryLimit: 10
   ## Startup probe values
@@ -494,6 +500,8 @@ jobservice:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLoggers:
@@ -524,6 +532,8 @@ registry:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   registry:
     image:
       repository: goharbor/registry-photon
@@ -589,6 +599,8 @@ chartmuseum:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   # Harbor defaults ChartMuseum to returning relative urls, if you want using absolute url you should enable it by change the following value to 'true'
   absoluteUrl: false
   image:
@@ -622,6 +634,8 @@ trivy:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   # replicas the number of Pod replicas
   replicas: 1
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
@@ -688,6 +702,8 @@ notary:
     serviceAccountName: ""
     # mount the service account token
     automountServiceAccountToken: false
+    # Run container with non-root user
+    runAsNonRoot: false
     image:
       repository: goharbor/notary-server-photon
       tag: dev
@@ -708,6 +724,8 @@ notary:
     serviceAccountName: ""
     # mount the service account token
     automountServiceAccountToken: false
+    # Run container with non-root user
+    runAsNonRoot: false
     image:
       repository: goharbor/notary-signer-photon
       tag: dev
@@ -740,6 +758,8 @@ database:
     serviceAccountName: ""
     # mount the service account token
     automountServiceAccountToken: false
+    # Run container with non-root user
+    runAsNonRoot: false
     image:
       repository: goharbor/harbor-db
       tag: dev
@@ -804,6 +824,8 @@ redis:
     serviceAccountName: ""
     # mount the service account token
     automountServiceAccountToken: false
+    # Run container with non-root user
+    runAsNonRoot: false
     image:
       repository: goharbor/redis-photon
       tag: dev
@@ -845,6 +867,8 @@ exporter:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Run container with non-root user
+  runAsNonRoot: false
   image:
     repository: goharbor/harbor-exporter
     tag: dev

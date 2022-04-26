@@ -37,6 +37,7 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+        runAsNonRoot: {{ .Values.nginx.runAsNonRoot }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

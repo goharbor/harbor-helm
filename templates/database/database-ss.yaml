@@ -28,6 +28,7 @@ spec:
       securityContext:
         runAsUser: 999
         fsGroup: 999
+        runAsNonRoot: {{ .Values.database.runAsNonRoot }}
 {{- if .Values.database.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
 {{- end -}}
