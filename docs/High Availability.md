@@ -64,6 +64,9 @@ Configure the followings items in `values.yaml`, you can also set them as parame
 - **Replica**
    Set `portal.replicas`, `core.replicas`, `jobservice.replicas`, `registry.replicas`, `chartmuseum.replicas`, `notary.server.replicas` and `notary.signer.replicas` to `n`(`n`>=2).
 
+- **Pod Disruption Budget**
+   Set `portal.podDisruptionBudget`, `core.podDisruptionBudget`, `jobservice.podDisruptionBudget`, `registry.podDisruptionBudget`, `chartmuseum.podDisruptionBudget`, `trivy.podDisruptionBudget`, `nginx.podDisruptionBudget`, `notary.server.podDisruptionBudget` and `notary.signer.podDisruptionBudget` to `true`. Configure either `minAvailable` or `maxUnavailable` for each of the above deployments as necessary via chart values to ensure availability. By default, `minAvailable` is set to 1 when `podDisruptionBudget` is enabled.
+
 ### Installation
 
 Install the Harbor helm chart with a release name `my-release`:  
