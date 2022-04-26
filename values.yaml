@@ -406,6 +406,12 @@ nginx:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   revisionHistoryLimit: 10
   # resources:
   #  requests:
@@ -428,6 +434,12 @@ portal:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   revisionHistoryLimit: 10
   # resources:
   #  requests:
@@ -450,6 +462,12 @@ core:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   revisionHistoryLimit: 10
   ## Startup probe values
   startupProbe:
@@ -489,6 +507,12 @@ jobservice:
     repository: goharbor/harbor-jobservice
     tag: dev
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   revisionHistoryLimit: 10
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -542,6 +566,12 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   revisionHistoryLimit: 10
   nodeSelector: {}
   tolerations: []
@@ -595,6 +625,12 @@ chartmuseum:
     repository: goharbor/chartmuseum-photon
     tag: dev
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   revisionHistoryLimit: 10
   # resources:
   #  requests:
@@ -624,6 +660,12 @@ trivy:
   automountServiceAccountToken: false
   # replicas the number of Pod replicas
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
   debugMode: false
   # vulnType a comma-separated list of vulnerability types. Possible values are `os` and `library`.
@@ -692,6 +734,12 @@ notary:
       repository: goharbor/notary-server-photon
       tag: dev
     replicas: 1
+    # Enable and configure PodDisruptionBudget
+    # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+    podDisruptionBudget:
+      enabled: false
+      minAvailable: 1
+      # maxUnavailable: 1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -712,6 +760,12 @@ notary:
       repository: goharbor/notary-signer-photon
       tag: dev
     replicas: 1
+    # Enable and configure PodDisruptionBudget
+    # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+    podDisruptionBudget:
+      enabled: false
+      minAvailable: 1
+      # maxUnavailable: 1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -836,6 +890,12 @@ redis:
 
 exporter:
   replicas: 1
+  # Enable and configure PodDisruptionBudget
+  # You can specify only one of maxUnavailable and minAvailable  in a single PodDisruptionBudget
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
   revisionHistoryLimit: 10
 # resources:
 #  requests:

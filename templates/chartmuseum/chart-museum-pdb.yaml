@@ -1,0 +1,17 @@
+{{- if and .Values.chartmuseum.enabled .Values.chartmuseum.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.chartmuseum" . }}"
+spec:
+{{- if .Values.chartmuseum.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.chartmuseum.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.chartmuseum.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.chartmuseum.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}    
+      component: chartmuseum
+{{- end }}

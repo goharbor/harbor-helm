@@ -1,0 +1,17 @@
+{{- if and .Values.trivy.enabled .Values.trivy.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.trivy" . }}"
+spec:
+{{- if .Values.trivy.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.trivy.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.trivy.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.trivy.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}    
+      component: trivy
+{{- end }}

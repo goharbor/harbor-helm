@@ -1,0 +1,17 @@
+{{- if and .Values.notary.enabled .Values.notary.signer.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.notary-signer" . }}"
+spec:
+{{- if .Values.notary.signer.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.notary.signer.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.notary.signer.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.notary.signer.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}    
+      component: notary-signer
+{{- end }}

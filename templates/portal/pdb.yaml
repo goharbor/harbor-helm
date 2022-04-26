@@ -1,0 +1,17 @@
+{{- if .Values.portal.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.portal" . }}"
+spec:
+{{- if .Values.portal.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.portal.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.portal.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.portal.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}    
+      component: portal
+{{- end }}

@@ -1,0 +1,17 @@
+{{- if and (ne .Values.expose.type "ingress") .Values.nginx.podDisruptionBudget.enable }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.nginx" . }}"
+spec:
+{{- if .Values.nginx.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.nginx.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.nginx.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.nginx.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}    
+      component: nginx
+{{- end }}

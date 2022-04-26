@@ -1,0 +1,17 @@
+{{- if .Values.registry.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "harbor.registry" . }}"
+spec:
+{{- if .Values.registry.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.registry.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.registry.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.registry.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}    
+      component: registry
+{{- end }}
