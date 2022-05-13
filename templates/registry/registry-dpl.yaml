@@ -74,6 +74,10 @@ spec:
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+        {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
+        {{- end }}
         env:
         {{- if has "registry" .Values.proxy.components }}
         - name: HTTP_PROXY

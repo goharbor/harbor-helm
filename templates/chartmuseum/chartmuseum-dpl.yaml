@@ -74,6 +74,10 @@ spec:
             name: "{{ template "harbor.chartmuseum" . }}"
         - secretRef:
             name: "{{ template "harbor.chartmuseum" . }}"
+        {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
+        {{- end }}
         env:
           {{- if has "chartmuseum" .Values.proxy.components }}
           - name: HTTP_PROXY
