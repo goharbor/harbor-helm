@@ -487,6 +487,8 @@ core:
   # pull_count, the unit is second. Will be 10 seconds if it isn't set.
   # eg. artifactPullAsyncFlushDuration: 10
   artifactPullAsyncFlushDuration:
+  gdpr:
+    deleteUser: false
 
 jobservice:
   image:
