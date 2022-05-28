@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- $jobservice := .Values.persistence.persistentVolumeClaim.jobservice -}}
 {{- if and .Values.persistence.enabled (not $jobservice.existingClaim) (has "file" .Values.jobservice.jobLoggers) }}
 kind: PersistentVolumeClaim
@@ -27,4 +28,5 @@ spec:
   storageClassName: {{ $jobservice.storageClass }}
     {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}

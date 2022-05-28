@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if or (eq .Values.expose.type "clusterIP") (eq .Values.expose.type "nodePort") (eq .Values.expose.type "loadBalancer") }}
 apiVersion: v1
 kind: Service
@@ -93,4 +94,5 @@ spec:
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: nginx
+{{- end }}
 {{- end }}

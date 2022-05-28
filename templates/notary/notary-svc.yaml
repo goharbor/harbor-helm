@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{ if .Values.notary.enabled }}
 apiVersion: v1
 kind: Service
@@ -29,3 +30,4 @@ spec:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: notary-signer
 {{ end }}
+{{- end }}

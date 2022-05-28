@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if .Values.chartmuseum.enabled }}
 apiVersion: v1
 kind: ConfigMap
@@ -110,4 +111,5 @@ data:
   ALIBABA_CLOUD_ACCESS_KEY_ID: {{ $storage.oss.accesskeyid }}
 {{- end }}
   STORAGE_TIMESTAMP_TOLERANCE: 1s
+{{- end }}
 {{- end }}

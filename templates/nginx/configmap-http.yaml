@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if and (ne .Values.expose.type "ingress") (not .Values.expose.tls.enabled) }}
 {{- $scheme := (include "harbor.component.scheme" .) -}}
 apiVersion: v1
@@ -145,4 +146,5 @@ data:
         }
       }
     }
+{{- end }}
 {{- end }}

@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.noSecrets }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
 {{- $ca := genCA "harbor-internal-ca" 365 }}
 {{- $coreCN := (include "harbor.core" .) }}
@@ -95,4 +96,5 @@ data:
   tls.key: {{ $trivyCrt.Key | b64enc | quote }}
 {{- end }}
 
+{{- end }}
 {{- end }}

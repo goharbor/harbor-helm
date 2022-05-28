@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -283,3 +284,4 @@ spec:
     {{- if .Values.registry.priorityClassName }}
       priorityClassName: {{ .Values.registry.priorityClassName }}
     {{- end }}
+{{- end }}

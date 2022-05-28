@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if .Values.trivy.enabled }}
 {{- $trivy := .Values.persistence.persistentVolumeClaim.trivy }}
 apiVersion: apps/v1
@@ -200,5 +201,6 @@ spec:
       resources:
         requests:
           storage: {{ $trivy.size | quote }}
+{{- end }}
 {{- end }}
 {{- end }}

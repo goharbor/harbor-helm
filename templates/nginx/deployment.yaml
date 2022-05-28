@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if ne .Values.expose.type "ingress" }}
 apiVersion: apps/v1
 kind: Deployment
@@ -106,4 +107,5 @@ spec:
     {{- if .Values.nginx.priorityClassName }}
       priorityClassName: {{ .Values.nginx.priorityClassName }}
     {{- end }}
+{{- end }}
 {{- end }}

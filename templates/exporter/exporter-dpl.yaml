@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if .Values.metrics.enabled}}
 apiVersion: apps/v1
 kind: Deployment
@@ -100,3 +101,4 @@ spec:
       priorityClassName: {{ .Values.exporter.priorityClassName }}
     {{- end }}
 {{ end }}
+{{- end }}

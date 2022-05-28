@@ -925,3 +925,9 @@ trace:
     compression: false
     insecure: true
     timeout: 10s
+
+gitops:
+  # Set to true to remove secrets from output. Use this to use this chart securely in a GitOps context.
+  noSecrets: false
+  # Set to true to remove non-secrets from output. Use this to create secrets out-of-band in a GitOps context.
+  onlySecrets: false

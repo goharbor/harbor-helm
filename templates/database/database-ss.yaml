@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if eq .Values.database.type "internal" -}}
 {{- $database := .Values.persistence.persistentVolumeClaim.database -}}
 apiVersion: apps/v1
@@ -158,3 +159,4 @@ spec:
           storage: {{ $database.size | quote }}
   {{- end -}}
   {{- end -}}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if .Values.persistence.enabled }}
 {{- $registry := .Values.persistence.persistentVolumeClaim.registry -}}
 {{- if and (not $registry.existingClaim) (eq .Values.persistence.imageChartStorage.type "filesystem") }}
@@ -28,5 +29,6 @@ spec:
   storageClassName: {{ $registry.storageClass }}
     {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

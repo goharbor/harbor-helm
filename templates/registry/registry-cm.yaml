@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -242,3 +243,4 @@ data:
     {{- end }}
     log_level: {{ .Values.logLevel }}
     registry_config: "/etc/registry/config.yml"
+{{- end }}

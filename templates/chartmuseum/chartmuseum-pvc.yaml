@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{- if .Values.chartmuseum.enabled }}
 {{- $persistence := .Values.persistence -}}
 {{- if $persistence.enabled }}
@@ -30,6 +31,7 @@ spec:
   storageClassName: {{ $chartmuseum.storageClass }}
     {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

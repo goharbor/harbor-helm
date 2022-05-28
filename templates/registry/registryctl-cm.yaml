@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,3 +7,4 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 data:
   {{- template "harbor.traceEnvsForRegistryCtl" . }}
+{{- end }}

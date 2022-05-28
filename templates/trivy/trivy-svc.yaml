@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{ if .Values.trivy.enabled }}
 apiVersion: v1
 kind: Service
@@ -14,3 +15,4 @@ spec:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: trivy
 {{ end }}
+{{- end }}

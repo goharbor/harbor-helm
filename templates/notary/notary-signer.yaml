@@ -1,3 +1,4 @@
+{{- if not .Values.gitops.onlySecrets }}
 {{ if .Values.notary.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -100,3 +101,4 @@ spec:
       priorityClassName: {{ .Values.notary.signer.priorityClassName }}
     {{- end }}
 {{ end }}
+{{- end }}
