@@ -120,7 +120,7 @@ spec:
         - name: chart-internal-certs
           mountPath: /etc/harbor/ssl/chartmuseum
         {{- end }}
-        {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
+        {{- if and (and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs")) (not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity ) }}
         - name: gcs-key
           mountPath: /etc/chartmuseum/gcs-key.json
           subPath: gcs-key.json
@@ -146,7 +146,7 @@ spec:
         secret:
           secretName: {{ template "harbor.internalTLS.chartmuseum.secretName" . }}
       {{- end }}
-      {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
+      {{- if and (and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs")) (not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity ) }}
       - name: gcs-key
         secret:
           {{- if and (eq $type "gcs") $storage.gcs.existingSecret }}

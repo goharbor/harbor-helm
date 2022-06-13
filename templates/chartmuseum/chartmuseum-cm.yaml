@@ -55,7 +55,9 @@ data:
 {{- else if eq $storageType "gcs" }}
   STORAGE: "google"
   STORAGE_GOOGLE_BUCKET: {{ $storage.gcs.bucket }}
+  {{- if not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity }}
   GOOGLE_APPLICATION_CREDENTIALS: /etc/chartmuseum/gcs-key.json
+  {{- end }}
   {{- if $storage.gcs.rootdirectory }}
   STORAGE_GOOGLE_PREFIX: {{ $storage.gcs.rootdirectory }}
   {{- end }}
