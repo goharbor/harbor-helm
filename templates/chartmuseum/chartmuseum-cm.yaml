@@ -69,6 +69,9 @@ data:
   {{- if $storage.s3.regionendpoint }}
   STORAGE_AMAZON_ENDPOINT: {{ $storage.s3.regionendpoint }}
   {{- end }}
+  {{- if $storage.s3.skipverify }}
+  AWS_INSECURE_SKIP_VERIFY: "true"
+  {{- end }}
   {{- if and (not $storage.s3.existingSecret) ($storage.s3.accesskey) }}
   AWS_ACCESS_KEY_ID: {{ $storage.s3.accesskey }}
   {{- end }}
