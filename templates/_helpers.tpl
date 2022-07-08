@@ -544,14 +544,6 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end -}}
 {{- end -}}
 
-{{- define "harbor.metricsPortName" -}}
-  {{- if .Values.internalTLS.enabled }}
-    {{- printf "https-metrics" -}}
-  {{- else -}}
-    {{- printf "http-metrics" -}}
-  {{- end -}}
-{{- end -}}
-
 {{- define "harbor.traceEnvs" -}}
   TRACE_ENABLED: "{{ .Values.trace.enabled }}"
   TRACE_SAMPLE_RATE: "{{ .Values.trace.sample_rate }}"
