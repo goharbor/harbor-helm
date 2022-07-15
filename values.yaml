@@ -488,7 +488,6 @@ core:
   # pull_count, the unit is second. Will be 10 seconds if it isn't set.
   # eg. artifactPullAsyncFlushDuration: 10
   artifactPullAsyncFlushDuration:
-
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
@@ -926,3 +925,13 @@ trace:
     compression: false
     insecure: true
     timeout: 10s
+
+# cache layer configurations
+# if this feature enabled, harbor will cache the resource
+# `project/project_metadata/repository/artifact/manifest` in the redis
+# which help to improve the performance of high concurrent pulling manifest.
+cache:
+  # default is not enabled.
+  enabled: false
+  # default keep cache for one day.
+  expireHours: 24
