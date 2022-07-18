@@ -53,6 +53,8 @@ spec:
             port: 4443
           initialDelaySeconds: 20
           periodSeconds: 10
+        ports:
+          - containerPort: 4443
 {{- if .Values.notary.server.resources }}
         resources:
 {{ toYaml .Values.notary.server.resources | indent 10 }}
