@@ -69,6 +69,12 @@ data:
   ARTIFACT_PULL_ASYNC_FLUSH_DURATION: {{ .Values.core.artifactPullAsyncFlushDuration }}
   {{- end }}
 
+  {{- if .Values.core.gdpr}}
+  {{- if .Values.core.gdpr.deleteUser}}
+  GDPR_DELETE_USER: "true"
+  {{- end }}
+  {{- end }}
+
   {{- if .Values.cache.enabled }}
   CACHE_ENABLED: "true"
   CACHE_EXPIRE_HOURS: "{{ .Values.cache.expireHours }}"
