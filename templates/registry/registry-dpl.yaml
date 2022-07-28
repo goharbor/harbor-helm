@@ -74,9 +74,25 @@ spec:
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+        {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.gcs.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.gcs.existingSecret }}
+        {{- end }}
         {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
         - secretRef:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.swift.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.oss.existingSecret }}
         {{- end }}
         env:
         {{- if has "registry" .Values.proxy.components }}
@@ -86,6 +102,20 @@ spec:
           value: "{{ .Values.proxy.httpsProxy }}"
         - name: NO_PROXY
           value: "{{ template "harbor.noProxy" . }}"
+        {{- end }}
+        {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: name: {{ .Values.redis.external.existingSecretPasswordKey }}
+        {{- end }}
+        {{- if .Values.registry.existingSecret }}
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.registry.existingSecret }}
+              key: name: {{ .Values.registry.existingSecretKey }}
         {{- end }}
         {{- if .Values.internalTLS.enabled }}
         - name: INTERNAL_TLS_ENABLED
@@ -223,10 +253,17 @@ spec:
       volumes:
       - name: registry-htpasswd
         secret:
+          {{- if .Values.registry.credentials.existingSecret }}
+          secretName: {{ .Values.registry.credentials.existingSecret }}
+          items:
+            - key: {{ .Values.registry.credentials.existingSecretHtpasswdKey }}
+              path: passwd
+          {{- else }}
           secretName: {{ template "harbor.registry" . }}-htpasswd
           items:
             - key: REGISTRY_HTPASSWD
               path: passwd
+          {{- end }}
       - name: registry-config
         configMap:
           name: "{{ template "harbor.registry" . }}"

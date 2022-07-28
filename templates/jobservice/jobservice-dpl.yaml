@@ -76,6 +76,20 @@ spec:
               secretKeyRef:
                 name: {{ template "harbor.core" . }}
                 key: secret
+          {{- if .Values.jobservice.existingSecret }}
+          - name: JOBSERVICE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.jobservice.existingSecret }}
+                key: {{ .Values.jobservice.existingSecretKey }}
+          {{- end }}
+          {{- if .Values.registry.credentials.existingSecret }}
+          - name: REGISTRY_CREDENTIAL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.registry.credentials.existingSecret }}
+                key: {{ .Values.registry.credentials.existingSecretKey }}
+          {{- end }}
           {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
             value: "true"

@@ -294,6 +294,9 @@ persistence:
       rootdirectory: /storage
       #maxthreads: 100
     azure:
+      # Set an existing secret for Azure accountkey
+      # key in the secret should be AZURE_STORAGE_ACCESS_KEY
+      #existingSecret: ""
       accountname: accountname
       accountkey: base64encodedaccountkey
       container: containername
@@ -301,6 +304,9 @@ persistence:
     gcs:
       bucket: bucketname
       # The base64 encoded json file which contains the key
+      # Set an existing secret for Azure accountkey
+      # key in the secret should be GCS_KEY_DATA
+      #existingSecret: ""
       encodedkey: base64-encoded-json-key-file
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
@@ -326,6 +332,13 @@ persistence:
       #multipartcopymaxconcurrency: 100
       #multipartcopythresholdsize: "33554432"
     swift:
+      # Set an existing secret for swift password
+      # key in the secret should be:
+      #  * OS_PASSWORD for password (chartmuseum)
+      #  * REGISTRY_STORAGE_SWIFT_PASSWORD for password (registry)
+      #  * REGISTRY_STORAGE_SWIFT_SECRETKEY for secretkey (registry)
+      #  * REGISTRY_STORAGE_SWIFT_ACCESSKEY for accesskey (registry)
+      #existingSecret: ""
       authurl: https://storage.myprovider.com/v3/auth
       username: username
       password: password
@@ -346,6 +359,9 @@ persistence:
       #tempurlcontainerkey: false
       #tempurlmethods:
     oss:
+      # Set an existing secret for oss accesskeysecret
+      # key in the secret should be ALIBABA_CLOUD_ACCESS_KEY_SECRET
+      #existingSecret: ""
       accesskeyid: accesskeyid
       accesskeysecret: accesskeysecret
       region: regionname
@@ -374,6 +390,10 @@ updateStrategy:
 logLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
+# or give an existing secret for it
+# key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
+#existingSecretAdminPassword:
+existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
 harborAdminPassword: "Harbor12345"
 
 # The name of the secret which contains key named "ca.crt". Setting this enables the
@@ -382,6 +402,11 @@ harborAdminPassword: "Harbor12345"
 caSecretName: ""
 
 # The secret key used for encryption. Must be a string of 16 chars.
+# Set an existing secret for secret-key
+# key in the secret is given via existingSecretSecretKey (default to secretKey)
+#existingSecretSecretKey: ""
+existingSecretSecretKeyKey: secretKey
+# If an existing secret is not specified, set secretKey above
 secretKey: "not-a-secure-key"
 
 # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
@@ -478,8 +503,12 @@ core:
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used when core server communicates with other components.
-  # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
+  # Set an existing secret for secret
+  # key in the secret is given via existingSecretSecretKey (default to CORE_SECRET)
+  #existingSecretSecret: ""
+  existingSecretSecretKey: CORE_SECRET
+  # If a secret key or an existing secret is not specified, Helm will generate one.
   secret: ""
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
@@ -488,6 +517,10 @@ core:
   # "tls.key" - the private key
   # The default key pair will be used if it isn't set
   secretName: ""
+  # Set an existing secret for XSRF key
+  # key in the secret is given via existingSecretXsrfKeyKey (default to CSRF_KEY)
+  #existingSecretXsrfKey: ""
+  existingSecretXsrfKeKey: CSRF_KEY
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
   ## The priority class to run the pod as
@@ -528,8 +561,12 @@ jobservice:
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used when job service communicates with other components.
-  # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
+  # Set an existing secret for secret
+  # key in the secret is given via existingSecretKey (default to JOBSERVICE_SECRET)
+  #existingSecret: ""
+  existingSecretKey: JOBSERVICE_SECRET
+  # If a secret key or an existing secret is not specified, Helm will generate one.
   secret: ""
   ## The priority class to run the pod as
   priorityClassName:
@@ -568,16 +605,28 @@ registry:
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
-  # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
+  # Set an existing secret for secret
+  # key in the secret is given via existingSecretKey (default to REGISTRY_HTTP_SECRET)
+  #existingSecret: ""
+  existingSecretKey: REGISTRY_HTTP_SECRET
+  # If a secret key or an existing secret is not specified, Helm will generate one.
+  # If a secret key is not specified, Helm will generate one.
   secret: ""
   # If true, the registry returns relative URLs in Location headers. The client is responsible for resolving the correct URL.
   relativeurls: false
   credentials:
     username: "harbor_registry_user"
+    # The user password for registry
+    # Set an existing secret for registry password
+    # key in the secret is given via existingSecretKey (default to REGISTRY_CREDENTIAL_PASSWORD)
+    #existingSecret: ""
+    existingSecretKey: REGISTRY_CREDENTIAL_PASSWORD
     password: "harbor_registry_password"
     # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
     # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
+    # If you use secret, you must also provide the "htpasswized" version in the secret as it wouldn't be possible to create other way
+    existingSecretHtpasswdKey: REGISTRY_CREDENTIAL_HTPASSWD
   middleware:
     enabled: false
     type: cloudFront
@@ -664,6 +713,10 @@ trivy:
   #
   # You can create a GitHub token by following the instructions in
   # https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+  # you can store it in an existing secret or set it directly
+  # key for secret should be set in  existingSecretGithubTokenKey (default to gitHubToken)
+  #existingSecretGithubToken:
+  existingSecretGithubTokenKey: gitHubToken
   gitHubToken: ""
   # skipUpdate the flag to disable Trivy DB downloads from GitHub
   #
@@ -759,6 +812,11 @@ database:
       repository: goharbor/harbor-db
       tag: dev
     # The initial superuser password for internal database
+    # Set an existing secret for db password
+    # key in the secret is given via existingSecretKey (default to POSTGRESQL_PASSWORD)
+    #existingSecret: ""
+    existingSecretKey: POSTGRESQL_PASSWORD
+    # If an existing secret is not specified, set secretKey password
     password: "changeit"
     # The size limit for Shared memory, pgSQL use it for shared_buffer
     # More details see:
@@ -788,6 +846,11 @@ database:
     host: "192.168.0.1"
     port: "5432"
     username: "user"
+    # The user password for database
+    # Set an existing secret for db password
+    # key in the secret is given via existingSecretKey (default to POSTGRESQL_PASSWORD)
+    #existingSecret: ""
+    existingSecretKey: POSTGRESQL_PASSWORD
     password: "password"
     coreDatabase: "registry"
     notaryServerDatabase: "notary_server"
@@ -845,6 +908,10 @@ redis:
     registryDatabaseIndex: "2"
     chartmuseumDatabaseIndex: "3"
     trivyAdapterIndex: "5"
+    # If a secret is provided, it will be used to configure redis password
+    existingSecret: ""
+    ## NOTE: ignored unless `auth.existingSecret` parameter is set
+    existingSecretPasswordKey: ""
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}

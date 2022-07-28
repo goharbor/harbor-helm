@@ -56,6 +56,28 @@ spec:
             name: "{{ template "harbor.exporter" . }}-env"
         - secretRef:
             name: "{{ template "harbor.exporter" . }}"
+        {{- if (or .Values.existingSecretAdminPassword (or .Values.database.internal.existingSecret .Values.database.external.existingSecret)) }}
+        env:
+        {{- if .Values.existingSecretAdminPassword }}
+        - name: HARBOR_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.existingSecretAdminPassword }}
+              key: {{ .Values.existingSecretAdminPasswordKey }}
+        {{- end }}
+        {{- if (or .Values.database.internal.existingSecret .Values.database.external.existingSecret ) }}
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              {{- if eq "internal" .Values.database.type }}
+              name: {{ .Values.database.internal.existingSecret }}
+              key: {{ .Values.database.internal.existingSecretKey }}
+              {{- else }}
+              name: {{ .Values.database.external.existingSecret }}
+              key: {{ .Values.database.external.existingSecretKey }}
+              {{- end }}
+        {{- end }}
+        {{- end }}
 {{- if .Values.exporter.resources }}
         resources:
 {{ toYaml .Values.exporter.resources | indent 10 }}

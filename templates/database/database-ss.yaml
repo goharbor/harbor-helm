@@ -92,14 +92,23 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.resources | indent 10 }}
 {{- end }}
+        {{- if not .Values.database.internal.existingSecret }}
         envFrom:
           - secretRef:
               name: "{{ template "harbor.database" . }}"
+        {{- end }}
         env:
           # put the data into a sub directory to avoid the permission issue in k8s with restricted psp enabled
           # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
+          {{- if not .Values.database.internal.existingSecret }}
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.database.internal.existingSecret }}
+                key: {{ .Values.database.internal.existingSecretKey }}
+          {{- end }}
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data

@@ -74,9 +74,21 @@ spec:
             name: "{{ template "harbor.chartmuseum" . }}"
         - secretRef:
             name: "{{ template "harbor.chartmuseum" . }}"
+        {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
+        {{- end }}
         {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
         - secretRef:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.swift.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.oss.existingSecret }}
         {{- end }}
         env:
           {{- if has "chartmuseum" .Values.proxy.components }}
@@ -86,6 +98,13 @@ spec:
             value: "{{ .Values.proxy.httpsProxy }}"
           - name: NO_PROXY
             value: "{{ template "harbor.noProxy" . }}"
+          {{- end }}
+          {{- if .Values.redis.external.existingSecret }}
+          - name: CACHE_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.external.existingSecret }}
+                key: name: {{ .Values.redis.external.existingSecretPasswordKey }}
           {{- end }}
           {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
