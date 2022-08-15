@@ -581,6 +581,7 @@ registry:
     # which generates different lines each time because of the salt.
     # Do not comment out `registry.credentials.username` and `registry.credentials.password` as these are used
     # for core and jobservice Config Maps and Secrets. 
+    # If using `htpasswdString`, it should be consistent with `registry.credentials.username` and `registry.credentials.password`.
     # To generate bcrypt hash: "htpasswd -nbBC10 $username $password".
     # More info: https://httpd.apache.org/docs/2.4/misc/password_encryptions.html
     # htpasswdString: "harbor_registry_user:$2y$10$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0" # example string
