@@ -306,6 +306,7 @@ persistence:
       #chunksize: "5242880"
       # To use existing secret, the key must be gcs-key.json
       existingSecret: ""
+      useWorkloadIdentity: false
     s3:
       # Set an existing secret for S3 accesskey and secretkey
       # keys in the secret should be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY for chartmuseum
