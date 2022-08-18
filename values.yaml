@@ -297,6 +297,7 @@ persistence:
       #chunksize: "5242880"
       # To use existing secret, the key must be gcs-key.json
       existingSecret: ""
+      useWorkloadIdentity: false
     s3:
       region: us-west-1
       bucket: bucketname
