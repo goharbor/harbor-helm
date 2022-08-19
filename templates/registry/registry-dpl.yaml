@@ -233,7 +233,11 @@ spec:
       volumes:
       - name: registry-htpasswd
         secret:
+          {{- if not .Values.registry.credentials.existingSecret }}
           secretName: {{ template "harbor.registry" . }}-htpasswd
+          {{ else }}
+          secretName: .Values.registry.credentials.existingSecret
+          {{- end }}
           items:
             - key: REGISTRY_HTPASSWD
               path: passwd

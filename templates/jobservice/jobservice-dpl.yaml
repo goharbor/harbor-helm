@@ -91,7 +91,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.registry.credentials.existingSecret }}
-                key: REGISTRY_CREDENTIAL_PASSWORD
+                key: REGISTRY_PASSWD
           {{- end }}
         envFrom:
         - configMapRef:
