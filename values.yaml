@@ -304,6 +304,9 @@ persistence:
       encodedkey: base64-encoded-json-key-file
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
+      # To use existing secret, the key must be gcs-key.json
+      existingSecret: ""
+      useWorkloadIdentity: false
     s3:
       # Set an existing secret for S3 accesskey and secretkey
       # keys in the secret should be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY for chartmuseum
@@ -383,6 +386,8 @@ caSecretName: ""
 
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
+# If using existingSecretSecretKey, the key must be sercretKey
+existingSecretSecretKey: ""
 
 # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
 # artifacts from/to the registries that cannot be reached directly
@@ -576,6 +581,8 @@ registry:
   credentials:
     username: "harbor_registry_user"
     password: "harbor_registry_password"
+    # If using existingSecret, the key must be REGISTRY_PASSWD and REGISTRY_HTPASSWD
+    existingSecret: ""
     # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
     # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
   middleware:
@@ -792,6 +799,8 @@ database:
     coreDatabase: "registry"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
+    # if using existing secret, the key must be PASSWORD
+    existingSecret: ""
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
@@ -846,16 +855,18 @@ redis:
     chartmuseumDatabaseIndex: "3"
     trivyAdapterIndex: "5"
     password: ""
+    # If using existingSecret, the key must be REDIS_PASSWORD
+    existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}
 
 exporter:
   replicas: 1
   revisionHistoryLimit: 10
-# resources:
-#  requests:
-#    memory: 256Mi
-#    cpu: 100m
+  # resources:
+  #  requests:
+  #    memory: 256Mi
+  #    cpu: 100m
   podAnnotations: {}
   serviceAccountName: ""
   # mount the service account token
@@ -895,12 +906,14 @@ metrics:
     # Scrape interval. If not set, the Prometheus default scrape interval is used.
     interval: ""
     # Metric relabel configs to apply to samples before ingestion.
-    metricRelabelings: []
+    metricRelabelings:
+      []
       # - action: keep
       #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
       #   sourceLabels: [__name__]
     # Relabel configs to apply to samples before ingestion.
-    relabelings: []
+    relabelings:
+      []
       # - sourceLabels: [__meta_kubernetes_pod_node_name]
       #   separator: ;
       #   regex: ^(.*)$
