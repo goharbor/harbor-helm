@@ -201,6 +201,13 @@ spec:
               name: {{ .Values.redis.external.existingSecret }}
               key: REDIS_PASSWORD
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
+        - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
+              key: AZURE_STORAGE_ACCESS_KEY
+        {{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
         volumeMounts:
