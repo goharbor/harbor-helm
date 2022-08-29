@@ -80,6 +80,10 @@ spec:
         - secretRef:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
+        {{- end }}
         env:
           {{- if has "chartmuseum" .Values.proxy.components }}
           - name: HTTP_PROXY

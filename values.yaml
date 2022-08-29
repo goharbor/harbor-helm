@@ -298,6 +298,8 @@ persistence:
       accountkey: base64encodedaccountkey
       container: containername
       #realm: core.windows.net
+      # To use existing secret, the key must be AZURE_STORAGE_ACCESS_KEY
+      existingSecret: ""
     gcs:
       bucket: bucketname
       # The base64 encoded json file which contains the key
@@ -799,7 +801,7 @@ database:
     coreDatabase: "registry"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
-    # if using existing secret, the key must be PASSWORD
+    # if using existing secret, the key must be "password"
     existingSecret: ""
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
