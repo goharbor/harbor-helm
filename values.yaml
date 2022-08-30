@@ -379,6 +379,10 @@ updateStrategy:
 logLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
+# or give an existing secret for it
+# key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
+# existingSecretAdminPassword:
+existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
 harborAdminPassword: "Harbor12345"
 
 # The name of the secret which contains key named "ca.crt". Setting this enables the

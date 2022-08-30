@@ -64,6 +64,13 @@ spec:
               name: {{ .Values.database.external.existingSecret }}
               key: password
         {{- end }}
+        {{- if .Values.existingSecretAdminPassword }}
+        - name: HARBOR_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.existingSecretAdminPassword }}
+              key: {{ .Values.existingSecretAdminPasswordKey }}
+        {{- end }}
 {{- if .Values.exporter.resources }}
         resources:
 {{ toYaml .Values.exporter.resources | indent 10 }}
