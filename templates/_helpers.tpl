@@ -63,6 +63,14 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.database.type" -}}
+  {{- if eq .Values.database.type "internal" -}}
+    {{- printf "%s" "postgresql" -}}
+  {{- else -}}
+    {{- .Values.database.external.type -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- template "harbor.database" . }}
@@ -136,11 +144,19 @@ app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{- define "harbor.database.notaryServer" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+  {{- if or (eq (include "harbor.database.type" .) "mysql") (eq (include "harbor.database.type" .) "mariadb") }}
+    {{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@tcp({{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }})/{{ template "harbor.database.notaryServerDatabase" . }}?parseTime=True
+  {{- else -}}
+    postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.database.notarySigner" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+  {{- if or (eq (include "harbor.database.type" .) "mysql") (eq (include "harbor.database.type" .) "mariadb") }}
+    {{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@tcp({{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }})/{{ template "harbor.database.notarySignerDatabase" . }}?parseTime=True
+  {{- else -}}
+    postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
+  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.redis.scheme" -}}

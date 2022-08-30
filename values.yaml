@@ -794,6 +794,7 @@ database:
       #    memory: 128Mi
       #    cpu: 100m
   external:
+    type: "postgresql"
     host: "192.168.0.1"
     port: "5432"
     username: "user"

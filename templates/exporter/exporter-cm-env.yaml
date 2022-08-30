@@ -25,6 +25,7 @@ data:
   HARBOR_SERVICE_SCHEME: "{{ template "harbor.component.scheme" . }}"
   HARBOR_SERVICE_HOST: "{{ template "harbor.core" . }}"
   HARBOR_SERVICE_PORT: "{{ template "harbor.core.servicePort" . }}"
+  HARBOR_DATABASE_TYPE: "{{ template "harbor.database.type" . }}"
   HARBOR_DATABASE_HOST: "{{ template "harbor.database.host" . }}"
   HARBOR_DATABASE_PORT: "{{ template "harbor.database.port" . }}"
   HARBOR_DATABASE_USERNAME: "{{ template "harbor.database.username" . }}"
