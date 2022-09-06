@@ -674,6 +674,8 @@ trivy:
   # You can create a GitHub token by following the instructions in
   # https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
   gitHubToken: ""
+  # You can also give the token via an existing secret. Key must be `gitHubToken`.
+  # gitHubTokenSecret:
   # skipUpdate the flag to disable Trivy DB downloads from GitHub
   #
   # You might want to set the value of this flag to `true` in test or CI/CD environments to avoid GitHub rate limiting issues.
