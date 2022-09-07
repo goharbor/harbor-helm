@@ -37,7 +37,9 @@ data:
       {{- else if eq $type "gcs" }}
       gcs:
         bucket: {{ $storage.gcs.bucket }}
+        {{- if not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity }}
         keyfile: /etc/registry/gcs-key.json
+        {{- end }}
         {{- if $storage.gcs.rootdirectory }}
         rootdirectory: {{ $storage.gcs.rootdirectory }}
         {{- end }}
@@ -213,7 +215,7 @@ data:
     compatibility:
       schema1:
         enabled: true
-    
+
     {{- if .Values.registry.middleware.enabled }}
     {{- $middleware := .Values.registry.middleware }}
     {{- $middlewareType := $middleware.type }}
