@@ -523,7 +523,7 @@ jobservice:
     # - database
     # - stdout
   # The jobLogger sweeper duration (ignored if `jobLogger` is `stdout`)
-  loggerSweeperDuration: 14 #days
+  loggerSweeperDuration: 14  #days
 
   # resources:
   #   requests:

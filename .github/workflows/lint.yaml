@@ -14,34 +14,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          path: harbor
+          fetch-depth: 0
 
       - name: Set up Helm
         uses: azure/setup-helm@v1
         with:
           version: '${{ matrix.helm_version }}'
 
-      - name: Helm version
-        run:
-          helm version -c
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
 
-      - name: Run lint
-        continue-on-error: ${{ startsWith(matrix.helm_version, '2.') }}
-        working-directory: ./harbor
-        run:
-          helm lint .
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.3.0
 
-      - name: Update dependency
-        working-directory: ./harbor
-        run:
-          helm dependency update .
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
 
-      - name: Run template for ingress expose
-        working-directory: ./harbor
-        run:
-          helm template --set "expose.type=ingress" --output-dir $(mktemp -d -t output-XXXXXXXXXX) .
-
-      - name: Run template for nodePort expose
-        working-directory: ./harbor
-        run:
-          helm template --set "expose.type=nodePort,expose.tls.auto.commonName=127.0.0.1" --output-dir $(mktemp -d -t output-XXXXXXXXXX) .
+      - name: Run chart-testing (lint)
+        run: ct lint --charts . --validate-maintainers=false --lint-conf=lintconf.yaml
