@@ -76,6 +76,10 @@ spec:
         - name: signer-certificate
           mountPath: /etc/ssl/notary/tls.key
           subPath: tls.key
+        {{- with .Values.notary.signer.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
       volumes:
       - name: config
         secret:

@@ -438,6 +438,8 @@ nginx:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## securityContext to apply to the container
+  containerSecurityContext: {}
 
 portal:
   image:
@@ -460,6 +462,8 @@ portal:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## securityContext to apply to the container
+  containerSecurityContext: {}
 
 core:
   image:
@@ -505,6 +509,8 @@ core:
   artifactPullAsyncFlushDuration:
   gdpr:
     deleteUser: false
+  ## securityContext to apply to the container
+  containerSecurityContext: {} 
 
 jobservice:
   image:
@@ -540,6 +546,8 @@ jobservice:
   secret: ""
   ## The priority class to run the pod as
   priorityClassName:
+  ## securityContext to apply to the container
+  containerSecurityContext: {}
 
 registry:
   # set the service account to be used, default if left empty
@@ -606,6 +614,8 @@ registry:
     # the interval of the purge operations
     interval: 24h
     dryrun: false
+  ## securityContext to apply to the container
+  containerSecurityContext: {}
 
 chartmuseum:
   enabled: true
@@ -633,6 +643,8 @@ chartmuseum:
   priorityClassName:
   ## limit the number of parallel indexers
   indexLimit: 0
+  ## securityContext to apply to the container
+  containerSecurityContext: {}
 
 trivy:
   # enabled the flag to enable Trivy scanner
@@ -704,6 +716,8 @@ trivy:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## securityContext to apply to the container
+  containerSecurityContext: {}
 
 notary:
   enabled: true
@@ -727,6 +741,8 @@ notary:
     podAnnotations: {}
     ## The priority class to run the pod as
     priorityClassName:
+    ## securityContext to apply to the container
+    containerSecurityContext: {}  
   signer:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -747,6 +763,8 @@ notary:
     podAnnotations: {}
     ## The priority class to run the pod as
     priorityClassName:
+    ## securityContext to apply to the container
+    containerSecurityContext: {}
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.
@@ -793,6 +811,8 @@ database:
       #  requests:
       #    memory: 128Mi
       #    cpu: 100m
+    ## securityContext to apply to the container
+    containerSecurityContext: {}      
   external:
     host: "192.168.0.1"
     port: "5432"
@@ -842,6 +862,8 @@ redis:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    ## securityContext to apply to the container
+    containerSecurityContext: {}
   external:
     # support redis, redis+sentinel
     # addr for redis: <host_redis>:<port_redis>
@@ -883,6 +905,8 @@ exporter:
   cacheCleanInterval: 14400
   ## The priority class to run the pod as
   priorityClassName:
+  ## securityContext to apply to the container
+  containerSecurityContext: {}
 
 metrics:
   enabled: false

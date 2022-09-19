@@ -58,6 +58,10 @@ spec:
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
+        {{- with .Values.redis.internal.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}          
       {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data

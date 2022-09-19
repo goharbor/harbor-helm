@@ -237,6 +237,10 @@ spec:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
+        {{- with .Values.registry.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}        
       volumes:
       - name: registry-htpasswd
         secret:

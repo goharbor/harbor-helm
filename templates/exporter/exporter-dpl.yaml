@@ -80,6 +80,10 @@ spec:
           # There are some metric data are collectd from harbor core.
           # When internal TLS is enabled, the Exporter need the CA file to collect these data.
         {{- end }}
+        {{- with .Values.exporter.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
       volumes:
       - name: config
         secret:

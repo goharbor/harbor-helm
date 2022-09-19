@@ -144,6 +144,10 @@ spec:
         resources:
 {{ toYaml .Values.core.resources | indent 10 }}
 {{- end }}
+        {{- with .Values.core.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
       volumes:
       - name: config
         configMap:

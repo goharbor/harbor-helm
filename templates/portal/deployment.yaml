@@ -70,6 +70,10 @@ spec:
         - name: portal-internal-certs
           mountPath: /etc/harbor/ssl/portal
         {{- end }}
+        {{- with .Values.portal.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
       volumes:
       - name: portal-config
         configMap:

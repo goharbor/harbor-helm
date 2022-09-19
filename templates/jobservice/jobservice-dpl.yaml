@@ -117,6 +117,10 @@ spec:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
+        {{- with .Values.jobservice.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
       volumes:
       - name: jobservice-config
         configMap:

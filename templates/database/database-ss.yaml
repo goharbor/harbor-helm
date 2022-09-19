@@ -51,6 +51,10 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.initContainer.migrator.resources | indent 10 }}
 {{- end }}
+        {{- with .Values.database.internal.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data
@@ -68,6 +72,10 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.initContainer.permissions.resources | indent 10 }}
 {{- end }}
+        {{- with .Values.database.internal.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data
@@ -106,6 +114,10 @@ spec:
           subPath: {{ $database.subPath }}
         - name: shm-volume
           mountPath: /dev/shm
+        {{- with .Values.database.internal.containerSecurityContext }}
+        securityContext:
+          {{ toYaml . }}
+        {{- end }}
       volumes:
       - name: shm-volume
         emptyDir:
