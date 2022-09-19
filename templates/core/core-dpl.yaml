@@ -146,8 +146,8 @@ spec:
 {{- end }}
         {{- with .Values.core.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
-        {{- end }}
+          {{ toYaml . | nindent 10 }}
+        {{- end }}        
       volumes:
       - name: config
         configMap:

@@ -78,7 +78,7 @@ spec:
           subPath: tls.key
         {{- with .Values.notary.signer.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       volumes:
       - name: config

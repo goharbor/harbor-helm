@@ -77,7 +77,7 @@ spec:
           subPath: ca.crt
         {{- with .Values.notary.server.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       volumes:
       - name: config

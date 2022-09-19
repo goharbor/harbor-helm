@@ -147,7 +147,7 @@ spec:
       {{- if or (or .Values.internalTLS.enabled .Values.caBundleSecretName) (or (not .Values.persistence.enabled) $trivy.existingClaim) }}
         {{- with .Values.trivy.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}      
       volumes:
       {{- if .Values.internalTLS.enabled }}

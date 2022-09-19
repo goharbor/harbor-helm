@@ -119,7 +119,7 @@ spec:
         {{- end }}
         {{- with .Values.jobservice.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       volumes:
       - name: jobservice-config

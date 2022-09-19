@@ -60,7 +60,7 @@ spec:
           subPath: {{ $redis.subPath }}
         {{- with .Values.redis.internal.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}          
       {{- if not .Values.persistence.enabled }}
       volumes:

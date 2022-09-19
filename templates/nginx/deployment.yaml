@@ -84,7 +84,7 @@ spec:
         {{- end }}
         {{- with .Values.nginx.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       volumes:
       - name: config

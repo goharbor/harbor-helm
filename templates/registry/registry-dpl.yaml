@@ -239,7 +239,7 @@ spec:
         {{- end }}
         {{- with .Values.registry.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}        
       volumes:
       - name: registry-htpasswd

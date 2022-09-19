@@ -82,7 +82,7 @@ spec:
         {{- end }}
         {{- with .Values.exporter.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       volumes:
       - name: config

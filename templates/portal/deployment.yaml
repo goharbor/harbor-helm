@@ -72,7 +72,7 @@ spec:
         {{- end }}
         {{- with .Values.portal.containerSecurityContext }}
         securityContext:
-          {{ toYaml . }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       volumes:
       - name: portal-config

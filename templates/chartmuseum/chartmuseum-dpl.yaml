@@ -141,10 +141,10 @@ spec:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
-          {{- with .Values.chartmuseum.containerSecurityContext }}
-          securityContext:
-            {{ toYaml . }}
-          {{- end }}
+        {{- with .Values.chartmuseum.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
       volumes:
       - name: chartmuseum-data
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
