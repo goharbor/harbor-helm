@@ -45,6 +45,16 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.core.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+{{- with .Values.core.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: core
+{{- end }}
+{{- end }}
       containers:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
