@@ -49,6 +49,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.chartmuseum.automountServiceAccountToken | default false }}
+{{- with .Values.chartmuseum.topologySpreadConstraints}}
+      topologySpreadconstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: chartmuseum
+{{- end }}
+{{- end }}
       containers:
       - name: chartmuseum
         image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}

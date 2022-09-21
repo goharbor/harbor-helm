@@ -38,6 +38,16 @@ spec:
       serviceAccountName: {{ .Values.portal.serviceAccountName }}
 {{- end }}
       automountServiceAccountToken: {{ .Values.portal.automountServiceAccountToken | default false }}
+{{- with .Values.portal.topologySpreadConstraints}}
+      topologySpreadconstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: portal
+{{- end }}
+{{- end }}
       containers:
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}

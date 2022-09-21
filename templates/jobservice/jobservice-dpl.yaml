@@ -48,6 +48,16 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.jobservice.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+{{- with .Values.jobservice.topologySpreadConstraints}}
+      topologySpreadconstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: jobservice
+{{- end }}
+{{- end }}
       containers:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}

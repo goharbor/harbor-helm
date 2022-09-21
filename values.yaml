@@ -434,6 +434,10 @@ nginx:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -456,6 +460,10 @@ portal:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -482,6 +490,10 @@ core:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used when core server communicates with other components.
@@ -532,6 +544,10 @@ jobservice:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used when job service communicates with other components.
@@ -568,6 +584,10 @@ registry:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -627,6 +647,10 @@ chartmuseum:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -700,6 +724,10 @@ trivy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -723,6 +751,10 @@ notary:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    # Spread Pods across failure-domains like regions, availability zones or nodes
+    # Will not work with "persistence" enabled and using AWS EBS volumes!
+    # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+    topologySpreadConstraints:
     ## Additional deployment annotations
     podAnnotations: {}
     ## The priority class to run the pod as
@@ -743,6 +775,10 @@ notary:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    # Spread Pods across failure-domains like regions, availability zones or nodes
+    # Will not work with "persistence" enabled and using AWS EBS volumes!
+    # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+    topologySpreadConstraints:
     ## Additional deployment annotations
     podAnnotations: {}
     ## The priority class to run the pod as
@@ -879,6 +915,10 @@ exporter:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  # Will not work with "persistence" enabled and using AWS EBS volumes!
+  # Values for "labelSelector.matchLabels" are populated automatically, do not specify!
+  topologySpreadConstraints:
   cacheDuration: 23
   cacheCleanInterval: 14400
   ## The priority class to run the pod as

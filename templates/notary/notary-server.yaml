@@ -35,6 +35,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.notary.server.automountServiceAccountToken | default false }}
+{{- with .Values.notary.server.topologySpreadConstraints}}
+      topologySpreadconstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: notary-server
+{{- end }}
+{{- end }}
       containers:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
