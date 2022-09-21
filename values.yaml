@@ -777,6 +777,12 @@ database:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # The timeout used in livenessProbe; 1 to 5 seconds
+    livenessProbe:
+      timeoutSeconds: 1
+    # The timeout used in readinessProbe; 1 to 5 seconds
+    readinessProbe:
+      timeoutSeconds: 1
     nodeSelector: {}
     tolerations: []
     affinity: {}
