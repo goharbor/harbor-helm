@@ -54,6 +54,16 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.registry.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+{{- with .Values.registry.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: registry
+{{- end }}
+{{- end }}
       containers:
       - name: registry
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
