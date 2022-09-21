@@ -510,7 +510,7 @@ core:
   gdpr:
     deleteUser: false
   ## securityContext to apply to the container
-  containerSecurityContext: {} 
+  containerSecurityContext: {}
 
 jobservice:
   image:
@@ -571,6 +571,9 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+
+    ## securityContext to apply to the container
+    containerSecurityContext: {}    
   replicas: 1
   revisionHistoryLimit: 10
   nodeSelector: {}
@@ -717,7 +720,9 @@ trivy:
   ## The priority class to run the pod as
   priorityClassName:
   ## securityContext to apply to the container
-  containerSecurityContext: {}
+  containerSecurityContext:
+    privileged: false
+    allowPrivilegeEscalation: false  
 
 notary:
   enabled: true
