@@ -42,6 +42,7 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
         fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
 {{- if .Values.registry.serviceAccountName }}
       serviceAccountName: {{ .Values.registry.serviceAccountName }}
 {{- end -}}

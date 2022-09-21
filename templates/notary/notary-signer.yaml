@@ -26,6 +26,7 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+        runAsNonRoot: true
 {{- if .Values.notary.signer.serviceAccountName }}
       serviceAccountName: {{ .Values.notary.signer.serviceAccountName }}
 {{- end -}}
