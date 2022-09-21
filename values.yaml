@@ -391,6 +391,12 @@ nginx:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -416,6 +422,12 @@ portal:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -445,6 +457,12 @@ core:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -516,6 +534,12 @@ jobservice:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints:
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -556,6 +580,12 @@ registry:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -666,6 +696,12 @@ trivy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -811,6 +847,12 @@ exporter:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   cacheDuration: 23
   cacheCleanInterval: 14400
   ## The priority class to run the pod as
