@@ -80,6 +80,10 @@ spec:
           # There are some metric data are collectd from harbor core.
           # When internal TLS is enabled, the Exporter need the CA file to collect these data.
         {{- end }}
+        {{- if and (eq .Values.database.type "external") (ne .Values.database.external.sslmode "disable") }}
+        - name: psql-ssl-certs-secret
+          mountPath: /home/harbor/.postgresql
+        {{- end }}
       volumes:
       - name: config
         secret:
@@ -88,6 +92,20 @@ spec:
       - name: core-internal-certs
         secret:
           secretName: {{ template "harbor.internalTLS.core.secretName" . }}
+      {{- end }}
+      {{- if and (eq .Values.database.type "external") (ne .Values.database.external.sslmode "disable") }}
+      - name: psql-ssl-certs-secret
+        secret:
+          defaultMode: 400
+          items:
+            - key: client.crt
+              path: postgresql.crt
+            - key: client.key
+              path: postgresql.key
+              mode: 384
+            - key: server.crt
+              path: root.crt
+          secretName: "{{ template "harbor.database.ssl-certs-secret" . }}"
       {{- end }}
       {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolume" . | indent 6 }}

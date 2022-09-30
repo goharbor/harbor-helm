@@ -1,0 +1,16 @@
+{{- if and (eq .Values.database.type "external") (ne .Values.database.external.sslmode "disable") }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ template "harbor.database.ssl-certs-secret" . }}"
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+type: Opaque
+data:
+  client.crt: |-
+    {{ (required "The \"database.external.sslData.clientCertPath\" is required when using external DB with SSL!" .Values.database.external.sslData.clientCertPath) | .Files.Get | b64enc }}
+  client.key: |-
+    {{ (required "The \"database.external.sslData.clientKeyPath\" is required when using external DB with SSL!" .Values.database.external.sslData.clientKeyPath) | .Files.Get | b64enc }}
+  server.crt: |-
+    {{ (required "The \"database.external.sslData.serverCertPath\" is required when using external DB with SSL!" .Values.database.external.sslData.serverCertPath) | .Files.Get | b64enc }}
+{{- end -}}

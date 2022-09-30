@@ -114,6 +114,10 @@ spec:
         - name: jobservice-internal-certs
           mountPath: /etc/harbor/ssl/jobservice
         {{- end }}
+        {{- if and (eq .Values.database.type "external") (ne .Values.database.external.sslmode "disable") }}
+        - name: psql-ssl-certs-secret
+          mountPath: /home/harbor/.postgresql
+        {{- end }}
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
@@ -139,6 +143,20 @@ spec:
       - name: jobservice-internal-certs
         secret:
           secretName: {{ template "harbor.internalTLS.jobservice.secretName" . }}
+      {{- end }}
+      {{- if and (eq .Values.database.type "external") (ne .Values.database.external.sslmode "disable") }}
+      - name: psql-ssl-certs-secret
+        secret:
+          defaultMode: 400
+          items:
+            - key: client.crt
+              path: postgresql.crt
+            - key: client.key
+              path: postgresql.key
+              mode: 384
+            - key: server.crt
+              path: root.crt
+          secretName: "{{ template "harbor.database.ssl-certs-secret" . }}"
       {{- end }}
       {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolume" . | indent 6 }}

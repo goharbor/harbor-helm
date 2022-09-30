@@ -810,7 +810,13 @@ database:
     # "verify-full" - Always SSL (verify that the certification presented by the
     # server was signed by a trusted CA and the server host name matches the one
     # in the certificate)
-    sslmode: "disable"
+    sslmode: disable
+    # client ssl data needed!
+    # sslmode: disable
+    # sslData:
+    #   clientCertPath: "ssl-data/client.crt"
+    #   clientKeyPath: "ssl-data/client.key"
+    #   serverCertPath: "ssl-data/server.crt"
   # The maximum number of connections in the idle connection pool per pod (core+exporter).
   # If it <=0, no idle connections are retained.
   maxIdleConns: 100

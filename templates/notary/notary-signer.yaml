@@ -76,6 +76,10 @@ spec:
         - name: signer-certificate
           mountPath: /etc/ssl/notary/tls.key
           subPath: tls.key
+        {{- if and (eq .Values.database.type "external") (ne .Values.database.external.sslmode "disable") }}
+        - name: psql-ssl-certs-secret
+          mountPath: /home/notary/.postgresql
+        {{- end }}
       volumes:
       - name: config
         secret:
@@ -87,6 +91,20 @@ spec:
           {{- else }}
           secretName: {{ template "harbor.notary-server" . }}
           {{- end }}
+      {{- if and (eq .Values.database.type "external") (ne .Values.database.external.sslmode "disable") }}
+      - name: psql-ssl-certs-secret
+        secret:
+          defaultMode: 400
+          items:
+            - key: client.crt
+              path: postgresql.crt
+            - key: client.key
+              path: postgresql.key
+              mode: 384
+            - key: server.crt
+              path: root.crt
+          secretName: "{{ template "harbor.database.ssl-certs-secret" . }}"
+      {{- end }}
     {{- with .Values.notary.signer.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
