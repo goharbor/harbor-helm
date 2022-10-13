@@ -27,6 +27,9 @@ spec:
       port: {{ $clusterIP.ports.notaryPort }}
       targetPort: 4443
     {{- end }}
+  {{- with $clusterIP.ip }}
+  clusterIP: {{ . }}
+  {{- end }}
 {{- else if eq .Values.expose.type "nodePort" }}
 {{- $nodePort := .Values.expose.nodePort }}
   name: {{ $nodePort.name }}

@@ -74,6 +74,8 @@ expose:
       # The service port Notary listens on. Only needed when notary.enabled
       # is set to true
       notaryPort: 4443
+    # Set the IP if a specific in-cluster IP address is required
+    ip: ""
   nodePort:
     # The name of NodePort service
     name: harbor
