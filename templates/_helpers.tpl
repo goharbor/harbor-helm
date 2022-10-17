@@ -83,7 +83,9 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "postgres" -}}
   {{- else -}}
-    {{- .Values.database.external.username -}}
+    {{- with .Values.database.external }}
+      {{- ternary ((lookup "v1" "Secret" $.Release.Namespace .existingSecret).data.username | b64dec) .username (not (not .existingSecret)) }}
+    {{- end }}
   {{- end -}}
 {{- end -}}
 
@@ -91,7 +93,9 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- .Values.database.internal.password -}}
   {{- else -}}
-    {{- .Values.database.external.password -}}
+    {{- with .Values.database.external }}
+      {{- ternary ((lookup "v1" "Secret" $.Release.Namespace .existingSecret).data.password | b64dec) .password (not (not .existingSecret)) }}
+    {{- end }}
   {{- end -}}
 {{- end -}}
 
