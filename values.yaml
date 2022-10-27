@@ -688,6 +688,8 @@ trivy:
   # It would work if all the dependencies are in local.
   # This option doesn’t affect DB download. You need to specify skipUpdate as well as offlineScan in an air-gapped environment.
   offlineScan: false
+  # Comma-separated list of what security issues to detect. Possible values are `vuln`, `config` and `secret`. Defaults to `vuln`.
+  securityCheck: "vuln"
   # The duration to wait for scan completion
   timeout: 5m0s
   resources:
