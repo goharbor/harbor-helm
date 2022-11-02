@@ -48,8 +48,7 @@ Configure the followings items in `values.yaml`, you can also set them as parame
    Four empty databases should be created manually for `Harbor core`, `Notary server` and `Notary signer` and configure them in the section. Harbor will create tables automatically when starting up.
 - **External Redis**
    Set the `redis.type` to `external` and fill the information in `redis.external` section.
-
-   As the Redis client used by Harbor's upstream projects doesn't support `Sentinel`, Harbor can only work with a single entry point Redis. You can refer to this [guide](https://community.pivotal.io/s/article/How-to-setup-HAProxy-and-Redis-Sentinel-for-automatic-failover-between-Redis-Master-and-Slave-servers) to setup a HAProxy before the Redis to expose a single entry point.
+   Redis sentinel is supported after v1.9.0, configure the `redis.external.sentinelMasterSet` and `redis.external.addr` to enable it.
 - **Storage**
    By default, a default `StorageClass` is needed in the K8S cluster to provision volumes to store images, charts and job logs.
 
