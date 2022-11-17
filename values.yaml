@@ -485,6 +485,8 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional service annotations
+  serviceAnnotations: {}
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -730,6 +732,8 @@ notary:
     podAnnotations: {}
     ## The priority class to run the pod as
     priorityClassName:
+  ## Additional service annotations
+  serviceAnnotations: {}
   signer:
     # set the service account to be used, default if left empty
     serviceAccountName: ""
