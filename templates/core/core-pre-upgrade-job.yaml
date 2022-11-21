@@ -41,6 +41,8 @@ spec:
         - secretRef:
             name: "{{ template "harbor.core" . }}"
         {{- if .Values.database.external.existingSecret }}
+        securityContext:
+          allowPrivilegeEscalation: false
         env:
           - name: POSTGRESQL_PASSWORD
             valueFrom:

@@ -60,6 +60,8 @@ spec:
             port: {{ template "harbor.portal.containerPort" . }}
           initialDelaySeconds: 1
           periodSeconds: 10
+        securityContext:
+          allowPrivilegeEscalation: false
         ports:
         - containerPort: {{ template "harbor.portal.containerPort" . }}
         volumeMounts:

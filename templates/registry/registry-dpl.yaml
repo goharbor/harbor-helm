@@ -74,6 +74,8 @@ spec:
 {{ toYaml .Values.registry.registry.resources | indent 10 }}
 {{- end }}
         args: ["serve", "/etc/registry/config.yml"]
+        securityContext:
+          allowPrivilegeEscalation: false
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
@@ -165,6 +167,8 @@ spec:
         resources:
 {{ toYaml .Values.registry.controller.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.registryCtl" . }}"

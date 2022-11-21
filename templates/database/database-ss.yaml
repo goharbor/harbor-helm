@@ -51,6 +51,8 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.initContainer.migrator.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data
@@ -68,6 +70,8 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.initContainer.permissions.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data
@@ -92,6 +96,8 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         envFrom:
           - secretRef:
               name: "{{ template "harbor.database" . }}"

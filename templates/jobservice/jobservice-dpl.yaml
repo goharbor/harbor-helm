@@ -70,6 +70,8 @@ spec:
         resources:
 {{ toYaml .Values.jobservice.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         env:
           - name: CORE_SECRET
             valueFrom:

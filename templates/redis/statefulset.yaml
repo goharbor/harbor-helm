@@ -54,6 +54,8 @@ spec:
         resources:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         volumeMounts:
         - name: data
           mountPath: /var/lib/redis

@@ -57,6 +57,8 @@ spec:
         resources:
 {{ toYaml .Values.notary.server.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         env:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql

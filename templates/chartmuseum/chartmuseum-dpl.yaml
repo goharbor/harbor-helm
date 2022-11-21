@@ -71,6 +71,8 @@ spec:
         resources:
 {{ toYaml .Values.chartmuseum.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.chartmuseum" . }}"

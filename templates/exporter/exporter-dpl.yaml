@@ -51,6 +51,8 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
         args: ["-log-level", "{{ .Values.logLevel }}"]
+        securityContext:
+          allowPrivilegeEscalation: false
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.exporter" . }}-env"

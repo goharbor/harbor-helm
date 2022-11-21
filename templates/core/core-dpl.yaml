@@ -70,6 +70,8 @@ spec:
             port: {{ template "harbor.core.containerPort" . }}
           failureThreshold: 2
           periodSeconds: 10
+        securityContext:
+          allowPrivilegeEscalation: false
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.core" . }}"
