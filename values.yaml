@@ -261,8 +261,10 @@ persistence:
     disableredirect: false
     # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
     # The secret must contain keys named "ca.crt" which will be injected into the trust store
-    # of registry's containers.
-    # caBundleSecretName:
+    # of registry's and chartmuseum's containers.
+    caBundleSecretName: {}
+      # name: ""
+      # key: "ca.crt"
 
     # Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift",
     # "oss" and fill the information needed in the corresponding section. The type
@@ -277,20 +279,27 @@ persistence:
       container: containername
       #realm: core.windows.net
       # To use existing secret, the key must be AZURE_STORAGE_ACCESS_KEY
-      existingSecret: ""
+      existingSecret: {}
+        # name: ""
+        # key: AZURE_STORAGE_ACCESS_KEY
     gcs:
       bucket: bucketname
       # The base64 encoded json file which contains the key
       encodedkey: base64-encoded-json-key-file
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
-      # To use existing secret, the key must be gcs-key.json
-      existingSecret: ""
+      # To use existing secret, the key must be GCS_KEY_DATA
+      existingSecret: {}
+        # name: ""
+        # key: "GCS_KEY_DATA"
       useWorkloadIdentity: false
     s3:
       # Set an existing secret for S3 accesskey and secretkey
       # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
-      #existingSecret: ""
+      existingSecret: {}
+        # name: ""
+        # accessKey: REGISTRY_STORAGE_S3_ACCESSKEY
+        # secretKey: REGISTRY_STORAGE_S3_SECRETKEY
       region: us-west-1
       bucket: bucketname
       #accesskey: awsaccesskey
@@ -368,8 +377,11 @@ caSecretName: ""
 
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
-# If using existingSecretSecretKey, the key must be secretKey
-existingSecretSecretKey: ""
+# If using existingSecretSecretKey, the key must be sercretKey
+existingSecretSecretKey: {}
+  # name: ""
+  # key: secretKey
+
 
 # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
 # artifacts from/to the registries that cannot be reached directly
@@ -394,7 +406,9 @@ enableMigrateHelmHook: false
 # certificate you will need to provide the CA Cert.
 # Set uaaSecretName below to provide a pre-created secret that
 # contains a base64 encoded CA Certificate named `ca.crt`.
-# uaaSecretName:
+uaaSecretName: {}
+  # name: ""
+  # key: ca.crt
 
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
@@ -572,7 +586,10 @@ registry:
     username: "harbor_registry_user"
     password: "harbor_registry_password"
     # If using existingSecret, the key must be REGISTRY_PASSWD and REGISTRY_HTPASSWD
-    existingSecret: ""
+    existingSecret: {}
+      # name: ""
+      # passwordKey: REGISTRY_PASSWD
+      # htPasswordKey: REGISTRY_HTPASSWD
     # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
     # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
   middleware:
@@ -585,7 +602,9 @@ registry:
       ipfilteredby: none
       # The secret key that should be present is CLOUDFRONT_KEY_DATA, which should be the encoded private key
       # that allows access to CloudFront
-      privateKeySecret: "my-secret"
+      privateKeySecret: 
+        name: "my-secret"
+        key: CLOUDFRONT_KEY_DATA
   # enable purge _upload directories
   upload_purging:
     enabled: true
@@ -773,7 +792,10 @@ database:
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
     # if using existing secret, the key must be "password"
-    existingSecret: ""
+    existingSecret: {}
+      # name: ""
+      # usernameKey: ""
+      # passwordKey: ""
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
@@ -828,7 +850,9 @@ redis:
     trivyAdapterIndex: "5"
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD
-    existingSecret: ""
+    existingSecret: {}
+      # name: ""
+      # key: ""
   ## Additional deployment annotations
   podAnnotations: {}
 

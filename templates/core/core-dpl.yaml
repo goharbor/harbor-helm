@@ -107,16 +107,16 @@ spec:
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.database.external.existingSecret }}
-                key: password
-          {{- end }}
-          {{- if .Values.registry.credentials.existingSecret }}
+                name: {{ .Values.database.external.existingSecret.name }}
+                key: {{ .Values.database.external.existingSecret.passwordKey }}
+         {{- end }}
+         {{- if .Values.registry.credentials.existingSecret }}
           - name: REGISTRY_CREDENTIAL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.registry.credentials.existingSecret }}
-                key: REGISTRY_PASSWD
-          {{- end }}
+                name: {{ .Values.registry.credentials.existingSecret.name }}
+                key: {{ .Values.registry.credentials.existingSecret.passwordKey }}
+         {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
@@ -161,20 +161,25 @@ spec:
       - name: secret-key
         secret:
           {{- if .Values.existingSecretSecretKey }}
-          secretName: {{ .Values.existingSecretSecretKey }}
+          secretName: {{ .Values.existingSecretSecretKey.name }}
           {{- else }}
           secretName: {{ template "harbor.core" . }}
           {{- end }}
           items:
-            - key: secretKey
+            - key: {{ .Values.existingSecretSecretKey.key | default "secretKey" }}
               path: key
       - name: token-service-private-key
         secret:
           {{- if .Values.core.secretName }}
-          secretName: {{ .Values.core.secretName }}
+          secretName: {{ .Values.core.secretName.name }}
           {{- else }}
           secretName: {{ template "harbor.core" . }}
           {{- end }}
+          items:
+            - key: {{ .Values.existingSecretSecretKey.certKey | default "tls.crt" }}
+              path: tls.crt
+            - key: {{ .Values.existingSecretSecretKey.keyKey | default "tls.key" }}
+              path: tls.key
       {{- if .Values.expose.tls.enabled }}
       - name: ca-download
         secret:
@@ -189,9 +194,9 @@ spec:
       {{- if .Values.uaaSecretName }}
       - name: auth-ca-cert
         secret:
-          secretName: {{ .Values.uaaSecretName }}
+          secretName: {{ .Values.uaaSecretName.name }}
           items:
-            - key: ca.crt
+            - key: {{ .Values.uaaSecretName.key }}
               path: auth-ca.crt
       {{- end }}
       {{- if .Values.internalTLS.enabled }}

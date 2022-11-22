@@ -61,8 +61,8 @@ spec:
         - name: HARBOR_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.database.external.existingSecret }}
-              key: password
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.passwordKey }}
         {{- end }}
         {{- if .Values.existingSecretAdminPassword }}
         - name: HARBOR_ADMIN_PASSWORD

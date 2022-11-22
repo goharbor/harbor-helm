@@ -90,8 +90,8 @@ spec:
           - name: REGISTRY_CREDENTIAL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.registry.credentials.existingSecret }}
-                key: REGISTRY_PASSWD
+                name: {{ .Values.registry.credentials.existingSecret.name }}
+                key: {{ .Values.registry.credentials.existingSecret.passwordKey }}
           {{- end }}
         envFrom:
         - configMapRef:

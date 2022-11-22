@@ -63,6 +63,32 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.existingSecret.check" -}}
+  {{- if not (((.context).existingSecret).name) }}
+    {{- printf "false" -}}
+  {{- end -}}
+  {{- if and (.key) (index .context.existingSecret .key) -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.existingSecret" -}}
+  {{- if not (.context) -}}
+    {{- fail "Context with existingSecret must be specified to access existingSecret data!" -}}
+  {{- end -}}
+  {{- if not (.namespace) -}}
+    {{- fail "Namespace must be specified to access existingSecret data!" -}}
+  {{- end -}}
+  {{- $key := (.key | default "key") -}}
+  {{- $secretCheck := (eq (include "harbor.existingSecret.check" (dict "context" .context "key" $key)) "true") -}}
+  {{- if and (not $secretCheck) (not (.default)) -}}
+    {{- fail "ExistingSecret not set (missing name and/or key) and no default value was specified!" -}}
+  {{- end -}}
+  {{- ternary ((index (lookup "v1" "Secret" .namespace .context.existingSecret.name).data (index .context.existingSecret $key)) | b64dec) .default $secretCheck -}}
+{{- end -}}
+
 {{- define "harbor.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- template "harbor.database" . }}
@@ -84,7 +110,7 @@ app: "{{ template "harbor.name" . }}"
     {{- printf "%s" "postgres" -}}
   {{- else -}}
     {{- with .Values.database.external }}
-      {{- ternary ((lookup "v1" "Secret" $.Release.Namespace .existingSecret).data.username | b64dec) .username (not (not .existingSecret)) }}
+      {{- include "harbor.existingSecret" (dict "namespace" $.Release.Namespace "context" . "default" .username "key" "usernameKey") }}
     {{- end }}
   {{- end -}}
 {{- end -}}
@@ -94,7 +120,7 @@ app: "{{ template "harbor.name" . }}"
     {{- .Values.database.internal.password -}}
   {{- else -}}
     {{- with .Values.database.external }}
-      {{- ternary ((lookup "v1" "Secret" $.Release.Namespace .existingSecret).data.password | b64dec) .password (not (not .existingSecret)) }}
+      {{- include "harbor.existingSecret" (dict "namespace" $.Release.Namespace "context" . "default" .password "key" "passwordKey") }}
     {{- end }}
   {{- end -}}
 {{- end -}}
@@ -169,7 +195,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{- define "harbor.redis.password" -}}
   {{- with .Values.redis }}
     {{- if ne .type "internal" -}}
-      {{- ternary ((lookup "v1" "Secret" $.Release.Namespace .external.existingSecret).data.REDIS_PASSWORD | b64dec) .external.password (not (not .external.existingSecret)) }}
+      {{- include "harbor.existingSecret" (dict "namespace" $.Release.Namespace "context" .external "default" .external.password) }}
     {{- end -}}
   {{- end }}
 {{- end -}}
@@ -284,7 +310,10 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{- define "harbor.caBundleVolume" -}}
 - name: ca-bundle-certs
   secret:
-    secretName: {{ .Values.caBundleSecretName }}
+    secretName: {{ .Values.caBundleSecretName.name }}
+  items:
+    - key: {{ .Values.caBundleSecretName.key }}
+      path: ca.crt
 {{- end -}}
 
 {{- define "harbor.caBundleVolumeMount" -}}
