@@ -129,7 +129,7 @@ spec:
         emptyDir: {}
         {{- end }}
       - name: job-scandata-exports
-        {{- if and .Values.persistence.enabled }}
+        {{- if and .Values.persistence.enabled .Values.persistence.persistScanData }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.persistentVolumeClaim.jobservice.scanDataExports.existingClaim | default (include "harbor.jobserviceScandata" .) }}
         {{- else }}

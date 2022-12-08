@@ -204,6 +204,7 @@ ipFamily:
 # "swift" or "oss". Set it in the "imageChartStorage" section
 persistence:
   enabled: true
+  persistScanData: false
   # Setting it to "keep" to avoid removing PVCs during a helm delete
   # operation. Leaving it empty will delete PVCs after the chart deleted
   # (this does not apply for PVCs that are created for internal database
@@ -362,7 +363,7 @@ persistence:
       #secure: true
       #chunksize: 10M
       #rootdirectory: rootdirectory
-
+  
 imagePullPolicy: IfNotPresent
 
 # Use this set to assign a list of default pullSecrets

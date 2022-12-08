@@ -1,5 +1,5 @@
 {{- $scandataExports := .Values.persistence.persistentVolumeClaim.jobservice.scanDataExports -}}
-{{- if and .Values.persistence.enabled (not $scandataExports.existingClaim) }}
+{{- if and .Values.persistence.enabled .Values.persistence.persistScanData (not $scandataExports.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
