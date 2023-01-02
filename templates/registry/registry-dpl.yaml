@@ -52,7 +52,7 @@ spec:
       automountServiceAccountToken: {{ .Values.registry.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
 {{- with .Values.registry.topologySpreadConstraints}}
-      topologySpreadconstraints:
+      topologySpreadConstraints:
 {{- range . }}
       - {{ . | toYaml | indent 8 | trim }}
         labelSelector:

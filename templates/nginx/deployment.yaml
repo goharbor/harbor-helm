@@ -43,7 +43,7 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.nginx.automountServiceAccountToken | default false }}
 {{- with .Values.nginx.topologySpreadConstraints}}
-      topologySpreadconstraints:
+      topologySpreadConstraints:
 {{- range . }}
       - {{ . | toYaml | indent 8 | trim }}
         labelSelector:

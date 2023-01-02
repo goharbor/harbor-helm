@@ -39,7 +39,7 @@ spec:
 {{- end }}
       automountServiceAccountToken: {{ .Values.portal.automountServiceAccountToken | default false }}
 {{- with .Values.portal.topologySpreadConstraints}}
-      topologySpreadconstraints:
+      topologySpreadConstraints:
 {{- range . }}
       - {{ . | toYaml | indent 8 | trim }}
         labelSelector:

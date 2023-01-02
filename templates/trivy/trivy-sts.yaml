@@ -42,7 +42,7 @@ spec:
         fsGroup: 10000
       automountServiceAccountToken: {{ .Values.trivy.automountServiceAccountToken | default false }}
 {{- with .Values.trivy.topologySpreadConstraints}}
-      topologySpreadconstraints:
+      topologySpreadConstraints:
 {{- range . }}
       - {{ . | toYaml | indent 8 | trim }}
         labelSelector:

@@ -35,7 +35,7 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.exporter.automountServiceAccountToken | default false }}
 {{- with .Values.exporter.topologySpreadConstraints }}
-      topologySpreadconstraints:
+      topologySpreadConstraints:
 {{- range . }}
       - {{ . | toYaml | indent 8 | trim }}
         labelSelector:

@@ -50,7 +50,7 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.chartmuseum.automountServiceAccountToken | default false }}
 {{- with .Values.chartmuseum.topologySpreadConstraints}}
-      topologySpreadconstraints:
+      topologySpreadConstraints:
 {{- range . }}
       - {{ . | toYaml | indent 8 | trim }}
         labelSelector:

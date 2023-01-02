@@ -36,7 +36,7 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.notary.server.automountServiceAccountToken | default false }}
 {{- with .Values.notary.server.topologySpreadConstraints}}
-      topologySpreadconstraints:
+      topologySpreadConstraints:
 {{- range . }}
       - {{ . | toYaml | indent 8 | trim }}
         labelSelector:
