@@ -36,7 +36,7 @@ helm fetch harbor/harbor --untar
 
 ### Configuration
 
-Configure the followings items in `values.yaml`, you can also set them as parameters via `--set` flag during running `helm install`:
+Configure the following items in `values.yaml`, you can also set them as parameters via `--set` flag during running `helm install`:
 
 - **Ingress rule**
    Configure the `expose.ingress.hosts.core` and `expose.ingress.hosts.notary`.
