@@ -389,7 +389,7 @@ caSecretName: ""
 
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
-# If using existingSecretSecretKey, the key must be sercretKey
+# If using existingSecretSecretKey, the key must be secretKey
 existingSecretSecretKey: ""
 
 # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
