@@ -86,7 +86,14 @@ spec:
               secretKeyRef:
                 name: "{{ template "harbor.jobservice" . }}"
                 key: JOBSERVICE_SECRET
-         {{- if .Values.internalTLS.enabled }}
+          {{- if .Values.existingSecretAdminPassword }}
+          - name: HARBOR_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.existingSecretAdminPassword }}
+                key: {{ .Values.existingSecretAdminPasswordKey }}
+          {{- end }}
+          {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
             value: "true"
           - name: INTERNAL_TLS_KEY_PATH
@@ -95,21 +102,21 @@ spec:
             value: /etc/harbor/ssl/core/tls.crt
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/core/ca.crt
-         {{- end }}
-         {{- if .Values.database.external.existingSecret }}
+          {{- end }}
+          {{- if .Values.database.external.existingSecret }}
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.database.external.existingSecret }}
                 key: password
-         {{- end }}
-         {{- if .Values.registry.credentials.existingSecret }}
+          {{- end }}
+          {{- if .Values.registry.credentials.existingSecret }}
           - name: REGISTRY_CREDENTIAL_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
-         {{- end }}
+          {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
