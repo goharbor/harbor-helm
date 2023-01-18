@@ -36,7 +36,9 @@ data:
       {{- else if eq $type "gcs" }}
       gcs:
         bucket: {{ $storage.gcs.bucket }}
+        {{- if not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity }}
         keyfile: /etc/registry/gcs-key.json
+        {{- end }}
         {{- if $storage.gcs.rootdirectory }}
         rootdirectory: {{ $storage.gcs.rootdirectory }}
         {{- end }}
@@ -155,7 +157,14 @@ data:
         layerinfo: redis
       maintenance:
         uploadpurging:
+          {{- if .Values.registry.upload_purging.enabled }}
+          enabled: true
+          age: {{ .Values.registry.upload_purging.age }}
+          interval: {{ .Values.registry.upload_purging.interval }}
+          dryrun: {{ .Values.registry.upload_purging.dryrun }}
+          {{- else }}
           enabled: false
+          {{- end }}
       delete:
         enabled: true
       redirect:
@@ -205,7 +214,7 @@ data:
     compatibility:
       schema1:
         enabled: true
-    
+
     {{- if .Values.registry.middleware.enabled }}
     {{- $middleware := .Values.registry.middleware }}
     {{- $middlewareType := $middleware.type }}
