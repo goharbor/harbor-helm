@@ -106,7 +106,7 @@ spec:
           - name: BASIC_AUTH_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: {{ default (include "harbor.core" .) .Values.core.existingSecret }}
                 key: secret
           - # Needed to make AWS' client connect correctly (see https://github.com/helm/chartmuseum/issues/280)
             name: AWS_SDK_LOAD_CONFIG

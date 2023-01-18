@@ -492,9 +492,11 @@ core:
   ## Additional service annotations
   serviceAnnotations: {}
   # Secret is used when core server communicates with other components.
-  # If a secret key is not specified, Helm will generate one.
+  # If a secret key is not specified, Helm will generate one. Alternatively set existingSecret to use an existing secret
   # Must be a string of 16 chars.
   secret: ""
+  # If using existingSecret, the key must be secret
+  existingSecret: ""
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
   # The secret must contain keys named:
@@ -504,6 +506,10 @@ core:
   secretName: ""
   # The XSRF key. Will be generated automatically if it isn't specified
   xsrfKey: ""
+  # If using existingSecret, the key is defined by core.existingXsrfSecretKey
+  existingXsrfSecret: ""
+  # If using existingSecret, the key
+  existingXsrfSecretKey: CSRF_KEY
   ## The priority class to run the pod as
   priorityClassName:
   # The time duration for async update artifact pull_time and repository
@@ -545,6 +551,10 @@ jobservice:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # Use an existing secret resource
+  existingSecret: ""
+  # Key within the existing secret for the job service secret
+  existingSecretKey: JOBSERVICE_SECRET
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -585,6 +595,10 @@ registry:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
+  # Use an existing secret resource
+  existingSecret: ""
+  # Key within the existing secret for the registry service secret
+  existingSecretKey: REGISTRY_HTTP_SECRET
   # If true, the registry returns relative URLs in Location headers. The client is responsible for resolving the correct URL.
   relativeurls: false
   credentials:
