@@ -37,6 +37,7 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+        fsGroupChangePolicy: OnRootMismatch
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

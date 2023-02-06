@@ -22,6 +22,7 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+        fsGroupChangePolicy: OnRootMismatch
 {{- if .Values.core.serviceAccountName }}
       serviceAccountName: {{ .Values.core.serviceAccountName }}
 {{- end -}}
