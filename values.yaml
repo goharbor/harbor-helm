@@ -353,6 +353,9 @@ persistence:
       #tempurlmethods:
     oss:
       accesskeyid: accesskeyid
+
+      # To use existing secret, the key must be ALIBABA_CLOUD_ACCESS_KEY_SECRET
+      #existingSecret: ""
       accesskeysecret: accesskeysecret
       region: regionname
       bucket: bucketname
@@ -819,7 +822,7 @@ database:
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
     # if using existing secret, the key must be "password"
-    existingSecret: ""
+    existingSecret: "aaa"
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the

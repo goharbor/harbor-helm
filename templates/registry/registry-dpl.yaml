@@ -81,6 +81,17 @@ spec:
         - secretRef:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.oss.existingSecret}}
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - name: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
+              key: ALIBABA_CLOUD_ACCESS_KEY_SECRET
+        {{- end }}
         env:
         {{- if has "registry" .Values.proxy.components }}
         - name: HTTP_PROXY
