@@ -14,13 +14,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Docker
-        uses: docker-practice/actions-setup-docker@v1
-        with:
-          docker_version: "20.10"
-          docker_channel: stable
-          docker_daemon_json: '{"insecure-registries":["0.0.0.0/0"]}'
-
       - name: Create kind cluster
         uses: helm/kind-action@v1.1.0
         with:
