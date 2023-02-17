@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        helm_version: [3.2.3]
+        helm_version: [3.11.1]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
