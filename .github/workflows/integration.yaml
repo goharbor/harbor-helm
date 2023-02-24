@@ -56,7 +56,7 @@ jobs:
           df -h
           free -m
           mkdir -p /tmp/harbor
-          for name in core jobservice registry registryctl trivy chartmuseum notaryserver notarysigner portal redis database; do \
+          for name in core jobservice registry registryctl trivy notaryserver notarysigner portal redis database; do \
             kubectl -n default logs -l "component=$name" --all-containers > /tmp/harbor/$name.log ; \
           done
 
