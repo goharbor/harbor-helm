@@ -59,7 +59,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
         instance.notaryServiceURL = "https://notary." + coreHostname
         instance.adminPassword = "Harbor12345"
         instance.authMode = "database"
-        instance.components = "trivy,notary,chartmuseum"
+        instance.components = "trivy,notary"
         instance.hostIPMappings = "${coreHostname}:${ingressControllerIP},notary.${coreHostname}:${ingressControllerIP}"
 
         script.currentBuild.description = """
@@ -101,7 +101,7 @@ def properties = {
 
 def caseSettings = {
     CaseSettings settings = new CaseSettings()
-    settings.cases = "gc,common,database,trivy,notary,chartmuseum"
+    settings.cases = "gc,common,database,trivy,notary"
     return settings
 }
 

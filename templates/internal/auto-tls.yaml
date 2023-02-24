@@ -61,23 +61,6 @@ data:
   tls.crt: {{ $portalCrt.Cert | b64enc | quote }}
   tls.key: {{ $portalCrt.Key | b64enc | quote }}
 
-{{- if .Values.chartmuseum.enabled }}
----
-{{- $chartCN := (include "harbor.chartmuseum" .) }}
-{{- $chartCrt := genSignedCert $chartCN nil (list $chartCN) 365 $ca }}
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "{{ template "harbor.internalTLS.chartmuseum.secretName" . }}"
-  labels:
-{{ include "harbor.labels" . | indent 4 }}
-type: kubernetes.io/tls
-data:
-  ca.crt: {{ $ca.Cert | b64enc | quote }}
-  tls.crt: {{ $chartCrt.Cert | b64enc | quote }}
-  tls.key: {{ $chartCrt.Key | b64enc | quote }}
-{{- end }}
-
 {{- if and .Values.trivy.enabled}}
 ---
 {{- $trivyCN := (include "harbor.trivy" .) }}

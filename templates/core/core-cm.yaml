@@ -32,8 +32,6 @@ data:
   WITH_TRIVY: {{ .Values.trivy.enabled | quote }}
   TRIVY_ADAPTER_URL: "{{ template "harbor.trivyAdapterURL" . }}"
   REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.persistence.imageChartStorage.type }}"
-  WITH_CHARTMUSEUM: "{{ .Values.chartmuseum.enabled }}"
-  CHART_REPOSITORY_URL: "{{ template "harbor.component.scheme" . }}://{{ template "harbor.chartmuseum" . }}"
   LOG_LEVEL: "{{ .Values.logLevel }}"
   CONFIG_PATH: "/etc/core/app.conf"
   CHART_CACHE_DRIVER: "redis"

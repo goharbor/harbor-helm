@@ -215,12 +215,6 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end }}
 {{- end -}}
 
-{{- define "harbor.redis.dbForChartmuseum" -}}
-  {{- with .Values.redis }}
-    {{- ternary "3" .external.chartmuseumDatabaseIndex (eq .type "internal") }}
-  {{- end }}
-{{- end -}}
-
 {{- define "harbor.portal" -}}
   {{- printf "%s-portal" (include "harbor.fullname" .) -}}
 {{- end -}}
@@ -243,10 +237,6 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 
 {{- define "harbor.registryCtl" -}}
   {{- printf "%s-registryctl" (include "harbor.fullname" .) -}}
-{{- end -}}
-
-{{- define "harbor.chartmuseum" -}}
-  {{- printf "%s-chartmuseum" (include "harbor.fullname" .) -}}
 {{- end -}}
 
 {{- define "harbor.database" -}}
@@ -282,7 +272,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{- end -}}
 
 {{- define "harbor.noProxy" -}}
-  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.chartmuseum" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) (include "harbor.exporter" .) .Values.proxy.noProxy -}}
+  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) (include "harbor.exporter" .) .Values.proxy.noProxy -}}
 {{- end -}}
 
 {{- define "harbor.caBundleVolume" -}}
@@ -303,24 +293,6 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
     {{- printf "https" -}}
   {{- else -}}
     {{- printf "http" -}}
-  {{- end -}}
-{{- end -}}
-
-{{/* chartmuseum component container port */}}
-{{- define "harbor.chartmuseum.containerPort" -}}
-  {{- if .Values.internalTLS.enabled -}}
-    {{- printf "9443" -}}
-  {{- else -}}
-    {{- printf "9999" -}}
-  {{- end -}}
-{{- end -}}
-
-{{/* chartmuseum component service port */}}
-{{- define "harbor.chartmuseum.servicePort" -}}
-  {{- if .Values.internalTLS.enabled -}}
-    {{- printf "443" -}}
-  {{- else -}}
-    {{- printf "80" -}}
   {{- end -}}
 {{- end -}}
 
@@ -466,14 +438,6 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{/* TRIVY_ADAPTER_URL */}}
 {{- define "harbor.trivyAdapterURL" -}}
   {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.trivy" .) (include "harbor.trivy.servicePort" .) -}}
-{{- end -}}
-
-{{- define "harbor.internalTLS.chartmuseum.secretName" -}}
-  {{- if eq .Values.internalTLS.certSource "secret" -}}
-    {{- .Values.internalTLS.chartmuseum.secretName -}}
-  {{- else -}}
-    {{- printf "%s-chartmuseum-internal-tls" (include "harbor.fullname" .) -}}
-  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.internalTLS.core.secretName" -}}
