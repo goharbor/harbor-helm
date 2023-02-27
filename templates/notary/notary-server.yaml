@@ -60,11 +60,24 @@ spec:
         env:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
+{{- if not .Values.database.external.existingSecret }}
         - name: DB_URL
           valueFrom:
             secretKeyRef:
               name: {{ template "harbor.notary-server" . }}
               key: NOTARY_SERVER_DB_URL
+{{- else }}
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret }}
+              key: NOTARY_SERVER_DB_URL
+        - name: NOTARY_SERVER_STORAGE_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret }}
+              key: NOTARY_SERVER_DB_URL
+{{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/notary/server-config.postgres.json

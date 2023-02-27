@@ -59,11 +59,24 @@ spec:
         env:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
+{{- if not .Values.database.external.existingSecret }}
         - name: DB_URL
           valueFrom:
             secretKeyRef:
               name: {{ template "harbor.notary-server" . }}
               key: NOTARY_SIGNER_DB_URL
+{{- else }}
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret }}
+              key: NOTARY_SIGNER_DB_URL
+        - name: NOTARY_SIGNER_STORAGE_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret }}
+              key: NOTARY_SIGNER_DB_URL
+{{- end }}
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:

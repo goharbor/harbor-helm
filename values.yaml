@@ -772,7 +772,10 @@ database:
     coreDatabase: "registry"
     notaryServerDatabase: "notary_server"
     notarySignerDatabase: "notary_signer"
-    # if using existing secret, the key must be "password"
+    # if using existing secret, the keys must be the following:
+    # "password" - for harbor-core, containing the database password
+    # "NOTARY_SERVER_DB_URL" - for notary-server, containing the database connection URL, e.g.: postgres://user:S3cr3t@host:5432/notary-server-database
+    # "NOTARY_SIGNER_DB_URL" - for notary-signer, containing the database connection URL, e.g.: postgres://user:S3cr3t@host:5432/notary-signer-database
     existingSecret: ""
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
