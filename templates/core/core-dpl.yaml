@@ -42,6 +42,10 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.core.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+      {{- with .Values.core.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}

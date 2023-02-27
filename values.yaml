@@ -440,6 +440,13 @@ portal:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
 
 core:
   image:
@@ -464,6 +471,13 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   ## Additional service annotations
   serviceAnnotations: {}
   # Secret is used when core server communicates with other components.
@@ -528,6 +542,13 @@ jobservice:
   secret: ""
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
 
 registry:
   # set the service account to be used, default if left empty
@@ -594,6 +615,13 @@ registry:
     # the interval of the purge operations
     interval: 24h
     dryrun: false
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
 
 trivy:
   # enabled the flag to enable Trivy scanner
