@@ -263,8 +263,6 @@ persistence:
     # The secret must contain keys named "ca.crt" which will be injected into the trust store
     # of registry's and chartmuseum's containers.
     caBundleSecretName: {}
-      # name: ""
-      # key: "ca.crt"
 
     # Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift",
     # "oss" and fill the information needed in the corresponding section. The type
@@ -407,8 +405,6 @@ enableMigrateHelmHook: false
 # Set uaaSecretName below to provide a pre-created secret that
 # contains a base64 encoded CA Certificate named `ca.crt`.
 uaaSecretName: {}
-  # name: ""
-  # key: ca.crt
 
 # If service exposed via "ingress", the Nginx will not be used
 nginx:

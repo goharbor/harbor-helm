@@ -310,10 +310,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 {{- define "harbor.caBundleVolume" -}}
 - name: ca-bundle-certs
   secret:
-    secretName: {{ .Values.caBundleSecretName.name }}
-  items:
-    - key: {{ .Values.caBundleSecretName.key }}
-      path: ca.crt
+    secretName: {{ .Values.caBundleSecretName }}
 {{- end -}}
 
 {{- define "harbor.caBundleVolumeMount" -}}

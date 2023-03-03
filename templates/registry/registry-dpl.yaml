@@ -286,10 +286,7 @@ spec:
       {{- if .Values.persistence.imageChartStorage.caBundleSecretName }}
       - name: storage-service-ca
         secret:
-          secretName: {{ .Values.persistence.imageChartStorage.caBundleSecretName.name }}
-        items:
-          - key: {{ .Values.persistence.imageChartStorage.caBundleSecretName.key }}
-            path: ca.crt
+          secretName: {{ .Values.persistence.imageChartStorage.caBundleSecretName }}
       {{- end }}
       {{- if .Values.registry.middleware.enabled }}
       {{- if eq .Values.registry.middleware.type "cloudFront" }}
