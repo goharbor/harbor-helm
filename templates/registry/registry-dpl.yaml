@@ -206,15 +206,15 @@ spec:
         - name: REGISTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.redis.external.existingSecret }}
-              key: REDIS_PASSWORD
+              name: {{ .Values.redis.external.existingSecret.name }}
+              key: {{ .Values.redis.external.existingSecret.key }}
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
         - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
-              key: AZURE_STORAGE_ACCESS_KEY
+              name: {{ .Values.persistence.imageChartStorage.azure.existingSecret.name }}
+              key: {{ .Values.persistence.imageChartStorage.azure.existingSecret.key }}
         {{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
