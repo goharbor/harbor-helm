@@ -404,7 +404,7 @@ enableMigrateHelmHook: false
 # certificate you will need to provide the CA Cert.
 # Set uaaSecretName below to provide a pre-created secret that
 # contains a base64 encoded CA Certificate named `ca.crt`.
-uaaSecretName: {}
+# uaaSecretName: ""
 
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
