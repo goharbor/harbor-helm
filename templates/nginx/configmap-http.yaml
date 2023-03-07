@@ -127,6 +127,8 @@ data:
           proxy_set_header X-Forwarded-Proto $x_forwarded_proto;
           proxy_buffering off;
           proxy_request_buffering off;
+          proxy_send_timeout 900;
+          proxy_read_timeout 900;
         }
 
         location /service/ {
