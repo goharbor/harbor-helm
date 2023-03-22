@@ -512,6 +512,9 @@ jobservice:
     # - stdout
   # The jobLogger sweeper duration (ignored if `jobLogger` is `stdout`)
   loggerSweeperDuration: 14 #days
+  notification:
+    webhook_job_max_retry: 3
+    webhook_job_http_client_timeout: 3 # in seconds
 
   # resources:
   #   requests:
