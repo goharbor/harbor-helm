@@ -9,6 +9,10 @@ metadata:
 spec:
   replicas: {{ .Values.nginx.replicas }}
   revisionHistoryLimit: {{ .Values.nginx.revisionHistoryLimit }}
+{{- if .Values.nginx.strategy }}
+  strategy:
+{{ toYaml .Values.nginx.strategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

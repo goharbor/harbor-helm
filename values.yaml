@@ -418,6 +418,8 @@ nginx:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # The update strategy to be used for the deployment
+  strategy: {}
 
 portal:
   image:
@@ -440,6 +442,8 @@ portal:
   podAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # The update strategy to be used for the deployment
+  strategy: {}
 
 core:
   image:
@@ -493,6 +497,8 @@ core:
   artifactPullAsyncFlushDuration:
   gdpr:
     deleteUser: false
+  # The update strategy to be used for the deployment
+  strategy: {}
 
 jobservice:
   image:
@@ -531,6 +537,8 @@ jobservice:
   secret: ""
   ## The priority class to run the pod as
   priorityClassName:
+  # The update strategy to be used for the deployment, takes precedence over .updateStrategy.type
+  strategy: {}
 
 registry:
   # set the service account to be used, default if left empty
@@ -597,6 +605,8 @@ registry:
     # the interval of the purge operations
     interval: 24h
     dryrun: false
+  # The update strategy to be used for the deployment, takes precedence over .updateStrategy.type
+  strategy: {}
 
 trivy:
   # enabled the flag to enable Trivy scanner
@@ -693,6 +703,8 @@ notary:
     podAnnotations: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # The update strategy to be used for the deployment
+    strategy: {}
   ## Additional service annotations
   serviceAnnotations: {}
   signer:
@@ -715,6 +727,8 @@ notary:
     podAnnotations: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # The update strategy to be used for the deployment
+    strategy: {}
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.

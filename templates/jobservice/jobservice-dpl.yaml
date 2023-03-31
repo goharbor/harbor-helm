@@ -9,10 +9,14 @@ spec:
   replicas: {{ .Values.jobservice.replicas }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
   strategy:
+{{- if .Values.jobservice.strategy }}
+{{ toYaml .Values.jobservice.strategy | indent 4 }}
+{{- else }}
     type: {{ .Values.updateStrategy.type }}
     {{- if eq .Values.updateStrategy.type "Recreate" }}
     rollingUpdate: null
     {{- end }}
+{{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

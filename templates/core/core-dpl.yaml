@@ -8,6 +8,10 @@ metadata:
 spec:
   replicas: {{ .Values.core.replicas }}
   revisionHistoryLimit: {{ .Values.core.revisionHistoryLimit }}
+{{- if .Values.core.strategy }}
+  strategy:
+{{ toYaml .Values.core.strategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

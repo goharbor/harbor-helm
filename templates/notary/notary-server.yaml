@@ -8,6 +8,10 @@ metadata:
     component: notary-server
 spec:
   replicas: {{ .Values.notary.server.replicas }}
+{{- if .Values.notary.server.strategy }}
+  strategy:
+{{ toYaml .Values.notary.server.strategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
