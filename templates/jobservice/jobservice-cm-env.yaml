@@ -8,6 +8,7 @@ data:
   CORE_URL: "{{ template "harbor.coreURL" . }}"
   TOKEN_SERVICE_URL: "{{ template "harbor.tokenServiceURL" . }}"
   REGISTRY_URL: "{{ template "harbor.registryURL" . }}"
+  REGISTRY_HTTP_CLIENT_TIMEOUT: "{{ .Values.jobservice.registryHTTPClientTimeout }}"
   REGISTRY_CONTROLLER_URL: "{{ template "harbor.registryControllerURL" . }}"
   REGISTRY_CREDENTIAL_USERNAME: "{{ .Values.registry.credentials.username }}"
 

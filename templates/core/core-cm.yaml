@@ -25,6 +25,7 @@ data:
   CORE_URL: "{{ template "harbor.coreURL" . }}"
   JOBSERVICE_URL: "{{ template "harbor.jobserviceURL" . }}"
   REGISTRY_URL: "{{ template "harbor.registryURL" . }}"
+  REGISTRY_HTTP_CLIENT_TIMEOUT: "{{ .Values.core.registryHTTPClientTimeout }}"
   TOKEN_SERVICE_URL: "{{ template "harbor.tokenServiceURL" . }}"
   WITH_NOTARY: "{{ .Values.notary.enabled }}"
   NOTARY_URL: "http://{{ template "harbor.notary-server" . }}:4443"
