@@ -9,8 +9,8 @@
 # when the hash of the last commit in the branch you set up changes. This does
 # NOT apply to ownership claim operations, which are processed immediately.
 #
-# repositoryID: The ID of the Artifact Hub repository where the packages will be published to (optional, but it enables verified publisher)
-owners: 206e82eb-cb23-4224-be28-11eb42eca7ea
+repositoryID: 206e82eb-cb23-4224-be28-11eb42eca7ea
+owners: # (optional, used to claim repository ownership)
   - name: Wenkai Yin
     email: yinw@vmware.com
   - name: Yan Wang
