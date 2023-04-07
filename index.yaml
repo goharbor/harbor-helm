@@ -7,7 +7,7 @@ entries:
     description: An open source trusted cloud native registry that stores, signs, and scans content
     digest: 700e5287938907b9c83bb2798ce7ec19257ec53efa671c43e920e9ace706e512
     home: https://goharbor.io
-    icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
+    icon: https://raw.githubusercontent.com/goharbor/website/main/static/img/logos/harbor-icon-color.png
     keywords:
     - docker
     - registry
