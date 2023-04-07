@@ -10,7 +10,7 @@
 # NOT apply to ownership claim operations, which are processed immediately.
 #
 # repositoryID: The ID of the Artifact Hub repository where the packages will be published to (optional, but it enables verified publisher)
-owners: 206e82eb-cb23-4224-be28-11eb42eca7ea
+owners: #to claim
   - name: Wenkai Yin
     email: yinw@vmware.com
   - name: Yan Wang
