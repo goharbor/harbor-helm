@@ -54,6 +54,10 @@ spec:
         resources:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
 {{- end }}
+{{- with .Values.redis.internal.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
+{{- end }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/redis

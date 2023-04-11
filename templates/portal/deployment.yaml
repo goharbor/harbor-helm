@@ -47,6 +47,10 @@ spec:
         resources:
 {{ toYaml .Values.portal.resources | indent 10 }}
 {{- end }}
+{{- with .Values.portal.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
+{{- end }}
         livenessProbe:
           httpGet:
             path: /

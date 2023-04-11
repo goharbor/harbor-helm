@@ -111,6 +111,9 @@ spec:
                 secretKeyRef:
                   name: {{ template "harbor.trivy" . }}
                   key: redisURL
+{{- with .Values.trivy.extraEnvVars }}
+{{- toYaml . | nindent 12 }}
+{{- end }}
           ports:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}

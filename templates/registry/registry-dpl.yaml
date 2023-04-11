@@ -107,6 +107,9 @@ spec:
               name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
               key: AZURE_STORAGE_ACCESS_KEY
         {{- end }}
+{{- with .Values.registry.registry.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.registry.containerPort" . }}
         - containerPort: 5001
@@ -215,6 +218,9 @@ spec:
               name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
               key: AZURE_STORAGE_ACCESS_KEY
         {{- end }}
+{{- with .Values.registry.controller.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
         volumeMounts:

@@ -75,6 +75,10 @@ spec:
         resources:
 {{ toYaml .Values.exporter.resources | indent 10 }}
 {{- end }}
+{{- with .Values.exporter.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:

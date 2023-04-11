@@ -411,6 +411,7 @@ nginx:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -433,6 +434,7 @@ portal:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -459,6 +461,7 @@ core:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -525,6 +528,7 @@ jobservice:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -550,6 +554,7 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
   controller:
     image:
       repository: goharbor/harbor-registryctl
@@ -559,6 +564,7 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
   replicas: 1
   revisionHistoryLimit: 10
   nodeSelector: {}
@@ -668,6 +674,7 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -691,6 +698,7 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -713,6 +721,7 @@ notary:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -756,6 +765,7 @@ database:
     # The timeout used in readinessProbe; 1 to 5 seconds
     readinessProbe:
       timeoutSeconds: 1
+    extraEnvVars: []
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -816,6 +826,7 @@ redis:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -849,6 +860,7 @@ exporter:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   podAnnotations: {}
   serviceAccountName: ""
   # mount the service account token
