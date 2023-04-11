@@ -66,6 +66,9 @@ spec:
               key: NOTARY_SIGNER_DB_URL
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
+{{- with .Values.notary.signer.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/notary/signer-config.postgres.json

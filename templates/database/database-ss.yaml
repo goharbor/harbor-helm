@@ -102,6 +102,9 @@ spec:
           # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
+{{- with .Values.database.internal.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
