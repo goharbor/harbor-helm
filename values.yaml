@@ -522,6 +522,9 @@ jobservice:
     # - stdout
   # The jobLogger sweeper duration (ignored if `jobLogger` is `stdout`)
   loggerSweeperDuration: 14 #days
+  notification:
+    webhook_job_max_retry: 3
+    webhook_job_http_client_timeout: 3 # in seconds
 
   # resources:
   #   requests:
@@ -844,6 +847,8 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     trivyAdapterIndex: "5"
+    # username field can be an empty string and it will be authenticated against the default user
+    username: ""
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD
     existingSecret: {}
