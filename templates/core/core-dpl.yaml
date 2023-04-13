@@ -176,9 +176,9 @@ spec:
           secretName: {{ template "harbor.core" . }}
           {{- end }}
           items:
-            - key: "tls.crt"
+            - key: tls.crt
               path: tls.crt
-            - key: "tls.key"
+            - key: tls.key
               path: tls.key
       {{- if .Values.expose.tls.enabled }}
       - name: ca-download
