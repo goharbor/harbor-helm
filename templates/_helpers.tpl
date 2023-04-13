@@ -192,15 +192,23 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end }}
 {{- end -}}
 
-{{- define "harbor.redis.password" -}}
+{{- define "harbor.redis.username" -}}
   {{- with .Values.redis }}
     {{- if ne .type "internal" -}}
-      {{- include "harbor.existingSecret" (dict "namespace" $.Release.Namespace "context" .external "default" .external.password) }}
+      {{- include "harbor.existingSecret" (dict "namespace" $.Release.Namespace "context" .external "default" .external.username "key" "usernameKey") }}
     {{- end -}}
   {{- end }}
 {{- end -}}
 
-/*scheme://[:password@]host:port[/master_set]*/
+{{- define "harbor.redis.password" -}}
+  {{- with .Values.redis }}
+    {{- if ne .type "internal" -}}
+      {{- include "harbor.existingSecret" (dict "namespace" $.Release.Namespace "context" .external "default" .external.password "key" "passwordKey") }}
+    {{- end -}}
+  {{- end }}
+{{- end -}}
+
+/*scheme://[username][:password@]host:port[/master_set]*/
 {{- define "harbor.redis.url" -}}
   {{- with .Values.redis }}
     {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
