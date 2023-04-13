@@ -96,6 +96,13 @@ spec:
         - name: INTERNAL_TLS_TRUST_CA_PATH
           value: /etc/harbor/ssl/registry/ca.crt
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
+        - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.azure.existingSecret.name }}
+              key: {{ .Values.persistence.imageChartStorage.azure.existingSecret.key }}
+        {{- end }}
         {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
         - name: REGISTRY_STORAGE_S3_ACCESSKEY
           valueFrom:
@@ -215,6 +222,18 @@ spec:
             secretKeyRef:
               name: {{ .Values.persistence.imageChartStorage.azure.existingSecret.name }}
               key: {{ .Values.persistence.imageChartStorage.azure.existingSecret.key }}
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
+        - name: REGISTRY_STORAGE_S3_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.s3.existingSecret.name }}
+              key: {{ .Values.persistence.imageChartStorage.s3.existingSecret.accessKey }}
+        - name: REGISTRY_STORAGE_S3_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.s3.existingSecret.name }}
+              key: {{ .Values.persistence.imageChartStorage.s3.existingSecret.secretKey }}
         {{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
