@@ -23,6 +23,7 @@ spec:
 {{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
         checksum/tls: {{ include (print $.Template.BasePath "/portal/tls.yaml") . | sha256sum }}
 {{- end }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}  
 {{- if .Values.portal.podAnnotations }}
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
 {{- end }}

@@ -166,6 +166,14 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end }}
 {{- end -}}
 
+{{- define "harbor.redis.username" -}}
+  {{- with .Values.redis }}
+    {{- if ne .type "internal" -}}
+      {{- ternary ((lookup "v1" "Secret" $.Release.Namespace .external.existingSecret).data.REDIS_USERNAME | b64dec) .external.username (not (not .external.existingSecret)) }}
+    {{- end -}}
+  {{- end }}
+{{- end -}}
+
 {{- define "harbor.redis.password" -}}
   {{- with .Values.redis }}
     {{- if ne .type "internal" -}}
@@ -174,11 +182,11 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- end }}
 {{- end -}}
 
-/*scheme://[:password@]host:port[/master_set]*/
+/*scheme://[username][:password@]host:port[/master_set]*/
 {{- define "harbor.redis.url" -}}
   {{- with .Values.redis }}
     {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
-    {{- $cred := ternary (printf ":%s@" ((include "harbor.redis.password" $) | urlquery)) "" (and (eq .type "external" ) (not (not (include "harbor.redis.password" $)))) }}
+    {{- $cred := ternary (printf "%s:%s@" ((include "harbor.redis.username" $) | urlquery)) ((include "harbor.redis.password" $) | urlquery)) "" (and (eq .type "external" ) (not (not (include "harbor.redis.password" $)))) }}
     {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) $cred (include "harbor.redis.addr" $) $path -}}
   {{- end }}
 {{- end -}}

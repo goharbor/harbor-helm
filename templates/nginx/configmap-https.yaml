@@ -88,6 +88,9 @@ data:
 
           proxy_buffering off;
           proxy_request_buffering off;
+
+          proxy_send_timeout 900;
+          proxy_read_timeout 900;
         }
       }
       {{- end }}
