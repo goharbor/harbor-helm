@@ -261,7 +261,7 @@ persistence:
     disableredirect: false
     # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
     # The secret must contain keys named "ca.crt" which will be injected into the trust store
-    # of registry's and chartmuseum's containers.
+    # of registry's containers.
     caBundleSecretName: {}
 
     # Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift",
