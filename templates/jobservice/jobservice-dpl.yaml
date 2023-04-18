@@ -48,6 +48,10 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.jobservice.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+      {{- with .Values.jobservice.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
