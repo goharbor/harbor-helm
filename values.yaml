@@ -417,6 +417,8 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -440,6 +442,8 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -467,6 +471,8 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## Additional service annotations
   serviceAnnotations: {}
   # Secret is used when core server communicates with other components.
@@ -534,6 +540,8 @@ jobservice:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -572,6 +580,8 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
   # Secret is used to secure the upload state from client
@@ -680,6 +690,8 @@ trivy:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -704,6 +716,8 @@ notary:
     affinity: {}
     ## Additional deployment annotations
     podAnnotations: {}
+    ## Additional deployment labels
+    podLabels: {}
     ## The priority class to run the pod as
     priorityClassName:
   ## Additional service annotations
@@ -727,6 +741,8 @@ notary:
     affinity: {}
     ## Additional deployment annotations
     podAnnotations: {}
+    ## Additional deployment labels
+    podLabels: {}
     ## The priority class to run the pod as
     priorityClassName:
   # Fill the name of a kubernetes secret if you want to use your own
@@ -809,6 +825,8 @@ database:
   maxOpenConns: 900
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -852,6 +870,8 @@ redis:
     existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 exporter:
   replicas: 1
@@ -862,6 +882,8 @@ exporter:
   #    cpu: 100m
   extraEnvVars: []
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false

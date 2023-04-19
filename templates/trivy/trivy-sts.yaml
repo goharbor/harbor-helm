@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: trivy
+{{- if .Values.trivy.podLabels }}
+{{ toYaml .Values.trivy.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/trivy/trivy-secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
