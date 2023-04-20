@@ -93,6 +93,9 @@ spec:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
           {{- end }}
+{{- with .Values.jobservice.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.jobservice" . }}-env"

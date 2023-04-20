@@ -117,6 +117,9 @@ spec:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
           {{- end }}
+{{- with .Values.core.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:

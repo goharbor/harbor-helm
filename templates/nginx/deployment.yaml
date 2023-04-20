@@ -70,6 +70,10 @@ spec:
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
 {{- end }}
+{{- with .Values.nginx.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
+{{- end }}
         ports:
         - containerPort: 8080
         - containerPort: 8443
