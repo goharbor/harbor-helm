@@ -17,6 +17,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: notary-signer
+{{- if .Values.notary.signer.podLabels }}
+{{ toYaml .Values.notary.signer.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/notary/notary-secret.yaml") . | sha256sum }}
 {{- if .Values.notary.signer.podAnnotations }}

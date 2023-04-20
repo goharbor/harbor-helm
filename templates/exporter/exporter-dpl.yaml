@@ -18,6 +18,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: exporter
+{{- if .Values.exporter.podLabels }}
+{{ toYaml .Values.exporter.podLabels | indent 8 }}
+{{- end }}
       annotations:
 {{- if .Values.exporter.podAnnotations }}
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
