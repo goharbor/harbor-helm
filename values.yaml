@@ -1,5 +1,5 @@
 expose:
-  # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
+  # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort", "loadBalancer" or "external" it not using nginx
   # and fill the information in the corresponding section
   type: ingress
   tls:
