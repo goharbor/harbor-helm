@@ -83,7 +83,7 @@ spec:
 {{- toYaml . | nindent 10 }}
 {{- end }}
         ports:
-        - containerPort: {{ template "harbor.core.containerPort" . }}
+        - containerPort: {{ .Values.metrics.exporter.port }}
         volumeMounts:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
