@@ -276,7 +276,7 @@ proxy:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: v1.10.18-rc1
+    tag: v1.10.18-rc2
   replicas: 1
   # resources:
   #  requests:
@@ -291,7 +291,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: v1.10.18-rc1
+    tag: v1.10.18-rc2
   replicas: 1
 # resources:
 #  requests:
@@ -306,7 +306,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: v1.10.18-rc1
+    tag: v1.10.18-rc2
   replicas: 1
   ## Liveness probe values
   livenessProbe:
@@ -343,7 +343,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v1.10.18-rc1
+    tag: v1.10.18-rc2
   replicas: 1
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
@@ -366,7 +366,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
 
     # resources:
     #  requests:
@@ -375,7 +375,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
 
     # resources:
     #  requests:
@@ -413,7 +413,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: v1.10.18-rc1
+    tag: v1.10.18-rc2
   replicas: 1
   # resources:
   #  requests:
@@ -430,7 +430,7 @@ clair:
   clair:
     image:
       repository: goharbor/clair-photon
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -438,7 +438,7 @@ clair:
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -458,7 +458,7 @@ notary:
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
     replicas: 1
     # resources:
     #  requests:
@@ -467,7 +467,7 @@ notary:
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
     replicas: 1
     # resources:
     #  requests:
@@ -493,7 +493,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -548,7 +548,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: v1.10.18-rc1
+      tag: v1.10.18-rc2
     # resources:
     #  requests:
     #    memory: 256Mi
