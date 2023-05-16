@@ -39,13 +39,13 @@ helm fetch harbor/harbor --untar
 Configure the following items in `values.yaml`, you can also set them as parameters via `--set` flag during running `helm install`:
 
 - **Ingress rule**
-   Configure the `expose.ingress.hosts.core` and `expose.ingress.hosts.notary`.
+   Configure the `expose.ingress.hosts.core`.
 - **External URL**
    Configure the `externalURL`.
 - **External PostgreSQL**
    Set the `database.type` to `external` and fill the information in `database.external` section.
 
-   Four empty databases should be created manually for `Harbor core`, `Notary server` and `Notary signer` and configure them in the section. Harbor will create tables automatically when starting up.
+   Four empty databases should be created manually for `Harbor core`, and configure them in the section. Harbor will create tables automatically when starting up.
 - **External Redis**
    Set the `redis.type` to `external` and fill the information in `redis.external` section.
    Redis sentinel is supported after v1.9.0, configure the `redis.external.sentinelMasterSet` and `redis.external.addr` to enable it.
@@ -61,7 +61,7 @@ Configure the following items in `values.yaml`, you can also set them as paramet
    If you have no PVCs that can be shared across nodes, you can use external object storage to store images and charts and store the job logs in database. Set the `persistence.imageChartStorage.type` to the value you want to use and fill the corresponding section and set `jobservice.jobLoggers` to `database`.
 
 - **Replica**
-   Set `portal.replicas`, `core.replicas`, `jobservice.replicas`, `registry.replicas`, `notary.server.replicas` and `notary.signer.replicas` to `n`(`n`>=2).
+   Set `portal.replicas`, `core.replicas`, `jobservice.replicas`, `registry.replicas` to `n`(`n`>=2).
 
 ### Installation
 

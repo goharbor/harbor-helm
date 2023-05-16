@@ -50,23 +50,21 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 # install harbor chart
                 docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
                     helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
-                        --set "expose.ingress.hosts.core=${coreHostname},expose.ingress.hosts.notary=notary.${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
+                        --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
             """
         }
 
         HarborInstance instance = new HarborInstance()
         instance.coreServiceURL = "https://" + coreHostname
-        instance.notaryServiceURL = "https://notary." + coreHostname
         instance.adminPassword = "Harbor12345"
         instance.authMode = "database"
-        instance.components = "trivy,notary"
-        instance.hostIPMappings = "${coreHostname}:${ingressControllerIP},notary.${coreHostname}:${ingressControllerIP}"
+        instance.components = "trivy"
+        instance.hostIPMappings = "${coreHostname}:${ingressControllerIP}"
 
         script.currentBuild.description = """
             Kubernetes: ${context}
             Namespace: ${namespace}
             Core Service: $instance.coreServiceURL
-            Notary Service: $instance.notaryServiceURL
             Ingress Controller IP: ${ingressControllerIP}
         """
 
@@ -101,7 +99,7 @@ def properties = {
 
 def caseSettings = {
     CaseSettings settings = new CaseSettings()
-    settings.cases = "gc,common,database,trivy,notary"
+    settings.cases = "gc,common,database,trivy"
     return settings
 }
 
