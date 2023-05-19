@@ -475,6 +475,8 @@ core:
   podLabels: {}
   ## Additional service annotations
   serviceAnnotations: {}
+  ## User settings configuration json string
+  configureUserSettings:
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
