@@ -260,7 +260,7 @@ persistence:
       encodedkey: base64-encoded-json-key-file
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
-      # To use existing secret, the key must be gcs-key.json
+      # To use existing secret, the key must be GCS_KEY_DATA
       existingSecret: ""
       useWorkloadIdentity: false
     s3:
