@@ -518,6 +518,8 @@ jobservice:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional service annotations
+  serviceAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
   # Secret is used when job service communicates with other components.
@@ -558,6 +560,8 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional service annotations
+  serviceAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
   ## The priority class to run the pod as
@@ -788,6 +792,7 @@ redis:
     existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}
+  svcAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
 
@@ -800,6 +805,8 @@ exporter:
   #    cpu: 100m
   extraEnvVars: []
   podAnnotations: {}
+  ## Additional service annotations
+  serviceAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
   serviceAccountName: ""
