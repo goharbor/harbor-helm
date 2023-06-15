@@ -792,7 +792,8 @@ redis:
     existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}
-  svcAnnotations: {}
+  ## Additional service annotations
+  serviceAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
 
