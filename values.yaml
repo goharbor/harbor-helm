@@ -391,6 +391,7 @@ nginx:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -416,6 +417,7 @@ portal:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -445,6 +447,7 @@ core:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -516,6 +519,7 @@ jobservice:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -556,6 +560,7 @@ registry:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -666,6 +671,7 @@ trivy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -705,6 +711,7 @@ database:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    topologySpreadConstraints: []
     ## The priority class to run the pod as
     priorityClassName:
     initContainer:
@@ -766,6 +773,7 @@ redis:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    topologySpreadConstraints: []
     ## The priority class to run the pod as
     priorityClassName:
   external:
@@ -811,6 +819,7 @@ exporter:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
   cacheDuration: 23
   cacheCleanInterval: 14400
   ## The priority class to run the pod as

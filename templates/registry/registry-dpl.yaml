@@ -11,10 +11,14 @@ spec:
   replicas: {{ .Values.registry.replicas }}
   revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
   strategy:
-    type: {{ .Values.updateStrategy.type }}
-    {{- if eq .Values.updateStrategy.type "Recreate" }}
-    rollingUpdate: null
+    {{- if .Values.registry.updateStrategy }}
+{{ toYaml .Values.registry.updateStrategy | indent 4 }}
+    {{- else if .Values.updateStrategy }}
+{{ toYaml .Values.updateStrategy | indent 4 }}
     {{- end }}
+  {{- if and .Values.registry.minReadySeconds (semverCompare ">= 1.23-0" .Capabilities.KubeVersion.Version) }}
+  minReadySeconds: {{ .Values.registry.minReadySeconds }}
+  {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -311,6 +315,10 @@ spec:
       {{- end }}
     {{- with .Values.registry.nodeSelector }}
       nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.registry.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.registry.affinity }}

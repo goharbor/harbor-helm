@@ -9,6 +9,15 @@ metadata:
 spec:
   replicas: {{ .Values.exporter.replicas }}
   revisionHistoryLimit: {{ .Values.exporter.revisionHistoryLimit }}
+  strategy:
+    {{- if .Values.exporter.updateStrategy }}
+{{ toYaml .Values.exporter.updateStrategy | indent 4 }}
+    {{- else if .Values.updateStrategy }}
+{{ toYaml .Values.updateStrategy | indent 4 }}
+    {{- end }}
+  {{- if and .Values.exporter.minReadySeconds (semverCompare ">= 1.23-0" .Capabilities.KubeVersion.Version) }}
+  minReadySeconds: {{ .Values.exporter.minReadySeconds }}
+  {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -108,6 +117,10 @@ spec:
       {{- end }}
     {{- with .Values.exporter.nodeSelector }}
       nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.exporter.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.exporter.affinity }}

@@ -10,6 +10,10 @@ metadata:
 spec:
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
+  updateStrategy:
+    {{- if .Values.trivy.updateStrategy }}
+{{ toYaml .Values.trivy.updateStrategy | indent 4 }}
+    {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -173,6 +177,10 @@ spec:
       {{- end }}
     {{- with .Values.trivy.nodeSelector }}
       nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.trivy.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.trivy.affinity }}

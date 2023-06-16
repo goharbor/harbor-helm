@@ -10,6 +10,10 @@ metadata:
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.database" . }}"
+  updateStrategy:
+    {{- if .Values.database.updateStrategy }}
+{{ toYaml .Values.database.updateStrategy | indent 4 }}
+    {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -129,6 +133,10 @@ spec:
       {{- end -}}
     {{- with .Values.database.internal.nodeSelector }}
       nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.database.internal.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.database.internal.affinity }}

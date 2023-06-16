@@ -10,6 +10,10 @@ metadata:
 spec:
   replicas: 1
   serviceName: {{ template "harbor.redis" . }}
+  updateStrategy:
+    {{- if .Values.redis.updateStrategy }}
+{{ toYaml .Values.redis.updateStrategy | indent 4 }}
+    {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -77,6 +81,10 @@ spec:
       {{- end -}}
     {{- with .Values.redis.internal.nodeSelector }}
       nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.redis.internal.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.redis.internal.affinity }}
