@@ -45,6 +45,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.nginx.automountServiceAccountToken | default false }}
+{{- with .Values.nginx.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: nginx
+{{- end }}
+{{- end }}
       containers:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
