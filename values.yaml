@@ -103,7 +103,7 @@ expose:
 externalURL: https://core.harbor.domain
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
-# in each components tls cert files need to provided in advance.
+# in each component tls cert files need to provided in advance.
 internalTLS:
   # If internal TLS enabled
   enabled: false
