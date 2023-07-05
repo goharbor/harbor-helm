@@ -817,8 +817,6 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     trivyAdapterIndex: "5"
-    # username field can be an empty string and it will be authenticated against the default user
-    username: ""
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD
     existingSecret: ""
