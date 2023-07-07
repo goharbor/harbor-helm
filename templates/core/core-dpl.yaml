@@ -124,7 +124,7 @@ spec:
                 key: password
           {{- end }}
           {{- if .Values.redis.external.existingSecret }}
-          - name: REDIS_PASSWORD
+          - name: CORE_REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.redis.external.existingSecret }}
