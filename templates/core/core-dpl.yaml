@@ -123,6 +123,13 @@ spec:
                 name: {{ .Values.database.external.existingSecret }}
                 key: password
           {{- end }}
+          {{- if .Values.redis.external.existingSecret }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.external.existingSecret }}
+                key: REDIS_PASSWORD
+          {{- end }}
           {{- if .Values.registry.credentials.existingSecret }}
           - name: REGISTRY_CREDENTIAL_PASSWORD
             valueFrom:
