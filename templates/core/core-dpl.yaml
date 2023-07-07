@@ -130,6 +130,13 @@ spec:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
           {{- end }}
+          {{- if .Values.redis.external.existingSecret }}
+          - name: CORE_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.external.existingSecret }}
+                key: REDIS_PASSWORD
+          {{- end }}
 {{- with .Values.core.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
