@@ -42,6 +42,7 @@ spec:
 {{- end }}
     spec:
       securityContext:
+        runAsNonRoot: true
         runAsUser: 10000
         fsGroup: 10000
         fsGroupChangePolicy: OnRootMismatch

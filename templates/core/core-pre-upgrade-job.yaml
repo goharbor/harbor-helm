@@ -20,6 +20,7 @@ spec:
     spec:
       restartPolicy: Never
       securityContext:
+        runAsNonRoot: true
         runAsUser: 10000
         fsGroup: 10000
 {{- if .Values.core.serviceAccountName }}
@@ -47,7 +48,7 @@ spec:
               secretKeyRef:
                 name: {{ .Values.database.external.existingSecret }}
                 key: password
-        {{- end }}               
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf
