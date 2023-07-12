@@ -383,7 +383,7 @@ nginx:
   automountServiceAccountToken: false
   replicas: 1
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     minAvailable: 1
     # maxUnavailable: 1
   revisionHistoryLimit: 10
@@ -418,7 +418,7 @@ portal:
   automountServiceAccountToken: false
   replicas: 1
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     minAvailable: 1
     # maxUnavailable: 1
   revisionHistoryLimit: 10
@@ -453,7 +453,7 @@ core:
   automountServiceAccountToken: false
   replicas: 1
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     minAvailable: 1
     # maxUnavailable: 1
   revisionHistoryLimit: 10
@@ -517,7 +517,7 @@ jobservice:
     tag: dev
   replicas: 1
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     minAvailable: 1
     # maxUnavailable: 1
   revisionHistoryLimit: 10
@@ -593,7 +593,7 @@ registry:
     extraEnvVars: []
   replicas: 1
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     minAvailable: 1
     # maxUnavailable: 1
   revisionHistoryLimit: 10
@@ -662,7 +662,7 @@ trivy:
   # replicas the number of Pod replicas
   replicas: 1
   podDisruptionBudget:
-    enabled: true
+    enabled: false
     minAvailable: 1
     # maxUnavailable: 1
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
