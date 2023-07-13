@@ -103,7 +103,7 @@ expose:
 externalURL: https://core.harbor.domain
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
-# in each components tls cert files need to provided in advance.
+# in each component tls cert files need to provided in advance.
 internalTLS:
   # If internal TLS enabled
   enabled: false
@@ -475,7 +475,7 @@ core:
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
-  # Fill the name of a kubernetes secret if you want to use your own
+  # Fill in the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
   # The secret must contain keys named:
   # "tls.key" - the private key
@@ -817,7 +817,7 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     trivyAdapterIndex: "5"
-    # username field can be an empty string and it will be authenticated against the default user
+    # username field can be an empty string, and it will be authenticated against the default user
     username: ""
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD
