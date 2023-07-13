@@ -1,6 +1,6 @@
 # Helm Chart for Harbor
 
-**Notes:** The master branch is in heavy development, please use the other stable versions instead. A highly available solution for Harbor based on chart can be find [here](docs/High%20Availability.md). And refer to the [guide](docs/Upgrade.md) to upgrade the existing deployment.
+**Notes:** The master branch is in heavy development, please use the other stable versions instead. A highly available solution for Harbor based on chart can be found [here](docs/High%20Availability.md). And refer to the [guide](docs/Upgrade.md) to upgrade the existing deployment.
 
 This repository, including the issues, focuses on deploying Harbor chart via helm. For functionality issues or Harbor questions, please open issues on [goharbor/harbor](https://github.com/goharbor/harbor)
 
