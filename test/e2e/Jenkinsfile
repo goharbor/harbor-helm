@@ -50,7 +50,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 # install harbor chart
                 docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
                     helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
-                        --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
+                        --set "persistence.enabled=false,expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
             """
         }
 
