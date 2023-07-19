@@ -43,7 +43,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                     docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
                         sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
                 """).trim()
-            if ingressControllerIP == '' {
+            if (ingressControllerIP == '') {
                 ingressControllerIP = script.sh(
                     returnStdout: true,
                     script: """
