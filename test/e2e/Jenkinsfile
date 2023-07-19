@@ -37,11 +37,26 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
         // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
         script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
             // get the IP address of the ingress controller
-            ingressControllerIP = script.sh(
+            ingressControllerIP1 = script.sh(
+                returnStdout: true,
+                script:"""
+                    docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                        sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                """).trim()
+            ingressControllerIP2 = script.sh(
                 returnStdout: true,
                 script:"""
                     docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
                         sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
+                """).trim()
+            ingressControllerIP = script.sh(
+                returnStdout: true,
+                script: """
+                if [ -n "${ingressControllerIP1}" ]; then
+                    echo -n ${ingressControllerIP1}
+                elif [ -n "${ingressControllerIP2}" ]; then
+                    echo -n ${ingressControllerIP2}
+                fi
                 """).trim()
             // install harbor chart
             script.sh """
