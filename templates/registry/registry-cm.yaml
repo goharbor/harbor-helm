@@ -15,6 +15,7 @@ data:
       {{- else }}
       level: {{ .Values.logLevel }}
       {{- end }}
+      formatter: {{ .Values.registry.formatter }}
       fields:
         service: registry
     storage:
