@@ -40,16 +40,17 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
             ingressControllerIP = script.sh(
                 returnStdout: true,
                 script: """
-                ingressControllerIP1=\$(docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                        sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"')
-                ingressControlerIP2=\$(docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                        sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"')
-                if [ -n "\${ingressControllerIP1}" ]; then
-                    echo -n \${ingressControllerIP1}
-                elif [ -n "\${ingressControllerIP2}" ]; then
-                    echo -n \${ingressControllerIP2}
-                fi
+                    docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                        sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
                 """).trim()
+            if ingressControllerIP == '' {
+                ingressControllerIP = script.sh(
+                    returnStdout: true,
+                    script: """
+                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                            sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
+                    """).trim()
+            }
             // install harbor chart
             script.sh """
                 # insert the hostAliases to run the replication test
