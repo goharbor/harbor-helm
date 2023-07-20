@@ -107,6 +107,8 @@ externalURL: https://core.harbor.domain
 internalTLS:
   # If internal TLS enabled
   enabled: false
+  # enable strong ssl ciphers (default: false)
+  strong_ssl_ciphers: false
   # There are three ways to provide tls
   # 1) "auto" will generate cert automatically
   # 2) "manual" need provide cert file manually in following value
