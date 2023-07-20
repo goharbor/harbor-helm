@@ -6,6 +6,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     String context
     String namespace
     String coreHostname
+    String ingressControllerServiceType
     String ingressControllerIP
 
     HarborChartFreshInstallPipelineExecutor(Script script) {
@@ -36,13 +37,29 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     HarborInstance install(){
         // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
         script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
-            // get the IP address of the ingress controller
-            ingressControllerIP = script.sh(
+            // get the service type of the ingress controller
+            ingressControllerServiceType = script.sh(
                 returnStdout: true,
-                script:"""
+                script: """
                     docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                        sh -c 'host \$(kubectl get svc nginx-ingress-controller-controller --context ${context} -n ingress-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                        sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.type}"'
                 """).trim()
+            // get the IP address of the ingress controller
+            if (ingressControllerServiceType == 'LoadBalancer') {
+                ingressControllerIP = script.sh(
+                    returnStdout: true,
+                    script: """
+                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                            sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                    """).trim()
+            } else if (ingressControllerServiceType == 'NodePort') {
+                ingressControllerIP = script.sh(
+                    returnStdout: true,
+                    script: """
+                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                            sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
+                    """).trim()
+            }
             // install harbor chart
             script.sh """
                 # insert the hostAliases to run the replication test
