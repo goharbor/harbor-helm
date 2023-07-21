@@ -522,3 +522,115 @@ app: "{{ template "harbor.name" . }}"
 {{- define "harbor.ingress.kubeVersion" -}}
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
 {{- end -}}
+
+{{/* Harbor Core Secret generator */}}
+{{- define "harbor.core.secret" -}}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.core" .) ) -}}
+{{- if $secret -}}
+{{/* Reusing existing secret data */}}
+secret: {{ index $secret "data" "secret" }}
+CSRF_KEY: {{ index $secret "data" "CSRF_KEY" }}
+tls.key: {{ index $secret "data" "tls.key" }}
+tls.crt: {{ index $secret "data" "tls.crt" }}
+{{- else -}}
+{{/* 
+  Generate new data
+*/}}
+secret: {{ .Values.core.secret | default (randAlphaNum 16) | b64enc | quote }}
+CSRF_KEY: {{ .Values.core.xsrfKey | default (randAlphaNum 32) | b64enc | quote }}
+{{- $ca := genCA "harbor-token-ca" 365 }}
+tls.key: {{ .Values.core.tokenKey | default $ca.Key | b64enc | quote }}
+tls.crt: {{ .Values.core.tokenCert | default $ca.Cert | b64enc | quote }}
+{{- end }}
+{{- if not .Values.existingSecretSecretKey }}
+secretKey: {{ .Values.secretKey | b64enc | quote }}
+{{- end }}
+{{- if not .Values.existingSecretAdminPassword }}
+HARBOR_ADMIN_PASSWORD: {{ .Values.harborAdminPassword | b64enc | quote }}
+{{- end }}
+{{- if not .Values.database.external.existingSecret }}
+POSTGRESQL_PASSWORD: {{ template "harbor.database.encryptedPassword" . }}
+{{- end }}
+{{- if not .Values.registry.credentials.existingSecret }}
+REGISTRY_CREDENTIAL_PASSWORD: {{ .Values.registry.credentials.password | b64enc | quote }}
+{{- end }}
+{{- if .Values.core.configureUserSettings }}
+CONFIG_OVERWRITE_JSON: {{ .Values.core.configureUserSettings | b64enc | quote }}
+{{- end }}
+{{- template "harbor.traceJaegerPassword" . }}
+{{- end -}}
+
+{{/* Harbor JobService Secret generator */}}
+{{- define "harbor.jobservice.secret" -}}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.jobservice" .) ) -}}
+{{- if $secret -}}
+{{/* Reusing existing secret data */}}
+JOBSERVICE_SECRET: {{ index $secret "data" "JOBSERVICE_SECRET" }}
+{{- else -}}
+{{/* Generate new data */}}
+JOBSERVICE_SECRET: {{ .Values.jobservice.secret | default (randAlphaNum 16) | b64enc | quote }}
+{{- end -}}
+{{- if not .Values.registry.credentials.existingSecret }}
+REGISTRY_CREDENTIAL_PASSWORD: {{ .Values.registry.credentials.password | b64enc | quote }}
+{{- end }}
+{{- template "harbor.traceJaegerPassword" . }}
+{{- end -}}
+
+{{/* Harbor Registry Secret generator */}}
+{{- define "harbor.registry.secret" -}}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.registry" .) ) -}}
+{{- if $secret -}}
+{{/* Reusing existing secret data */}}
+REGISTRY_HTTP_SECRET: {{ index $secret "data" "REGISTRY_HTTP_SECRET" }}
+{{- else -}}
+{{/* Generate new data */}}
+REGISTRY_HTTP_SECRET: {{ .Values.registry.secret | default (randAlphaNum 16) | b64enc | quote }}
+{{- end -}}
+{{- if not .Values.redis.external.existingSecret }}
+REGISTRY_REDIS_PASSWORD: {{ include "harbor.redis.password" . | b64enc | quote }}
+{{- end }}
+{{- $storage := .Values.persistence.imageChartStorage }}
+{{- $type := $storage.type }}
+{{- if and (eq $type "azure") (not $storage.azure.existingSecret) }}
+REGISTRY_STORAGE_AZURE_ACCOUNTKEY: {{ $storage.azure.accountkey | b64enc | quote }}
+{{- else if and (and (eq $type "gcs") (not $storage.gcs.existingSecret)) (not $storage.gcs.useWorkloadIdentity) }}
+GCS_KEY_DATA: {{ $storage.gcs.encodedkey | quote }}
+{{- else if eq $type "s3" }}
+{{- if and (not $storage.s3.existingSecret) ($storage.s3.accesskey) }}
+REGISTRY_STORAGE_S3_ACCESSKEY: {{ $storage.s3.accesskey | b64enc | quote }}
+{{- end }}
+{{- if and (not $storage.s3.existingSecret) ($storage.s3.secretkey) }}
+REGISTRY_STORAGE_S3_SECRETKEY: {{ $storage.s3.secretkey | b64enc | quote }}
+{{- end }}
+{{- else if eq $type "swift" }}
+REGISTRY_STORAGE_SWIFT_PASSWORD: {{ $storage.swift.password | b64enc | quote }}
+{{- if $storage.swift.secretkey }}
+REGISTRY_STORAGE_SWIFT_SECRETKEY: {{ $storage.swift.secretkey | b64enc | quote }}
+{{- end }}
+{{- if $storage.swift.accesskey }}
+REGISTRY_STORAGE_SWIFT_ACCESSKEY: {{ $storage.swift.accesskey | b64enc | quote }}
+{{- end }}
+{{- else if eq $type "oss" }}
+REGISTRY_STORAGE_OSS_ACCESSKEYSECRET: {{ $storage.oss.accesskeysecret | b64enc | quote }}
+{{- end }}
+{{- end -}}
+
+{{/* Harbor Registry Secret htpasswd generator */}}
+{{- define "harbor.registry.secret-htpasswd" -}}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-htpasswd" (include "harbor.registry" .)) ) -}}
+{{- if $secret -}}
+{{/* Reusing existing secret data */}}
+{{- if .Values.registry.credentials.htpasswdString }}
+REGISTRY_HTPASSWD: {{ .Values.registry.credentials.htpasswdString | b64enc | quote }}
+{{- else }}
+REGISTRY_HTPASSWD: {{ index $secret "data" "REGISTRY_HTPASSWD" }}
+{{- end }}
+{{- else -}}
+{{/* Generate new data */}}
+{{- if .Values.registry.credentials.htpasswdString }}
+REGISTRY_HTPASSWD: {{ .Values.registry.credentials.htpasswdString | b64enc | quote }}
+{{- else }}
+REGISTRY_HTPASSWD: {{ htpasswd .Values.registry.credentials.username .Values.registry.credentials.password | b64enc | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}
