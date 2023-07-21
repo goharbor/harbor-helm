@@ -8,6 +8,13 @@ metadata:
 spec:
   replicas: {{ .Values.portal.replicas }}
   revisionHistoryLimit: {{ .Values.portal.revisionHistoryLimit }}
+{{-  if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+{{- if and .Values.portal.minReadySeconds (semverCompare ">= 1.23-0" .Capabilities.KubeVersion.Version) }}
+  minReadySeconds: {{ .Values.portal.minReadySeconds }}
+{{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

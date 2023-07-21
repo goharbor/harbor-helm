@@ -9,6 +9,13 @@ metadata:
 spec:
   replicas: {{ .Values.nginx.replicas }}
   revisionHistoryLimit: {{ .Values.nginx.revisionHistoryLimit }}
+{{-  if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+{{- if and .Values.nginx.minReadySeconds (semverCompare ">= 1.23-0" .Capabilities.KubeVersion.Version) }}
+  minReadySeconds: {{ .Values.nginx.minReadySeconds }}
+{{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

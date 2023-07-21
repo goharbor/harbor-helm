@@ -8,11 +8,13 @@ metadata:
 spec:
   replicas: {{ .Values.jobservice.replicas }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
+{{-  if .Values.updateStrategy }}
   strategy:
-    type: {{ .Values.updateStrategy.type }}
-    {{- if eq .Values.updateStrategy.type "Recreate" }}
-    rollingUpdate: null
-    {{- end }}
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+{{- if and .Values.jobservice.minReadySeconds (semverCompare ">= 1.23-0" .Capabilities.KubeVersion.Version) }}
+  minReadySeconds: {{ .Values.jobservice.minReadySeconds }}
+{{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
