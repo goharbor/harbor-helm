@@ -75,3 +75,7 @@ data:
   CACHE_ENABLED: "true"
   CACHE_EXPIRE_HOURS: "{{ .Values.cache.expireHours }}"
   {{- end }}
+  
+  {{- if .Values.core.quotaUpdateProvider }}
+  QUOTA_UPDATE_PROVIDER: "{{ .Values.core.quotaUpdateProvider }}"
+  {{- end }}

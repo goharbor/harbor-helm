@@ -473,6 +473,14 @@ core:
   serviceAnnotations: {}
   ## User settings configuration json string
   configureUserSettings:
+  # The provider for updating project quota(usage), there are 2 options, redis or db.
+  # By default it is implemented by db but you can configure it to redis which
+  # can improve the performance of high concurrent pushing to the same project,
+  # and reduce the database connections spike and occupies.
+  # Using redis will bring up some delay for quota usage updation for display, so only
+  # suggest switch provider to redis if you were ran into the db connections spike around
+  # the scenario of high concurrent pushing to same project, no improvment for other scenes.
+  quotaUpdateProvider: db # Or redis
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
