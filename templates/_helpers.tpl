@@ -573,7 +573,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   TRACE_SAMPLE_RATE: "{{ .Values.trace.sample_rate }}"
   TRACE_NAMESPACE: "{{ .Values.trace.namespace }}"
   {{- if .Values.trace.attributes }}
-  TRACE_ATTRIBUTES: "{{ .Values.trace.attributes | toJson }}"
+  TRACE_ATTRIBUTES: {{ .Values.trace.attributes | toJson | squote }}
   {{- end }}
   {{- if eq .Values.trace.provider "jaeger" }}
   TRACE_JAEGER_ENDPOINT: "{{ .Values.trace.jaeger.endpoint }}"
