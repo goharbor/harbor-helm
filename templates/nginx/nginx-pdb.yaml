@@ -13,6 +13,7 @@ spec:
   maxUnavailable: {{ .Values.nginx.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   selector:
-{{ include "harbor.matchLabels" . | indent 4 }}
-    component: nginx
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: nginx
 {{- end }}
