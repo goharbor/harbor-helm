@@ -13,6 +13,7 @@ spec:
   maxUnavailable: {{ .Values.registry.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   selector:
-{{ include "harbor.matchLabels" . | indent 4 }}
-    component: registry
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: registry
 {{- end }}

@@ -13,6 +13,7 @@ spec:
   maxUnavailable: {{ .Values.jobservice.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   selector:
-{{ include "harbor.matchLabels" . | indent 4 }}
-    component: jobservice
+    matchLabels:
+{{ include "harbor.matchLabels" . | indent 6 }}
+      component: jobservice
 {{- end }}
