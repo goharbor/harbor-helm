@@ -403,6 +403,11 @@ nginx:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 portal:
   image:
@@ -434,6 +439,11 @@ portal:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 core:
   image:
@@ -498,6 +508,11 @@ core:
   artifactPullAsyncFlushDuration:
   gdpr:
     deleteUser: false
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 jobservice:
   image:
@@ -550,6 +565,11 @@ jobservice:
   secret: ""
   ## The priority class to run the pod as
   priorityClassName:
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 registry:
   # set the service account to be used, default if left empty
@@ -626,6 +646,11 @@ registry:
     # the interval of the purge operations
     interval: 24h
     dryrun: false
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 trivy:
   # enabled the flag to enable Trivy scanner
@@ -708,6 +733,11 @@ trivy:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 database:
   # if external database is used, set "type" to "external"
@@ -781,6 +811,11 @@ database:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -826,6 +861,11 @@ redis:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 exporter:
   replicas: 1
@@ -857,6 +897,11 @@ exporter:
   cacheCleanInterval: 14400
   ## The priority class to run the pod as
   priorityClassName:
+  ## Additional pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 
 metrics:
   enabled: false

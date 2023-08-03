@@ -32,9 +32,11 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsNonRoot: true
         runAsUser: 10000
         fsGroup: 10000
+{{- if .Values.portal.podSecurityContext }}
+{{ toYaml .Values.portal.podSecurityContext | indent 8 }}
+{{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

@@ -41,9 +41,11 @@ spec:
       serviceAccountName: {{ .Values.trivy.serviceAccountName }}
 {{- end }}
       securityContext:
-        runAsNonRoot: true
         runAsUser: 10000
         fsGroup: 10000
+{{- if .Values.trivy.podSecurityContext }}
+{{ toYaml .Values.trivy.podSecurityContext | indent 8 }}
+{{- end }}
       automountServiceAccountToken: {{ .Values.trivy.automountServiceAccountToken | default false }}
 {{- with .Values.trivy.topologySpreadConstraints}}
       topologySpreadConstraints:

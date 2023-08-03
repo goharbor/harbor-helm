@@ -29,9 +29,11 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsNonRoot: true
         runAsUser: 999
         fsGroup: 999
+{{- if .Values.database.internal.podSecurityContext }}
+{{ toYaml .Values.database.internal.podSecurityContext | indent 8 }}
+{{- end }}
 {{- if .Values.database.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
 {{- end -}}

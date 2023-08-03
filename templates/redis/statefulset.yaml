@@ -28,9 +28,11 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsNonRoot: true
         runAsUser: 999
         fsGroup: 999
+{{- if .Values.redis.podSecurityContext }}
+{{ toYaml .Values.redis.podSecurityContext | indent 8 }}
+{{- end }}
 {{- if .Values.redis.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.redis.internal.serviceAccountName }}
 {{- end -}}

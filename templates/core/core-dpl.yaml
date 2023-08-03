@@ -34,9 +34,11 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsNonRoot: true
         runAsUser: 10000
         fsGroup: 10000
+{{- if .Values.core.podSecurityContext }}
+{{ toYaml .Values.core.podSecurityContext | indent 8 }}
+{{- end }}
 {{- if .Values.core.serviceAccountName }}
       serviceAccountName: {{ .Values.core.serviceAccountName }}
 {{- end -}}
