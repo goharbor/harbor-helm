@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: database
+{{- if .Values.database.podLabels }}
+{{ toYaml .Values.database.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.database.podAnnotations }}
@@ -102,6 +105,9 @@ spec:
           # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
+{{- with .Values.database.internal.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data

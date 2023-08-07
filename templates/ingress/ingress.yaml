@@ -8,7 +8,6 @@
   {{- $_ := set . "v2_path" "/v2/*" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/*" -}}
   {{- $_ := set . "controller_path" "/c/*" -}}
-  {{- $_ := set . "notary_path" "/" -}}
 {{- else if eq .Values.expose.ingress.controller "ncp" }}
   {{- $_ := set . "portal_path" "/.*" -}}
   {{- $_ := set . "api_path" "/api/.*" -}}
@@ -16,7 +15,6 @@
   {{- $_ := set . "v2_path" "/v2/.*" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/.*" -}}
   {{- $_ := set . "controller_path" "/c/.*" -}}
-  {{- $_ := set . "notary_path" "/.*" -}}
 {{- else }}
   {{- $_ := set . "portal_path" "/" -}}
   {{- $_ := set . "api_path" "/api/" -}}
@@ -24,7 +22,6 @@
   {{- $_ := set . "v2_path" "/v2/" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
   {{- $_ := set . "controller_path" "/c/" -}}
-  {{- $_ := set . "notary_path" "/" -}}
 {{- end }}
 
 ---
@@ -144,66 +141,5 @@ spec:
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
     {{- end }}
-
-{{- if .Values.notary.enabled  }}
----
-{{- if semverCompare "<1.14-0" (include "harbor.ingress.kubeVersion" .) }}
-apiVersion: extensions/v1beta1
-{{- else if semverCompare "<1.19-0" (include "harbor.ingress.kubeVersion" .) }}
-apiVersion: networking.k8s.io/v1beta1
-{{- else }}
-apiVersion: networking.k8s.io/v1
-{{- end }}
-kind: Ingress
-metadata:
-  name: "{{ template "harbor.ingress-notary" . }}"
-  labels:
-{{ include "harbor.labels" . | indent 4 }}
-{{- if $ingress.notary.labels }}
-{{ toYaml $ingress.notary.labels | indent 4 }}
-{{- end }}
-  annotations:
-{{ toYaml $ingress.annotations | indent 4 }}
-{{- if eq .Values.expose.ingress.controller "ncp" }}
-    ncp/use-regex: "true"
-    {{- if $tls.enabled }}
-    ncp/http-redirect: "true"
-    {{- end }}
-{{- end }}
-{{- if $ingress.notary.annotations }}
-{{ toYaml $ingress.notary.annotations | indent 4 }}
-{{- end }}
-spec:
-  {{- if $ingress.className }}
-  ingressClassName: {{ $ingress.className }}
-  {{- end }}
-  {{- if $tls.enabled }}
-  tls:
-  - secretName: {{ template "harbor.tlsNotarySecretForIngress" . }}
-    {{- if $ingress.hosts.notary }}
-    hosts:
-    - {{ $ingress.hosts.notary }}
-    {{- end }}
-  {{- end }}
-  rules:
-  - http:
-      paths:
-      - path: {{ .notary_path }}
-{{- if semverCompare "<1.19-0" (include "harbor.ingress.kubeVersion" .) }}
-        backend:
-          serviceName: {{ template "harbor.notary-server" . }}
-          servicePort: 4443
-{{- else }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ template "harbor.notary-server" . }}
-            port:
-              number: 4443
-{{- end -}}
-    {{- if $ingress.hosts.notary }}
-    host: {{ $ingress.hosts.notary }}
-    {{- end }}
-{{- end }}
 
 {{- end }}

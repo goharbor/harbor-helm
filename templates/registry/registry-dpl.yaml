@@ -24,6 +24,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: registry
+{{- if .Values.registry.podLabels }}
+{{ toYaml .Values.registry.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/registry/registry-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/registry/registry-secret.yaml") . | sha256sum }}
@@ -51,6 +54,16 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.registry.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+{{- with .Values.registry.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: registry
+{{- end }}
+{{- end }}
       containers:
       - name: registry
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
@@ -115,6 +128,9 @@ spec:
               name: {{ .Values.persistence.imageChartStorage.s3.existingSecret.name }}
               key: {{ .Values.persistence.imageChartStorage.s3.existingSecret.secretKey }}
         {{- end }}
+{{- with .Values.registry.registry.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.registry.containerPort" . }}
         - containerPort: 5001
@@ -235,6 +251,9 @@ spec:
               name: {{ .Values.persistence.imageChartStorage.s3.existingSecret.name }}
               key: {{ .Values.persistence.imageChartStorage.s3.existingSecret.secretKey }}
         {{- end }}
+{{- with .Values.registry.controller.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
         volumeMounts:

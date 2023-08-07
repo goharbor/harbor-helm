@@ -18,7 +18,15 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: exporter
+{{- if .Values.exporter.podLabels }}
+{{ toYaml .Values.exporter.podLabels | indent 8 }}
+{{- end }}
       annotations:
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
+{{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
+        checksum/tls: {{ include (print $.Template.BasePath "/core/core-tls.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.exporter.podAnnotations }}
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
 {{- end }}
@@ -34,6 +42,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.exporter.automountServiceAccountToken | default false }}
+{{- with .Values.exporter.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: exporter
+{{- end }}
+{{- end }}
       containers:
       - name: exporter
         image: {{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}
@@ -74,6 +92,10 @@ spec:
 {{- if .Values.exporter.resources }}
         resources:
 {{ toYaml .Values.exporter.resources | indent 10 }}
+{{- end }}
+{{- with .Values.exporter.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
 {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}

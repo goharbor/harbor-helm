@@ -18,6 +18,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: nginx
+{{- if .Values.nginx.podLabels }}
+{{ toYaml .Values.nginx.podLabels | indent 8 }}
+{{- end }}
       annotations:
       {{- if not .Values.expose.tls.enabled }}
         checksum/configmap: {{ include (print $.Template.BasePath "/nginx/configmap-http.yaml") . | sha256sum }}
@@ -42,6 +45,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.nginx.automountServiceAccountToken | default false }}
+{{- with .Values.nginx.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: nginx
+{{- end }}
+{{- end }}
       containers:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
@@ -69,6 +82,10 @@ spec:
 {{- if .Values.nginx.resources }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
+{{- end }}
+{{- with .Values.nginx.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
 {{- end }}
         ports:
         - containerPort: 8080

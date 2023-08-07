@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: trivy
+{{- if .Values.trivy.podLabels }}
+{{ toYaml .Values.trivy.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/trivy/trivy-secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
@@ -41,6 +44,16 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: {{ .Values.trivy.automountServiceAccountToken | default false }}
+{{- with .Values.trivy.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: trivy
+{{- end }}
+{{- end }}
       containers:
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
@@ -111,6 +124,9 @@ spec:
                 secretKeyRef:
                   name: {{ template "harbor.trivy" . }}
                   key: redisURL
+{{- with .Values.trivy.extraEnvVars }}
+{{- toYaml . | nindent 12 }}
+{{- end }}
           ports:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}
