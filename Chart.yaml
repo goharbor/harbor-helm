@@ -8,7 +8,7 @@ keywords:
 - registry
 - harbor
 home: https://goharbor.io
-icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
+icon: https://raw.githubusercontent.com/goharbor/website/main/static/img/logos/harbor-icon-color.png
 sources:
 - https://github.com/goharbor/harbor
 - https://github.com/goharbor/harbor-helm

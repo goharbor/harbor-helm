@@ -22,6 +22,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: jobservice
+{{- if .Values.jobservice.podLabels }}
+{{ toYaml .Values.jobservice.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm.yaml") . | sha256sum }}
         checksum/configmap-env: {{ include (print $.Template.BasePath "/jobservice/jobservice-cm-env.yaml") . | sha256sum }}
@@ -48,6 +51,16 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.jobservice.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+{{- with .Values.jobservice.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: jobservice
+{{- end }}
+{{- end }}
       containers:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
@@ -93,6 +106,9 @@ spec:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
           {{- end }}
+{{- with .Values.jobservice.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.jobservice" . }}-env"

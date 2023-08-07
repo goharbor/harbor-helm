@@ -26,15 +26,9 @@ expose:
       # "tls.crt" - the certificate
       # "tls.key" - the private key
       secretName: ""
-      # The name of secret which contains keys named:
-      # "tls.crt" - the certificate
-      # "tls.key" - the private key
-      # Only needed when the "expose.type" is "ingress".
-      notarySecretName: ""
   ingress:
     hosts:
       core: core.harbor.domain
-      notary: notary.harbor.domain
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
@@ -52,11 +46,6 @@ expose:
       ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    notary:
-      # notary ingress-specific annotations
-      annotations: {}
-      # notary ingress-specific labels
-      labels: {}
     harbor:
       # harbor ingress-specific annotations
       annotations: {}
@@ -71,10 +60,6 @@ expose:
       # The service port Harbor listens on when serving HTTP
       httpPort: 80
       # The service port Harbor listens on when serving HTTPS
-      httpsPort: 443
-      # The service port Notary listens on. Only needed when notary.enabled
-      # is set to true
-      notaryPort: 4443
   nodePort:
     # The name of NodePort service
     name: harbor
@@ -89,12 +74,6 @@ expose:
         port: 443
         # The node port Harbor listens on when serving HTTPS
         nodePort: 30003
-      # Only needed when notary.enabled is set to true
-      notary:
-        # The service port Notary listens on
-        port: 4443
-        # The node port Notary listens on
-        nodePort: 30004
   loadBalancer:
     # The name of LoadBalancer service
     name: harbor
@@ -105,15 +84,12 @@ expose:
       httpPort: 80
       # The service port Harbor listens on when serving HTTPS
       httpsPort: 443
-      # The service port Notary listens on. Only needed when notary.enabled
-      # is set to true
-      notaryPort: 4443
     annotations: {}
     sourceRanges: []
 
 # The external URL for Harbor core service. It is used to
 # 1) populate the docker/helm commands showed on portal
-# 2) populate the token service URL returned to docker/notary client
+# 2) populate the token service URL returned to docker client
 #
 # Format: protocol://domain[:port]. Usually:
 # 1) if "expose.type" is "ingress", the "domain" should be
@@ -127,10 +103,12 @@ expose:
 externalURL: https://core.harbor.domain
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
-# in each components tls cert files need to provided in advance.
+# in each component tls cert files need to provided in advance.
 internalTLS:
   # If internal TLS enabled
   enabled: false
+  # enable strong ssl ciphers (default: false)
+  strong_ssl_ciphers: false
   # There are three ways to provide tls
   # 1) "auto" will generate cert automatically
   # 2) "manual" need provide cert file manually in following value
@@ -284,7 +262,7 @@ persistence:
       encodedkey: base64-encoded-json-key-file
       #rootdirectory: /gcs/object/name/prefix
       #chunksize: "5242880"
-      # To use existing secret, the key must be gcs-key.json
+      # To use existing secret, the key must be GCS_KEY_DATA
       existingSecret: ""
       useWorkloadIdentity: false
     s3:
@@ -411,11 +389,20 @@ nginx:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -433,11 +420,20 @@ portal:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -459,18 +455,37 @@ core:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## Additional service annotations
   serviceAnnotations: {}
+  ## User settings configuration json string
+  configureUserSettings:
+  # The provider for updating project quota(usage), there are 2 options, redis or db.
+  # By default it is implemented by db but you can configure it to redis which
+  # can improve the performance of high concurrent pushing to the same project,
+  # and reduce the database connections spike and occupies.
+  # Using redis will bring up some delay for quota usage updation for display, so only
+  # suggest switch provider to redis if you were ran into the db connections spike around
+  # the scenario of high concurrent pushing to same project, no improvment for other scenes.
+  quotaUpdateProvider: db # Or redis
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
-  # Fill the name of a kubernetes secret if you want to use your own
+  # Fill in the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
   # The secret must contain keys named:
   # "tls.key" - the private key
@@ -515,16 +530,30 @@ jobservice:
   notification:
     webhook_job_max_retry: 3
     webhook_job_http_client_timeout: 3 # in seconds
+  reaper:
+    # the max time to wait for a task to finish, if unfinished after max_update_hours, the task will be mark as error, but the task will continue to run, default value is 24
+    max_update_hours: 24
+    # the max time for execution in running state without new task created
+    max_dangling_hours: 168
 
   # resources:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints:
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -545,6 +574,7 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
   controller:
     image:
       repository: goharbor/harbor-registryctl
@@ -554,13 +584,22 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
   replicas: 1
   revisionHistoryLimit: 10
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
   # Secret is used to secure the upload state from client
@@ -663,65 +702,22 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  extraEnvVars: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
-
-notary:
-  enabled: true
-  server:
-    # set the service account to be used, default if left empty
-    serviceAccountName: ""
-    # mount the service account token
-    automountServiceAccountToken: false
-    image:
-      repository: goharbor/notary-server-photon
-      tag: dev
-    replicas: 1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-    ## Additional deployment annotations
-    podAnnotations: {}
-    ## The priority class to run the pod as
-    priorityClassName:
-  ## Additional service annotations
-  serviceAnnotations: {}
-  signer:
-    # set the service account to be used, default if left empty
-    serviceAccountName: ""
-    # mount the service account token
-    automountServiceAccountToken: false
-    image:
-      repository: goharbor/notary-signer-photon
-      tag: dev
-    replicas: 1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-    ## Additional deployment annotations
-    podAnnotations: {}
-    ## The priority class to run the pod as
-    priorityClassName:
-  # Fill the name of a kubernetes secret if you want to use your own
-  # TLS certificate authority, certificate and private key for notary
-  # communications.
-  # The secret must contain keys named ca.crt, tls.crt and tls.key that
-  # contain the CA, certificate and private key.
-  # They will be generated if not set.
-  secretName: ""
 
 database:
   # if external database is used, set "type" to "external"
@@ -751,6 +747,7 @@ database:
     # The timeout used in readinessProbe; 1 to 5 seconds
     readinessProbe:
       timeoutSeconds: 1
+    extraEnvVars: []
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -773,8 +770,6 @@ database:
     username: "user"
     password: "password"
     coreDatabase: "registry"
-    notaryServerDatabase: "notary_server"
-    notarySignerDatabase: "notary_signer"
     # if using existing secret, the key must be "password"
     existingSecret: ""
     # "disable" - No SSL
@@ -794,6 +789,8 @@ database:
   maxOpenConns: 900
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 redis:
   # if external Redis is used, set "type" to "external"
@@ -811,6 +808,7 @@ redis:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    extraEnvVars: []
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -829,13 +827,15 @@ redis:
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     trivyAdapterIndex: "5"
-    # username field can be an empty string and it will be authenticated against the default user
+    # username field can be an empty string, and it will be authenticated against the default user
     username: ""
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD
     existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
 
 exporter:
   replicas: 1
@@ -844,7 +844,10 @@ exporter:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  extraEnvVars: []
   podAnnotations: {}
+  ## Additional deployment labels
+  podLabels: {}
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
@@ -854,6 +857,12 @@ exporter:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Spread Pods across failure-domains like regions, availability zones or nodes
+  topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   nodeTaintsPolicy: Honor
+  #   whenUnsatisfiable: DoNotSchedule
   cacheDuration: 23
   cacheCleanInterval: 14400
   ## The priority class to run the pod as

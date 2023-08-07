@@ -115,36 +115,12 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
-{{- define "harbor.database.notaryServerDatabase" -}}
-  {{- if eq .Values.database.type "internal" -}}
-    {{- printf "%s" "notaryserver" -}}
-  {{- else -}}
-    {{- .Values.database.external.notaryServerDatabase -}}
-  {{- end -}}
-{{- end -}}
-
-{{- define "harbor.database.notarySignerDatabase" -}}
-  {{- if eq .Values.database.type "internal" -}}
-    {{- printf "%s" "notarysigner" -}}
-  {{- else -}}
-    {{- .Values.database.external.notarySignerDatabase -}}
-  {{- end -}}
-{{- end -}}
-
 {{- define "harbor.database.sslmode" -}}
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "disable" -}}
   {{- else -}}
     {{- .Values.database.external.sslmode -}}
   {{- end -}}
-{{- end -}}
-
-{{- define "harbor.database.notaryServer" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notaryServerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
-{{- end -}}
-
-{{- define "harbor.database.notarySigner" -}}
-postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.database.escapedRawPassword" . }}@{{ template "harbor.database.host" . }}:{{ template "harbor.database.port" . }}/{{ template "harbor.database.notarySignerDatabase" . }}?sslmode={{ template "harbor.database.sslmode" . }}
 {{- end -}}
 
 {{- define "harbor.redis.scheme" -}}
@@ -261,14 +237,6 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- printf "%s-trivy" (include "harbor.fullname" .) -}}
 {{- end -}}
 
-{{- define "harbor.notary-server" -}}
-  {{- printf "%s-notary-server" (include "harbor.fullname" .) -}}
-{{- end -}}
-
-{{- define "harbor.notary-signer" -}}
-  {{- printf "%s-notary-signer" (include "harbor.fullname" .) -}}
-{{- end -}}
-
 {{- define "harbor.nginx" -}}
   {{- printf "%s-nginx" (include "harbor.fullname" .) -}}
 {{- end -}}
@@ -281,12 +249,8 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
 
-{{- define "harbor.ingress-notary" -}}
-  {{- printf "%s-ingress-notary" (include "harbor.fullname" .) -}}
-{{- end -}}
-
 {{- define "harbor.noProxy" -}}
-  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.notary-server" .) (include "harbor.notary-signer" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) (include "harbor.exporter" .) .Values.proxy.noProxy -}}
+  {{- printf "%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) (include "harbor.exporter" .) .Values.proxy.noProxy -}}
 {{- end -}}
 
 {{- define "harbor.caBundleVolume" -}}
@@ -301,7 +265,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
   subPath: ca.crt
 {{- end -}}
 
-{{/* scheme for all components except notary because it only support http mode */}}
+{{/* scheme for all components because it only support http mode */}}
 {{- define "harbor.component.scheme" -}}
   {{- if .Values.internalTLS.enabled -}}
     {{- printf "https" -}}
@@ -499,16 +463,6 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
     {{- printf "" -}}
   {{- else if eq .Values.expose.tls.certSource "secret" -}}
     {{- .Values.expose.tls.secret.secretName -}}
-  {{- else -}}
-    {{- include "harbor.ingress" . -}}
-  {{- end -}}
-{{- end -}}
-
-{{- define "harbor.tlsNotarySecretForIngress" -}}
-  {{- if eq .Values.expose.tls.certSource "none" -}}
-    {{- printf "" -}}
-  {{- else if eq .Values.expose.tls.certSource "secret" -}}
-    {{- .Values.expose.tls.secret.notarySecretName -}}
   {{- else -}}
     {{- include "harbor.ingress" . -}}
   {{- end -}}
