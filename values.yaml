@@ -821,6 +821,16 @@ redis:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # # jobserviceDatabaseIndex defaults to "1"
+    # # registryDatabaseIndex defaults to "2"
+    # # trivyAdapterIndex defaults to "5"
+    # # harborDatabaseIndex defaults to "0", but it can be configured to "6", this config is optional
+    # # cacheLayerDatabaseIndex defaults to "0", but it can be configured to "7", this config is optional
+    jobserviceDatabaseIndex: "1"
+    registryDatabaseIndex: "2"
+    trivyAdapterIndex: "5"
+    # harborDatabaseIndex: "6"
+    # cacheLayerDatabaseIndex: "7"
   external:
     # support redis, redis+sentinel
     # addr for redis: <host_redis>:<port_redis>
@@ -830,11 +840,15 @@ redis:
     sentinelMasterSet: ""
     # The "coreDatabaseIndex" must be "0" as the library Harbor
     # used doesn't support configuring it
+    # harborDatabaseIndex defaults to "0", but it can be configured to "6", this config is optional
+    # cacheLayerDatabaseIndex defaults to "0", but it can be configured to "7", this config is optional
     coreDatabaseIndex: "0"
     jobserviceDatabaseIndex: "1"
     registryDatabaseIndex: "2"
     trivyAdapterIndex: "5"
-    # username field can be an empty string and it will be authenticated against the default user
+    # harborDatabaseIndex: "6"
+    # cacheLayerDatabaseIndex: "7"
+    # username field can be an empty string, and it will be authenticated against the default user
     username: ""
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD

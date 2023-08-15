@@ -37,6 +37,12 @@ data:
   CHART_CACHE_DRIVER: "redis"
   _REDIS_URL_CORE: "{{ template "harbor.redis.urlForCore" . }}"
   _REDIS_URL_REG: "{{ template "harbor.redis.urlForRegistry" . }}"
+  {{- if or (and (eq .Values.redis.type "internal") .Values.redis.internal.harborDatabaseIndex) (and (eq .Values.redis.type "external") .Values.redis.external.harborDatabaseIndex) }}
+  _REDIS_URL_HARBOR: "{{ template "harbor.redis.urlForHarbor" . }}"
+  {{- end }}
+  {{- if or (and (eq .Values.redis.type "internal") .Values.redis.internal.cacheLayerDatabaseIndex) (and (eq .Values.redis.type "external") .Values.redis.external.cacheLayerDatabaseIndex) }}
+  _REDIS_URL_CACHE_LAYER: "{{ template "harbor.redis.urlForCache" . }}"
+  {{- end }}  
   PORTAL_URL: "{{ template "harbor.portalURL" . }}"
   REGISTRY_CONTROLLER_URL: "{{ template "harbor.registryControllerURL" . }}"
   REGISTRY_CREDENTIAL_USERNAME: "{{ .Values.registry.credentials.username }}"
