@@ -29,3 +29,6 @@ data:
   CACHE_ENABLED: "true"
   CACHE_EXPIRE_HOURS: "{{ .Values.cache.expireHours }}"
   {{- end }}
+  {{- if or (and (eq .Values.redis.type "internal") .Values.redis.internal.cacheLayerDatabaseIndex) (and (eq .Values.redis.type "external") .Values.redis.external.cacheLayerDatabaseIndex) }}
+  _REDIS_URL_CACHE_LAYER: "{{ template "harbor.redis.urlForCache" . }}"
+  {{- end }}
