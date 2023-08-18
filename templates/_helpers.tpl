@@ -188,7 +188,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 /*scheme://[:password@]addr/db_index*/
 {{- define "harbor.redis.urlForJobservice" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "1" .external.jobserviceDatabaseIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.jobserviceDatabaseIndex .external.jobserviceDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s" (include "harbor.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
@@ -196,7 +196,7 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForRegistry" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "2" .external.registryDatabaseIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
@@ -204,14 +204,30 @@ postgres://{{ template "harbor.database.username" . }}:{{ template "harbor.datab
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForTrivy" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "5" .external.trivyAdapterIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.trivyAdapterIndex .external.trivyAdapterIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+/*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
+{{- define "harbor.redis.urlForHarbor" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.harborDatabaseIndex .external.harborDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+/*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
+{{- define "harbor.redis.urlForCache" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.cacheLayerDatabaseIndex .external.cacheLayerDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
 
 {{- define "harbor.redis.dbForRegistry" -}}
   {{- with .Values.redis }}
-    {{- ternary "2" .external.registryDatabaseIndex (eq .type "internal") }}
+    {{- ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
   {{- end }}
 {{- end -}}
 
