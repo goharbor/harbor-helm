@@ -227,14 +227,14 @@ persistence:
       annotations: {}
   # Define which storage backend is used for registry to store
   # images and charts. Refer to
-  # https://github.com/docker/distribution/blob/master/docs/configuration.md#storage
+  # https://github.com/distribution/distribution/blob/main/docs/configuration.md#storage
   # for the detail.
   imageChartStorage:
     # Specify whether to disable `redirect` for images and chart storage, for
     # backends which not supported it (such as using minio for `s3` storage type), please disable
     # it. To disable redirects, simply set `disableredirect` to `true` instead.
     # Refer to
-    # https://github.com/docker/distribution/blob/master/docs/configuration.md#redirect
+    # https://github.com/distribution/distribution/blob/main/docs/configuration.md#redirect
     # for the detail.
     disableredirect: false
     # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
@@ -604,7 +604,7 @@ registry:
   priorityClassName:
   # Secret is used to secure the upload state from client
   # and registry storage backend.
-  # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
+  # See: https://github.com/distribution/distribution/blob/main/docs/configuration.md#http
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
@@ -898,7 +898,7 @@ metrics:
     port: 8001
   ## Create prometheus serviceMonitor to scrape harbor metrics.
   ## This requires the monitoring.coreos.com/v1 CRD. Please see
-  ## https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/getting-started.md
+  ## https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/getting-started.md
   ##
   serviceMonitor:
     enabled: false
