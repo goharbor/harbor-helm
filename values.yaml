@@ -434,6 +434,26 @@ portal:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Branding configuration
+  branding:
+    enabled: false
+    imageMounts:
+      logo:
+        configMapName: ""
+        filename: ""
+      loginBgImg:
+        configMapName: ""
+        filename: ""
+    config:
+      headerBgColor:
+        darkMode: ""
+        lightMode: ""
+      loginBgImg: ""
+      loginTitle: ""
+      product:
+        name: ""
+        logo": ""
+        introduction: ""
   ## The priority class to run the pod as
   priorityClassName:
 

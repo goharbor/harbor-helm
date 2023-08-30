@@ -26,7 +26,7 @@ spec:
 {{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
         checksum/tls: {{ include (print $.Template.BasePath "/portal/tls.yaml") . | sha256sum }}
 {{- end }}
-        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}  
+        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}
 {{- if .Values.portal.podAnnotations }}
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
 {{- end }}
@@ -88,6 +88,21 @@ spec:
         - name: portal-internal-certs
           mountPath: /etc/harbor/ssl/portal
         {{- end }}
+        {{- if .Values.portal.branding.enabled }}
+        - name: portal-config
+          mountPath: /usr/share/nginx/html/setting.json
+          subPath: setting.json
+        {{- end }}
+        {{- if not (or (empty .Values.portal.branding.imageMounts.logo.configMapName) (empty .Values.portal.branding.imageMounts.logo.filename)) }}
+        - name: portal-branding
+          mountPath: {{ printf "/usr/share/nginx/html/images/%s" .Values.portal.branding.imageMounts.logo.filename | quote }}
+          subPath: {{ .Values.portal.branding.imageMounts.logo.filename | quote }}
+        {{- end }}
+        {{- if not (or (empty .Values.portal.branding.imageMounts.loginBgImg.configMapName) (empty .Values.portal.branding.imageMounts.loginBgImg.filename)) }}
+        - name: portal-branding
+          mountPath: {{ printf "/usr/share/nginx/html/images/%s" .Values.portal.branding.imageMounts.loginBgImg.filename | quote }}
+          subPath: {{ .Values.portal.branding.imageMounts.loginBgImg.filename | quote }}
+        {{- end }}
       volumes:
       - name: portal-config
         configMap:
@@ -96,6 +111,25 @@ spec:
       - name: portal-internal-certs
         secret:
           secretName: {{ template "harbor.internalTLS.portal.secretName" . }}
+      {{- end }}
+      {{- if .Values.portal.branding.enabled}}
+      - name: portal-branding
+        projected:
+          sources:
+            {{- if not (or (empty .Values.portal.branding.imageMounts.logo.configMapName) (empty .Values.portal.branding.imageMounts.logo.filename)) }}
+            - configMap:
+                name: {{ .Values.portal.branding.imageMounts.logo.configMapName | quote }}
+                items:
+                  - key: {{ .Values.portal.branding.imageMounts.logo.filename | quote }}
+                    path: {{ printf "/%s" .Values.portal.branding.imageMounts.logo.filename | quote }}
+            {{- end }}
+            {{- if not (or (empty .Values.portal.branding.imageMounts.loginBgImg.configMapName) (empty .Values.portal.branding.imageMounts.loginBgImg.filename)) }}
+            - configMap:
+                name: {{ .Values.portal.branding.imageMounts.loginBgImg.configMapName | quote }}
+                items:
+                  - key: {{ .Values.portal.branding.imageMounts.loginBgImg.filename | quote }}
+                    path: {{ printf "/%s" .Values.portal.branding.imageMounts.loginBgImg.filename | quote }}
+            {{- end }}
       {{- end }}
     {{- with .Values.portal.nodeSelector }}
       nodeSelector:

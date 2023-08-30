@@ -65,3 +65,8 @@ data:
             }
         }
     }
+{{- if .Values.portal.branding.enabled }}
+  setting.json: >-
+{{ .Values.portal.branding.config | toJson | indent 4 }}
+{{- end }}
+
