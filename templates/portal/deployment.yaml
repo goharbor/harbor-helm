@@ -121,14 +121,14 @@ spec:
                 name: {{ .Values.portal.branding.imageMounts.logo.configMapName | quote }}
                 items:
                   - key: {{ .Values.portal.branding.imageMounts.logo.filename | quote }}
-                    path: {{ printf "/%s" .Values.portal.branding.imageMounts.logo.filename | quote }}
+                    path: {{ .Values.portal.branding.imageMounts.logo.filename | quote }}
             {{- end }}
             {{- if not (or (empty .Values.portal.branding.imageMounts.loginBgImg.configMapName) (empty .Values.portal.branding.imageMounts.loginBgImg.filename)) }}
             - configMap:
                 name: {{ .Values.portal.branding.imageMounts.loginBgImg.configMapName | quote }}
                 items:
                   - key: {{ .Values.portal.branding.imageMounts.loginBgImg.filename | quote }}
-                    path: {{ printf "/%s" .Values.portal.branding.imageMounts.loginBgImg.filename | quote }}
+                    path: {{ .Values.portal.branding.imageMounts.loginBgImg.filename | quote }}
             {{- end }}
       {{- end }}
     {{- with .Values.portal.nodeSelector }}
