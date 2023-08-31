@@ -8,7 +8,7 @@ expose:
     # Note: if the "expose.type" is "ingress" and TLS is disabled,
     # the port must be included in the command when pulling/pushing images.
     # Refer to https://github.com/goharbor/harbor/issues/5291 for details.
-    enabled: false
+    enabled: true
     # The source of the tls certificate. Set as "auto", "secret"
     # or "none" and fill the information in the corresponding section
     # 1) auto: generate the tls certificate automatically
@@ -20,7 +20,7 @@ expose:
     auto:
       # The common name used to generate the certificate, it's necessary
       # when the type isn't "ingress"
-      commonName: ""
+      commonName: "harbor.k8s-devops.infra.yoti.com"
     secret:
       # The name of secret which contains keys named:
       # "tls.crt" - the certificate
@@ -33,8 +33,8 @@ expose:
       notarySecretName: ""
   ingress:
     hosts:
-      core: core.harbor.domain
-      notary: notary.harbor.domain
+      core: core.harbor.k8s-devops.infra.yoti.com
+      notary: notary.harbor.k8s-devops.infra.yoti.com
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
@@ -47,9 +47,9 @@ expose:
     annotations:
       # note different ingress controllers may require a different ssl-redirect annotation
       # for Envoy, use ingress.kubernetes.io/force-ssl-redirect: "true" and remove the nginx lines below
-      ingress.kubernetes.io/ssl-redirect: "true"
+      ingress.kubernetes.io/ssl-redirect: "false"
       ingress.kubernetes.io/proxy-body-size: "0"
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
     notary:
       # notary ingress-specific annotations
@@ -123,7 +123,7 @@ expose:
 # the IP address of k8s node
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://harbor.k8s-devops0.mgmt.dev-ld5.gbr.internal.yoti.com
+externalURL: https://172.22.53.59:7443
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each components tls cert files need to provided in advance.
@@ -376,7 +376,7 @@ updateStrategy:
   type: RollingUpdate
 
 # debug, info, warning, error or fatal
-logLevel: info
+logLevel: debug
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
@@ -420,7 +420,7 @@ enableMigrateHelmHook: false
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: v2.6.3
+    tag: v2.8.2
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -442,7 +442,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: v2.6.3
+    tag: v2.8.2
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -464,7 +464,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: v2.6.3
+    tag: v2.8.2
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -509,7 +509,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v2.6.3
+    tag: v2.8.2
   replicas: 1
   revisionHistoryLimit: 10
   # set the service account to be used, default if left empty
@@ -549,7 +549,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: v2.6.3
+      tag: v2.8.2
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -557,7 +557,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: v2.6.3
+      tag: v2.8.2
 
     # resources:
     #  requests:
@@ -617,7 +617,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: v2.6.3
+    tag: v2.8.2
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
@@ -636,12 +636,12 @@ chartmuseum:
 
 trivy:
   # enabled the flag to enable Trivy scanner
-  enabled: true
+  enabled: false
   image:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: v2.6.3
+    tag: v2.8.2
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -716,7 +716,7 @@ notary:
     automountServiceAccountToken: false
     image:
       repository: goharbor/notary-server-photon
-      tag: v2.6.3
+      tag: v2.8.2
     replicas: 1
     # resources:
     #  requests:
@@ -736,7 +736,7 @@ notary:
     automountServiceAccountToken: false
     image:
       repository: goharbor/notary-signer-photon
-      tag: v2.6.3
+      tag: v2.8.2
     replicas: 1
     # resources:
     #  requests:
@@ -768,7 +768,7 @@ database:
     automountServiceAccountToken: false
     image:
       repository: goharbor/harbor-db
-      tag: v2.6.3
+      tag: v2.8.2
     # The initial superuser password for internal database
     password: "changeit"
     # The size limit for Shared memory, pgSQL use it for shared_buffer
@@ -834,7 +834,7 @@ redis:
     automountServiceAccountToken: false
     image:
       repository: goharbor/redis-photon
-      tag: v2.6.3
+      tag: v2.8.2
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -877,7 +877,7 @@ exporter:
   automountServiceAccountToken: false
   image:
     repository: goharbor/harbor-exporter
-    tag: v2.6.3
+    tag: v2.8.2
   nodeSelector: {}
   tolerations: []
   affinity: {}
