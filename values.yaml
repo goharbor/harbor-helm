@@ -60,6 +60,7 @@ expose:
       # The service port Harbor listens on when serving HTTP
       httpPort: 80
       # The service port Harbor listens on when serving HTTPS
+      httpsPort: 443
   nodePort:
     # The name of NodePort service
     name: harbor
