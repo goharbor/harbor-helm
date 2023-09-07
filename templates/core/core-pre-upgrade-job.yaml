@@ -12,6 +12,7 @@ metadata:
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-weight": "-5"
 spec:
+  ttlSecondsAfterFinished: 300
   template:
     metadata:
       labels:
