@@ -532,7 +532,9 @@ CSRF_KEY: {{ index $secret "data" "CSRF_KEY" }}
 {{- if not .Values.existingSecretAdminPassword }}
 HARBOR_ADMIN_PASSWORD: {{ index $secret "data" "HARBOR_ADMIN_PASSWORD" }}
 {{- end }}
+{{- if not .Values.database.external.existingSecret }}
 POSTGRESQL_PASSWORD: {{ index $secret "data" "POSTGRESQL_PASSWORD" }}
+{{- end }}
 REGISTRY_CREDENTIAL_PASSWORD: {{ index $secret "data" "REGISTRY_CREDENTIAL_PASSWORD" }}
 secret: {{ index $secret "data" "secret" }}
 secretKey: {{ index $secret "data" "secretKey" }}
