@@ -539,7 +539,9 @@ POSTGRESQL_PASSWORD: {{ index $secret "data" "POSTGRESQL_PASSWORD" }}
 REGISTRY_CREDENTIAL_PASSWORD: {{ index $secret "data" "REGISTRY_CREDENTIAL_PASSWORD" }}
 {{- end }}
 secret: {{ index $secret "data" "secret" }}
+{{- if not .Values.existingSecretSecretKey }}
 secretKey: {{ index $secret "data" "secretKey" }}
+{{- end }}
 {{- if not .Values.core.secretName }}
 tls.key: {{ index $secret "data" "tls.key" }}
 tls.crt: {{ index $secret "data" "tls.crt" }}
