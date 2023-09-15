@@ -535,7 +535,9 @@ HARBOR_ADMIN_PASSWORD: {{ index $secret "data" "HARBOR_ADMIN_PASSWORD" }}
 {{- if not .Values.database.external.existingSecret }}
 POSTGRESQL_PASSWORD: {{ index $secret "data" "POSTGRESQL_PASSWORD" }}
 {{- end }}
+{{- if not .Values.registry.credentials.existingSecret }}
 REGISTRY_CREDENTIAL_PASSWORD: {{ index $secret "data" "REGISTRY_CREDENTIAL_PASSWORD" }}
+{{- end }}
 secret: {{ index $secret "data" "secret" }}
 secretKey: {{ index $secret "data" "secretKey" }}
 {{- if not .Values.core.secretName }}
