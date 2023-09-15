@@ -528,22 +528,26 @@ app: "{{ template "harbor.name" . }}"
 {{- $secret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.core" .) ) -}}
 {{- if $secret -}}
 {{/* Reusing existing secret data */}}
-secret: {{ index $secret "data" "secret" }}
 CSRF_KEY: {{ index $secret "data" "CSRF_KEY" }}
+HARBOR_ADMIN_PASSWORD: {{ index $secret "data" "HARBOR_ADMIN_PASSWORD" }}
+POSTGRESQL_PASSWORD: {{ index $secret "data" "POSTGRESQL_PASSWORD" }}
+REGISTRY_CREDENTIAL_PASSWORD: {{ index $secret "data" "REGISTRY_CREDENTIAL_PASSWORD" }}
+secret: {{ index $secret "data" "secret" }}
+secretKey: {{ index $secret "data" "secretKey" }}
 tls.key: {{ index $secret "data" "tls.key" }}
 tls.crt: {{ index $secret "data" "tls.crt" }}
 {{- else -}}
 {{/* 
   Generate new data
 */}}
+{{- if not .Values.existingSecretSecretKey }}
+secretKey: {{ .Values.secretKey | b64enc | quote }}
+{{- end }}
 secret: {{ .Values.core.secret | default (randAlphaNum 16) | b64enc | quote }}
-CSRF_KEY: {{ .Values.core.xsrfKey | default (randAlphaNum 32) | b64enc | quote }}
+{{- if not .Values.core.secretName }}
 {{- $ca := genCA "harbor-token-ca" 365 }}
 tls.key: {{ .Values.core.tokenKey | default $ca.Key | b64enc | quote }}
 tls.crt: {{ .Values.core.tokenCert | default $ca.Cert | b64enc | quote }}
-{{- end }}
-{{- if not .Values.existingSecretSecretKey }}
-secretKey: {{ .Values.secretKey | b64enc | quote }}
 {{- end }}
 {{- if not .Values.existingSecretAdminPassword }}
 HARBOR_ADMIN_PASSWORD: {{ .Values.harborAdminPassword | b64enc | quote }}
@@ -554,9 +558,11 @@ POSTGRESQL_PASSWORD: {{ template "harbor.database.encryptedPassword" . }}
 {{- if not .Values.registry.credentials.existingSecret }}
 REGISTRY_CREDENTIAL_PASSWORD: {{ .Values.registry.credentials.password | b64enc | quote }}
 {{- end }}
+CSRF_KEY: {{ .Values.core.xsrfKey | default (randAlphaNum 32) | b64enc | quote }}
 {{- if .Values.core.configureUserSettings }}
 CONFIG_OVERWRITE_JSON: {{ .Values.core.configureUserSettings | b64enc | quote }}
 {{- end }}
+{{- end -}}
 {{- template "harbor.traceJaegerPassword" . }}
 {{- end -}}
 
