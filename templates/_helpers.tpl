@@ -528,6 +528,7 @@ app: "{{ template "harbor.name" . }}"
 {{- $secret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.core" .) ) -}}
 {{- if $secret -}}
 {{/* Reusing existing secret data */}}
+CONFIG_OVERWRITE_JSON: {{ index $secret "data" "CONFIG_OVERWRITE_JSON" }}
 CSRF_KEY: {{ index $secret "data" "CSRF_KEY" }}
 {{- if not .Values.existingSecretAdminPassword }}
 HARBOR_ADMIN_PASSWORD: {{ index $secret "data" "HARBOR_ADMIN_PASSWORD" }}
