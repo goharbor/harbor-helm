@@ -640,3 +640,21 @@ REGISTRY_HTPASSWD: {{ htpasswd .Values.registry.credentials.username .Values.reg
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/* Harbor Ingress Secret generator */}}
+{{- define "harbor.ingress.secret" -}}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace (include "harbor.ingress" .) ) -}}
+{{- if $secret -}}
+{{/* Reusing existing secret data */}}
+tls.crt: {{ index $secret "data" "tls.crt" }}
+tls.key: {{ index $secret "data" "tls.key" }}
+ca.crt: {{ index $secret "data" "ca.crt" }}
+{{- else -}}
+{{/* Generate new data */}}
+{{- $ca := genCA "harbor-ca" 365 }}
+{{- $cert := genSignedCert .Values.expose.ingress.hosts.core nil (list .Values.expose.ingress.hosts.core) 365 $ca }}
+tls.crt: {{ $cert.Cert | b64enc | quote }}
+tls.key: {{ $cert.Key | b64enc | quote }}
+ca.crt: {{ $ca.Cert | b64enc | quote }}
+{{- end }}
+{{- end -}}
