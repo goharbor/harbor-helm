@@ -529,7 +529,9 @@ app: "{{ template "harbor.name" . }}"
 {{- if $secret -}}
 {{/* Reusing existing secret data */}}
 CSRF_KEY: {{ index $secret "data" "CSRF_KEY" }}
+{{- if not .Values.existingSecretAdminPassword }}
 HARBOR_ADMIN_PASSWORD: {{ index $secret "data" "HARBOR_ADMIN_PASSWORD" }}
+{{- end }}
 POSTGRESQL_PASSWORD: {{ index $secret "data" "POSTGRESQL_PASSWORD" }}
 REGISTRY_CREDENTIAL_PASSWORD: {{ index $secret "data" "REGISTRY_CREDENTIAL_PASSWORD" }}
 secret: {{ index $secret "data" "secret" }}
