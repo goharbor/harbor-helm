@@ -120,6 +120,33 @@ spec:
               name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
               key: AZURE_STORAGE_ACCESS_KEY
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.swift.existingSecret }}
+        - name: REGISTRY_STORAGE_SWIFT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_PASSWORD
+        - name: REGISTRY_STORAGE_SWIFT_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_SECRETKEY
+              optional: true
+        - name: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+              optional: true
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - name: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.oss.existingSecret }}
+              key: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+              optional: true
+        {{- end}}
 {{- with .Values.registry.registry.extraEnvVars }}
 {{- toYaml . | nindent 8 }}
 {{- end }}

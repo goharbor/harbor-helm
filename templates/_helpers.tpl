@@ -39,6 +39,13 @@ release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
+{{/* Helper for printing values from existing secrets*/}}
+{{- define "harbor.secretKeyHelper" -}}
+{{- if and (not (empty .data)) (hasKey .data .key) }}
+{{ index .data .key | b64dec }}
+{{- end }}
+{{- end -}}
+
 {{- define "harbor.autoGenCert" -}}
   {{- if and .Values.expose.tls.enabled (eq .Values.expose.tls.certSource "auto") -}}
     {{- printf "true" -}}

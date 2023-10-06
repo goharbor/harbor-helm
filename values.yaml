@@ -290,6 +290,8 @@ persistence:
       username: username
       password: password
       container: containername
+      # keys in existing secret must be REGISTRY_STORAGE_SWIFT_PASSWORD, REGISTRY_STORAGE_SWIFT_SECRETKEY, REGISTRY_STORAGE_SWIFT_ACCESSKEY
+      existingSecret: ""
       #region: fr
       #tenant: tenantname
       #tenantid: tenantid
@@ -310,6 +312,8 @@ persistence:
       accesskeysecret: accesskeysecret
       region: regionname
       bucket: bucketname
+      # key in existingSecret must be REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+      existingSecret: ""
       #endpoint: endpoint
       #internal: false
       #encrypt: false
@@ -617,6 +621,7 @@ registry:
     existingSecret: ""
     # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
     # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
+    htpasswdString: ""
   middleware:
     enabled: false
     type: cloudFront
