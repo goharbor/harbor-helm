@@ -96,7 +96,12 @@ app: "{{ template "harbor.name" . }}"
 
 {{- define "harbor.database.rawPassword" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- .Values.database.internal.password -}}
+    {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace (include "harbor.database" .) -}}
+    {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "POSTGRES_PASSWORD") -}}
+      {{- .Values.database.internal.password | default (index $existingSecret.data "POSTGRES_PASSWORD") | b64dec -}}
+    {{- else -}}
+      {{- .Values.database.internal.password -}}
+    {{- end -}}
   {{- else -}}
     {{- .Values.database.external.password -}}
   {{- end -}}
