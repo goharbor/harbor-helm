@@ -100,7 +100,7 @@ app: "{{ template "harbor.name" . }}"
     {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "POSTGRES_PASSWORD") -}}
       {{- .Values.database.internal.password | default (index $existingSecret.data "POSTGRES_PASSWORD") | b64dec -}}
     {{- else -}}
-      {{- .Values.database.internal.password -}}
+      {{- .Values.database.internal.password | default (randAlphaNum 16) -}}
     {{- end -}}
   {{- else -}}
     {{- .Values.database.external.password -}}
