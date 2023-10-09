@@ -509,6 +509,10 @@ core:
   artifactPullAsyncFlushDuration:
   gdpr:
     deleteUser: false
+  # Additional configurations (known as harbor.yml). Refer to https://goharbor.io/docs/2.9.0/install-config/configure-yml-file/
+  additionalConfig: "" 
+  # additionalConfig: |
+  #   external_url = true
 
 jobservice:
   image:
