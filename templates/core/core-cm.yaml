@@ -12,6 +12,10 @@ data:
 
     [prod]
     httpport = {{ ternary "8443" "8080" .Values.internalTLS.enabled }}
+
+    {{- with .Values.core.additionalConfig }}
+    {{ . }}
+    {{- end }}    
   PORT: "{{ ternary "8443" "8080" .Values.internalTLS.enabled }}"
   DATABASE_TYPE: "postgresql"
   POSTGRESQL_HOST: "{{ template "harbor.database.host" . }}"
