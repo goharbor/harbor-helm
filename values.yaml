@@ -54,6 +54,8 @@ expose:
   clusterIP:
     # The name of ClusterIP service
     name: harbor
+    # The ip address of the ClusterIP service (leave empty for acquiring dynamic ip)
+    clusterIP: ""
     # Annotations on the ClusterIP service
     annotations: {}
     ports:
