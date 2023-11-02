@@ -113,6 +113,13 @@ spec:
         - name: INTERNAL_TLS_TRUST_CA_PATH
           value: /etc/harbor/ssl/registry/ca.crt
         {{- end }}
+        {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: REDIS_PASSWORD
+        {{- end }}
         {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
         - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
           valueFrom:
