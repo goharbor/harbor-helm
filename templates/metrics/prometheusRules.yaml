@@ -1,0 +1,86 @@
+{{ if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled .Values.metrics.prometheusRules.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: {{ .Release.Name }}
+  name: harbor.rules
+  namespace: {{ .Release.Namespace }}
+spec:
+  groups:
+    - name: Harbor
+      rules:
+        - alert: '[Harbor] Harbor Core Is Down'
+          expr: |
+            harbor_up{component="core"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Harbor Core Is Down
+        - alert: '[Harbor] Harbor Database Is Down'
+          expr: |
+            harbor_up{component="database"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Harbor Database Is Down
+        - alert: '[Harbor] Harbor Registry Is Down'
+          expr: |
+            harbor_up{component="registry"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Harbor Registry Is Down
+        - alert: '[Harbor] Harbor Redis Is Down'
+          expr: |
+            harbor_up{component="redis"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Harbor Redis Is Down
+        - alert: '[Harbor] Harbor Trivy Is Down'
+          expr: |
+            harbor_up{component="trivy"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Harbor Trivy Is Down
+        - alert: '[Harbor] Harbor JobService Is Down'
+          expr: |
+            harbor_up{component="jobservice"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Harbor JobService Is Down
+        - alert: '[Harbor] Project Quota Is Raising The Limit'
+          expr: |
+            ((harbor_project_quota_usage_byte > 0) / harbor_quotas_size_bytes) > 0.95
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Project Quota Is Raising The Limit
+        - alert: '[Harbor] Harbor p99 latency is higher than 10 seconds'
+          expr: |
+            histogram_quantile(0.99,  sum  (rate(registry_http_request_duration_seconds_bucket[30m]) )) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            description: Harbor p99 latency is higher than 10 seconds
+        - alert: '[Harbor] Harbor Error Rate is High'
+          expr: |
+            sum(rate(registry_http_requests_total{code=~"4..|5.."}[5m]))/sum(rate(registry_http_requests_total[5m])) > 0.15
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            description: Harbor Error Rate is High
+{{- end }}

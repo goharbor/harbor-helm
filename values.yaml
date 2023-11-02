@@ -921,7 +921,12 @@ metrics:
       #   targetLabel: nodename
       #   replacement: $1
       #   action: replace
-
+  ## Enable default Prometheus alerts/rules. Needs metrics and serviceMonitor enabled to work
+  prometheusRules:
+    enabled: false
+  ## Enable default Grafana dashboards. Needs metrics and serviceMonitor enabled and a Grafana deployment to work. https://github.com/grafana/helm-charts/tree/main/charts/grafana
+  grafanaDashboards:
+    enabled: false
 trace:
   enabled: false
   # trace provider: jaeger or otel
