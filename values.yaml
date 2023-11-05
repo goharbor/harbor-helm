@@ -437,6 +437,8 @@ portal:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Additional service annotations
+  serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
 
