@@ -200,16 +200,27 @@ spec:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
         {{- end }}
         env:
+        {{- if .Values.registry.existingSecret }}
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.registry.existingSecret }}
+              key: {{ .Values.registry.existingSecretKey }}
+        {{- end }}
         - name: CORE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "harbor.core" . }}
+              name: {{ default (include "harbor.core" .) .Values.core.existingSecret }}
               key: secret
         - name: JOBSERVICE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "harbor.jobservice" . }}
+              name: {{ default (include "harbor.jobservice" .) .Values.jobservice.existingSecret }}
+              {{- if .Values.jobservice.existingSecret }}
+              key: {{ .Values.jobservice.existingSecretKey }}
+              {{- else }}
               key: JOBSERVICE_SECRET
+              {{- end }}
         {{- if has "registry" .Values.proxy.components }}
         - name: HTTP_PROXY
           value: "{{ .Values.proxy.httpProxy }}"
