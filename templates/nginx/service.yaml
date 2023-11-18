@@ -13,7 +13,7 @@ metadata:
 {{- end }}
 spec:
   type: ClusterIP
-  {{- if .Values.expose.clusterIP.clusterIP }}
+  {{- if .Values.expose.clusterIP.staticClusterIP }}
   clusterIP: {{ .Values.expose.clusterIP.clusterIP }}
   {{- end }}
   ports:
