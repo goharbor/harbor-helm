@@ -48,6 +48,8 @@ data:
         ""      $scheme;
       }
 
+{{ .Values.nginx.httpExtra | indent 6}}
+
       server {
         {{- if .Values.ipFamily.ipv4.enabled}}
         listen 8080;
@@ -120,6 +122,7 @@ data:
         }
 
         location /v2/ {
+{{ .Values.nginx.serverExtra.v2 | indent 10}}
           proxy_pass {{ $scheme }}://core/v2/;
           proxy_set_header Host $http_host;
           proxy_set_header X-Real-IP $remote_addr;
@@ -132,6 +135,7 @@ data:
         }
 
         location /service/ {
+{{ .Values.nginx.serverExtra.service | indent 10}}
           proxy_pass {{ $scheme }}://core/service/;
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;

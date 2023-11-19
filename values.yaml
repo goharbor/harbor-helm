@@ -406,6 +406,10 @@ nginx:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  httpExtra: ""
+  serverExtra:
+    v2: ""
+    service: ""
 
 portal:
   image:
