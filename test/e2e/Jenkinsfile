@@ -106,7 +106,7 @@ def properties = {
     }
     return [
         parameters([
-            string(name: 'branch', defaultValue: 'master', description: 'The branch/tag to run for'),
+            string(name: 'branch', defaultValue: 'main', description: 'The branch/tag to run for'),
             choice(name: "cluster", choices: names, description: 'The Kubernetes cluster that the Harbor is deployed on')
         ]),
         buildDiscarder(strategy: logRotator(numToKeepStr: "15")),
