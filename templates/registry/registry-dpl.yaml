@@ -95,6 +95,13 @@ spec:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
         {{- end }}
         env:
+        {{- if .Values.registry.existingSecret }}
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.registry.existingSecret }}
+              key: {{ .Values.registry.existingSecretKey }}
+        {{- end }}
         {{- if has "registry" .Values.proxy.components }}
         - name: HTTP_PROXY
           value: "{{ .Values.proxy.httpProxy }}"
