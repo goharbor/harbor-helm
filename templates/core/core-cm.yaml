@@ -67,8 +67,8 @@ data:
   {{- end }}
   {{- template "harbor.traceEnvsForCore" . }}
 
-  {{- if .Values.core.artifactPullAsyncFlushDuration | quote }}
-  ARTIFACT_PULL_ASYNC_FLUSH_DURATION: {{ .Values.core.artifactPullAsyncFlushDuration }}
+  {{- if .Values.core.artifactPullAsyncFlushDuration }}
+  ARTIFACT_PULL_ASYNC_FLUSH_DURATION: {{ .Values.core.artifactPullAsyncFlushDuration | quote }}
   {{- end }}
 
   {{- if .Values.core.gdpr}}
