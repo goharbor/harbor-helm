@@ -116,7 +116,7 @@ def properties = {
 
 def caseSettings = {
     CaseSettings settings = new CaseSettings()
-    settings.cases = "gc,common,database,trivy"
+    settings.cases = "gc,trivy,common,database"
     return settings
 }
 
