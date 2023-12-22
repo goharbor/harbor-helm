@@ -40,9 +40,9 @@ spec:
 {{- if .Values.trivy.serviceAccountName }}
       serviceAccountName: {{ .Values.trivy.serviceAccountName }}
 {{- end }}
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
+      {{- if not (empty .Values.trivy.podSecurityContext) }}
+      securityContext: {{ .Values.trivy.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
       automountServiceAccountToken: {{ .Values.trivy.automountServiceAccountToken | default false }}
 {{- with .Values.trivy.topologySpreadConstraints}}
       topologySpreadConstraints:
@@ -130,6 +130,9 @@ spec:
           ports:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}
+          {{- if not (empty .Values.trivy.containerSecurityContext) }}
+          securityContext: {{ .Values.trivy.containerSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
           volumeMounts:
           - name: data
             mountPath: /home/scanner/.cache

@@ -19,9 +19,9 @@ spec:
         component: migrator
     spec:
       restartPolicy: Never
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
+      {{- if not (empty .Values.core.podSecurityContext) }}
+      securityContext: {{ .Values.core.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
 {{- if .Values.core.serviceAccountName }}
       serviceAccountName: {{ .Values.core.serviceAccountName }}
 {{- end -}}
@@ -47,7 +47,10 @@ spec:
               secretKeyRef:
                 name: {{ .Values.database.external.existingSecret }}
                 key: password
-        {{- end }}               
+        {{- end }}
+        {{- if not (empty .Values.core.containerSecurityContext) }}
+        securityContext: {{ .Values.core.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf

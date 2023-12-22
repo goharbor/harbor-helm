@@ -37,9 +37,9 @@ spec:
 {{- if .Values.nginx.serviceAccountName }}
       serviceAccountName: {{ .Values.nginx.serviceAccountName }}
 {{- end }}
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
+      {{- if not (empty .Values.nginx.podSecurityContext) }}
+      securityContext: {{ .Values.nginx.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -91,6 +91,9 @@ spec:
         - containerPort: 8080
         - containerPort: 8443
         - containerPort: 4443
+        {{- if not (empty .Values.nginx.containerSecurityContext) }}
+        securityContext: {{ .Values.nginx.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/nginx/nginx.conf

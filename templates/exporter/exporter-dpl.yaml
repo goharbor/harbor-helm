@@ -31,9 +31,9 @@ spec:
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
+      {{- if not (empty .Values.exporter.podSecurityContext) }}
+      securityContext: {{ .Values.exporter.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
 {{- if .Values.exporter.serviceAccountName }}
       serviceAccountName: {{ .Values.exporter.serviceAccountName }}
 {{- end -}}
@@ -99,6 +99,9 @@ spec:
 {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
+        {{- if not (empty .Values.exporter.containerSecurityContext ) }}
+        securityContext: {{ .Values.exporter.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}

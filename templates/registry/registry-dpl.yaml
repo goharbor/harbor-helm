@@ -41,10 +41,9 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
-        fsGroupChangePolicy: OnRootMismatch
+      {{- if not (empty .Values.registry.podSecurityContext) }}
+      securityContext: {{ .Values.registry.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
 {{- if .Values.registry.serviceAccountName }}
       serviceAccountName: {{ .Values.registry.serviceAccountName }}
 {{- end -}}
@@ -167,6 +166,9 @@ spec:
         ports:
         - containerPort: {{ template "harbor.registry.containerPort" . }}
         - containerPort: 5001
+        {{- if not (empty .Values.registry.registry.containerSecurityContext) }}
+        securityContext: {{ .Values.registry.registry.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
@@ -319,6 +321,9 @@ spec:
 {{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
+        {{- if not (empty .Values.registry.controller.containerSecurityContext) }}
+        securityContext: {{ .Values.registry.controller.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}

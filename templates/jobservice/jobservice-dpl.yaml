@@ -39,9 +39,9 @@ spec:
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
+      {{- if not (empty .Values.jobservice.podSecurityContext) }}
+      securityContext: {{ .Values.jobservice.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
 {{- if .Values.jobservice.serviceAccountName }}
       serviceAccountName: {{ .Values.jobservice.serviceAccountName }}
 {{- end -}}
@@ -123,6 +123,9 @@ spec:
             name: "{{ template "harbor.jobservice" . }}"
         ports:
         - containerPort: {{ template "harbor.jobservice.containerPort" . }}
+        {{- if not (empty .Values.jobservice.containerSecurityContext) }}
+        securityContext: {{ .Values.jobservice.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: jobservice-config
           mountPath: /etc/jobservice/config.yml

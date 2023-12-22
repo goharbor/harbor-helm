@@ -28,9 +28,9 @@ spec:
 {{ toYaml .Values.database.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 999
-        fsGroup: 999
+      {{- if not (empty .Values.database.internal.podSecurityContext) }}
+      securityContext: {{ .Values.database.internal.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
 {{- if .Values.database.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
 {{- end -}}
@@ -54,6 +54,9 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.initContainer.migrator.resources | indent 10 }}
 {{- end }}
+        {{- if not (empty .Values.database.internal.initContainer.migrator.containerSecurityContext) }}
+        securityContext: {{ .Values.database.internal.initContainer.migrator.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data
@@ -71,6 +74,9 @@ spec:
         resources:
 {{ toYaml .Values.database.internal.initContainer.permissions.resources | indent 10 }}
 {{- end }}
+        {{- if not (empty .Values.database.internal.initContainer.permissions.containerSecurityContext) }}
+        securityContext: {{ .Values.database.internal.initContainer.permissions.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data

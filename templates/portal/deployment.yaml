@@ -26,14 +26,14 @@ spec:
 {{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
         checksum/tls: {{ include (print $.Template.BasePath "/portal/tls.yaml") . | sha256sum }}
 {{- end }}
-        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}  
+        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}
 {{- if .Values.portal.podAnnotations }}
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
+      {{- if not (empty .Values.portal.podSecurityContext) }}
+      securityContext: {{ .Values.portal.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -80,6 +80,9 @@ spec:
           periodSeconds: 10
         ports:
         - containerPort: {{ template "harbor.portal.containerPort" . }}
+        {{- if not (empty .Values.portal.containerSecurityContext) }}
+        securityContext: {{ .Values.portal.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: portal-config
           mountPath: /etc/nginx/nginx.conf

@@ -27,9 +27,9 @@ spec:
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 999
-        fsGroup: 999
+      {{- if not (empty .Values.redis.internal.podSecurityContext) }}
+      securityContext: {{ .Values.redis.internal.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
 {{- if .Values.redis.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.redis.internal.serviceAccountName }}
 {{- end -}}
@@ -61,6 +61,9 @@ spec:
         env:
 {{- toYaml . | nindent 10 }}
 {{- end }}
+        {{- if not (empty .Values.redis.internal.containerSecurityContext ) }}
+        securityContext: {{ .Values.redis.internal.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/redis
