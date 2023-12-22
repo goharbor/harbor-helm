@@ -848,8 +848,7 @@ database:
       #    cpu: 100m
       permissions:
         ## Container Security Context
-        containerSecurityContext:
-          runAsUser: 0
+        containerSecurityContext: {}
       # resources:
       #  requests:
       #    memory: 128Mi
