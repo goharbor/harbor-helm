@@ -56,6 +56,12 @@ spec:
       - name: exporter
         image: {{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         livenessProbe:
           httpGet:
             path: /

@@ -59,6 +59,12 @@ spec:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         {{- $_ := set . "scheme" "HTTP" -}}
         {{- $_ := set . "port" "8080" -}}
         {{- if .Values.expose.tls.enabled }}

@@ -61,6 +61,9 @@ spec:
           securityContext:
             privileged: false
             allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           env:
           {{- if has "trivy" .Values.proxy.components }}
             - name: HTTP_PROXY

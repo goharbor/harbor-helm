@@ -59,6 +59,12 @@ spec:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
           httpGet:
