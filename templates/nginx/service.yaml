@@ -13,6 +13,9 @@ metadata:
 {{- end }}
 spec:
   type: ClusterIP
+  {{- if .Values.expose.clusterIP.staticClusterIP }}
+  clusterIP: {{ .Values.expose.clusterIP.staticClusterIP }}
+  {{- end }}
   ports:
     - name: http
       port: {{ $clusterIP.ports.httpPort }}

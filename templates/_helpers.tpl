@@ -39,6 +39,13 @@ release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
+{{/* Helper for printing values from existing secrets*/}}
+{{- define "harbor.secretKeyHelper" -}}
+  {{- if and (not (empty .data)) (hasKey .data .key) }}
+    {{- index .data .key | b64dec -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.autoGenCert" -}}
   {{- if and .Values.expose.tls.enabled (eq .Values.expose.tls.certSource "auto") -}}
     {{- printf "true" -}}
@@ -89,7 +96,12 @@ app: "{{ template "harbor.name" . }}"
 
 {{- define "harbor.database.rawPassword" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- .Values.database.internal.password -}}
+    {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace (include "harbor.database" .) -}}
+    {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "POSTGRES_PASSWORD") -}}
+      {{- .Values.database.internal.password | default (index $existingSecret.data "POSTGRES_PASSWORD") | b64dec -}}
+    {{- else -}}
+      {{- .Values.database.internal.password -}}
+    {{- end -}}
   {{- else -}}
     {{- .Values.database.external.password -}}
   {{- end -}}
@@ -144,12 +156,26 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
+
+{{- define "harbor.redis.pwdfromsecret" -}}
+  {{- (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD  | b64dec }}
+{{- end -}}
+
+{{- define "harbor.redis.cred" -}}
+  {{- with .Values.redis }}
+    {{- if (and (eq .type "external" ) (.external.existingSecret)) }}
+      {{- printf ":%s@" (include "harbor.redis.pwdfromsecret" $) }}
+    {{- else }}
+      {{- ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
+
 /*scheme://[:password@]host:port[/master_set]*/
 {{- define "harbor.redis.url" -}}
   {{- with .Values.redis }}
     {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
-    {{- $cred := ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
-    {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) $cred (include "harbor.redis.addr" $) $path -}}
+    {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) (include "harbor.redis.cred" $) (include "harbor.redis.addr" $) $path -}}
   {{- end }}
 {{- end -}}
 
@@ -164,7 +190,7 @@ app: "{{ template "harbor.name" . }}"
 /*scheme://[:password@]addr/db_index*/
 {{- define "harbor.redis.urlForJobservice" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "1" .external.jobserviceDatabaseIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.jobserviceDatabaseIndex .external.jobserviceDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s" (include "harbor.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
@@ -172,7 +198,7 @@ app: "{{ template "harbor.name" . }}"
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForRegistry" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "2" .external.registryDatabaseIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
@@ -180,14 +206,30 @@ app: "{{ template "harbor.name" . }}"
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForTrivy" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "5" .external.trivyAdapterIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.trivyAdapterIndex .external.trivyAdapterIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+/*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
+{{- define "harbor.redis.urlForHarbor" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.harborDatabaseIndex .external.harborDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+/*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
+{{- define "harbor.redis.urlForCache" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.cacheLayerDatabaseIndex .external.cacheLayerDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
 
 {{- define "harbor.redis.dbForRegistry" -}}
   {{- with .Values.redis }}
-    {{- ternary "2" .external.registryDatabaseIndex (eq .type "internal") }}
+    {{- ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
   {{- end }}
 {{- end -}}
 
@@ -475,7 +517,7 @@ app: "{{ template "harbor.name" . }}"
   TRACE_SAMPLE_RATE: "{{ .Values.trace.sample_rate }}"
   TRACE_NAMESPACE: "{{ .Values.trace.namespace }}"
   {{- if .Values.trace.attributes }}
-  TRACE_ATTRIBUTES: "{{ .Values.trace.attributes | toJson }}"
+  TRACE_ATTRIBUTES: {{ .Values.trace.attributes | toJson | squote }}
   {{- end }}
   {{- if eq .Values.trace.provider "jaeger" }}
   TRACE_JAEGER_ENDPOINT: "{{ .Values.trace.jaeger.endpoint }}"
