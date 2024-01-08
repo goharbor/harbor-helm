@@ -34,6 +34,14 @@ spec:
       - name: core-job
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+              - ALL
         command: ["/harbor/harbor_core", "-mode=migrate"]
         envFrom:
         - configMapRef:

@@ -48,6 +48,14 @@ spec:
       - name: "data-migrator"
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+              - ALL
         command: ["/bin/sh"]
         args: ["-c", "[ -e /var/lib/postgresql/data/postgresql.conf ] && [ ! -d /var/lib/postgresql/data/pgdata ] && mkdir -m 0700 /var/lib/postgresql/data/pgdata && mv /var/lib/postgresql/data/* /var/lib/postgresql/data/pgdata/ || true"]
 {{- if .Values.database.internal.initContainer.migrator.resources }}
@@ -65,6 +73,14 @@ spec:
       - name: "data-permissions-ensurer"
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+              - ALL
         command: ["/bin/sh"]
         args: ["-c", "chmod -R 700 /var/lib/postgresql/data/pgdata || true"]
 {{- if .Values.database.internal.initContainer.permissions.resources }}
@@ -79,6 +95,14 @@ spec:
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+              - ALL
         livenessProbe:
           exec:
             command:
