@@ -5,6 +5,9 @@ metadata:
   name: {{ template "harbor.redis" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with .Values.redis.internal.serviceLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end}}
 spec:
   ports:
     - port: 6379

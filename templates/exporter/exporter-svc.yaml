@@ -5,6 +5,9 @@ metadata:
   name: "{{ template "harbor.exporter" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with .Values.metrics.exporter.serviceLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end}}
 spec:
   ports:
     - name: {{ template "harbor.metricsPortName" . }}

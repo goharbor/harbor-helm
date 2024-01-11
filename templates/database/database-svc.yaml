@@ -5,6 +5,9 @@ metadata:
   name: "{{ template "harbor.database" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with .Values.database.internal.serviceLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end}}
 spec:
   ports:
     - port: 5432

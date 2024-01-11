@@ -58,6 +58,8 @@ expose:
     staticClusterIP: ""
     # Annotations on the ClusterIP service
     annotations: {}
+    # additional labels for the ClusterIP service
+    labels: {}
     ports:
       # The service port Harbor listens on when serving HTTP
       httpPort: 80
@@ -66,6 +68,8 @@ expose:
   nodePort:
     # The name of NodePort service
     name: harbor
+    # additional labels for the NodePort service
+    labels: {}
     ports:
       http:
         # The service port Harbor listens on when serving HTTP
@@ -80,6 +84,8 @@ expose:
   loadBalancer:
     # The name of LoadBalancer service
     name: harbor
+    # additional labels for the LoadBalancer service
+    labels: {}
     # Set the IP if the LoadBalancer supports assigning IP
     IP: ""
     ports:
@@ -443,6 +449,8 @@ portal:
   podLabels: {}
   ## Additional service annotations
   serviceAnnotations: {}
+  ## Additional service labels
+  serviceLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -480,6 +488,8 @@ core:
   podLabels: {}
   ## Additional service annotations
   serviceAnnotations: {}
+  ## Additional service labels
+  serviceLabels: {}
   ## User settings configuration json string
   configureUserSettings:
   # The provider for updating project quota(usage), there are 2 options, redis or db.
@@ -570,6 +580,8 @@ jobservice:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Additional service labels
+  serviceLabels: {}
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -620,6 +632,8 @@ registry:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Additional service labels
+  serviceLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
   # Secret is used to secure the upload state from client
@@ -741,6 +755,8 @@ trivy:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Additional service labels
+  serviceLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
 
@@ -773,6 +789,8 @@ database:
     readinessProbe:
       timeoutSeconds: 1
     extraEnvVars: []
+    ## Additional service labels
+    serviceLabels: {}
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -834,6 +852,8 @@ redis:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
+    ## Additional service labels
+    serviceLabels: {}
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -887,6 +907,8 @@ exporter:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  ## Additional service labels
+  serviceLabels: {}
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false

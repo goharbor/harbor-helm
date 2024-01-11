@@ -4,6 +4,9 @@ metadata:
   name: "{{ template "harbor.portal" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with .Values.portal.serviceLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end}}
 {{- with .Values.portal.serviceAnnotations }}
   annotations:
   {{- toYaml . | nindent 4 }}

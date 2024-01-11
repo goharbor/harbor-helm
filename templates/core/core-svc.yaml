@@ -4,6 +4,9 @@ metadata:
   name: {{ template "harbor.core" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with .Values.core.serviceLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end}}
 {{- with .Values.core.serviceAnnotations }}
   annotations:
   {{- toYaml . | nindent 4 }}
