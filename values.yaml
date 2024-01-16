@@ -524,6 +524,7 @@ core:
   artifactPullAsyncFlushDuration:
   gdpr:
     deleteUser: false
+    auditLogsCompliant: false
 
 jobservice:
   image:

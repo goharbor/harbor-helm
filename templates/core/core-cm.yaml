@@ -75,6 +75,9 @@ data:
   {{- if .Values.core.gdpr.deleteUser}}
   GDPR_DELETE_USER: "true"
   {{- end }}
+  {{- if .Values.core.gdpr.auditLogsCompliant}}
+  GDPR_AUDIT_LOGS: "true"
+  {{- end }}
   {{- end }}
 
   {{- if .Values.cache.enabled }}
