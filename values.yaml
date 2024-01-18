@@ -587,6 +587,8 @@ registry:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # text/json/logstash
+  formatter: text
   registry:
     image:
       repository: goharbor/registry-photon
