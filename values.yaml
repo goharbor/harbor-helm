@@ -381,8 +381,9 @@ enableMigrateHelmHook: false
 # contains a base64 encoded CA Certificate named `ca.crt`.
 # uaaSecretName:
 
-# If service exposed via "ingress", the Nginx will not be used
+# If service exposed via "ingress", or not enabled the Nginx will not be used
 nginx:
+  enabled: true
   image:
     repository: goharbor/nginx-photon
     tag: dev
