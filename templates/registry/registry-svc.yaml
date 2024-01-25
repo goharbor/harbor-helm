@@ -4,6 +4,9 @@ metadata:
   name: "{{ template "harbor.registry" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with .Values.registry.serviceLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end}}
 spec:
   ports:
     - name: {{ ternary "https-registry" "http-registry" .Values.internalTLS.enabled }}

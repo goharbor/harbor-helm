@@ -5,6 +5,9 @@ metadata:
   name: "{{ template "harbor.trivy" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- with .Values.trivy.serviceLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end}}
 spec:
   ports:
     - name: {{ ternary "https-trivy" "http-trivy" .Values.internalTLS.enabled }}
