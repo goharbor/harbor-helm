@@ -64,6 +64,9 @@ spec:
         env:
 {{- toYaml . | nindent 10 }}
 {{- end }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /

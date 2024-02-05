@@ -144,6 +144,9 @@ spec:
 {{- with .Values.core.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:

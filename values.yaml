@@ -457,6 +457,19 @@ cache:
   # default keep cache for one day.
   expireHours: 24
 
+## set Container Security Context to comply with PSP restricted policy if necessary
+## each of the conatiner will apply the same security context
+## containerSecurityContext:{} is initially an empty yaml that you could edit it on demand, we just filled with a common template for convenience
+containerSecurityContext:
+  privileged: false
+  allowPrivilegeEscalation: false
+  seccompProfile:
+    type: RuntimeDefault
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
   image:
