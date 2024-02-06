@@ -46,11 +46,8 @@ expose:
       ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    harbor:
-      # harbor ingress-specific annotations
-      annotations: {}
-      # harbor ingress-specific labels
-      labels: {}
+    # ingress-specific labels
+    labels: {}
   clusterIP:
     # The name of ClusterIP service
     name: harbor
