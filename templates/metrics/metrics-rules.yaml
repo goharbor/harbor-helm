@@ -1,0 +1,16 @@
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled .Values.metrics.rules.enabled .Values.metrics.rules.alerting }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    {{- include "harbor.labels" $ | nindent 4 }}
+    {{- with .Values.metrics.rules.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ template "harbor.fullname" . }}
+spec:
+  groups:
+  {{- include "harbor.ruleGroupToYaml" (include "harbor.rules" . | fromYaml).groups | indent 2 }}
+  {{- include "harbor.ruleGroupToYaml" .Values.metrics.rules.additionalGroups | indent 2 }}
+{{- end }}

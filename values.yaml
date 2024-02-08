@@ -407,24 +407,74 @@ metrics:
   ##
   serviceMonitor:
     enabled: false
+    # -- Override base matchLabels
+    matchLabels: {}
+    # -- Additional labels for serviceMonitor
     additionalLabels: {}
     # Scrape interval. If not set, the Prometheus default scrape interval is used.
     interval: ""
     # Metric relabel configs to apply to samples before ingestion.
-    metricRelabelings:
-      []
-      # - action: keep
+    metricRelabelings: []
+    # - action: keep
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
     # Relabel configs to apply to samples before ingestion.
-    relabelings:
-      []
-      # - sourceLabels: [__meta_kubernetes_pod_node_name]
-      #   separator: ;
-      #   regex: ^(.*)$
-      #   targetLabel: nodename
-    #   replacement: $1
-    #   action: replace
+    relabelings: []
+    #    - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #      separator: ;
+    #      regex: ^(.*)$
+    #      targetLabel: nodename
+    #      replacement: $1
+    #      action: replace
+  rules:
+    enabled: false
+    # -- Specify which individual alerts should be disabled
+    # -- Instead of turning off each alert one by one, set the .rules.alerting value to false instead.
+    # -- If you disable all the alerts and keep .rules.alerting set to true, the chart will fail to render.
+    alerting: true
+    disabled: {}
+    #  HarborCoreDown: true
+    #  HarborDatabaseDown: true
+    # -- Additional labels for expression
+    additionalAggregationLabels: []
+    # -- Additional labels for the rules PrometheusRule resource
+    additionalLabels: {}
+    # -- Additional labels for PrometheusRule alerts
+    additionalRuleLabels: {}
+    # -- Additional labels for specific PrometheusRule alert groups
+    additionalRuleGroupLabels:
+      HarborCoreDown: {}
+      HarborDatabaseDown: {}
+      HarborRegistryDown: {}
+      HarborRedisDown: {}
+      HarborTrivyDown: {}
+      HarborJobServiceDown: {}
+      HarborLatency99: {}
+      HarborRateErrors: {}
+      HarborQuotaProjectLimit: {}
+    additionalRuleGroupAnnotations:
+      HarborCoreDown: {}
+      HarborDatabaseDown: {}
+      HarborRegistryDown: {}
+      HarborRedisDown: {}
+      HarborTrivyDown: {}
+      HarborJobServiceDown: {}
+      HarborLatency99: {}
+      HarborRateErrors: {}
+      HarborQuotaProjectLimit: {}
+    # -- Additional groups to add to the rules file
+    additionalGroups: []
+    # - name: additional-harbor-rules
+    #   rules:
+    #     - record: my:record:name
+    #       expr: my_expression
+    #     - alert: MyAlertName
+    #       expr: my:record:name > 0
+    #       annotations:
+    #       ...
+    #       labels:
+    #       ...
+    #       for: 1m
 
 trace:
   enabled: false
