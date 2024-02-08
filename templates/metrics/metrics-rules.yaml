@@ -1,4 +1,7 @@
 {{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled .Values.metrics.rules.enabled .Values.metrics.rules.alerting }}
+{{- if (not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/PrometheusRule")) }}
+  {{- fail "Error: monitoring.coreos.com/v1/PrometheusRule is missing. Deploy prometheus operator crds first" }}
+{{- end }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule

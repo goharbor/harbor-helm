@@ -1,4 +1,7 @@
 {{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
+{{- if (not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/ServiceMonitor")) }}
+  {{- fail "Error: monitoring.coreos.com/v1/ServiceMonitor is missing. Deploy prometheus operator crds first" }}
+{{- end }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
