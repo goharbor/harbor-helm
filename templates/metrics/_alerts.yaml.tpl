@@ -6,7 +6,7 @@ groups:
 {{- if not (.Values.metrics.rules.disabled.HarborCoreDown | default false) }}
   - alert: HarborCoreDown
     expr: |-
-      harbor_up{component="core"} == 0
+      harbor_up{exported_component="core"} == 0
     for: 5m
     labels:
       severity: critical
@@ -27,7 +27,7 @@ groups:
 {{- if not (.Values.metrics.rules.disabled.HarborDatabaseDown | default false) }}
   - alert: HarborDatabaseDown
     expr: |-
-      harbor_up{component="database"} == 0
+      harbor_up{exported_component="database"} == 0
     for: 5m
     labels:
       severity: critical
@@ -48,7 +48,7 @@ groups:
 {{- if not (.Values.metrics.rules.disabled.HarborRegistryDown | default false) }}
   - alert: HarborRegistryDown
     expr: |-
-      harbor_up{component="registry"} == 0
+      harbor_up{exported_component="registry"} == 0
     for: 5m
     labels:
       severity: critical
@@ -69,7 +69,7 @@ groups:
 {{- if not (.Values.metrics.rules.disabled.HarborRedisDown | default false) }}
   - alert: HarborRedisDown
     expr: |-
-      harbor_up{component="redis"} == 0
+      harbor_up{exported_component="redis"} == 0
     for: 5m
     labels:
       severity: critical
@@ -90,7 +90,7 @@ groups:
 {{- if not (.Values.metrics.rules.disabled.HarborTrivyDown | default false) }}
   - alert: HarborTrivyDown
     expr: |-
-      harbor_up{component="trivy"} == 0
+      harbor_up{exported_component="trivy"} == 0
     for: 5m
     labels:
       severity: critical
@@ -111,7 +111,7 @@ groups:
 {{- if not (.Values.metrics.rules.disabled.HarborJobServiceDown | default false) }}
   - alert: HarborJobServiceDown
     expr: |-
-      harbor_up{component="jobservice"} == 0
+      harbor_up{exported_component="jobservice"} == 0
     for: 5m
     labels:
       severity: critical
