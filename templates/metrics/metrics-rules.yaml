@@ -12,6 +12,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   name: {{ template "harbor.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   groups:
   {{- include "harbor.ruleGroupToYaml" (include "harbor.rules" . | fromYaml).groups | indent 2 }}
