@@ -475,6 +475,9 @@ metrics:
     #       labels:
     #       ...
     #       for: 1m
+  grafanaDashboard:
+    enabled: false
+    additionalLabels: {}
 
 trace:
   enabled: false
