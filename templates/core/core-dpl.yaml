@@ -5,6 +5,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: core
+    app.kubernetes.io/component: core
 spec:
   replicas: {{ .Values.core.replicas }}
   revisionHistoryLimit: {{ .Values.core.revisionHistoryLimit }}
@@ -12,11 +13,13 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: core
+      app.kubernetes.io/component: core
   template:
     metadata:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: core
+        app.kubernetes.io/component: core
 {{- if .Values.core.podLabels }}
 {{ toYaml .Values.core.podLabels | indent 8 }}
 {{- end }}

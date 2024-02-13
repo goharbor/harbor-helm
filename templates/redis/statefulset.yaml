@@ -7,6 +7,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: redis
+    app.kubernetes.io/component: redis
 spec:
   replicas: 1
   serviceName: {{ template "harbor.redis" . }}
@@ -14,11 +15,13 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: redis
+      app.kubernetes.io/component: redis
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: redis
+        app.kubernetes.io/component: redis
 {{- if .Values.redis.podLabels }}
 {{ toYaml .Values.redis.podLabels | indent 8 }}
 {{- end }}

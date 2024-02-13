@@ -31,12 +31,20 @@ heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
 chart: {{ .Chart.Name }}
 app: "{{ template "harbor.name" . }}"
+{{ include "harbor.matchLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/part-of: {{ include "harbor.name" . }}
 {{- end -}}
 
 {{/* matchLabels */}}
 {{- define "harbor.matchLabels" -}}
 release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
+app.kubernetes.io/name: {{ include "harbor.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/* Helper for printing values from existing secrets*/}}

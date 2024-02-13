@@ -6,6 +6,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: nginx
+    app.kubernetes.io/component: nginx
 spec:
   replicas: {{ .Values.nginx.replicas }}
   revisionHistoryLimit: {{ .Values.nginx.revisionHistoryLimit }}
@@ -13,11 +14,13 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: nginx
+      app.kubernetes.io/component: nginx
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: nginx
+        app.kubernetes.io/component: nginx
 {{- if .Values.nginx.podLabels }}
 {{ toYaml .Values.nginx.podLabels | indent 8 }}
 {{- end }}

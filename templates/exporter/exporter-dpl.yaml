@@ -6,6 +6,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: exporter
+    app.kubernetes.io/component: exporter
 spec:
   replicas: {{ .Values.exporter.replicas }}
   revisionHistoryLimit: {{ .Values.exporter.revisionHistoryLimit }}
@@ -13,11 +14,13 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: exporter
+      app.kubernetes.io/component: exporter
   template:
     metadata:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: exporter
+        app.kubernetes.io/component: exporter
 {{- if .Values.exporter.podLabels }}
 {{ toYaml .Values.exporter.podLabels | indent 8 }}
 {{- end }}
