@@ -60,10 +60,13 @@ spec:
   - secretName: {{ template "harbor.tlsCoreSecretForIngress" . }}
     {{- if $ingress.hosts.core }}
     hosts:
-    - {{ $ingress.hosts.core }}
+    {{- range $host:= $ingress.hosts.core }}
+    - {{ $host }}
+    {{- end }}
     {{- end }}
   {{- end }}
   rules:
+{{- range $host:= $ingress.hosts.core }}
   - http:
       paths:
 {{- if semverCompare "<1.19-0" (include "harbor.ingress.kubeVersion" .) }}
@@ -135,8 +138,6 @@ spec:
             port:
               number: {{ template "harbor.portal.servicePort" . }}
 {{- end }}
-    {{- if $ingress.hosts.core }}
-    host: {{ $ingress.hosts.core }}
-    {{- end }}
-
+    host: {{ $host }}
+{{- end }}
 {{- end }}
