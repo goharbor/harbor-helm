@@ -89,8 +89,9 @@ spec:
 {{- end }}
         ports:
         - containerPort: 8080
+        {{- if .Values.expose.tls.enabled }}
         - containerPort: 8443
-        - containerPort: 4443
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/nginx/nginx.conf
