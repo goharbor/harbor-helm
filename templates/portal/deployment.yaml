@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-{{ include "harbor.matchLabels" . | indent 8 }}
+{{ include "harbor.labels" . | indent 8 }}
         component: portal
         app.kubernetes.io/component: portal
 {{- if .Values.portal.podLabels }}
