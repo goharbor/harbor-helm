@@ -17,6 +17,9 @@ spec:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: core
+{{- if .Values.core.podLabels }}
+{{ toYaml .Values.core.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
@@ -42,6 +45,16 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.core.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+{{- with .Values.core.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: core
+{{- end }}
+{{- end }}
       containers:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
@@ -79,14 +92,25 @@ spec:
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: {{ default (include "harbor.core" .) .Values.core.existingSecret }}
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.jobservice" . }}"
+                name: {{ default (include "harbor.jobservice" .) .Values.jobservice.existingSecret }}
+                {{- if .Values.jobservice.existingSecret }}
+                key: {{ .Values.jobservice.existingSecretKey }}
+                {{- else }}
                 key: JOBSERVICE_SECRET
-         {{- if .Values.internalTLS.enabled }}
+                {{- end }}
+          {{- if .Values.existingSecretAdminPassword }}
+          - name: HARBOR_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.existingSecretAdminPassword }}
+                key: {{ .Values.existingSecretAdminPasswordKey }}
+          {{- end }}
+          {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
             value: "true"
           - name: INTERNAL_TLS_KEY_PATH
@@ -95,21 +119,31 @@ spec:
             value: /etc/harbor/ssl/core/tls.crt
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/core/ca.crt
-         {{- end }}
-         {{- if .Values.database.external.existingSecret }}
+          {{- end }}
+          {{- if .Values.database.external.existingSecret }}
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.database.external.existingSecret }}
                 key: password
-         {{- end }}
-         {{- if .Values.registry.credentials.existingSecret }}
+          {{- end }}
+          {{- if .Values.registry.credentials.existingSecret }}
           - name: REGISTRY_CREDENTIAL_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
-         {{- end }}
+          {{- end }}
+          {{- if .Values.core.existingXsrfSecret }}
+          - name: CSRF_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.core.existingXsrfSecret }}
+                key: {{ .Values.core.existingXsrfSecretKey }}
+          {{- end }}
+{{- with .Values.core.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:

@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: redis
+{{- if .Values.redis.podLabels }}
+{{ toYaml .Values.redis.podLabels | indent 8 }}
+{{- end }}
 {{- if .Values.redis.podAnnotations }}
       annotations:
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
@@ -53,6 +56,10 @@ spec:
 {{- if .Values.redis.internal.resources }}
         resources:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
+{{- end }}
+{{- with .Values.redis.internal.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
 {{- end }}
         volumeMounts:
         - name: data

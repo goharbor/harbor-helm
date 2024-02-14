@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: database
+{{- if .Values.database.podLabels }}
+{{ toYaml .Values.database.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.database.podAnnotations }}
@@ -82,12 +85,14 @@ spec:
             - /docker-healthcheck.sh
           initialDelaySeconds: 300
           periodSeconds: 10
+          timeoutSeconds: {{ .Values.database.internal.livenessProbe.timeoutSeconds }}
         readinessProbe:
           exec:
             command:
             - /docker-healthcheck.sh
           initialDelaySeconds: 1
           periodSeconds: 10
+          timeoutSeconds: {{ .Values.database.internal.readinessProbe.timeoutSeconds }}
 {{- if .Values.database.internal.resources }}
         resources:
 {{ toYaml .Values.database.internal.resources | indent 10 }}
@@ -100,6 +105,9 @@ spec:
           # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
+{{- with .Values.database.internal.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data

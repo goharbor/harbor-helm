@@ -17,12 +17,16 @@ spec:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: portal
+{{- if .Values.portal.podLabels }}
+{{ toYaml .Values.portal.podLabels | indent 8 }}
+{{- end }}
       annotations:
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
         checksum/tls: {{ include (print $.Template.BasePath "/internal/auto-tls.yaml") . | sha256sum }}
 {{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
         checksum/tls: {{ include (print $.Template.BasePath "/portal/tls.yaml") . | sha256sum }}
 {{- end }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}  
 {{- if .Values.portal.podAnnotations }}
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
 {{- end }}
@@ -38,6 +42,16 @@ spec:
       serviceAccountName: {{ .Values.portal.serviceAccountName }}
 {{- end }}
       automountServiceAccountToken: {{ .Values.portal.automountServiceAccountToken | default false }}
+{{- with .Values.portal.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: portal
+{{- end }}
+{{- end }}
       containers:
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
@@ -45,6 +59,10 @@ spec:
 {{- if .Values.portal.resources }}
         resources:
 {{ toYaml .Values.portal.resources | indent 10 }}
+{{- end }}
+{{- with .Values.portal.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
 {{- end }}
         livenessProbe:
           httpGet:
