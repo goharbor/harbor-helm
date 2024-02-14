@@ -15,7 +15,6 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: database
-      app.kubernetes.io/component: database
   template:
     metadata:
       labels:

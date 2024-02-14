@@ -14,7 +14,6 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: exporter
-      app.kubernetes.io/component: exporter
   template:
     metadata:
       labels:

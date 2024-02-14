@@ -15,7 +15,6 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: trivy
-      app.kubernetes.io/component: trivy
   template:
     metadata:
       labels:

@@ -13,7 +13,6 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: core
-      app.kubernetes.io/component: core
   template:
     metadata:
       labels:

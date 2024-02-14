@@ -20,7 +20,6 @@ spec:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
       component: registry
-      app.kubernetes.io/component: registry
   template:
     metadata:
       labels:
