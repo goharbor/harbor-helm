@@ -166,7 +166,7 @@ spec:
 {{- end }}
         ports:
         - containerPort: {{ template "harbor.registry.containerPort" . }}
-        - containerPort: 5001
+        - containerPort: {{ ternary .Values.metrics.registry.port 5001 .Values.metrics.enabled }}
         volumeMounts:
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
