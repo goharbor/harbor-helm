@@ -53,13 +53,15 @@ expose:
     name: harbor
     # The ip address of the ClusterIP service (leave empty for acquiring dynamic ip)
     staticClusterIP: ""
-    # Annotations on the ClusterIP service
-    annotations: {}
     ports:
       # The service port Harbor listens on when serving HTTP
       httpPort: 80
       # The service port Harbor listens on when serving HTTPS
       httpsPort: 443
+    # Annotations on the ClusterIP service
+    annotations: {}
+    # ClusterIP-specific labels
+    labels: {}
   nodePort:
     # The name of NodePort service
     name: harbor
@@ -74,6 +76,10 @@ expose:
         port: 443
         # The node port Harbor listens on when serving HTTPS
         nodePort: 30003
+    # Annotations on the nodePort service
+    annotations: {}
+    # nodePort-specific labels
+    labels: {}
   loadBalancer:
     # The name of LoadBalancer service
     name: harbor
@@ -84,7 +90,10 @@ expose:
       httpPort: 80
       # The service port Harbor listens on when serving HTTPS
       httpsPort: 443
+    # Annotations on the loadBalancer service
     annotations: {}
+    # loadBalancer-specific labels
+    labels: {}
     sourceRanges: []
 
 # The external URL for Harbor core service. It is used to
