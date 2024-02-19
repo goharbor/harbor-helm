@@ -8,6 +8,7 @@ metadata:
     component: nginx
 spec:
   replicas: {{ .Values.nginx.replicas }}
+  revisionHistoryLimit: {{ .Values.nginx.revisionHistoryLimit }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -17,6 +18,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: nginx
+{{- if .Values.nginx.podLabels }}
+{{ toYaml .Values.nginx.podLabels | indent 8 }}
+{{- end }}
       annotations:
       {{- if not .Values.expose.tls.enabled }}
         checksum/configmap: {{ include (print $.Template.BasePath "/nginx/configmap-http.yaml") . | sha256sum }}
@@ -40,6 +44,17 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      automountServiceAccountToken: {{ .Values.nginx.automountServiceAccountToken | default false }}
+{{- with .Values.nginx.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: nginx
+{{- end }}
+{{- end }}
       containers:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
@@ -68,10 +83,15 @@ spec:
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
 {{- end }}
+{{- with .Values.nginx.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
+{{- end }}
         ports:
         - containerPort: 8080
+        {{- if .Values.expose.tls.enabled }}
         - containerPort: 8443
-        - containerPort: 4443
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/nginx/nginx.conf
@@ -100,5 +120,8 @@ spec:
     {{- with .Values.nginx.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.nginx.priorityClassName }}
+      priorityClassName: {{ .Values.nginx.priorityClassName }}
     {{- end }}
 {{- end }}

@@ -1,3 +1,5 @@
+{{- $storage := .Values.persistence.imageChartStorage }}
+{{- $type := $storage.type }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,6 +9,7 @@ metadata:
     component: registry
 spec:
   replicas: {{ .Values.registry.replicas }}
+  revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
     {{- if eq .Values.updateStrategy.type "Recreate" }}
@@ -21,6 +24,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: registry
+{{- if .Values.registry.podLabels }}
+{{ toYaml .Values.registry.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/registry/registry-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/registry/registry-secret.yaml") . | sha256sum }}
@@ -38,6 +44,7 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+        fsGroupChangePolicy: OnRootMismatch
 {{- if .Values.registry.serviceAccountName }}
       serviceAccountName: {{ .Values.registry.serviceAccountName }}
 {{- end -}}
@@ -45,7 +52,18 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.registry.automountServiceAccountToken | default false }}
+      terminationGracePeriodSeconds: 120
+{{- with .Values.registry.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: registry
+{{- end }}
+{{- end }}
       containers:
       - name: registry
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
@@ -72,7 +90,18 @@ spec:
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+        {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
+        {{- end }}
         env:
+        {{- if .Values.registry.existingSecret }}
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.registry.existingSecret }}
+              key: {{ .Values.registry.existingSecretKey }}
+        {{- end }}
         {{- if has "registry" .Values.proxy.components }}
         - name: HTTP_PROXY
           value: "{{ .Values.proxy.httpProxy }}"
@@ -91,9 +120,53 @@ spec:
         - name: INTERNAL_TLS_TRUST_CA_PATH
           value: /etc/harbor/ssl/registry/ca.crt
         {{- end }}
+        {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: REDIS_PASSWORD
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
+        - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
+              key: AZURE_STORAGE_ACCESS_KEY
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.swift.existingSecret }}
+        - name: REGISTRY_STORAGE_SWIFT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_PASSWORD
+        - name: REGISTRY_STORAGE_SWIFT_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_SECRETKEY
+              optional: true
+        - name: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+              optional: true
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - name: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.oss.existingSecret }}
+              key: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+              optional: true
+        {{- end}}
+{{- with .Values.registry.registry.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.registry.containerPort" . }}
-        - containerPort: 5001
+        - containerPort: {{ ternary .Values.metrics.registry.port 5001 .Values.metrics.enabled }}
         volumeMounts:
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
@@ -108,7 +181,7 @@ spec:
         - name: registry-internal-certs
           mountPath: /etc/harbor/ssl/registry
         {{- end }}
-        {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
+        {{- if and (and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs")) (not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity) }}
         - name: gcs-key
           mountPath: /etc/registry/gcs-key.json
           subPath: gcs-key.json
@@ -150,19 +223,46 @@ spec:
 {{ toYaml .Values.registry.controller.resources | indent 10 }}
 {{- end }}
         envFrom:
+        - configMapRef:
+            name: "{{ template "harbor.registryCtl" . }}"
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+        - secretRef:
+            name: "{{ template "harbor.registryCtl" . }}"
+        {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
+        - secretRef:
+            name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
+        {{- end }}
         env:
+        {{- if .Values.registry.existingSecret }}
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.registry.existingSecret }}
+              key: {{ .Values.registry.existingSecretKey }}
+        {{- end }}
         - name: CORE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "harbor.core" . }}
+              name: {{ default (include "harbor.core" .) .Values.core.existingSecret }}
               key: secret
         - name: JOBSERVICE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "harbor.jobservice" . }}
+              name: {{ default (include "harbor.jobservice" .) .Values.jobservice.existingSecret }}
+              {{- if .Values.jobservice.existingSecret }}
+              key: {{ .Values.jobservice.existingSecretKey }}
+              {{- else }}
               key: JOBSERVICE_SECRET
+              {{- end }}
+        {{- if has "registry" .Values.proxy.components }}
+        - name: HTTP_PROXY
+          value: "{{ .Values.proxy.httpProxy }}"
+        - name: HTTPS_PROXY
+          value: "{{ .Values.proxy.httpsProxy }}"
+        - name: NO_PROXY
+          value: "{{ template "harbor.noProxy" . }}"
+        {{- end }}
         {{- if .Values.internalTLS.enabled }}
         - name: INTERNAL_TLS_ENABLED
           value: "true"
@@ -173,6 +273,50 @@ spec:
         - name: INTERNAL_TLS_TRUST_CA_PATH
           value: /etc/harbor/ssl/registry/ca.crt
         {{- end }}
+        {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: REDIS_PASSWORD
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
+        - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
+              key: AZURE_STORAGE_ACCESS_KEY
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.swift.existingSecret }}
+        - name: REGISTRY_STORAGE_SWIFT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_PASSWORD
+        - name: REGISTRY_STORAGE_SWIFT_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_SECRETKEY
+              optional: true
+        - name: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+              optional: true
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - name: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.oss.existingSecret }}
+              key: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+              optional: true
+        {{- end}}
+{{- with .Values.registry.controller.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
         volumeMounts:
@@ -194,7 +338,7 @@ spec:
           mountPath: /harbor_cust_cert/custom-ca-bundle.crt
           subPath: ca.crt
         {{- end }}
-        {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
+        {{- if and (and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs")) (not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity ) }}
         - name: gcs-key
           mountPath: /etc/registry/gcs-key.json
           subPath: gcs-key.json
@@ -205,7 +349,11 @@ spec:
       volumes:
       - name: registry-htpasswd
         secret:
-          secretName: {{ template "harbor.registry" . }}
+          {{- if not .Values.registry.credentials.existingSecret }}
+          secretName: {{ template "harbor.registry" . }}-htpasswd
+          {{ else }}
+          secretName: {{ .Values.registry.credentials.existingSecret }}
+          {{- end }}
           items:
             - key: REGISTRY_HTPASSWD
               path: passwd
@@ -224,10 +372,14 @@ spec:
         secret:
           secretName: {{ template "harbor.internalTLS.registry.secretName" . }}
       {{- end }}
-      {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs") }}
+      {{- if and (and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "gcs")) (not .Values.persistence.imageChartStorage.gcs.useWorkloadIdentity ) }}
       - name: gcs-key
         secret:
+          {{- if and (eq $type "gcs") $storage.gcs.existingSecret }}
+          secretName: {{ $storage.gcs.existingSecret }}
+          {{- else }}
           secretName: {{ template "harbor.registry" . }}
+          {{- end }}
           items:
             - key: GCS_KEY_DATA
               path: gcs-key.json
@@ -261,4 +413,7 @@ spec:
     {{- with .Values.registry.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.registry.priorityClassName }}
+      priorityClassName: {{ .Values.registry.priorityClassName }}
     {{- end }}

@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: redis
+{{- if .Values.redis.podLabels }}
+{{ toYaml .Values.redis.podLabels | indent 8 }}
+{{- end }}
 {{- if .Values.redis.podAnnotations }}
       annotations:
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
@@ -34,7 +37,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.redis.internal.automountServiceAccountToken | default false }}
+      terminationGracePeriodSeconds: 120
       containers:
       - name: redis
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
@@ -52,6 +56,10 @@ spec:
 {{- if .Values.redis.internal.resources }}
         resources:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
+{{- end }}
+{{- with .Values.redis.internal.extraEnvVars }}
+        env:
+{{- toYaml . | nindent 10 }}
 {{- end }}
         volumeMounts:
         - name: data
@@ -79,12 +87,19 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.redis.internal.priorityClassName }}
+      priorityClassName: {{ .Values.redis.internal.priorityClassName }}
+    {{- end }}
   {{- if and .Values.persistence.enabled (not $redis.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: data
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+      annotations:
+      {{- range $key, $value := $redis.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       accessModes: [{{ $redis.accessMode | quote }}]
       {{- if $redis.storageClass }}

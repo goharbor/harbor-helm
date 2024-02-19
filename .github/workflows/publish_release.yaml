@@ -1,0 +1,32 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+        id: install
+      - name: Helm Package
+        run: echo "PACKAGE_PATH=$(helm package ../harbor-helm | awk '{print $NF}')" >> $GITHUB_ENV
+      - name: Publish Helm Chart
+        run: |
+          helm registry login registry-1.docker.io -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+          helm push ${{ env.PACKAGE_PATH }} oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
+          helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          helm push ${{ env.PACKAGE_PATH }} oci://ghcr.io/${{ github.actor }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.PACKAGE_PATH }}

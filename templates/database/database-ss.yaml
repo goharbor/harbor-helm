@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: database
+{{- if .Values.database.podLabels }}
+{{ toYaml .Values.database.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.database.podAnnotations }}
@@ -35,7 +38,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.database.internal.automountServiceAccountToken | default false }}
+      terminationGracePeriodSeconds: 120
       initContainers:
       # as we change the data directory to a sub folder to support psp, the init container here
       # is used to migrate the existing data. See https://github.com/goharbor/harbor-helm/issues/756
@@ -46,6 +50,10 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
         args: ["-c", "[ -e /var/lib/postgresql/data/postgresql.conf ] && [ ! -d /var/lib/postgresql/data/pgdata ] && mkdir -m 0700 /var/lib/postgresql/data/pgdata && mv /var/lib/postgresql/data/* /var/lib/postgresql/data/pgdata/ || true"]
+{{- if .Values.database.internal.initContainer.migrator.resources }}
+        resources:
+{{ toYaml .Values.database.internal.initContainer.migrator.resources | indent 10 }}
+{{- end }}
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data
@@ -58,7 +66,11 @@ spec:
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
-        args: ["-c", "chmod 700 /var/lib/postgresql/data/pgdata || true"]
+        args: ["-c", "chmod -R 700 /var/lib/postgresql/data/pgdata || true"]
+{{- if .Values.database.internal.initContainer.permissions.resources }}
+        resources:
+{{ toYaml .Values.database.internal.initContainer.permissions.resources | indent 10 }}
+{{- end }}
         volumeMounts:
           - name: database-data
             mountPath: /var/lib/postgresql/data
@@ -73,12 +85,14 @@ spec:
             - /docker-healthcheck.sh
           initialDelaySeconds: 300
           periodSeconds: 10
+          timeoutSeconds: {{ .Values.database.internal.livenessProbe.timeoutSeconds }}
         readinessProbe:
           exec:
             command:
             - /docker-healthcheck.sh
           initialDelaySeconds: 1
           periodSeconds: 10
+          timeoutSeconds: {{ .Values.database.internal.readinessProbe.timeoutSeconds }}
 {{- if .Values.database.internal.resources }}
         resources:
 {{ toYaml .Values.database.internal.resources | indent 10 }}
@@ -91,16 +105,24 @@ spec:
           # more detail refer to https://github.com/goharbor/harbor-helm/issues/756
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
+{{- with .Values.database.internal.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
-      {{- if not .Values.persistence.enabled }}
+        - name: shm-volume
+          mountPath: /dev/shm
       volumes:
+      - name: shm-volume
+        emptyDir:
+          medium: Memory
+          sizeLimit: {{ .Values.database.internal.shmSizeLimit }}
+      {{- if not .Values.persistence.enabled }}
       - name: "database-data"
         emptyDir: {}
       {{- else if $database.existingClaim }}
-      volumes:
       - name: "database-data"
         persistentVolumeClaim:
           claimName: {{ $database.existingClaim }}
@@ -117,12 +139,19 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.database.internal.priorityClassName }}
+      priorityClassName: {{ .Values.database.internal.priorityClassName }}
+    {{- end }}
   {{- if and .Values.persistence.enabled (not $database.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: "database-data"
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+      annotations:
+      {{- range $key, $value := $database.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       accessModes: [{{ $database.accessMode | quote }}]
       {{- if $database.storageClass }}

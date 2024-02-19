@@ -19,6 +19,9 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: trivy
+{{- if .Values.trivy.podLabels }}
+{{ toYaml .Values.trivy.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/trivy/trivy-secret.yaml") . | sha256sum }}
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
@@ -40,7 +43,17 @@ spec:
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.trivy.automountServiceAccountToken | default false }}
+{{- with .Values.trivy.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: trivy
+{{- end }}
+{{- end }}
       containers:
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
@@ -67,6 +80,8 @@ spec:
               value: {{ .Values.trivy.debugMode | quote }}
             - name: "SCANNER_TRIVY_VULN_TYPE"
               value: {{ .Values.trivy.vulnType | quote }}
+            - name: "SCANNER_TRIVY_TIMEOUT"
+              value: {{ .Values.trivy.timeout | quote }}
             - name: "SCANNER_TRIVY_GITHUB_TOKEN"
               valueFrom:
                 secretKeyRef:
@@ -78,6 +93,10 @@ spec:
               value: {{ .Values.trivy.ignoreUnfixed | default false | quote }}
             - name: "SCANNER_TRIVY_SKIP_UPDATE"
               value: {{ .Values.trivy.skipUpdate | default false | quote }}
+            - name: "SCANNER_TRIVY_OFFLINE_SCAN"
+              value: {{ .Values.trivy.offlineScan | default false | quote }}
+            - name: "SCANNER_TRIVY_SECURITY_CHECKS"
+              value: {{ .Values.trivy.securityCheck | quote }}
             - name: "SCANNER_TRIVY_INSECURE"
               value: {{ .Values.trivy.insecure | default false | quote }}
             - name: SCANNER_API_SERVER_ADDR
@@ -105,6 +124,9 @@ spec:
                 secretKeyRef:
                   name: {{ template "harbor.trivy" . }}
                   key: redisURL
+{{- with .Values.trivy.extraEnvVars }}
+{{- toYaml . | nindent 12 }}
+{{- end }}
           ports:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}
@@ -171,12 +193,19 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.trivy.priorityClassName }}
+      priorityClassName: {{ .Values.trivy.priorityClassName }}
+    {{- end }}
 {{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
       name: data
       labels:
 {{ include "harbor.labels" . | indent 8 }}
+      annotations:
+      {{- range $key, $value := $trivy.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       accessModes: [{{ $trivy.accessMode | quote }}]
       {{- if $trivy.storageClass }}

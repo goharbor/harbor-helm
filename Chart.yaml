@@ -8,7 +8,7 @@ keywords:
 - registry
 - harbor
 home: https://goharbor.io
-icon: https://raw.githubusercontent.com/goharbor/website/master/static/img/logos/harbor-icon-color.png
+icon: https://raw.githubusercontent.com/goharbor/website/main/static/img/logos/harbor-icon-color.png
 sources:
 - https://github.com/goharbor/harbor
 - https://github.com/goharbor/harbor-helm
@@ -17,8 +17,8 @@ maintainers:
   email: yinw@vmware.com
 - name: Weiwei He
   email: hweiwei@vmware.com
-- name: Qian Deng
-  email: dengq@vmware.com
+- name: Shengwen Yu
+  email: yshengwen@vmware.com  
 annotations:
   artifacthub.io/images: |
     - name: nginx-photon
