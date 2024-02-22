@@ -276,6 +276,7 @@ internalTLS:
   # 1) "auto" will generate cert automatically
   # 2) "manual" need provide cert file manually in following value
   # 3) "secret" internal certificates from secret
+  # 4) "certmanager" will generate cert automatically using certmanager
   certSource: "auto"
   # The content of trust ca, only available when `certSource` is "manual"
   trustCa: ""

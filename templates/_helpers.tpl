@@ -446,6 +446,19 @@ app: "{{ template "harbor.name" . }}"
   {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.trivy" .) (include "harbor.trivy.servicePort" .) -}}
 {{- end -}}
 
+{{/* FOR CERTMANAGER RESOURCES */}}
+{{- define "harbor.internalTLS.selfIssuer" -}}
+  {{- printf "%s-internal-self-issuer" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.internalTLS.caIssuer" -}}
+  {{- printf "%s-internal-ca-issuer" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.internalTLS.ca.secretName" -}}
+  {{- printf "%s-internal-tls-ca" (include "harbor.fullname" .) -}}
+{{- end -}}
+
 {{- define "harbor.internalTLS.core.secretName" -}}
   {{- if eq .Values.internalTLS.certSource "secret" -}}
     {{- .Values.internalTLS.core.secretName -}}

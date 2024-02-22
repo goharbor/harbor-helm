@@ -1,0 +1,14 @@
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "certmanager") .Values.trivy.enabled -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ (include "harbor.internalTLS.trivy.secretName" .) }}
+spec:
+  duration: 8760h0m0s
+  issuerRef:
+    kind: Issuer
+    name: {{ (include "harbor.internalTLS.caIssuer" .) }}
+  dnsNames:
+    - {{ (include "harbor.trivy" .) }}
+  secretName: {{ (include "harbor.internalTLS.trivy.secretName" .) }}
+{{- end -}}
