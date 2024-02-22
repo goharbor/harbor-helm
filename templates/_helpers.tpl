@@ -39,6 +39,12 @@ release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
+{{- define "harbor.internalDomain" -}}
+  {{- if .Values.internalTLS.domain -}}
+    {{- printf ".%s" .Values.internalTLS.domain -}}
+  {{- end -}}
+{{- end -}}
+
 {{/* Helper for printing values from existing secrets*/}}
 {{- define "harbor.secretKeyHelper" -}}
   {{- if and (not (empty .data)) (hasKey .data .key) }}
@@ -140,7 +146,7 @@ app: "{{ template "harbor.name" . }}"
 /*host:port*/
 {{- define "harbor.redis.addr" -}}
   {{- with .Values.redis }}
-    {{- ternary (printf "%s:6379" (include "harbor.redis" $ )) .external.addr (eq .type "internal") }}
+    {{- ternary (printf "%s%s:6379" (include "harbor.redis" $ ) (include "harbor.internalDomain" $)) .external.addr (eq .type "internal") }}
   {{- end }}
 {{- end -}}
 
@@ -410,40 +416,45 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{/* CORE_FQDN */}}
+{{- define "harbor.coreFQDN" -}}
+  {{- printf "%s%s" (include "harbor.core" .) (include "harbor.internalDomain" .) -}}
+{{- end -}}
+
 {{/* CORE_URL */}}
 {{/* port is included in this url as a workaround for issue https://github.com/aquasecurity/harbor-scanner-trivy/issues/108 */}}
 {{- define "harbor.coreURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.core" .) (include "harbor.core.servicePort" .) -}}
+  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.coreFQDN" .) (include "harbor.core.servicePort" .) -}}
 {{- end -}}
 
 {{/* JOBSERVICE_URL */}}
 {{- define "harbor.jobserviceURL" -}}
-  {{- printf "%s://%s-jobservice" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) -}}
+  {{- printf "%s://%s-jobservice%s" (include "harbor.component.scheme" .) (include "harbor.fullname" .) (include "harbor.internalDomain" .)  -}}
 {{- end -}}
 
 {{/* PORTAL_URL */}}
 {{- define "harbor.portalURL" -}}
-  {{- printf "%s://%s" (include "harbor.component.scheme" .) (include "harbor.portal" .) -}}
+  {{- printf "%s://%s%s" (include "harbor.component.scheme" .) (include "harbor.portal" .) (include "harbor.internalDomain" .) -}}
 {{- end -}}
 
 {{/* REGISTRY_URL */}}
 {{- define "harbor.registryURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.registry.servicePort" .) -}}
+  {{- printf "%s://%s%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.internalDomain" .) (include "harbor.registry.servicePort" .) -}}
 {{- end -}}
 
 {{/* REGISTRY_CONTROLLER_URL */}}
 {{- define "harbor.registryControllerURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.registryctl.servicePort" .) -}}
+  {{- printf "%s://%s%s:%s" (include "harbor.component.scheme" .) (include "harbor.registry" .) (include "harbor.internalDomain" .) (include "harbor.registryctl.servicePort" .) -}}
 {{- end -}}
 
 {{/* TOKEN_SERVICE_URL */}}
 {{- define "harbor.tokenServiceURL" -}}
-  {{- printf "%s/service/token" (include "harbor.coreURL" .) -}}
+  {{- printf "%s/service/token" (include "harbor.coreFQDN" .) -}}
 {{- end -}}
 
 {{/* TRIVY_ADAPTER_URL */}}
 {{- define "harbor.trivyAdapterURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.trivy" .) (include "harbor.trivy.servicePort" .) -}}
+  {{- printf "%s://%s%s:%s" (include "harbor.component.scheme" .) (include "harbor.trivy" .) (include "harbor.internalDomain" .) (include "harbor.trivy.servicePort" .) -}}
 {{- end -}}
 
 {{- define "harbor.internalTLS.core.secretName" -}}

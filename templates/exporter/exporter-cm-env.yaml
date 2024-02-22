@@ -23,7 +23,7 @@ data:
   HARBOR_REDIS_NAMESPACE: harbor_job_service_namespace
   HARBOR_REDIS_TIMEOUT: "3600"
   HARBOR_SERVICE_SCHEME: "{{ template "harbor.component.scheme" . }}"
-  HARBOR_SERVICE_HOST: "{{ template "harbor.core" . }}"
+  HARBOR_SERVICE_HOST: "{{ template "harbor.coreFQDN" . }}"
   HARBOR_SERVICE_PORT: "{{ template "harbor.core.servicePort" . }}"
   HARBOR_DATABASE_HOST: "{{ template "harbor.database.host" . }}"
   HARBOR_DATABASE_PORT: "{{ template "harbor.database.port" . }}"

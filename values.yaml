@@ -279,6 +279,8 @@ internalTLS:
   certSource: "auto"
   # The content of trust ca, only available when `certSource` is "manual"
   trustCa: ""
+  # domain appended to internal components hostname
+  domain: ""
   # core related cert configuration
   core:
     # secret name for core's tls certs
