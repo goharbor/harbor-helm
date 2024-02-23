@@ -6,10 +6,9 @@ metadata:
 {{- $clusterIP := .Values.expose.clusterIP }}
   name: {{ $clusterIP.name }}
   labels:
+{{ include "harbor.labels" . | indent 4 }}
 {{- if .Values.expose.clusterIP.labels }}
 {{ toYaml $clusterIP.labels | indent 4 }}
-{{- else }}
-{{ include "harbor.labels" . | indent 4 }}
 {{- end }}
 {{- with $clusterIP.annotations }}
   annotations:
@@ -33,10 +32,9 @@ spec:
 {{- $nodePort := .Values.expose.nodePort }}
   name: {{ $nodePort.name }}
   labels:
+{{ include "harbor.labels" . | indent 4 }}
 {{- if .Values.expose.nodePort.labels }}
 {{ toYaml $nodePort.labels | indent 4 }}
-{{- else }}
-{{ include "harbor.labels" . | indent 4 }}
 {{- end }}
 {{- with $nodePort.annotations }}
   annotations:
@@ -63,10 +61,9 @@ spec:
 {{- $loadBalancer := .Values.expose.loadBalancer }}
   name: {{ $loadBalancer.name }}
   labels:
+{{ include "harbor.labels" . | indent 4 }}
 {{- if .Values.expose.loadBalancer.labels }}
 {{ toYaml $loadBalancer.labels | indent 4 }}
-{{- else }}
-{{ include "harbor.labels" . | indent 4 }}
 {{- end }}
 {{- with $loadBalancer.annotations }}
   annotations:
