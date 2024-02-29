@@ -18,5 +18,34 @@ maintainers:
 - name: Weiwei He
   email: hweiwei@vmware.com
 - name: Shengwen Yu
-  email: yshengwen@vmware.com
+  email: yshengwen@vmware.com  
+annotations:
+  artifacthub.io/images: |
+    - name: nginx-photon
+      image: goharbor/nginx-photon:dev
+    - name: harbor-portal
+      image: goharbor/harbor-portal:dev
+    - name: harbor-core
+      image: goharbor/harbor-core:dev
+    - name: harbor-jobservice
+      image: goharbor/harbor-jobservice:dev
+    - name: registry-photon
+      image: goharbor/registry-photon:dev
+    - name: harbor-registryctl
+      image: goharbor/harbor-registryctl:dev
+    - name: chartmuseum-photon
+      image: goharbor/chartmuseum-photon:dev
+    - name: trivy-adapter-photon
+      image: goharbor/trivy-adapter-photon:dev
+    - name: notary-server-photon
+      image: goharbor/notary-server-photon:dev
+    - name: notary-signer-photon
+      image: goharbor/notary-signer-photon:dev
+    - name: harbor-db
+      image: goharbor/harbor-db:dev
+    - name: redis-photon
+      image: goharbor/redis-photon:dev
+    - name: harbor-exporter
+      image: goharbor/harbor-exporter:dev
+  artifacthub.io/license: Apache-2.0
 engine: gotpl
