@@ -1,0 +1,8 @@
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "certmanager") -}}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ (include "harbor.internalTLS.selfIssuer" .) }}
+spec:
+  selfSigned: {}
+{{- end -}}

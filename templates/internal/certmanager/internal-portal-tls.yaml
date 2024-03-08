@@ -1,0 +1,14 @@
+{{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "certmanager") -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ (include "harbor.internalTLS.portal.secretName" .) }}
+spec:
+  duration: 8760h0m0s
+  issuerRef:
+    kind: Issuer
+    name: {{ (include "harbor.internalTLS.caIssuer" .) }}
+  dnsNames:
+    - {{ (include "harbor.portal" .) }}
+  secretName: {{ (include "harbor.internalTLS.portal.secretName" .) }}
+{{- end -}}
