@@ -11,8 +11,8 @@ spec:
   replicas: {{ .Values.registry.replicas }}
   revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
   strategy:
-    type: {{ .Values.updateStrategy.type }}
-    {{- if eq .Values.updateStrategy.type "Recreate" }}
+    type: {{ .Values.updateStrategy.registry.type }}
+    {{- if eq .Values.updateStrategy.registry.type "Recreate" }}
     rollingUpdate: null
     {{- end }}
   selector:
