@@ -9,8 +9,8 @@ spec:
   replicas: {{ .Values.jobservice.replicas }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
   strategy:
-    type: {{ .Values.updateStrategy.type }}
-    {{- if eq .Values.updateStrategy.type "Recreate" }}
+    type: {{ .Values.updateStrategy.jobservice.type }}
+    {{- if eq .Values.updateStrategy.jobservice.type "Recreate" }}
     rollingUpdate: null
     {{- end }}
   selector:
