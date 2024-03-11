@@ -71,12 +71,19 @@ spec:
 {{- end }}
 spec:
   type: LoadBalancer
+  {{- with $loadBalancer.loadBalancerClass }}
+  loadBalancerClass: {{ . }}
+  {{- end }}
   {{- with $loadBalancer.sourceRanges }}
   loadBalancerSourceRanges:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- if $loadBalancer.IP }}
   loadBalancerIP: {{ $loadBalancer.IP }}
+  {{- end }}
+  {{- with $loadBalancer.externalIPs }}
+  externalIPs:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   ports:
     - name: http
