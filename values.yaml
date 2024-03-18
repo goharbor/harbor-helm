@@ -173,7 +173,7 @@ persistence:
       annotations: {}
   # Define which storage backend is used for registry to store
   # images and charts. Refer to
-  # https://github.com/distribution/distribution/blob/main/docs/configuration.md#storage
+  # https://github.com/distribution/distribution/blob/main/docs/content/about/configuration.md#storage
   # for the detail.
   imageChartStorage:
     # Specify whether to disable `redirect` for images and chart storage, for
