@@ -77,11 +77,18 @@ spec:
         - secretRef:
             name: "{{ template "harbor.exporter" . }}"
         env:
-        {{- if .Values.database.external.existingSecret }}
+        {{- if and (eq .Values.database.type "external") .Values.database.external.existingSecret }}
         - name: HARBOR_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.database.external.existingSecret }}
+              key: password
+        {{- end }}
+        {{- if and (eq .Values.database.type "internal") .Values.database.internal.existingSecret }}
+        - name: HARBOR_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.internal.existingSecret }}
               key: password
         {{- end }}
         {{- if .Values.existingSecretAdminPassword }}
