@@ -58,9 +58,9 @@ spec:
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          securityContext:
-            privileged: false
-            allowPrivilegeEscalation: false
+          {{- if not (empty .Values.containerSecurityContext) }}
+          securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
           env:
           {{- if has "trivy" .Values.proxy.components }}
             - name: HTTP_PROXY
@@ -93,6 +93,8 @@ spec:
               value: {{ .Values.trivy.ignoreUnfixed | default false | quote }}
             - name: "SCANNER_TRIVY_SKIP_UPDATE"
               value: {{ .Values.trivy.skipUpdate | default false | quote }}
+            - name: "SCANNER_TRIVY_SKIP_JAVA_DB_UPDATE"
+              value: {{ .Values.trivy.skipJavaDBUpdate | default false | quote }}
             - name: "SCANNER_TRIVY_OFFLINE_SCAN"
               value: {{ .Values.trivy.offlineScan | default false | quote }}
             - name: "SCANNER_TRIVY_SECURITY_CHECKS"

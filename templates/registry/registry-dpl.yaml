@@ -86,6 +86,9 @@ spec:
         resources:
 {{ toYaml .Values.registry.registry.resources | indent 10 }}
 {{- end }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
@@ -95,6 +98,13 @@ spec:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
         {{- end }}
         env:
+        {{- if .Values.registry.existingSecret }}
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.registry.existingSecret }}
+              key: {{ .Values.registry.existingSecretKey }}
+        {{- end }}
         {{- if has "registry" .Values.proxy.components }}
         - name: HTTP_PROXY
           value: "{{ .Values.proxy.httpProxy }}"
@@ -127,12 +137,39 @@ spec:
               name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
               key: AZURE_STORAGE_ACCESS_KEY
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.swift.existingSecret }}
+        - name: REGISTRY_STORAGE_SWIFT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_PASSWORD
+        - name: REGISTRY_STORAGE_SWIFT_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_SECRETKEY
+              optional: true
+        - name: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+              optional: true
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - name: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.oss.existingSecret }}
+              key: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+              optional: true
+        {{- end}}
 {{- with .Values.registry.registry.extraEnvVars }}
 {{- toYaml . | nindent 8 }}
 {{- end }}
         ports:
         - containerPort: {{ template "harbor.registry.containerPort" . }}
-        - containerPort: 5001
+        - containerPort: {{ ternary .Values.metrics.registry.port 5001 .Values.metrics.enabled }}
         volumeMounts:
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
@@ -188,6 +225,9 @@ spec:
         resources:
 {{ toYaml .Values.registry.controller.resources | indent 10 }}
 {{- end }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.registryCtl" . }}"
@@ -253,6 +293,33 @@ spec:
               name: {{ .Values.persistence.imageChartStorage.azure.existingSecret }}
               key: AZURE_STORAGE_ACCESS_KEY
         {{- end }}
+        {{- if .Values.persistence.imageChartStorage.swift.existingSecret }}
+        - name: REGISTRY_STORAGE_SWIFT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_PASSWORD
+        - name: REGISTRY_STORAGE_SWIFT_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_SECRETKEY
+              optional: true
+        - name: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.swift.existingSecret }}
+              key: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+              optional: true
+        {{- end }}
+        {{- if .Values.persistence.imageChartStorage.oss.existingSecret }}
+        - name: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.persistence.imageChartStorage.oss.existingSecret }}
+              key: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+              optional: true
+        {{- end}}
 {{- with .Values.registry.controller.extraEnvVars }}
 {{- toYaml . | nindent 8 }}
 {{- end }}

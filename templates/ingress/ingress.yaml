@@ -37,8 +37,8 @@ metadata:
   name: "{{ template "harbor.ingress" . }}"
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-{{- if $ingress.harbor.labels }}
-{{ toYaml $ingress.harbor.labels | indent 4 }}
+{{- if $ingress.labels }}
+{{ toYaml $ingress.labels | indent 4 }}
 {{- end }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
@@ -50,9 +50,6 @@ metadata:
     {{- if $tls.enabled }}
     ncp/http-redirect: "true"
     {{- end }}
-{{- end }}
-{{- if $ingress.harbor.annotations }}
-{{ toYaml $ingress.harbor.annotations | indent 4 }}
 {{- end }}
 spec:
   {{- if $ingress.className }}
