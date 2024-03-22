@@ -77,19 +77,22 @@ spec:
         - secretRef:
             name: "{{ template "harbor.exporter" . }}"
         env:
+        {{- with .Values.exporter.extraEnvVars }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if and (eq .Values.database.type "external") .Values.database.external.existingSecret }}
         - name: HARBOR_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.database.external.existingSecret }}
-              key: password
+              key: {{ .Values.database.external.existingSecretKey | default "POSTGRES_PASSWORD" }}
         {{- end }}
         {{- if and (eq .Values.database.type "internal") .Values.database.internal.existingSecret }}
         - name: HARBOR_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.database.internal.existingSecret }}
-              key: password
+              key: {{ .Values.database.internal.existingSecretKey | default "POSTGRES_PASSWORD" }}
         {{- end }}
         {{- if .Values.existingSecretAdminPassword }}
         - name: HARBOR_ADMIN_PASSWORD
@@ -101,10 +104,6 @@ spec:
 {{- if .Values.exporter.resources }}
         resources:
 {{ toYaml .Values.exporter.resources | indent 10 }}
-{{- end }}
-{{- with .Values.exporter.extraEnvVars }}
-        env:
-{{- toYaml . | nindent 10 }}
 {{- end }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}

@@ -125,14 +125,14 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.database.external.existingSecret }}
-                key: password
+                key: {{ .Values.database.external.existingSecretKey | default "password" }}
           {{- end }}
           {{- if and (eq .Values.database.type "internal") .Values.database.internal.existingSecret }}
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.database.internal.existingSecret }}
-                key: password
+                key: {{ .Values.database.internal.existingSecretKey | default "password" }}
           {{- end }}
           {{- if .Values.registry.credentials.existingSecret }}
           - name: REGISTRY_CREDENTIAL_PASSWORD

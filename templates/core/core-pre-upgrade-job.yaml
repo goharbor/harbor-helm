@@ -46,11 +46,11 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.database.external.existingSecret }}
-                key: password
+                key: {{ .Values.database.external.existingSecretKey | default "password" }}
         {{- end }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
-        {{- end }}               
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf

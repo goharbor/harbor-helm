@@ -875,8 +875,10 @@ database:
     priorityClassName:
     # The initial superuser password for internal database (ignored if existingSecret is set)
     password: "changeit"
-    # if using existing secret, the key must be "password"
+    # if using existing secret
     existingSecret: ""
+    # secret key name if using existing secret (defaults to `password`)
+    existingSecretKey: ""
     # The size limit for Shared memory, pgSQL use it for shared_buffer
     # More details see:
     # https://github.com/goharbor/harbor/issues/15034
@@ -898,8 +900,10 @@ database:
     username: "user"
     password: "password"
     coreDatabase: "registry"
-    # if using existing secret, the key must be "password"
+    # if using existing secret
     existingSecret: ""
+    # secret key name if using existing secret (defaults to `password`)
+    existingSecretKey: ""
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
