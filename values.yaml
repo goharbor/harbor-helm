@@ -385,7 +385,7 @@ enableMigrateHelmHook: false
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: v2.10.0
+    tag: v2.10.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -416,7 +416,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: v2.10.0
+    tag: v2.10.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -449,7 +449,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: v2.10.0
+    tag: v2.10.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -529,7 +529,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v2.10.0
+    tag: v2.10.1
   replicas: 1
   revisionHistoryLimit: 10
   # set the service account to be used, default if left empty
@@ -590,7 +590,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: v2.10.0
+      tag: v2.10.1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -599,7 +599,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: v2.10.0
+      tag: v2.10.1
 
     # resources:
     #  requests:
@@ -670,7 +670,7 @@ trivy:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: v2.10.0
+    tag: v2.10.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -760,7 +760,7 @@ database:
     automountServiceAccountToken: false
     image:
       repository: goharbor/harbor-db
-      tag: v2.10.0
+      tag: v2.10.1
     # The initial superuser password for internal database
     password: "changeit"
     # The size limit for Shared memory, pgSQL use it for shared_buffer
@@ -833,7 +833,7 @@ redis:
     automountServiceAccountToken: false
     image:
       repository: goharbor/redis-photon
-      tag: v2.10.0
+      tag: v2.10.1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -897,7 +897,7 @@ exporter:
   automountServiceAccountToken: false
   image:
     repository: goharbor/harbor-exporter
-    tag: v2.10.0
+    tag: v2.10.1
   nodeSelector: {}
   tolerations: []
   affinity: {}
