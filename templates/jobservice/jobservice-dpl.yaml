@@ -5,6 +5,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
+    app.kubernetes.io/component: jobservice
 spec:
   replicas: {{ .Values.jobservice.replicas }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
@@ -22,6 +23,7 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: jobservice
+        app.kubernetes.io/component: jobservice
 {{- if .Values.jobservice.podLabels }}
 {{ toYaml .Values.jobservice.podLabels | indent 8 }}
 {{- end }}

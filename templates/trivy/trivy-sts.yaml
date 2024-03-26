@@ -7,6 +7,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: trivy
+    app.kubernetes.io/component: trivy
 spec:
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
@@ -19,6 +20,7 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: trivy
+        app.kubernetes.io/component: trivy
 {{- if .Values.trivy.podLabels }}
 {{ toYaml .Values.trivy.podLabels | indent 8 }}
 {{- end }}

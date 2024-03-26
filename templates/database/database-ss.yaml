@@ -7,6 +7,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: database
+    app.kubernetes.io/component: database
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.database" . }}"
@@ -19,6 +20,7 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: database
+        app.kubernetes.io/component: database
 {{- if .Values.database.podLabels }}
 {{ toYaml .Values.database.podLabels | indent 8 }}
 {{- end }}

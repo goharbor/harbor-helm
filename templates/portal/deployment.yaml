@@ -5,6 +5,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: portal
+    app.kubernetes.io/component: portal
 spec:
   replicas: {{ .Values.portal.replicas }}
   revisionHistoryLimit: {{ .Values.portal.revisionHistoryLimit }}
@@ -15,8 +16,9 @@ spec:
   template:
     metadata:
       labels:
-{{ include "harbor.matchLabels" . | indent 8 }}
+{{ include "harbor.labels" . | indent 8 }}
         component: portal
+        app.kubernetes.io/component: portal
 {{- if .Values.portal.podLabels }}
 {{ toYaml .Values.portal.podLabels | indent 8 }}
 {{- end }}
