@@ -565,6 +565,7 @@ core:
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
+  lifecycle: []
   affinity: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
