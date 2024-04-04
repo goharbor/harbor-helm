@@ -6,6 +6,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     String context
     String namespace
     String coreHostname
+    String ingressControllerServiceType
     String ingressControllerIP
 
     HarborChartFreshInstallPipelineExecutor(Script script) {
@@ -36,13 +37,29 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     HarborInstance install(){
         // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
         script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
-            // get the IP address of the ingress controller
-            ingressControllerIP = script.sh(
+            // get the service type of the ingress controller
+            ingressControllerServiceType = script.sh(
                 returnStdout: true,
-                script:"""
+                script: """
                     docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                        sh -c 'host \$(kubectl get svc nginx-ingress-controller-controller --context ${context} -n ingress-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                        sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.type}"'
                 """).trim()
+            // get the IP address of the ingress controller
+            if (ingressControllerServiceType == 'LoadBalancer') {
+                ingressControllerIP = script.sh(
+                    returnStdout: true,
+                    script: """
+                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                            sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                    """).trim()
+            } else if (ingressControllerServiceType == 'NodePort') {
+                ingressControllerIP = script.sh(
+                    returnStdout: true,
+                    script: """
+                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                            sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
+                    """).trim()
+            }
             // install harbor chart
             script.sh """
                 # insert the hostAliases to run the replication test
@@ -50,23 +67,21 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 # install harbor chart
                 docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
                     helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
-                        --set "expose.ingress.hosts.core=${coreHostname},expose.ingress.hosts.notary=notary.${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
+                        --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
             """
         }
 
         HarborInstance instance = new HarborInstance()
         instance.coreServiceURL = "https://" + coreHostname
-        instance.notaryServiceURL = "https://notary." + coreHostname
         instance.adminPassword = "Harbor12345"
         instance.authMode = "database"
-        instance.components = "trivy,notary"
-        instance.hostIPMappings = "${coreHostname}:${ingressControllerIP},notary.${coreHostname}:${ingressControllerIP}"
+        instance.components = "trivy"
+        instance.hostIPMappings = "${coreHostname}:${ingressControllerIP}"
 
         script.currentBuild.description = """
             Kubernetes: ${context}
             Namespace: ${namespace}
             Core Service: $instance.coreServiceURL
-            Notary Service: $instance.notaryServiceURL
             Ingress Controller IP: ${ingressControllerIP}
         """
 
@@ -91,7 +106,7 @@ def properties = {
     }
     return [
         parameters([
-            string(name: 'branch', defaultValue: 'master', description: 'The branch/tag to run for'),
+            string(name: 'branch', defaultValue: 'main', description: 'The branch/tag to run for'),
             choice(name: "cluster", choices: names, description: 'The Kubernetes cluster that the Harbor is deployed on')
         ]),
         buildDiscarder(strategy: logRotator(numToKeepStr: "15")),
@@ -101,7 +116,7 @@ def properties = {
 
 def caseSettings = {
     CaseSettings settings = new CaseSettings()
-    settings.cases = "gc,common,database,trivy,notary"
+    settings.cases = "gc,trivy,common,database"
     return settings
 }
 

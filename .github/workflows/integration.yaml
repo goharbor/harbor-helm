@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Nginx ingress controller
         run: |
-          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.3/deploy/static/provider/kind/deploy.yaml
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.0/deploy/static/provider/kind/deploy.yaml
           kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
 
       - name: Set up Go 1.19
@@ -43,7 +43,6 @@ jobs:
       - name: Set /etc/hosts
         run: |
          sudo -- sh -c "echo '127.0.0.1 harbor.local' >> /etc/hosts"
-         sudo -- sh -c "echo '127.0.0.1 notary.harbor.local' >> /etc/hosts"
 
       - name: Run integration tests
         working-directory: ./test
@@ -56,7 +55,7 @@ jobs:
           df -h
           free -m
           mkdir -p /tmp/harbor
-          for name in core jobservice registry registryctl trivy notaryserver notarysigner portal redis database; do \
+          for name in core jobservice registry registryctl trivy portal redis database; do \
             kubectl -n default logs -l "component=$name" --all-containers > /tmp/harbor/$name.log ; \
           done
 

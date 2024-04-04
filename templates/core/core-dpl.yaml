@@ -5,6 +5,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: core
+    app.kubernetes.io/component: core
 spec:
   replicas: {{ .Values.core.replicas }}
   revisionHistoryLimit: {{ .Values.core.revisionHistoryLimit }}
@@ -15,8 +16,12 @@ spec:
   template:
     metadata:
       labels:
-{{ include "harbor.matchLabels" . | indent 8 }}
+{{ include "harbor.labels" . | indent 8 }}
         component: core
+        app.kubernetes.io/component: core
+{{- if .Values.core.podLabels }}
+{{ toYaml .Values.core.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/core/core-cm.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/core/core-secret.yaml") . | sha256sum }}
@@ -42,6 +47,16 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.core.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+{{- with .Values.core.topologySpreadConstraints}}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: core
+{{- end }}
+{{- end }}
       {{- with .Values.core.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
@@ -83,13 +98,17 @@ spec:
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: {{ default (include "harbor.core" .) .Values.core.existingSecret }}
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
-                name: "{{ template "harbor.jobservice" . }}"
+                name: {{ default (include "harbor.jobservice" .) .Values.jobservice.existingSecret }}
+                {{- if .Values.jobservice.existingSecret }}
+                key: {{ .Values.jobservice.existingSecretKey }}
+                {{- else }}
                 key: JOBSERVICE_SECRET
+                {{- end }}
           {{- if .Values.existingSecretAdminPassword }}
           - name: HARBOR_ADMIN_PASSWORD
             valueFrom:
@@ -121,6 +140,19 @@ spec:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
           {{- end }}
+          {{- if .Values.core.existingXsrfSecret }}
+          - name: CSRF_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.core.existingXsrfSecret }}
+                key: {{ .Values.core.existingXsrfSecretKey }}
+          {{- end }}
+{{- with .Values.core.extraEnvVars }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:

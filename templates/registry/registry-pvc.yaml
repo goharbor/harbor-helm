@@ -15,6 +15,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
+    app.kubernetes.io/component: registry
 spec:
   accessModes: 
     - {{ $registry.accessMode }}
