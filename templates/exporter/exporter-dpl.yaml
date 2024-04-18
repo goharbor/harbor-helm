@@ -72,6 +72,10 @@ spec:
             port: {{ .Values.metrics.exporter.port }}
           initialDelaySeconds: 30
           periodSeconds: 10
+{{- with .Values.exporter.lifecycle }}
+        lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
         args: ["-log-level", "{{ .Values.logLevel }}"]
         envFrom:
         - configMapRef:

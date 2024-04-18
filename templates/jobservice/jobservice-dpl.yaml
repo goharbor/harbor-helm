@@ -81,6 +81,10 @@ spec:
             port: {{ template "harbor.jobservice.containerPort" . }}
           initialDelaySeconds: 20
           periodSeconds: 10
+{{- with .Values.jobservice.lifecycle }}
+        lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
 {{- if .Values.jobservice.resources }}
         resources:
 {{ toYaml .Values.jobservice.resources | indent 10 }}

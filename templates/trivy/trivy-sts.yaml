@@ -164,6 +164,10 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
+{{- with .Values.trivy.lifecycle }}
+          lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
           resources:
 {{ toYaml .Values.trivy.resources | indent 12 }}
       {{- if or (or .Values.internalTLS.enabled .Values.caBundleSecretName) (or (not .Values.persistence.enabled) $trivy.existingClaim) }}
