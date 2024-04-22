@@ -482,8 +482,8 @@ containerSecurityContext:
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
   image:
-    repository: goharbor/nginx-photon
-    tag: dev
+    repository: zigzag18/nginx-photon
+    tag: v2.11.0-build.2621
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -545,8 +545,8 @@ nginx:
 
 portal:
   image:
-    repository: goharbor/harbor-portal
-    tag: dev
+    repository: zigzag18/harbor-portal
+    tag: v2.11.0-build.2621
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -610,8 +610,8 @@ portal:
 
 core:
   image:
-    repository: goharbor/harbor-core
-    tag: dev
+    repository: zigzag18/harbor-core
+    tag: v2.11.0-build.2621
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -722,8 +722,8 @@ core:
 
 jobservice:
   image:
-    repository: goharbor/harbor-jobservice
-    tag: dev
+    repository: zigzag18/harbor-jobservice
+    tag: v2.11.0-build.2621
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -810,8 +810,8 @@ jobservice:
 registry:
   registry:
     image:
-      repository: goharbor/registry-photon
-      tag: dev
+      repository: zigzag18/registry-photon
+      tag: v2.11.0-build.2621
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -819,8 +819,8 @@ registry:
     extraEnvVars: []
   controller:
     image:
-      repository: goharbor/harbor-registryctl
-      tag: dev
+      repository: zigzag18/harbor-registryctl
+      tag: v2.11.0-build.2621
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -924,9 +924,9 @@ trivy:
   enabled: true
   image:
     # repository the repository for Trivy adapter image
-    repository: goharbor/trivy-adapter-photon
+    repository: zigzag18/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: dev
+    tag: v2.11.0-build.2621
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -1043,8 +1043,8 @@ database:
   type: internal
   internal:
     image:
-      repository: goharbor/harbor-db
-      tag: dev
+      repository: zigzag18/harbor-db
+      tag: v2.11.0-build.2621
     # set the service account to be used, default if left empty
     serviceAccountName: ""
     # mount the service account token
@@ -1116,8 +1116,8 @@ redis:
   type: internal
   internal:
     image:
-      repository: goharbor/redis-photon
-      tag: dev
+      repository: zigzag18/redis-photon
+      tag: v2.11.0-build.2621
     # set the service account to be used, default if left empty
     serviceAccountName: ""
     # mount the service account token
@@ -1171,8 +1171,8 @@ redis:
 
 exporter:
   image:
-    repository: goharbor/harbor-exporter
-    tag: dev
+    repository: zigzag18/harbor-exporter
+    tag: v2.11.0-build.2621
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
