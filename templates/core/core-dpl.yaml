@@ -85,6 +85,10 @@ spec:
             port: {{ template "harbor.core.containerPort" . }}
           failureThreshold: 2
           periodSeconds: 10
+{{- with .Values.core.lifecycle }}
+        lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.core" . }}"

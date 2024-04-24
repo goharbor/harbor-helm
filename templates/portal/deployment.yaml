@@ -83,6 +83,10 @@ spec:
             port: {{ template "harbor.portal.containerPort" . }}
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- with .Values.portal.lifecycle }}
+        lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
         ports:
         - containerPort: {{ template "harbor.portal.containerPort" . }}
         volumeMounts:

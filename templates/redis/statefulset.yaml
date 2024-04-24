@@ -58,6 +58,10 @@ spec:
             port: 6379
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- with .Values.redis.internal.lifecycle }}
+        lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
 {{- if .Values.redis.internal.resources }}
         resources:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}

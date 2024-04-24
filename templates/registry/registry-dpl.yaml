@@ -84,6 +84,10 @@ spec:
             port: {{ template "harbor.registry.containerPort" . }}
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- with .Values.registry.registry.lifecycle }}
+        lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
 {{- if .Values.registry.registry.resources }}
         resources:
 {{ toYaml .Values.registry.registry.resources | indent 10 }}
@@ -223,6 +227,10 @@ spec:
             port: {{ template "harbor.registryctl.containerPort" . }}
           initialDelaySeconds: 1
           periodSeconds: 10
+{{- with .Values.registry.controller.lifecycle }}
+        lifecycle:
+{{ toYaml . | indent 10 }}
+{{- end }}
 {{- if .Values.registry.controller.resources }}
         resources:
 {{ toYaml .Values.registry.controller.resources | indent 10 }}
