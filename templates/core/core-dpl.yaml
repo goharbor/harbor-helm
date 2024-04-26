@@ -122,12 +122,19 @@ spec:
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/core/ca.crt
           {{- end }}
-          {{- if .Values.database.external.existingSecret }}
+          {{- if and (eq .Values.database.type "external") .Values.database.external.existingSecret }}
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.database.external.existingSecret }}
-                key: password
+                key: {{ .Values.database.external.existingSecretKey | default "password" }}
+          {{- end }}
+          {{- if and (eq .Values.database.type "internal") .Values.database.internal.existingSecret }}
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.database.internal.existingSecret }}
+                key: {{ .Values.database.internal.existingSecretKey | default "password" }}
           {{- end }}
           {{- if .Values.registry.credentials.existingSecret }}
           - name: REGISTRY_CREDENTIAL_PASSWORD
