@@ -8,7 +8,9 @@ metadata:
     component: exporter
     app.kubernetes.io/component: exporter
 spec:
+    {{- if eq .Values.exporter.autoscaling.enabled .Values.exporter.keda.enabled }}
   replicas: {{ .Values.exporter.replicas }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.exporter.revisionHistoryLimit }}
   selector:
     matchLabels:

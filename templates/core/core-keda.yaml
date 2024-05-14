@@ -1,0 +1,42 @@
+{{- if and .Values.core.keda.enabled (not .Values.core.autoscaling.enabled) -}}
+apiVersion: {{ .Values.core.keda.apiVersion }}
+kind: ScaledObject
+metadata:
+  {{- with .Values.core.autoscaling.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "harbor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: core
+  name: {{ template "harbor.core" . }}
+spec:
+  scaleTargetRef:
+{{- if eq .Values.core.keda.apiVersion "keda.k8s.io/v1alpha1" }}
+    deploymentName: {{ template "harbor.core" . }}
+{{- else if eq .Values.core.keda.apiVersion "keda.sh/v1alpha1" }}
+    name: {{ template "harbor.core" . }}
+{{- end }}
+  pollingInterval: {{ .Values.core.keda.pollingInterval }}
+  cooldownPeriod: {{ .Values.core.keda.cooldownPeriod }}
+  minReplicaCount: {{ .Values.core.keda.minReplicas }}
+  maxReplicaCount: {{ .Values.core.keda.maxReplicas }}
+{{- with .Values.core.keda.fallback }}
+  fallback:
+    failureThreshold: {{ .failureThreshold | default 3 }}
+    replicas: {{ .replicas | default $.Values.core.keda.maxReplicas }}
+{{- end }}
+  triggers:
+{{- with .Values.core.keda.triggers }}
+{{ toYaml . | indent 2 }}
+{{ end }}
+  advanced:
+    restoreToOriginalReplicaCount: {{ .Values.core.keda.restoreToOriginalReplicaCount }}
+{{- if .Values.core.keda.behavior }}
+    horizontalPodAutoscalerConfig:
+      behavior:
+{{ with .Values.core.keda.behavior -}}
+{{ toYaml . | indent 8 }}
+{{ end }}
+
+{{- end }}
+{{- end }}

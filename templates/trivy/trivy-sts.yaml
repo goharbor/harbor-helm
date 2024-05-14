@@ -9,7 +9,9 @@ metadata:
     component: trivy
     app.kubernetes.io/component: trivy
 spec:
+    {{- if eq .Values.trivy.autoscaling.enabled .Values.trivy.keda.enabled }}
   replicas: {{ .Values.trivy.replicas }}
+  {{- end }}
   serviceName: {{  template "harbor.trivy" . }}
   selector:
     matchLabels:

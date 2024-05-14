@@ -1,0 +1,38 @@
+{{- if and .Values.trivy.keda.enabled (not .Values.trivy.autoscaling.enabled) (eq .Values.trivy.keda.apiVersion "keda.sh/v1alpha1") -}}
+apiVersion: {{ .Values.trivy.keda.apiVersion }}
+kind: ScaledObject
+metadata:
+  {{- with .Values.trivy.autoscaling.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "harbor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: trivy
+  name: {{ template "harbor.trivy" . }}
+spec:
+  scaleTargetRef:
+    name: {{ template "harbor.trivy" . }}
+  pollingInterval: {{ .Values.trivy.keda.pollingInterval }}
+  cooldownPeriod: {{ .Values.trivy.keda.cooldownPeriod }}
+  minReplicaCount: {{ .Values.trivy.keda.minReplicas }}
+  maxReplicaCount: {{ .Values.trivy.keda.maxReplicas }}
+{{- with .Values.trivy.keda.fallback }}
+  fallback:
+    failureThreshold: {{ .failureThreshold | default 3 }}
+    replicas: {{ .replicas | default $.Values.trivy.keda.maxReplicas }}
+{{- end }}
+  triggers:
+{{- with .Values.trivy.keda.triggers }}
+{{ toYaml . | indent 2 }}
+{{ end }}
+  advanced:
+    restoreToOriginalReplicaCount: {{ .Values.trivy.keda.restoreToOriginalReplicaCount }}
+{{- if .Values.trivy.keda.behavior }}
+    horizontalPodAutoscalerConfig:
+      behavior:
+{{ with .Values.trivy.keda.behavior -}}
+{{ toYaml . | indent 8 }}
+{{ end }}
+
+{{- end }}
+{{- end }}

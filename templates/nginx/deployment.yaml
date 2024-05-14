@@ -8,7 +8,9 @@ metadata:
     component: nginx
     app.kubernetes.io/component: nginx
 spec:
+  {{- if eq .Values.nginx.autoscaling.enabled .Values.nginx.keda.enabled }}
   replicas: {{ .Values.nginx.replicas }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.nginx.revisionHistoryLimit }}
   selector:
     matchLabels:

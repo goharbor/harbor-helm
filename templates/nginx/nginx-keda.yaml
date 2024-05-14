@@ -1,0 +1,42 @@
+{{- if and .Values.nginx.keda.enabled (not .Values.nginx.autoscaling.enabled) -}}
+apiVersion: {{ .Values.nginx.keda.apiVersion }}
+kind: ScaledObject
+metadata:
+  {{- with .Values.nginx.autoscaling.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "harbor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nginx
+  name: {{ template "harbor.nginx" . }}
+spec:
+  scaleTargetRef:
+{{- if eq .Values.nginx.keda.apiVersion "keda.k8s.io/v1alpha1" }}
+    deploymentName: {{ template "harbor.nginx" . }}
+{{- else if eq .Values.nginx.keda.apiVersion "keda.sh/v1alpha1" }}
+    name: {{ template "harbor.nginx" . }}
+{{- end }}
+  pollingInterval: {{ .Values.nginx.keda.pollingInterval }}
+  cooldownPeriod: {{ .Values.nginx.keda.cooldownPeriod }}
+  minReplicaCount: {{ .Values.nginx.keda.minReplicas }}
+  maxReplicaCount: {{ .Values.nginx.keda.maxReplicas }}
+{{- with .Values.nginx.keda.fallback }}
+  fallback:
+    failureThreshold: {{ .failureThreshold | default 3 }}
+    replicas: {{ .replicas | default $.Values.nginx.keda.maxReplicas }}
+{{- end }}
+  triggers:
+{{- with .Values.nginx.keda.triggers }}
+{{ toYaml . | indent 2 }}
+{{ end }}
+  advanced:
+    restoreToOriginalReplicaCount: {{ .Values.nginx.keda.restoreToOriginalReplicaCount }}
+{{- if .Values.nginx.keda.behavior }}
+    horizontalPodAutoscalerConfig:
+      behavior:
+{{ with .Values.nginx.keda.behavior -}}
+{{ toYaml . | indent 8 }}
+{{ end }}
+
+{{- end }}
+{{- end }}
