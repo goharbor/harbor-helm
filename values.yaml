@@ -660,7 +660,9 @@ jobservice:
     - file
     # - database
     # - stdout
-  # The jobLogger sweeper duration (ignored if `jobLogger` is `stdout`)
+  # If a value is set, this will set the log level for the jobservice differently then the global logLevel.  Possible values are `debug`, `info`, `warning`, `error` or `fatal`
+  logLevel:
+  # The jobLogger sweeper duration (ignored if `jobLogger` is `stdout`)  
   loggerSweeperDuration: 14 #days
   notification:
     webhook_job_max_retry: 3
