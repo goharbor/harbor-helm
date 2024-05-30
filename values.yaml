@@ -611,6 +611,7 @@ registry:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  fsGroupChangePolicy: "OnRootMismatch"
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
   # - maxSkew: 1
