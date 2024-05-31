@@ -138,7 +138,7 @@ spec:
   - metadata:
       name: "database-data"
       labels:
-{{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.legacy.labels" . | indent 8 }}
       annotations:
       {{- range $key, $value := $database.annotations }}
         {{ $key }}: {{ $value | quote }}

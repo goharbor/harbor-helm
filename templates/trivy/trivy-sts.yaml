@@ -9,7 +9,9 @@ metadata:
     component: trivy
     app.kubernetes.io/component: trivy
 spec:
+  {{- if .Values.trivy.autoscaling.enabled }}
   replicas: {{ .Values.trivy.replicas }}
+  {{- end }}
   serviceName: {{  template "harbor.trivy" . }}
   selector:
     matchLabels:
@@ -205,7 +207,7 @@ spec:
   - metadata:
       name: data
       labels:
-{{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.legacy.labels" . | indent 8 }}
       annotations:
       {{- range $key, $value := $trivy.annotations }}
         {{ $key }}: {{ $value | quote }}
