@@ -8,7 +8,7 @@ metadata:
     component: exporter
     app.kubernetes.io/component: exporter
 spec:
-    {{- if .Values.exporter.autoscaling.enabled }}
+  {{- if .Values.exporter.autoscaling.enabled }}
   replicas: {{ .Values.exporter.replicas }}
   {{- end }}
   revisionHistoryLimit: {{ .Values.exporter.revisionHistoryLimit }}
