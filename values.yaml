@@ -950,11 +950,18 @@ database:
     sslmode: "disable"
   # The maximum number of connections in the idle connection pool per pod (core+exporter).
   # If it <=0, no idle connections are retained.
-  maxIdleConns: 100
+  maxIdleConns: 50
   # The maximum number of open connections to the database per pod (core+exporter).
   # If it <= 0, then there is no limit on the number of open connections.
-  # Note: the default number of connections is 1024 for harbor's postgres.
-  maxOpenConns: 900
+  # Note: the default number of connections is 1024 for postgres of harbor.
+  maxOpenConns: 100
+  # The maximum amount of time a connection may be reused in seconds
+  #(core+exporter).Default is (5 minutes on exporter and 1h on core as per pgx defaults)
+  #connMaxLifetime: 1h
+  # The maximum amount of time a connection can be idle before being closed in seconds (core+exporter).
+  # Default is (core as per pgx default 30 minutes and exporter 0)
+  #connMaxIdleTime: 1m
+
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
@@ -1056,3 +1063,10 @@ exporter:
   #   whenUnsatisfiable: DoNotSchedule
   cacheDuration: 23
   cacheCleanInterval: 14400
+  override:
+    # Option to override the .database connection settings for the exporter.
+    database:
+  #      maxIdleConns:
+  #      maxOpenConns:
+  #      connMaxIdleTime:
+  #      connMaxLifetime:
