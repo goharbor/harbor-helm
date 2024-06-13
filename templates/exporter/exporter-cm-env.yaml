@@ -30,6 +30,8 @@ data:
   HARBOR_DATABASE_USERNAME: "{{ template "harbor.database.username" . }}"
   HARBOR_DATABASE_DBNAME: "{{ template "harbor.database.coreDatabase" . }}"
   HARBOR_DATABASE_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
-  HARBOR_DATABASE_MAX_IDLE_CONNS: "{{ .Values.database.maxIdleConns }}"
-  HARBOR_DATABASE_MAX_OPEN_CONNS: "{{ .Values.database.maxOpenConns }}"
+  HARBOR_DATABASE_MAX_IDLE_CONNS: "{{ default .Values.database.maxIdleConns .Values.exporter.override.database.maxIdleConns }}"
+  HARBOR_DATABASE_MAX_OPEN_CONNS: "{{ default .Values.database.maxOpenConns .Values.exporter.override.database.maxOpenConns }}"
+  HARBOR_DATABASE_CONN_MAX_IDLE_TIME: "{{ default .Values.database.connMaxIdleTime .Values.exporter.override.database.connMaxIdleTime }}"
+  HARBOR_DATABASE_CONN_MAX_LIFETIME: "{{ default .Values.database.connMaxLifetime .Values.exporter.override.database.connMaxLifetime }}"
 {{- end}}
