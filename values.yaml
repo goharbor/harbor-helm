@@ -173,7 +173,7 @@ persistence:
       annotations: {}
   # Define which storage backend is used for registry to store
   # images and charts. Refer to
-  # https://github.com/distribution/distribution/blob/main/docs/configuration.md#storage
+  # https://github.com/distribution/distribution/blob/main/docs/content/about/configuration.md#storage
   # for the detail.
   imageChartStorage:
     # Specify whether to disable `redirect` for images and chart storage, for
@@ -946,7 +946,7 @@ database:
   maxIdleConns: 100
   # The maximum number of open connections to the database per pod (core+exporter).
   # If it <= 0, then there is no limit on the number of open connections.
-  # Note: the default number of connections is 1024 for postgre of harbor.
+  # Note: the default number of connections is 1024 for harbor's postgres.
   maxOpenConns: 900
   ## Additional deployment annotations
   podAnnotations: {}

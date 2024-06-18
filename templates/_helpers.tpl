@@ -25,13 +25,20 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{/* Helm required labels: legacy */}}
+{{- define "harbor.legacy.labels" -}}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+chart: {{ .Chart.Name }}
+app: "{{ template "harbor.name" . }}"
+{{- end -}}
+
 {{/* Helm required labels */}}
 {{- define "harbor.labels" -}}
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
 chart: {{ .Chart.Name }}
 app: "{{ template "harbor.name" . }}"
-{{ include "harbor.matchLabels" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/name: {{ include "harbor.name" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}

@@ -100,7 +100,7 @@ spec:
   - metadata:
       name: data
       labels:
-{{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.legacy.labels" . | indent 8 }}
       annotations:
       {{- range $key, $value := $redis.annotations }}
         {{ $key }}: {{ $value | quote }}
