@@ -7,7 +7,9 @@ metadata:
     component: jobservice
     app.kubernetes.io/component: jobservice
 spec:
+  {{- if .Values.jobservice.autoscaling.enabled }}
   replicas: {{ .Values.jobservice.replicas }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
