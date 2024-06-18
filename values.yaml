@@ -908,6 +908,13 @@ database:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # containers to be run before the controller's container starts.
+    extrInitContainers: []
+    # Example:
+    #
+    # - name: wait
+    #   image: busybox
+    #   command: [ 'sh', '-c', "sleep 20" ]
     # The initial superuser password for internal database
     password: "changeit"
     # The size limit for Shared memory, pgSQL use it for shared_buffer
@@ -975,6 +982,13 @@ redis:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # containers to be run before the controller's container starts.
+    initContainers: []
+    # Example:
+    #
+    # - name: wait
+    #   image: busybox
+    #   command: [ 'sh', '-c', "sleep 20" ]
     # # jobserviceDatabaseIndex defaults to "1"
     # # registryDatabaseIndex defaults to "2"
     # # trivyAdapterIndex defaults to "5"
