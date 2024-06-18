@@ -56,6 +56,10 @@ spec:
             component: trivy
 {{- end }}
 {{- end }}
+      {{- with .Values.trivy.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}

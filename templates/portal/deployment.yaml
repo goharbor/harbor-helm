@@ -54,6 +54,10 @@ spec:
             component: portal
 {{- end }}
 {{- end }}
+      {{- with .Values.portal.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}

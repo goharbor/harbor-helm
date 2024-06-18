@@ -543,6 +543,13 @@ portal:
   serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
 
 core:
   image:
@@ -580,6 +587,13 @@ core:
   serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   ## User settings configuration json string
   configureUserSettings:
   # The provider for updating project quota(usage), there are 2 options, redis or db.
@@ -654,6 +668,13 @@ jobservice:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLoggers:
@@ -719,6 +740,13 @@ registry:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/distribution/distribution/blob/main/docs/configuration.md#http
@@ -796,6 +824,13 @@ trivy:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
   debugMode: false
   # vulnType a comma-separated list of vulnerability types. Possible values are `os` and `library`.
@@ -873,6 +908,13 @@ database:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # containers to be run before the controller's container starts.
+    extrInitContainers: []
+    # Example:
+    #
+    # - name: wait
+    #   image: busybox
+    #   command: [ 'sh', '-c', "sleep 20" ]
     # The initial superuser password for internal database
     password: "changeit"
     # The size limit for Shared memory, pgSQL use it for shared_buffer
@@ -940,6 +982,13 @@ redis:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # containers to be run before the controller's container starts.
+    initContainers: []
+    # Example:
+    #
+    # - name: wait
+    #   image: busybox
+    #   command: [ 'sh', '-c', "sleep 20" ]
     # # jobserviceDatabaseIndex defaults to "1"
     # # registryDatabaseIndex defaults to "2"
     # # trivyAdapterIndex defaults to "5"

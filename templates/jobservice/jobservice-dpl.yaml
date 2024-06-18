@@ -63,6 +63,10 @@ spec:
             component: jobservice
 {{- end }}
 {{- end }}
+      {{- with .Values.jobservice.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}

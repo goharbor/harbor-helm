@@ -63,6 +63,9 @@ spec:
           - name: database-data
             mountPath: /var/lib/postgresql/data
             subPath: {{ $database.subPath }}
+      {{- with .Values.database.internal.extrInitContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
