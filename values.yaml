@@ -83,8 +83,13 @@ expose:
   loadBalancer:
     # The name of LoadBalancer service
     name: harbor
+    # Set the class of the loadBalancer implementation(Kubernetes >= 1.24)
+    loadBalancerClass: ""
     # Set the IP if the LoadBalancer supports assigning IP
     IP: ""
+    # Set a list of IP addresses for which nodes in the cluster will also accept
+    # traffic for this service. These IPs are not managed by Kubernetes
+    externalIPs: []
     ports:
       # The service port Harbor listens on when serving HTTP
       httpPort: 80
