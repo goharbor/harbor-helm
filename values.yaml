@@ -490,7 +490,7 @@ containerSecurityContext:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: dev
+    tag: v2.11.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -521,7 +521,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: dev
+    tag: v2.11.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -561,7 +561,7 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: dev
+    tag: v2.11.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -648,7 +648,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: dev
+    tag: v2.11.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -711,7 +711,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: dev
+      tag: v2.11.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -720,7 +720,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: dev
+      tag: v2.11.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -801,7 +801,7 @@ trivy:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: dev
+    tag: v2.11.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -894,7 +894,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: dev
+      tag: v2.11.0
     # set the service account to be used, default if left empty
     serviceAccountName: ""
     # mount the service account token
@@ -974,7 +974,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: dev
+      tag: v2.11.0
     # set the service account to be used, default if left empty
     serviceAccountName: ""
     # mount the service account token
@@ -1036,7 +1036,7 @@ redis:
 exporter:
   image:
     repository: goharbor/harbor-exporter
-    tag: dev
+    tag: v2.11.0
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
