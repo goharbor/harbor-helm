@@ -5,6 +5,7 @@ metadata:
 {{- if eq .Values.expose.type "clusterIP" }}
 {{- $clusterIP := .Values.expose.clusterIP }}
   name: {{ $clusterIP.name }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 {{- if .Values.expose.clusterIP.labels }}

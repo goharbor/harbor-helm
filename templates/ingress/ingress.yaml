@@ -35,6 +35,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ template "harbor.ingress" . }}"
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 {{- if $ingress.labels }}
