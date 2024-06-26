@@ -25,10 +25,12 @@ data:
   HARBOR_SERVICE_SCHEME: "{{ template "harbor.component.scheme" . }}"
   HARBOR_SERVICE_HOST: "{{ template "harbor.core" . }}"
   HARBOR_SERVICE_PORT: "{{ template "harbor.core.servicePort" . }}"
+  {{- if not .Values.database.external.existingSecret.enabled }}
   HARBOR_DATABASE_HOST: "{{ template "harbor.database.host" . }}"
   HARBOR_DATABASE_PORT: "{{ template "harbor.database.port" . }}"
   HARBOR_DATABASE_USERNAME: "{{ template "harbor.database.username" . }}"
   HARBOR_DATABASE_DBNAME: "{{ template "harbor.database.coreDatabase" . }}"
+  {{- end }}
   HARBOR_DATABASE_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   HARBOR_DATABASE_MAX_IDLE_CONNS: "{{ .Values.database.maxIdleConns }}"
   HARBOR_DATABASE_MAX_OPEN_CONNS: "{{ .Values.database.maxOpenConns }}"
