@@ -14,10 +14,12 @@ data:
     httpport = {{ ternary "8443" "8080" .Values.internalTLS.enabled }}
   PORT: "{{ ternary "8443" "8080" .Values.internalTLS.enabled }}"
   DATABASE_TYPE: "postgresql"
+  {{- if not .Values.database.external.existingSecret.enabled }}
   POSTGRESQL_HOST: "{{ template "harbor.database.host" . }}"
   POSTGRESQL_PORT: "{{ template "harbor.database.port" . }}"
   POSTGRESQL_USERNAME: "{{ template "harbor.database.username" . }}"
   POSTGRESQL_DATABASE: "{{ template "harbor.database.coreDatabase" . }}"
+  {{- end }}
   POSTGRESQL_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   POSTGRESQL_MAX_IDLE_CONNS: "{{ .Values.database.maxIdleConns }}"
   POSTGRESQL_MAX_OPEN_CONNS: "{{ .Values.database.maxOpenConns }}"

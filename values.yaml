@@ -941,7 +941,7 @@ database:
     # Use an external secret and provide key mappings
     existingSecret:
       enabled: true
-      name: ""
+      name: "my-external-secret-name"
       keys:
         host: host
         port: port
