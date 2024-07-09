@@ -76,8 +76,10 @@ spec:
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.exporter" . }}-env"
+{{- if or (not .Values.existingSecretAdminPassword) (not .Values.database.external.existingSecret) }}
         - secretRef:
             name: "{{ template "harbor.exporter" . }}"
+{{- end }}
         env:
         {{- if .Values.database.external.existingSecret }}
         - name: HARBOR_DATABASE_PASSWORD

@@ -99,6 +99,7 @@ spec:
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+            optional: true
         {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
         - secretRef:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
@@ -239,6 +240,7 @@ spec:
             name: "{{ template "harbor.registryCtl" . }}"
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
+            optional: true
         - secretRef:
             name: "{{ template "harbor.registryCtl" . }}"
         {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}

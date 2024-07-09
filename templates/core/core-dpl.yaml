@@ -94,6 +94,7 @@ spec:
             name: "{{ template "harbor.core" . }}"
         - secretRef:
             name: "{{ template "harbor.core" . }}"
+            optional: true
         env:
           - name: CORE_SECRET
             valueFrom:
