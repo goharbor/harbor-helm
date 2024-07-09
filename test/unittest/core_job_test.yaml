@@ -1,0 +1,198 @@
+suite: CoreJob
+
+tests:
+  - it: JobDefault
+    set:
+      enableMigrateHelmHook: true
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - equal:
+          path: metadata.name
+          value: migration-job
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: core-job
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value: ["/harbor/harbor_core", "-mode=migrate"]
+  - it: ServiceAccount
+    set:
+      enableMigrateHelmHook: true
+      core:
+        serviceAccountName: test-service-account
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - equal:
+          path: metadata.name
+          value: migration-job
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: core-job
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: test-service-account
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value: ["/harbor/harbor_core", "-mode=migrate"]
+  - it: NodeSelector
+    set:
+      enableMigrateHelmHook: true
+      core:
+        nodeSelector:
+          node.selector/tier: test-node-selector
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector["node.selector/tier"]
+          value: test-node-selector
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - equal:
+          path: metadata.name
+          value: migration-job
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: core-job
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value: ["/harbor/harbor_core", "-mode=migrate"]
+
+  - it: Affinity
+    set:
+      enableMigrateHelmHook: true
+      core:
+        affinity:
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: test-affinity
+                      operator: In
+                      values:
+                        - S1
+                topologyKey: topology.kubernetes.io/zone
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key
+          value: test-affinity
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator
+          value: In
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0]
+          value: S1
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey
+          value: topology.kubernetes.io/zone
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - equal:
+          path: metadata.name
+          value: migration-job
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: core-job
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value: ["/harbor/harbor_core", "-mode=migrate"]
+
+  - it: Tolerations
+    set:
+      enableMigrateHelmHook: true
+      core:
+        tolerations:
+          - effect: NoSchedule
+            key: test-label
+            value: test
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].effect
+          value: NoSchedule
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: test-label
+      - equal:
+          path: spec.template.spec.tolerations[0].value
+          value: test
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - equal:
+          path: metadata.name
+          value: migration-job
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: core-job
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: config
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value: ["/harbor/harbor_core", "-mode=migrate"]
