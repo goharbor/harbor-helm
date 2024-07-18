@@ -412,6 +412,8 @@ metrics:
     # -- Additional labels for serviceMonitor
     additionalLabels: {}
     # Scrape interval. If not set, the Prometheus default scrape interval is used.
+    # prometheus.io/operator: true
+    # foo: bar
     interval: ""
     # Metric relabel configs to apply to samples before ingestion.
     metricRelabelings: []
@@ -440,10 +442,17 @@ metrics:
     # -- Additional labels for the rules PrometheusRule resource
     additionalLabels: {}
     # -- Additional labels for PrometheusRule alerts
+    # prometheus.io/operator: true
+    # foo: bar
     additionalRuleLabels: {}
     # -- Additional labels for specific PrometheusRule alert groups
+    # owners: myTeam
     additionalRuleGroupLabels:
       HarborCoreDown: {}
+      # severity: critical
+      # escalation: bladibla
+      # onCall: true
+      # foo: bar
       HarborDatabaseDown: {}
       HarborRegistryDown: {}
       HarborRedisDown: {}
@@ -454,6 +463,10 @@ metrics:
       HarborQuotaProjectLimit: {}
     additionalRuleGroupAnnotations:
       HarborCoreDown: {}
+      # runbook: "https://myrunbook"
+      # dashboard: "https://mygrafana"
+      # log: "https://myloki
+      # foo: bar
       HarborDatabaseDown: {}
       HarborRegistryDown: {}
       HarborRedisDown: {}
