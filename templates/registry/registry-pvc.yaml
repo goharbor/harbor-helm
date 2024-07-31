@@ -5,6 +5,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "harbor.registry" . }}
+  namespace: {{ .Release.Namespace | quote }}
   annotations:
   {{- range $key, $value := $registry.annotations }}
     {{ $key }}: {{ $value | quote }}
