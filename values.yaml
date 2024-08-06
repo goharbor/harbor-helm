@@ -786,6 +786,9 @@ registry:
     # the interval of the purge operations
     interval: 24h
     dryrun: false
+  # configure layer caching storage driver.
+  # options are `redis`, `inmemory` - any other value will disable caching
+  layerCache: redis
 
 trivy:
   # enabled the flag to enable Trivy scanner

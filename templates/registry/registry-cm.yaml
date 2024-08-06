@@ -155,7 +155,7 @@ data:
         {{- end }}
       {{- end }}
       cache:
-        layerinfo: redis
+        layerinfo: {{ .Values.registry.layerCache }}
       maintenance:
         uploadpurging:
           {{- if .Values.registry.upload_purging.enabled }}
