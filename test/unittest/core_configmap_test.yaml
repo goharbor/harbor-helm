@@ -102,7 +102,7 @@ tests:
           path: data.GC_TIME_WINDOW_HOURS
           value: "2"
 
-  - it: GcTimeWindowHours
+  - it: ArtifactPullAsyncFlushDuration
     set:
       core:
         artifactPullAsyncFlushDuration: 30
@@ -169,7 +169,7 @@ tests:
           path: data.CACHE_EXPIRE_HOURS
           value: "3"
 
-  - it: CuotaUpdate
+  - it: QuotaUpdate
     set:
       core:
         quotaUpdateProvider: 3

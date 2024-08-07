@@ -23,17 +23,6 @@ tests:
           path: spec.template.metadata.annotations["test.annotation"]
           value: test-annotation
 
-  - it: PodAnnotations
-    set:
-      core:
-        podAnnotations:
-          test.annotation: test-annotation
-    template: templates/core/core-dpl.yaml
-    asserts:
-      - equal:
-          path: spec.template.metadata.annotations["test.annotation"]
-          value: test-annotation
-
   - it: NoReplicas
     set:
       core:

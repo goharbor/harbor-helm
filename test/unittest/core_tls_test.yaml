@@ -5,8 +5,6 @@ tests:
     set:
       trivy:
         enabled: false
-      registry:
-        enabled: false
       internalTLS:
         enabled: true
         trustCa: testCa

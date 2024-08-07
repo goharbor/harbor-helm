@@ -51,7 +51,7 @@ tests:
       - notExists:
           path: spec.type
 
-  - it: ExposeTLSEnabled
+  - it: InternalTLSEnabled
     set:
       internalTLS:
         enabled: true
@@ -61,7 +61,7 @@ tests:
           path: spec.ports[0].name
           value: https-web
 
-  - it: ExposeTLSDisabled
+  - it: InternalTLSDisabled
     set:
       internalTLS:
         enabled: false
