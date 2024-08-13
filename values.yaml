@@ -633,6 +633,9 @@ jobservice:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  # uncomment following lines to specify different updateStrategy for jobService
+  # updateStrategy:
+  #   type: ReCreate
   revisionHistoryLimit: 10
   # resources:
   #   requests:
