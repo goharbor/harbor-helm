@@ -1,0 +1,84 @@
+suite: CoreSvc
+
+tests:
+  - it: Annotation
+    set:
+      core:
+        serviceAnnotations:
+          test.annotation: test-annotation
+    template: templates/core/core-svc.yaml
+    asserts:
+      - equal:
+          path: metadata.annotations["test.annotation"]
+          value: test-annotation
+
+  - it: TypeGce
+    set:
+      expose:
+        ingress:
+          controller: gce
+    template: templates/core/core-svc.yaml
+    asserts:
+      - equal:
+          path: spec.type
+          value: NodePort
+
+  - it: TypeAlb
+    set:
+      expose:
+        ingress:
+          controller: alb
+    template: templates/core/core-svc.yaml
+    asserts:
+      - equal:
+          path: spec.type
+          value: NodePort
+
+  - it: TypeF5
+    set:
+      expose:
+        ingress:
+          controller: f5-bigip
+    template: templates/core/core-svc.yaml
+    asserts:
+      - equal:
+          path: spec.type
+          value: NodePort
+
+  - it: NotType
+    template: templates/core/core-svc.yaml
+    asserts:
+      - notExists:
+          path: spec.type
+
+  - it: InternalTLSEnabled
+    set:
+      internalTLS:
+        enabled: true
+    template: templates/core/core-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[0].name
+          value: https-web
+
+  - it: InternalTLSDisabled
+    set:
+      internalTLS:
+        enabled: false
+    template: templates/core/core-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[0].name
+          value: http-web
+
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        core:
+          port: 1111
+    template: templates/core/core-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[1].port
+          value: 1111

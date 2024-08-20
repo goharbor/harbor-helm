@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "harbor.trivy" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: trivy
@@ -56,6 +57,10 @@ spec:
             component: trivy
 {{- end }}
 {{- end }}
+      {{- with .Values.trivy.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
@@ -209,7 +214,7 @@ spec:
   - metadata:
       name: data
       labels:
-{{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.legacy.labels" . | indent 8 }}
       annotations:
       {{- range $key, $value := $trivy.annotations }}
         {{ $key }}: {{ $value | quote }}

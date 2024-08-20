@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ template "harbor.database" . }}"
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: database
@@ -63,6 +64,9 @@ spec:
           - name: database-data
             mountPath: /var/lib/postgresql/data
             subPath: {{ $database.subPath }}
+      {{- with .Values.database.internal.extrInitContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
@@ -138,7 +142,7 @@ spec:
   - metadata:
       name: "database-data"
       labels:
-{{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.legacy.labels" . | indent 8 }}
       annotations:
       {{- range $key, $value := $database.annotations }}
         {{ $key }}: {{ $value | quote }}

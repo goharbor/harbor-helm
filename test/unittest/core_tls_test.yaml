@@ -1,0 +1,38 @@
+suite: CoreTls
+
+tests:
+  - it: TLSExists
+    set:
+      trivy:
+        enabled: false
+      internalTLS:
+        enabled: true
+        trustCa: testCa
+        certSource: manual
+        core:
+          crt: testCrt
+          key: testKey
+        registry:
+          crt: testCrt
+          key: testKey
+        portal:
+          crt: testCrt
+          key: testKey
+        jobservice:
+          crt: testCrt
+          key: testKey
+    template: templates/core/core-tls.yaml
+    asserts:
+      - exists:
+          path: metadata.name
+      - exists:
+          path: apiVersion
+      - equal:
+          path: data["ca.crt"]
+          value: "dGVzdENh"
+      - equal:
+          path: data["tls.crt"]
+          value: "dGVzdENydA=="
+      - equal:
+          path: data["tls.key"]
+          value: "dGVzdEtleQ=="
