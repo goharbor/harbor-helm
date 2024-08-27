@@ -497,6 +497,7 @@ nginx:
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
+  lifecycle: {}
   affinity: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
@@ -528,6 +529,7 @@ portal:
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
+  lifecycle: {}
   affinity: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
@@ -572,6 +574,7 @@ core:
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
+  lifecycle: {}
   affinity: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
@@ -655,6 +658,7 @@ jobservice:
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
+  lifecycle : {}
   affinity: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints:
@@ -709,6 +713,7 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    lifecycle: {}
     extraEnvVars: []
   controller:
     image:
@@ -718,6 +723,7 @@ registry:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    lifecycle: {}
     extraEnvVars: []
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -727,6 +733,7 @@ registry:
   revisionHistoryLimit: 10
   nodeSelector: {}
   tolerations: []
+  lifecycle: {}
   affinity: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
@@ -812,6 +819,7 @@ trivy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  lifecycle: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
   # - maxSkew: 1
@@ -979,6 +987,7 @@ redis:
     extraEnvVars: []
     nodeSelector: {}
     tolerations: []
+    lifecycle: {}
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
@@ -1045,6 +1054,7 @@ exporter:
   podLabels: {}
   nodeSelector: {}
   tolerations: []
+  lifecycle: {}
   affinity: {}
   # Spread Pods across failure-domains like regions, availability zones or nodes
   topologySpreadConstraints: []
