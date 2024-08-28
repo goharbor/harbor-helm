@@ -959,6 +959,10 @@ database:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  
+  securityContext:
+    runAsUser: 999
+    fsGroup: 999
 
 redis:
   # if external Redis is used, set "type" to "external"
