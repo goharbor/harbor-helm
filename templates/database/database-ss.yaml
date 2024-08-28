@@ -32,8 +32,7 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsUser: {{ .Values.database.securityContext.runAsUser }}
-        fsGroup: {{ .Values.database.securityContext.fsGroup }}
+        {{- toYaml .Values.database.securityContext | nindent 2 }}
 {{- if .Values.database.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
 {{- end -}}
