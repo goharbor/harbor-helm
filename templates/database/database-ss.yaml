@@ -32,8 +32,8 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsUser: 999
-        fsGroup: 999
+        runAsUser: {{ .Values.database.securityContext.runAsUser }}
+        fsGroup: {{ .Values.database.securityContext.fsGroup }}
 {{- if .Values.database.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
 {{- end -}}
