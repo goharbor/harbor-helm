@@ -111,11 +111,13 @@ spec:
               name: {{ .Values.registry.existingSecret }}
               key: {{ .Values.registry.existingSecretKey }}
         {{- end }}
-        {{- if has "registry" .Values.proxy.components }}
+        {{- if has "registry" .Values.proxy.components and not .Values.proxy.existingSecret }}
         - name: HTTP_PROXY
           value: "{{ .Values.proxy.httpProxy }}"
         - name: HTTPS_PROXY
           value: "{{ .Values.proxy.httpsProxy }}"
+        {{- end }}
+        {{- if has "registry" .Values.proxy.components }}
         - name: NO_PROXY
           value: "{{ template "harbor.noProxy" . }}"
         {{- end }}
@@ -244,6 +246,10 @@ spec:
         {{- if .Values.persistence.imageChartStorage.s3.existingSecret }}
         - secretRef:
             name: {{ .Values.persistence.imageChartStorage.s3.existingSecret }}
+        {{- end }}
+        {{- if .Values.proxy.existingSecret }}
+        - secretRef:
+            name: {{ .Values.proxy.existingSecret }}
         {{- end }}
         env:
         {{- if .Values.registry.existingSecret }}

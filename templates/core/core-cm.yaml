@@ -48,9 +48,11 @@ data:
   {{- if .Values.uaaSecretName }}
   UAA_CA_ROOT: "/etc/core/auth-ca/auth-ca.crt"
   {{- end }}
-  {{- if has "core" .Values.proxy.components }}
+  {{- if has "core" .Values.proxy.components and not .Values.proxy.existingSecret }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
   HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
+  {{- end }}
+  {{- if has "core" .Values.proxy.components }}
   NO_PROXY: "{{ template "harbor.noProxy" . }}"
   {{- end }}
   PERMITTED_REGISTRY_TYPES_FOR_PROXY_CACHE: "docker-hub,harbor,azure-acr,aws-ecr,google-gcr,quay,docker-registry,github-ghcr,jfrog-artifactory"

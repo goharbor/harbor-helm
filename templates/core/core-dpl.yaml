@@ -95,6 +95,10 @@ spec:
             name: "{{ template "harbor.core" . }}"
         - secretRef:
             name: "{{ template "harbor.core" . }}"
+        {{- if .Values.proxy.existingSecret }}
+        - secretRef:
+            name: {{ .Values.proxy.existingSecret }}
+        {{- end }}
         env:
           - name: CORE_SECRET
             valueFrom:

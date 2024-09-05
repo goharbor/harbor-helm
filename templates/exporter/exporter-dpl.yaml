@@ -79,6 +79,10 @@ spec:
             name: "{{ template "harbor.exporter" . }}-env"
         - secretRef:
             name: "{{ template "harbor.exporter" . }}"
+        {{- if .Values.proxy.existingSecret }}
+        - secretRef:
+            name: {{ .Values.proxy.existingSecret }}
+        {{- end }}
         env:
         {{- if .Values.database.external.existingSecret }}
         - name: HARBOR_DATABASE_PASSWORD
