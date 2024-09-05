@@ -70,7 +70,7 @@ spec:
           {{- if .Values.proxy.existingSecret }}
           envFrom:
             - secretRef:
-              name: {{ .Values.proxy.existingSecret }}
+                name: "{{ .Values.proxy.existingSecret }}"
           {{- end }}
           env:
           {{- if has "trivy" .Values.proxy.components and not .Values.proxy.existingSecret }}

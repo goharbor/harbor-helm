@@ -80,7 +80,7 @@ spec:
             name: "{{ template "harbor.exporter" . }}"
         {{- if .Values.proxy.existingSecret }}
         - secretRef:
-            name: {{ .Values.proxy.existingSecret }}
+            name: "{{ .Values.proxy.existingSecret }}"
         {{- end }}
         env:
         {{- if .Values.database.external.existingSecret }}
