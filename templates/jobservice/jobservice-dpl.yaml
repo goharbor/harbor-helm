@@ -130,6 +130,10 @@ spec:
             name: "{{ template "harbor.jobservice" . }}-env"
         - secretRef:
             name: "{{ template "harbor.jobservice" . }}"
+        {{- if .Values.proxy.existingSecret }}
+        - secretRef:
+            name: {{ .Values.proxy.existingSecret }}
+        {{- end }}
         ports:
         - containerPort: {{ template "harbor.jobservice.containerPort" . }}
         volumeMounts:

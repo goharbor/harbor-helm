@@ -14,9 +14,11 @@ data:
   JOBSERVICE_WEBHOOK_JOB_MAX_RETRY: "{{ .Values.jobservice.notification.webhook_job_max_retry }}"
   JOBSERVICE_WEBHOOK_JOB_HTTP_CLIENT_TIMEOUT: "{{ .Values.jobservice.notification.webhook_job_http_client_timeout }}"
 
-  {{- if has "jobservice" .Values.proxy.components }}
+  {{- if has "jobservice" .Values.proxy.components and not .Values.proxy.existingSecret }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
   HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
+  {{- end }}
+  {{- if has "jobservice" .Values.proxy.components }}
   NO_PROXY: "{{ template "harbor.noProxy" . }}"
   {{- end }}
   {{- if .Values.metrics.enabled}}

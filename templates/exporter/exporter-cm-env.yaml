@@ -6,9 +6,11 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 data:
-  {{- if has "jobservice" .Values.proxy.components }}
+  {{- if has "jobservice" .Values.proxy.components and not .Values.proxy.existingSecret }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
   HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
+  {{- end }}
+  {{- if has "jobservice" .Values.proxy.components }}
   NO_PROXY: "{{ template "harbor.noProxy" . }}"
   {{- end }}
   LOG_LEVEL: "{{ .Values.logLevel }}"

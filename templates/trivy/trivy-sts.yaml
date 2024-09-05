@@ -67,12 +67,19 @@ spec:
           {{- if not (empty .Values.containerSecurityContext) }}
           securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}
           {{- end }}
+          {{- if .Values.proxy.existingSecret }}
+          envFrom:
+            - secretRef:
+              name: {{ .Values.proxy.existingSecret }}
+          {{- end }}
           env:
-          {{- if has "trivy" .Values.proxy.components }}
+          {{- if has "trivy" .Values.proxy.components and not .Values.proxy.existingSecret }}
             - name: HTTP_PROXY
               value: "{{ .Values.proxy.httpProxy }}"
             - name: HTTPS_PROXY
               value: "{{ .Values.proxy.httpsProxy }}"
+          {{- end }}
+          {{- if has "trivy" .Values.proxy.components }}
             - name: NO_PROXY
               value: "{{ template "harbor.noProxy" . }}"
           {{- end }}

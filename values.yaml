@@ -367,11 +367,18 @@ existingSecretSecretKey: ""
 proxy:
   httpProxy:
   httpsProxy:
+
+  # Fill in the name of an existing secret with HTTP_PROXY, HTTPS_PROXY keys.
+  # Setting existing secret will disable httpProxy, httpsProxy above.
+  existingSecret: ""
+
   noProxy: 127.0.0.1,localhost,.local,.internal
   components:
     - core
     - jobservice
     - trivy
+
+
 
 # Run the migration job via helm hook
 enableMigrateHelmHook: false
