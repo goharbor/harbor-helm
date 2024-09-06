@@ -7,7 +7,7 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 data:
-  {{- if has "jobservice" .Values.proxy.components and not .Values.proxy.existingSecret }}
+  {{- if and (has "jobservice" .Values.proxy.components) (not .Values.proxy.existingSecret) }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
   HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
   {{- end }}

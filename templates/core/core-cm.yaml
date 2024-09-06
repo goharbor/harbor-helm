@@ -48,7 +48,7 @@ data:
   {{- if .Values.uaaSecretName }}
   UAA_CA_ROOT: "/etc/core/auth-ca/auth-ca.crt"
   {{- end }}
-  {{- if has "core" .Values.proxy.components and not .Values.proxy.existingSecret }}
+  {{- if and (has "core" .Values.proxy.components) (not .Values.proxy.existingSecret) }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
   HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"
   {{- end }}
