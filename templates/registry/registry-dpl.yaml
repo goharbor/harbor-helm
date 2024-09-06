@@ -111,7 +111,7 @@ spec:
               name: {{ .Values.registry.existingSecret }}
               key: {{ .Values.registry.existingSecretKey }}
         {{- end }}
-        {{- if has "registry" .Values.proxy.components and not .Values.proxy.existingSecret }}
+        {{- if and (has "registry" .Values.proxy.components) (not .Values.proxy.existingSecret) }}
         - name: HTTP_PROXY
           value: "{{ .Values.proxy.httpProxy }}"
         - name: HTTPS_PROXY

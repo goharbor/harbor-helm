@@ -73,7 +73,7 @@ spec:
                 name: "{{ .Values.proxy.existingSecret }}"
           {{- end }}
           env:
-          {{- if has "trivy" .Values.proxy.components and not .Values.proxy.existingSecret }}
+          {{- if and (has "trivy" .Values.proxy.components) (not .Values.proxy.existingSecret) }}
             - name: HTTP_PROXY
               value: "{{ .Values.proxy.httpProxy }}"
             - name: HTTPS_PROXY
