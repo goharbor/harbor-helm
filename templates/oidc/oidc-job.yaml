@@ -1,0 +1,67 @@
+{{- if .Values.oidc.enable }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "harbor.oidc" . }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+spec:
+  backoffLimit: 10
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+        - name: curl
+          image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.nginx.repository }}:{{ .Values.global.images.nginx.tag }}"
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              {{- if .Values.existingSecretAdminPasswordKey }}
+              ADMIN_PASSWORD=$(cat /etc/harbor-admin/password)
+              {{- else }}
+              ADMIN_PASSWORD='{{ .Values.harborAdminPassword }}'
+              {{- end }}
+              curl -X PUT {{ template "harbor.component.scheme" . }}://{{ template "harbor.core" . }}/api/v2.0/configurations \
+                -H "Content-Type: application/json" \
+                -u "admin:$ADMIN_PASSWORD" \
+                -d @/etc/harbor-config/config.json \
+                -k \
+                --fail
+          volumeMounts:
+            {{- if .Values.existingSecretAdminPassword }}
+            - name: admin-password
+              mountPath: /etc/harbor-admin
+              readOnly: true
+            {{- end }}
+            - name: harbor-config
+              mountPath: /etc/harbor-config
+              readOnly: true
+      volumes:
+        {{- if .Values.existingSecretAdminPassword }}
+        - name: admin-password
+          secret:
+            secretName: {{ .Values.existingSecretAdminPassword }}
+            items:
+              - key: {{ .Values.existingSecretAdminPasswordKey }}
+                path: password
+        {{- end }}
+        - name: harbor-config
+          configMap:
+            name: {{ template "harbor.oidc" . }}-config
+      restartPolicy: OnFailure
+    {{- with .Values.core.tolerations }}
+      tolerations:
+{{ toYaml . | indent 6 }}
+    {{- end }}
+    {{- with .Values.core.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.core.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+  backoffLimit: 400
+{{- end }}

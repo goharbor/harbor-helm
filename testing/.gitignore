@@ -1,0 +1,9 @@
+allure-results
+allure-report
+.vscode
+.idea
+steps/temp.step
+go.work
+go.work.sum
+config.yaml
+bin

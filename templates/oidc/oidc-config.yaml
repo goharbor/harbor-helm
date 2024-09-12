@@ -1,0 +1,19 @@
+{{- if .Values.oidc.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "harbor.oidc" . }}-config
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+data:
+  config.json: |
+    {
+      "auth_mode": "oidc_auth",
+      "oidc_client_id": "{{ .Values.oidc.clientID }}",
+      "oidc_client_secret": "{{ .Values.oidc.clientSecret }}",
+      "oidc_endpoint": "{{ .Values.oidc.issuer }}",
+      "oidc_name": "{{ .Release.Name }}",
+      "oidc_scope": "{{ .Values.oidc.scope }}",
+      "oidc_verify_cert":{{ .Values.oidc.verifyCert }}
+    }
+{{- end }}

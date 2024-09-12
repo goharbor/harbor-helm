@@ -1,0 +1,10 @@
+expose:
+  type: nodePort
+  nodePort:
+    name: harbor
+    ports:
+      http:
+        port: 80
+        nodePort: <nodeport.http>
+
+externalURL: http://<node.first>:<nodeport.http>

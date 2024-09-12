@@ -70,7 +70,7 @@ spec:
       {{- end }}
       containers:
       - name: jobservice
-        image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
+        image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.jobservice.repository }}:{{ .Values.global.images.jobservice.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -113,13 +113,6 @@ spec:
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/jobservice/ca.crt
           {{- end }}
-          {{- if .Values.registry.credentials.existingSecret }}
-          - name: REGISTRY_CREDENTIAL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.registry.credentials.existingSecret }}
-                key: REGISTRY_PASSWD
-          {{- end }}
 {{- with .Values.jobservice.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
@@ -152,12 +145,18 @@ spec:
         configMap:
           name: "{{ template "harbor.jobservice" . }}"
       - name: job-logs
-        {{- if and .Values.persistence.enabled (has "file" .Values.jobservice.jobLoggers) }}
+      {{- if and .Values.persistence.enabled (has "file" .Values.jobservice.jobLoggers) }}
+        {{- if .Values.persistence.hostPath.jobservice.path }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath.jobservice.path }}
+          type: DirectoryOrCreate
+        {{- else }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.persistentVolumeClaim.jobservice.jobLog.existingClaim | default (include "harbor.jobservice" .) }}
-        {{- else }}
-        emptyDir: {}
         {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.internalTLS.enabled }}
       - name: jobservice-internal-certs
         secret:

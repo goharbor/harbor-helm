@@ -1,0 +1,16 @@
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      storageClass: <storage-class.rwm>
+      accessMode: ReadWriteMany
+      size: 10Gi
+    jobservice:
+      jobLog:
+        storageClass: <storage-class.rwm>
+        accessMode: ReadWriteMany
+        size: 1Gi
+    trivy:
+      storageClass: <storage-class.rwm>
+      accessMode: ReadWriteMany
+      size: 5Gi

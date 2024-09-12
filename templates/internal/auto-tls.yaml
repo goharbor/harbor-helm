@@ -1,13 +1,13 @@
 {{- if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "auto") }}
-{{- $ca := genCA "harbor-internal-ca" 365 }}
+{{- $ca := genCA "harbor-internal-ca" 3650 }}
 {{- $coreCN := (include "harbor.core" .) }}
-{{- $coreCrt := genSignedCert $coreCN (list "127.0.0.1") (list "localhost" $coreCN) 365 $ca }}
+{{- $coreCrt := genSignedCert $coreCN (list "127.0.0.1") (list "localhost" $coreCN) 3650 $ca }}
 {{- $jsCN := (include "harbor.jobservice" .) }}
-{{- $jsCrt := genSignedCert $jsCN nil (list $jsCN) 365 $ca }}
+{{- $jsCrt := genSignedCert $jsCN nil (list $jsCN) 3650 $ca }}
 {{- $regCN := (include "harbor.registry" .) }}
-{{- $regCrt := genSignedCert $regCN nil (list $regCN) 365 $ca }}
+{{- $regCrt := genSignedCert $regCN nil (list $regCN) 3650 $ca }}
 {{- $portalCN := (include "harbor.portal" .) }}
-{{- $portalCrt := genSignedCert $portalCN nil (list $portalCN) 365 $ca }}
+{{- $portalCrt := genSignedCert $portalCN nil (list $portalCN) 3650 $ca }}
 
 ---
 apiVersion: v1

@@ -60,7 +60,7 @@ spec:
 {{- end }}
       containers:
       - name: nginx
-        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+        image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.nginx.repository }}:{{ .Values.global.images.nginx.tag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         {{- $_ := set . "scheme" "HTTP" -}}
         {{- $_ := set . "port" "8080" -}}

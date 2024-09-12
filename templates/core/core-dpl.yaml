@@ -64,7 +64,7 @@ spec:
       {{- end }}
       containers:
       - name: core
-        image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+        image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.core.repository }}:{{ .Values.global.images.core.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
@@ -110,13 +110,6 @@ spec:
                 {{- else }}
                 key: JOBSERVICE_SECRET
                 {{- end }}
-          {{- if .Values.existingSecretAdminPassword }}
-          - name: HARBOR_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.existingSecretAdminPassword }}
-                key: {{ .Values.existingSecretAdminPasswordKey }}
-          {{- end }}
           {{- if .Values.internalTLS.enabled }}
           - name: INTERNAL_TLS_ENABLED
             value: "true"
@@ -126,20 +119,6 @@ spec:
             value: /etc/harbor/ssl/core/tls.crt
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/core/ca.crt
-          {{- end }}
-          {{- if .Values.database.external.existingSecret }}
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.database.external.existingSecret }}
-                key: password
-          {{- end }}
-          {{- if .Values.registry.credentials.existingSecret }}
-          - name: REGISTRY_CREDENTIAL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.registry.credentials.existingSecret }}
-                key: REGISTRY_PASSWD
           {{- end }}
           {{- if .Values.core.existingXsrfSecret }}
           - name: CSRF_KEY

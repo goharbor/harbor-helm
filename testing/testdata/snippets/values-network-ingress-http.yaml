@@ -1,0 +1,9 @@
+expose:
+  type: ingress
+  tls:
+    enabled: false
+  ingress:
+    hosts:
+      core: test-ingress-http.example.com
+
+externalURL: http://test-ingress-http.example.com
