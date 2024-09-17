@@ -596,6 +596,20 @@ core:
   #   command: [ 'sh', '-c', "sleep 20" ]
   ## User settings configuration json string
   configureUserSettings:
+  ## Configure oidc authentication
+  # Example:
+  #   name: keycloak
+  #   endpoint: https://keycloak/realms/harbor
+  #   groupsClaim: roles
+  #   adminGroup: admin
+  #   clientId: harbor
+  #   clientSecret: ""
+  #   scope: openid,email,offline_access,profile,roles
+  #   verifyCert: false
+  #   autoOnboard: true
+  #   userClaim: email
+  # If clientSecret is not specified, set existingClientSecretName and existingClientSecretKey to use an existing secret
+  oidc: {}
   # The provider for updating project quota(usage), there are 2 options, redis or db.
   # By default it is implemented by db but you can configure it to redis which
   # can improve the performance of high concurrent pushing to the same project,
