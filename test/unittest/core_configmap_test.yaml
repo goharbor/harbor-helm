@@ -1,0 +1,180 @@
+suite: CoreConfigMap
+
+tests:
+  - it: witTrivy
+    set:
+      trivy:
+        enabled: true
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.WITH_TRIVY
+          value: "true"
+
+  - it: RedisUrlHarborInternal
+    set:
+      redis:
+        internal:
+          harborDatabaseIndex: test-index
+        type: internal
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data._REDIS_URL_HARBOR
+          value: redis://RELEASE-NAME-harbor-redis:6379/test-index?idle_timeout_seconds=30
+
+  - it: RedisUrlHarborExternal
+    set:
+      redis:
+        external:
+          harborDatabaseIndex: test-index
+        type: external
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data._REDIS_URL_HARBOR
+          value: redis://192.168.0.2:6379/test-index?idle_timeout_seconds=30
+
+  - it: CacheLayerDatabaseIndex
+    set:
+      redis:
+        internal:
+          cacheLayerDatabaseIndex: test-index
+        type: internal
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data._REDIS_URL_CACHE_LAYER
+          value: redis://RELEASE-NAME-harbor-redis:6379/test-index?idle_timeout_seconds=30
+
+  - it: RegsitryCredentialUsername
+    set:
+      registry:
+        credentials:
+          username: test-username
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.REGISTRY_CREDENTIAL_USERNAME
+          value: test-username
+
+  - it: UaaSecretName
+    set:
+      uaaSecretName: true
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.UAA_CA_ROOT
+          value: /etc/core/auth-ca/auth-ca.crt
+
+  - it: MetricEnabled
+    set:
+      metrics:
+        enabled: true
+        core:
+          path: /customMetrics
+          port: 8080
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.METRIC_ENABLE
+          value: "true"
+      - equal:
+          path: data.METRIC_PATH
+          value: /customMetrics
+      - equal:
+          path: data.METRIC_PORT
+          value: "8080"
+      - equal:
+          path: data.METRIC_NAMESPACE
+          value: harbor
+      - equal:
+          path: data.METRIC_SUBSYSTEM
+          value: core
+
+  - it: GcTimeWindowHours
+    set:
+      core:
+        gcTimeWindowHours: 2
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.GC_TIME_WINDOW_HOURS
+          value: "2"
+
+  - it: ArtifactPullAsyncFlushDuration
+    set:
+      core:
+        artifactPullAsyncFlushDuration: 30
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.ARTIFACT_PULL_ASYNC_FLUSH_DURATION
+          value: "30"
+
+  - it: GdprDeleteUser
+    set:
+      core:
+        gdpr:
+          deleteUser: true
+          auditLogsCompliant: false
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.GDPR_DELETE_USER
+          value: "true"
+      - notExists:
+          path: data.GDPR_AUDIT_LOGS
+
+  - it: GdprAuditLogsCompliant
+    set:
+      core:
+        gdpr:
+          deleteUser: false
+          auditLogsCompliant: true
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.GDPR_AUDIT_LOGS
+          value: "true"
+      - notExists:
+          path: data.GDPR_DELETE_USER
+
+  - it: GdprDeleteUserAuditLogsCompliant
+    set:
+      core:
+        gdpr:
+          deleteUser: true
+          auditLogsCompliant: true
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.GDPR_DELETE_USER
+          value: "true"
+      - equal:
+          path: data.GDPR_AUDIT_LOGS
+          value: "true"
+
+  - it: CacheEnabled
+    set:
+      cache:
+        enabled: true
+        expireHours: 3
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.CACHE_ENABLED
+          value: "true"
+      - equal:
+          path: data.CACHE_EXPIRE_HOURS
+          value: "3"
+
+  - it: QuotaUpdate
+    set:
+      core:
+        quotaUpdateProvider: 3
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.QUOTA_UPDATE_PROVIDER
+          value: "3"

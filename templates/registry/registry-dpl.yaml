@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "harbor.registry" . }}"
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
@@ -95,7 +96,6 @@ spec:
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
         {{- end }}
-        args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"

@@ -173,14 +173,14 @@ persistence:
       annotations: {}
   # Define which storage backend is used for registry to store
   # images and charts. Refer to
-  # https://github.com/distribution/distribution/blob/main/docs/content/about/configuration.md#storage
+  # https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#storage
   # for the detail.
   imageChartStorage:
     # Specify whether to disable `redirect` for images and chart storage, for
     # backends which not supported it (such as using minio for `s3` storage type), please disable
     # it. To disable redirects, simply set `disableredirect` to `true` instead.
     # Refer to
-    # https://github.com/distribution/distribution/blob/main/docs/configuration.md#redirect
+    # https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#redirect
     # for the detail.
     disableredirect: false
     # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
@@ -749,7 +749,7 @@ registry:
   #   command: [ 'sh', '-c', "sleep 20" ]
   # Secret is used to secure the upload state from client
   # and registry storage backend.
-  # See: https://github.com/distribution/distribution/blob/main/docs/configuration.md#http
+  # See: https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#http
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
