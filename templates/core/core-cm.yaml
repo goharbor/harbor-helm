@@ -22,6 +22,8 @@ data:
   POSTGRESQL_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   POSTGRESQL_MAX_IDLE_CONNS: "{{ .Values.database.maxIdleConns }}"
   POSTGRESQL_MAX_OPEN_CONNS: "{{ .Values.database.maxOpenConns }}"
+  POSTGRESQL_CONN_MAX_IDLE_TIME: "{{ .Values.database.connMaxIdleTime }}"
+  POSTGRESQL_CONN_MAX_LIFETIME: "{{ .Values.database.connMaxLifetime }}"
   EXT_ENDPOINT: "{{ .Values.externalURL }}"
   CORE_URL: "{{ template "harbor.coreURL" . }}"
   JOBSERVICE_URL: "{{ template "harbor.jobserviceURL" . }}"
