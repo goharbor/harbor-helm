@@ -1,0 +1,536 @@
+suite: CoreDeployment
+
+tests:
+  - it: PodLabels
+    set:
+      core:
+        podLabels:
+          test.label: test-label
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["test.label"]
+          value: test-label
+
+  - it: PodAnnotations
+    set:
+      core:
+        podAnnotations:
+          test.annotation: test-annotation
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["test.annotation"]
+          value: test-annotation
+
+  - it: NoReplicas
+    set:
+      core:
+        replicas: 0
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 0
+
+  - it: MultipleReplicas
+    set:
+      core:
+        replicas: 2
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
+
+  - it: ServiceAccounts
+    set:
+      core:
+        serviceAccountName: testServiceAccount
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: testServiceAccount
+
+  - it: ImagePullSecrets
+    set:
+      imagePullSecrets:
+        - name: test-secret-1
+        - name: test-secret-2
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.imagePullSecrets
+          count: 2
+      - equal:
+          path: spec.template.spec.imagePullSecrets
+          value:
+            - name: test-secret-1
+            - name: test-secret-2
+
+  - it: TopologySpreadConstraints
+    set:
+      core:
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: topology.kubernetes.io/zone
+            whenUnsatisfiable: ScheduleAnyway
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.topologySpreadConstraints
+          count: 1
+      - contains:
+          path: spec.template.spec.topologySpreadConstraints
+          content:
+              labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: core
+                  release: RELEASE-NAME
+              maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: ScheduleAnyway
+
+  - it: InitContainers
+    set:
+      core:
+        initContainers:
+          - name: test
+            image: busybox
+            command: ["sh", "-c", "sleep 20"]
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.initContainers
+          count: 1
+      - equal:
+          path: spec.template.spec.initContainers
+          value:
+            - name: test
+              image: busybox
+              command:
+                - sh
+                - "-c"
+                - sleep 20
+
+  - it: ContainerImage
+    set:
+      core:
+        image:
+          repository: test-repository/test-image
+          tag: 1.0.0
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: test-repository/test-image:1.0.0
+
+  - it: StartupProbe
+    set:
+      core:
+        startupProbe:
+          enabled: true
+          initialDelaySeconds: 10
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /api/v2.0/ping
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.scheme
+          value: HTTP
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.port
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.failureThreshold
+          value: 360
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.initialDelaySeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.periodSeconds
+          value: 10
+
+  - it: StartupProbeInternalTLS
+    set:
+      core:
+        startupProbe:
+          enabled: true
+          initialDelaySeconds: 10
+      internalTLS:
+        enabled: true
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /api/v2.0/ping
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.scheme
+          value: HTTPS
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.port
+          value: 8443
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.failureThreshold
+          value: 360
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.initialDelaySeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.periodSeconds
+          value: 10
+
+  - it: ExistingSecretAdminPassword
+    set:
+      existingSecretAdminPassword: HARBOR_ADMIN_PASSWORD
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 3
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: HARBOR_ADMIN_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          value: HARBOR_ADMIN_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          value: HARBOR_ADMIN_PASSWORD
+
+  - it: InternalTLS
+    set:
+      internalTLS:
+        enabled: true
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 6
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: INTERNAL_TLS_ENABLED
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: "true"
+      - equal:
+          path: spec.template.spec.containers[0].env[3].name
+          value: INTERNAL_TLS_KEY_PATH
+      - equal:
+          path: spec.template.spec.containers[0].env[3].value
+          value: /etc/harbor/ssl/core/tls.key
+      - equal:
+          path: spec.template.spec.containers[0].env[4].name
+          value: INTERNAL_TLS_CERT_PATH
+      - equal:
+          path: spec.template.spec.containers[0].env[4].value
+          value: /etc/harbor/ssl/core/tls.crt
+      - equal:
+          path: spec.template.spec.containers[0].env[5].name
+          value: INTERNAL_TLS_TRUST_CA_PATH
+      - equal:
+          path: spec.template.spec.containers[0].env[5].value
+          value: /etc/harbor/ssl/core/ca.crt
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[4].name
+          value: core-internal-certs
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[4].mountPath
+          value: /etc/harbor/ssl/core
+
+  - it: DBCredentials
+    set:
+      database:
+        external:
+          existingSecret: db-secret-name
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 3
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: POSTGRESQL_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          value: db-secret-name
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          value: password
+
+  - it: RegistryCredentials
+    set:
+      registry:
+        credentials:
+          existingSecret: registry-secret-name
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 3
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: REGISTRY_CREDENTIAL_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          value: registry-secret-name
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          value: REGISTRY_PASSWD
+
+  - it: XsrfCredentials
+    set:
+      core:
+        existingXsrfSecret: xsrf-secret-name
+        existingXsrfSecretKey: xsrf-secret-key
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 3
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: CSRF_KEY
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          value: xsrf-secret-name
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          value: xsrf-secret-key
+
+  - it: ExtraEnvVars
+    set:
+      core:
+        extraEnvVars:
+          - name: ENVVAR_NAME
+            value: envvar_value
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 3
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: ENVVAR_NAME
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: envvar_value
+
+  - it: MultipleExtraEnvVars
+    set:
+      core:
+        extraEnvVars:
+          - name: ENVVAR_NAME_1
+            value: envvar_value_1
+          - name: ENVVAR_NAME_2
+            value: envvar_value_2
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 4
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: ENVVAR_NAME_1
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: envvar_value_1
+      - equal:
+          path: spec.template.spec.containers[0].env[3].name
+          value: ENVVAR_NAME_2
+      - equal:
+          path: spec.template.spec.containers[0].env[3].value
+          value: envvar_value_2
+
+  - it: ContainerSecurityContext
+    set:
+      containerSecurityContext:
+        privileged: true
+        allowPrivilegeEscalation: true
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+        capabilities:
+          drop:
+            - All
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.privileged
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.seccompProfile.type
+          value: RuntimeDefault
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: All
+
+  - it: ExposeTLSEnabled
+    set:
+      expose:
+        tls:
+          enabled: true
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 5
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[3].name
+          value: ca-download
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[3].mountPath
+          value: /etc/core/ca
+
+  - it: UaaSecretName
+    set:
+      uaaSecretName: uaa-secret-name
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 6
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 6
+      - equal:
+          path: spec.template.spec.volumes[4].name
+          value: auth-ca-cert
+      - equal:
+          path: spec.template.spec.volumes[4].secret.secretName
+          value: uaa-secret-name
+      - equal:
+          path: spec.template.spec.volumes[4].secret.items[0].key
+          value: ca.crt
+      - equal:
+          path: spec.template.spec.volumes[4].secret.items[0].path
+          value: auth-ca.crt
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[4].mountPath
+          value: /etc/core/auth-ca/auth-ca.crt
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[4].subPath
+          value: auth-ca.crt
+
+  - it: Resources
+    set:
+      core:
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 500Mi
+            cpu: 200m
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 256Mi
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 200m
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 500Mi
+
+  - it: CASecretName
+    set:
+      caSecretName: ca-secret-name
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 5
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[3].name
+          value: ca-download
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[3].mountPath
+          value: /etc/core/ca
+      - equal:
+          path: spec.template.spec.volumes[3].name
+          value: ca-download
+      - equal:
+          path: spec.template.spec.volumes[3].secret.secretName
+          value: ca-secret-name
+
+  - it: NodeSelector
+    set:
+      core:
+        nodeSelector:
+          node.selector/tier: test-node-selector
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector["node.selector/tier"]
+          value: test-node-selector
+
+  - it: Affinity
+    set:
+      core:
+        affinity:
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: test-affinity
+                      operator: In
+                      values:
+                        - S1
+                topologyKey: topology.kubernetes.io/zone
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key
+          value: test-affinity
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator
+          value: In
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0]
+          value: S1
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey
+          value: topology.kubernetes.io/zone
+
+  - it: Tolerations
+    set:
+      core:
+        tolerations:
+          - effect: NoSchedule
+            key: test-label
+            value: test
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].effect
+          value: NoSchedule
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: test-label
+      - equal:
+          path: spec.template.spec.tolerations[0].value
+          value: test
+
+  - it: PriorityClassName
+    set:
+      core:
+        priorityClassName: test-priority
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.priorityClassName
+          value: test-priority
