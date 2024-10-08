@@ -25,12 +25,27 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{/* Helm required labels: legacy */}}
+{{- define "harbor.legacy.labels" -}}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+chart: {{ .Chart.Name }}
+app: "{{ template "harbor.name" . }}"
+{{- end -}}
+
 {{/* Helm required labels */}}
 {{- define "harbor.labels" -}}
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
 chart: {{ .Chart.Name }}
 app: "{{ template "harbor.name" . }}"
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "harbor.name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/part-of: {{ include "harbor.name" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
 {{- end -}}
 
 {{/* matchLabels */}}
@@ -98,7 +113,7 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace (include "harbor.database" .) -}}
     {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "POSTGRES_PASSWORD") -}}
-      {{- .Values.database.internal.password | default (index $existingSecret.data "POSTGRES_PASSWORD") | b64dec -}}
+      {{- .Values.database.internal.password | default (index $existingSecret.data "POSTGRES_PASSWORD" | b64dec) -}}
     {{- else -}}
       {{- .Values.database.internal.password -}}
     {{- end -}}

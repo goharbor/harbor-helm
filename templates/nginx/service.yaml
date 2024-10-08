@@ -5,8 +5,12 @@ metadata:
 {{- if eq .Values.expose.type "clusterIP" }}
 {{- $clusterIP := .Values.expose.clusterIP }}
   name: {{ $clusterIP.name }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.expose.clusterIP.labels }}
+{{ toYaml $clusterIP.labels | indent 4 }}
+{{- end }}
 {{- with $clusterIP.annotations }}
   annotations:
   {{- toYaml . | nindent 4 }}
@@ -30,6 +34,13 @@ spec:
   name: {{ $nodePort.name }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.expose.nodePort.labels }}
+{{ toYaml $nodePort.labels | indent 4 }}
+{{- end }}
+{{- with $nodePort.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   type: NodePort
   ports:
@@ -52,6 +63,9 @@ spec:
   name: {{ $loadBalancer.name }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.expose.loadBalancer.labels }}
+{{ toYaml $loadBalancer.labels | indent 4 }}
+{{- end }}
 {{- with $loadBalancer.annotations }}
   annotations:
   {{- toYaml . | nindent 4 }}

@@ -4,9 +4,11 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "harbor.trivy" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: trivy
+    app.kubernetes.io/component: trivy
 spec:
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
@@ -19,6 +21,7 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: trivy
+        app.kubernetes.io/component: trivy
 {{- if .Values.trivy.podLabels }}
 {{ toYaml .Values.trivy.podLabels | indent 8 }}
 {{- end }}
@@ -54,13 +57,17 @@ spec:
             component: trivy
 {{- end }}
 {{- end }}
+      {{- with .Values.trivy.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: trivy
           image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          securityContext:
-            privileged: false
-            allowPrivilegeEscalation: false
+          {{- if not (empty .Values.containerSecurityContext) }}
+          securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
           env:
           {{- if has "trivy" .Values.proxy.components }}
             - name: HTTP_PROXY
@@ -93,6 +100,8 @@ spec:
               value: {{ .Values.trivy.ignoreUnfixed | default false | quote }}
             - name: "SCANNER_TRIVY_SKIP_UPDATE"
               value: {{ .Values.trivy.skipUpdate | default false | quote }}
+            - name: "SCANNER_TRIVY_SKIP_JAVA_DB_UPDATE"
+              value: {{ .Values.trivy.skipJavaDBUpdate | default false | quote }}
             - name: "SCANNER_TRIVY_OFFLINE_SCAN"
               value: {{ .Values.trivy.offlineScan | default false | quote }}
             - name: "SCANNER_TRIVY_SECURITY_CHECKS"
@@ -201,7 +210,7 @@ spec:
   - metadata:
       name: data
       labels:
-{{ include "harbor.labels" . | indent 8 }}
+{{ include "harbor.legacy.labels" . | indent 8 }}
       annotations:
       {{- range $key, $value := $trivy.annotations }}
         {{ $key }}: {{ $value | quote }}

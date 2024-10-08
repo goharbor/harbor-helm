@@ -2,9 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "harbor.jobservice" . }}"
+  namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
+    app.kubernetes.io/component: jobservice
 spec:
   replicas: {{ .Values.jobservice.replicas }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
@@ -22,6 +24,7 @@ spec:
       labels:
 {{ include "harbor.labels" . | indent 8 }}
         component: jobservice
+        app.kubernetes.io/component: jobservice
 {{- if .Values.jobservice.podLabels }}
 {{ toYaml .Values.jobservice.podLabels | indent 8 }}
 {{- end }}
@@ -61,6 +64,10 @@ spec:
             component: jobservice
 {{- end }}
 {{- end }}
+      {{- with .Values.jobservice.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
@@ -116,6 +123,9 @@ spec:
 {{- with .Values.jobservice.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.jobservice" . }}-env"

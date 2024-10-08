@@ -1,0 +1,47 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+        id: install
+      - name: Helm Package
+        run: echo "PACKAGE_PATH=$(helm package . | awk '{print $NF}')" >> $GITHUB_ENV
+      - name: Publish Helm Chart
+        run: |
+          helm registry login registry-1.docker.io -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+          helm push ${{ env.PACKAGE_PATH }} oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
+          helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          helm push ${{ env.PACKAGE_PATH }} oci://ghcr.io/${{ github.actor }}
+      - name: Upload to chart repository
+        run: |
+          git config --global user.email "${{ github.event.repository.name }}@users.noreply.github.com"
+          git config --global user.name "${{ github.event.repository.name }} CI"
+          git fetch origin chart-repository
+          git checkout chart-repository
+          mkdir -p ../helm-temp
+          cd ../helm-temp
+          cp ${{ env.PACKAGE_PATH }} .
+          helm repo index --merge ../harbor-helm/index.yaml .
+          mv ./* ../harbor-helm
+          cd ../harbor-helm
+          git add .
+          git commit -s -m "feat: Upload Harbor ${{ github.ref }} to chart repository"
+          git push origin chart-repository
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.PACKAGE_PATH }}
