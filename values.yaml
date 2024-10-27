@@ -1056,3 +1056,6 @@ exporter:
   #   whenUnsatisfiable: DoNotSchedule
   cacheDuration: 23
   cacheCleanInterval: 14400
+
+# -- This field override the default Release Namespace for Helm.
+namespaceOverride: ""
