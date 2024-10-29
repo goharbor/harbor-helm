@@ -1,0 +1,97 @@
+suite: TrivyStatefulSet
+
+tests:
+  - it: PersistenceDisabled
+    set:
+      persistence:
+        enabled: false
+        persistentVolumeClaim:
+          trivy:
+            existingClaim: trivy-data
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - notExists:
+          path: spec.volumeClaimTemplates
+      - exists:
+          path: spec.template.spec.volumes[0].emptyDir
+
+  - it: PersistenceEnabled
+    set:
+      persistence:
+        enabled: true
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.volumes
+      - lengthEqual:
+          path: spec.volumeClaimTemplates
+          count: 1
+
+  - it: ExistingClaim
+    set:
+      persistence:
+        enabled: true
+        persistentVolumeClaim:
+          trivy:
+            existingClaim: trivy-data
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - notExists:
+          path: spec.volumeClaimTemplates
+      - exists:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: trivy-data
+
+  - it: InternalTLSEnabledWithoutPersistence
+    set:
+      internalTLS:
+        enabled: true
+      persistence:
+        enabled: false
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 2
+      - notExists:
+          path: spec.volumeClaimTemplates
+
+  - it: InternalTLSEnabledWithPersistence
+    set:
+      internalTLS:
+        enabled: true
+      persistence:
+        enabled: true
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
+
+  - it: InternalTLSEnabledWithPersistenceExistigClaim
+    set:
+      internalTLS:
+        enabled: true
+      persistence:
+        enabled: true
+        persistentVolumeClaim:
+          trivy:
+            existingClaim: trivy-data
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 2
+      - notExists:
+          path: spec.volumeClaimTemplates
