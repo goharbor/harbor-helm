@@ -624,7 +624,7 @@ core:
   tokenKey: |
   # If tokenKey is set, the value of tokenCert must be set as a PEM-encoded certificate signed by tokenKey, and supplied as a multiline string, indented one more than tokenCert on the following line.
   tokenCert: |
-  # The XSRF key. Will be generated automatically if it isn't specified
+  # The XSRF key. Will be generated automatically if it isn't specified or it is not a string of 32 characters
   xsrfKey: ""
   # If using existingSecret, the key is defined by core.existingXsrfSecretKey
   existingXsrfSecret: ""

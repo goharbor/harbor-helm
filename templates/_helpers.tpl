@@ -61,6 +61,13 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{/* Helper for validate the length of core.xsrfKey is 32 when it is explicitlt defined in values.yaml*/}}
+{{- define "harbor.verifyValuesXSRFkey" -}}
+  {{- if and .xsrfkeyValue (eq (len .xsrfkeyValue) 32 ) }}
+    {{- printf .xsrfkeyValue -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.autoGenCert" -}}
   {{- if and .Values.expose.tls.enabled (eq .Values.expose.tls.certSource "auto") -}}
     {{- printf "true" -}}
