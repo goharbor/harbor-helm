@@ -7,7 +7,6 @@
   {{- $_ := set . "api_path" "/api/*" -}}
   {{- $_ := set . "service_path" "/service/*" -}}
   {{- $_ := set . "v2_path" "/v2/*" -}}
-  {{- $_ := set . "chartrepo_path" "/chartrepo/*" -}}
   {{- $_ := set . "controller_path" "/c/*" -}}
 {{- else if eq .Values.expose.ingress.controller "ncp" }}
   {{- $_ := set . "path_type" "Prefix" -}}
@@ -15,7 +14,6 @@
   {{- $_ := set . "api_path" "/api/.*" -}}
   {{- $_ := set . "service_path" "/service/.*" -}}
   {{- $_ := set . "v2_path" "/v2/.*" -}}
-  {{- $_ := set . "chartrepo_path" "/chartrepo/.*" -}}
   {{- $_ := set . "controller_path" "/c/.*" -}}
 {{- else }}
   {{- $_ := set . "path_type" "Prefix" -}}
@@ -23,7 +21,6 @@
   {{- $_ := set . "api_path" "/api/" -}}
   {{- $_ := set . "service_path" "/service/" -}}
   {{- $_ := set . "v2_path" "/v2/" -}}
-  {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
   {{- $_ := set . "controller_path" "/c/" -}}
 {{- end }}
 
@@ -83,10 +80,6 @@ spec:
         backend:
           serviceName: {{ template "harbor.core" . }}
           servicePort: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .chartrepo_path }}
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: {{ template "harbor.core.servicePort" . }}
       - path: {{ .controller_path }}
         backend:
           serviceName: {{ template "harbor.core" . }}
@@ -111,13 +104,6 @@ spec:
             port:
               number: {{ template "harbor.core.servicePort" . }}
       - path: {{ .v2_path }}
-        pathType: {{ .path_type }}
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .chartrepo_path }}
         pathType: {{ .path_type }}
         backend:
           service:
