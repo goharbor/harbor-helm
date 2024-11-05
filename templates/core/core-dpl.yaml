@@ -68,28 +68,15 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
-          httpGet:
-            path: /api/v2.0/ping
-            scheme: {{ include "harbor.component.scheme" . | upper }}
-            port: {{ template "harbor.core.containerPort" . }}
           failureThreshold: 360
           initialDelaySeconds: {{ .Values.core.startupProbe.initialDelaySeconds }}
           periodSeconds: 10
+          {{- include "harbor.core.probe.httpGet" . | nindent 10 }}
         {{- end }}
         livenessProbe:
-          httpGet:
-            path: /api/v2.0/ping
-            scheme: {{ include "harbor.component.scheme" . | upper }}
-            port: {{ template "harbor.core.containerPort" . }}
-          failureThreshold: 2
-          periodSeconds: 10
+        {{- include "harbor.core.probe" (dict "probe" .Values.core.livenessProbe) | nindent 10 }}
         readinessProbe:
-          httpGet:
-            path: /api/v2.0/ping
-            scheme: {{ include "harbor.component.scheme" . | upper }}
-            port: {{ template "harbor.core.containerPort" . }}
-          failureThreshold: 2
-          periodSeconds: 10
+        {{- include "harbor.core.probe" (dict "probe" .Values.core.readinessProbe) | nindent 10 }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.core" . }}"
