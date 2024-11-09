@@ -31,11 +31,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Preserve the default behavior of the Release namespace if no override is provided
 */}}
 {{- define "harbor.namespace" -}}
-{{- if .Values.namespaceOverride -}}
-{{- .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- .Release.Namespace -}}
-{{- end -}}
+{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/* Helm required labels: legacy */}}
