@@ -1,7 +1,7 @@
 apiVersion: v1
 name: harbor
-version: 1.4.0-dev
-appVersion: dev
+version: 1.16.0
+appVersion: 2.12.0
 description: An open source trusted cloud native registry that stores, signs, and scans content
 keywords:
 - docker
@@ -15,10 +15,8 @@ sources:
 maintainers:
 - name: Yan Wang
   email: yan-yw.wang@broadcom.com
-- name: Wenkai Yin
-  email: wenkai.yin@broadcom.com
+- name: Stone Zhang
+  email: stone.zhang@broadcom.com
 - name: Miner Yang
   email: miner.yang@broadcom.com
-- name: Shengwen Yu
-  email: shengwen.yu@broadcom.com
 engine: gotpl
