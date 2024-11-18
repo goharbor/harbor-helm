@@ -115,7 +115,7 @@ externalURL: https://core.harbor.domain
 # Optional, if you don't specified, will use "default" when running "helm templates"
 # Also No need to specifiy this while you install directly and changing the namespace like "helm install ... -n <mynamespace>" 
 # helm known issue: https://github.com/helm/helm/issues/3553
-namespaceOverride: "mynamespaces"
+namespaceOverride: ""
 
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamically.
