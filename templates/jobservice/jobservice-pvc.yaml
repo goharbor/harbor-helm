@@ -4,7 +4,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "harbor.jobservice" . }}
-  namespace: {{ include "harbor.namespace" . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
   annotations:
   {{- range $key, $value := $jobLog.annotations }}
     {{ $key }}: {{ $value | quote }}

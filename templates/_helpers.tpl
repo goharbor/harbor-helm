@@ -579,10 +579,3 @@ app: "{{ template "harbor.name" . }}"
 {{- define "harbor.ingress.kubeVersion" -}}
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
 {{- end -}}
-
-{{/*
-Allow the release namespace to be overridden for multi-namespace resources in combined charts.
-*/}}
-{{- define "harbor.namespace" -}}
-{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
