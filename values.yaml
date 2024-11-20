@@ -625,6 +625,8 @@ core:
   # If tokenKey is set, the value of tokenCert must be set as a PEM-encoded certificate signed by tokenKey, and supplied as a multiline string, indented one more than tokenCert on the following line.
   tokenCert: |
   # The XSRF key. Will be generated automatically if it isn't specified
+  # While you specified, Please make sure it is 32 characters, otherwise would have validation issue at the harbor-core runtime
+  # https://github.com/goharbor/harbor/pull/21154 
   xsrfKey: ""
   # If using existingSecret, the key is defined by core.existingXsrfSecretKey
   existingXsrfSecret: ""
