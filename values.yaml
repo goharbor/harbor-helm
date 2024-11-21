@@ -394,7 +394,7 @@ enableMigrateHelmHook: false
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
   image:
-    repository: registry.baidubce.com/niukl/goharbor/nginx-photon
+    repository: goharbor/nginx-photon
     tag: v2.10.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -425,7 +425,7 @@ nginx:
 
 portal:
   image:
-    repository: registry.baidubce.com/niukl/goharbor/harbor-portal
+    repository: goharbor/harbor-portal
     tag: v2.10.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -458,7 +458,7 @@ portal:
 
 core:
   image:
-    repository: registry.baidubce.com/niukl/goharbor/harbor-core
+    repository: goharbor/harbor-core
     tag: v2.10.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -537,7 +537,7 @@ core:
 
 jobservice:
   image:
-    repository: registry.baidubce.com/niukl/goharbor/harbor-jobservice
+    repository: goharbor/harbor-jobservice
     tag: v2.10.0
   replicas: 3
   revisionHistoryLimit: 10
@@ -598,8 +598,8 @@ registry:
   automountServiceAccountToken: false
   registry:
     image:
-      repository: registry.baidubce.com/niukl/goharbor/harbor-registry
-      tag: ccr-1.0.58.1
+      repository: goharbor/harbor-registry
+      tag: v2.10.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -607,8 +607,8 @@ registry:
     extraEnvVars: []
   controller:
     image:
-      repository: registry.baidubce.com/niukl/goharbor/harbor-registryctl
-      tag: ccr-1.0.58.1
+      repository: goharbor/harbor-registryctl
+      tag: v2.10.0
 
     # resources:
     #  requests:
@@ -677,7 +677,7 @@ trivy:
   enabled: true
   image:
     # repository the repository for Trivy adapter image
-    repository: registry.baidubce.com/niukl/goharbor/trivy-adapter-photon
+    repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: v2.10.0
   # set the service account to be used, default if left empty
@@ -764,7 +764,7 @@ database:
     # mount the service account token
     automountServiceAccountToken: false
     image:
-      repository: registry.baidubce.com/niukl/goharbor/harbor-db
+      repository: goharbor/harbor-db
       tag: v2.10.0
     # The initial superuser password for internal database
     password: "changeit"
@@ -800,11 +800,11 @@ database:
       #    memory: 128Mi
       #    cpu: 100m
   external:
-    host: "ccr-harbor.rdsgbsqp6vk3zuq.rds.bd.baidubce.com"
+    host: "127.0.0.1"
     port: "3306"
-    username: "ccr"
-    password: "enterprise123@"
-    coreDatabase: "harbor1"
+    username: "root"
+    password: "PASSWORD"
+    coreDatabase: "harbor"
     # if using existing secret, the key must be "password"
     existingSecret: ""
     # "disable" - No SSL
@@ -837,7 +837,7 @@ redis:
     # mount the service account token
     automountServiceAccountToken: false
     image:
-      repository: registry.baidubce.com/niukl/goharbor/redis-photon
+      repository: goharbor/redis-photon
       tag: v2.10.0
     # resources:
     #  requests:
@@ -863,7 +863,7 @@ redis:
     # support redis, redis+sentinel
     # addr for redis: <host_redis>:<port_redis>
     # addr for redis+sentinel: <host_sentinel1>:<port_sentinel1>,<host_sentinel2>:<port_sentinel2>,<host_sentinel3>:<port_sentinel3>
-    addr: "redis.phuobzrspfhb.scs.bd.baidubce.com:6379"
+    addr: "127.0.0.1:6379"
     # The name of the set of Redis instances to monitor, it must be set to support redis+sentinel
     sentinelMasterSet: ""
     # The "coreDatabaseIndex" must be "0" as the library Harbor
@@ -901,7 +901,7 @@ exporter:
   # mount the service account token
   automountServiceAccountToken: false
   image:
-    repository: registry.baidubce.com/niukl/goharbor/harbor-exporter
+    repository: goharbor/harbor-exporter
     tag: v2.10.0
   nodeSelector: {}
   tolerations: []
