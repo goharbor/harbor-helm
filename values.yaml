@@ -641,7 +641,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v2.11.1
+    tag: v2.11.2
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
