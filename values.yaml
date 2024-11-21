@@ -394,7 +394,7 @@ enableMigrateHelmHook: false
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
   image:
-    repository: registry.baidubce.com/cce-public/goharbor/nginx-photon
+    repository: registry.baidubce.com/niukl/goharbor/nginx-photon
     tag: v2.10.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -425,7 +425,7 @@ nginx:
 
 portal:
   image:
-    repository: registry.baidubce.com/cce-public/goharbor/harbor-portal
+    repository: registry.baidubce.com/niukl/goharbor/harbor-portal
     tag: v2.10.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -458,7 +458,7 @@ portal:
 
 core:
   image:
-    repository: registry.baidubce.com/cce-public/goharbor/harbor-core
+    repository: registry.baidubce.com/niukl/goharbor/harbor-core
     tag: v2.10.0
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -537,7 +537,7 @@ core:
 
 jobservice:
   image:
-    repository: registry.baidubce.com/cce-public/goharbor/harbor-jobservice
+    repository: registry.baidubce.com/niukl/goharbor/harbor-jobservice
     tag: v2.10.0
   replicas: 1
   revisionHistoryLimit: 10
@@ -598,7 +598,7 @@ registry:
   automountServiceAccountToken: false
   registry:
     image:
-      repository: registry.baidubce.com/cce-public/goharbor/registry-photon
+      repository: registry.baidubce.com/niukl/goharbor/registry-photon
       tag: v2.10.0
     # resources:
     #  requests:
@@ -607,7 +607,7 @@ registry:
     extraEnvVars: []
   controller:
     image:
-      repository: registry.baidubce.com/cce-public/goharbor/harbor-registryctl
+      repository: registry.baidubce.com/niukl/goharbor/harbor-registryctl
       tag: v2.10.0
 
     # resources:
@@ -677,7 +677,7 @@ trivy:
   enabled: true
   image:
     # repository the repository for Trivy adapter image
-    repository: registry.baidubce.com/cce-public/goharbor/trivy-adapter-photon
+    repository: registry.baidubce.com/niukl/goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: v2.10.0
   # set the service account to be used, default if left empty
@@ -764,7 +764,7 @@ database:
     # mount the service account token
     automountServiceAccountToken: false
     image:
-      repository: registry.baidubce.com/cce-public/goharbor/harbor-db
+      repository: registry.baidubce.com/niukl/goharbor/harbor-db
       tag: v2.10.0
     # The initial superuser password for internal database
     password: "changeit"
@@ -837,7 +837,7 @@ redis:
     # mount the service account token
     automountServiceAccountToken: false
     image:
-      repository: registry.baidubce.com/cce-public/goharbor/redis-photon
+      repository: registry.baidubce.com/niukl/goharbor/redis-photon
       tag: v2.10.0
     # resources:
     #  requests:
@@ -901,7 +901,7 @@ exporter:
   # mount the service account token
   automountServiceAccountToken: false
   image:
-    repository: registry.baidubce.com/cce-public/goharbor/harbor-exporter
+    repository: registry.baidubce.com/niukl/goharbor/harbor-exporter
     tag: v2.10.0
   nodeSelector: {}
   tolerations: []
