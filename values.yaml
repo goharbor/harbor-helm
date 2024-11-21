@@ -1,7 +1,7 @@
 expose:
   # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
   # and fill the information in the corresponding section
-  type: ingress
+  type: loadBalancer
   tls:
     # Enable TLS or not.
     # Delete the "ssl-redirect" annotations in "expose.ingress.annotations" when TLS is disabled and "expose.type" is "ingress"
@@ -20,15 +20,15 @@ expose:
     auto:
       # The common name used to generate the certificate, it's necessary
       # when the type isn't "ingress"
-      commonName: ""
+      commonName: "harbor-nginx"
     secret:
       # The name of secret which contains keys named:
       # "tls.crt" - the certificate
       # "tls.key" - the private key
-      secretName: ""
+      secretName: "harbor-nginx"
   ingress:
     hosts:
-      core: core.harbor.domain
+      core: test-harbor.ccr.com
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
@@ -38,7 +38,7 @@ expose:
     controller: default
     ## Allow .Capabilities.KubeVersion.Version to be overridden while creating ingress
     kubeVersionOverride: ""
-    className: ""
+    className: "nginx"
     annotations:
       # note different ingress controllers may require a different ssl-redirect annotation
       # for Envoy, use ingress.kubernetes.io/force-ssl-redirect: "true" and remove the nginx lines below
@@ -103,7 +103,7 @@ expose:
 # the IP address of k8s node
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://core.harbor.domain
+externalURL: http://test-harbor.ccr.com
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each component tls cert files need to provided in advance.
@@ -464,7 +464,7 @@ core:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
-  replicas: 1
+  replicas: 3
   revisionHistoryLimit: 10
   ## Startup probe values
   startupProbe:
@@ -539,7 +539,7 @@ jobservice:
   image:
     repository: registry.baidubce.com/niukl/goharbor/harbor-jobservice
     tag: v2.10.0
-  replicas: 1
+  replicas: 3
   revisionHistoryLimit: 10
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -548,9 +548,9 @@ jobservice:
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLoggers:
-    - file
-    # - database
-    # - stdout
+    # - file
+    - database
+    #- stdout
   # The jobLogger sweeper duration (ignored if `jobLogger` is `stdout`)
   loggerSweeperDuration: 14 #days
   notification:
@@ -598,8 +598,8 @@ registry:
   automountServiceAccountToken: false
   registry:
     image:
-      repository: registry.baidubce.com/niukl/goharbor/registry-photon
-      tag: v2.10.0
+      repository: registry.baidubce.com/niukl/goharbor/harbor-registry
+      tag: ccr-1.0.58.1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -608,14 +608,14 @@ registry:
   controller:
     image:
       repository: registry.baidubce.com/niukl/goharbor/harbor-registryctl
-      tag: v2.10.0
+      tag: ccr-1.0.58.1
 
     # resources:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
-  replicas: 1
+  replicas: 3
   revisionHistoryLimit: 10
   nodeSelector: {}
   tolerations: []
@@ -685,7 +685,7 @@ trivy:
   # mount the service account token
   automountServiceAccountToken: false
   # replicas the number of Pod replicas
-  replicas: 1
+  replicas: 0
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
   debugMode: false
   # vulnType a comma-separated list of vulnerability types. Possible values are `os` and `library`.
