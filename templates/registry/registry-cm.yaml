@@ -152,6 +152,24 @@ data:
         {{- if $storage.oss.rootdirectory }}
         rootdirectory: {{ $storage.oss.rootdirectory }}
         {{- end }}
+      {{- else if eq $type "bos" }}
+      bos:
+        accesskeyid: {{ $storage.bos.accesskeyid }}
+        region: {{ $storage.bos.region }}
+        bucket: {{ $storage.bos.bucket }}
+        {{- if $storage.bos.endpoint }}
+        endpoint: {{ $storage.bos.endpoint }}
+        {{- end }}
+        {{- if $storage.bos.chunksize }}
+        chunksize: {{ $storage.bos.chunksize }}
+        {{- end }}
+        {{- if $storage.bos.rootdirectory }}
+        rootdirectory: {{ $storage.bos.rootdirectory }}
+        {{- end }}
+        {{- if $storage.bos.expiresin }}
+        expiresin: {{ $storage.bos.expiresin }}
+        userename: {{ $storage.bos.userename }}
+        {{- end }}
       {{- end }}
       cache:
         layerinfo: redis
