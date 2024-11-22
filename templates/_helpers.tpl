@@ -579,3 +579,35 @@ app: "{{ template "harbor.name" . }}"
 {{- define "harbor.ingress.kubeVersion" -}}
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
 {{- end -}}
+
+{{/* oidc configuration */}}
+{{- define "harbor.oidcConfigSecret" -}}
+	{{- if .Values.core.oidc }}
+{
+  "auth_mode": "oidc_auth",
+  "oidc_name": "{{ .Values.core.oidc.name }}",
+  "oidc_endpoint": "{{ .Values.core.oidc.endpoint }}",
+	"oidc_extra_redirect_parms": "{{ .Values.core.oidc.extraRedirectParms | default "{}" }}",
+  "oidc_client_id":  "{{ .Values.core.oidc.clientId }}",
+  "oidc_client_secret": "{{ .Values.core.oidc.clientSecret | default (include "harbor.oidc.rawClientSecret" .) }}",
+  "oidc_groups_claim":  "{{ .Values.core.oidc.groupsClaim | default "" }}",
+  "oidc_admin_group":  "{{ .Values.core.oidc.adminGroup | default "" }}",
+  "oidc_scope": "{{ .Values.core.oidc.scope }}",
+  "oidc_verify_cert": "{{ .Values.core.oidc.verifyCert | default "true" }}",
+  "oidc_auto_onboard": "{{ .Values.core.oidc.autoOnboard | default "false" }}",
+  "oidc_user_claim": "{{ .Values.core.oidc.userClaim | default "name" }}"
+}
+	{{- end -}}
+{{- end -}}
+
+{{/* oidc lookup for existing client secret */}}
+{{- define "harbor.oidc.rawClientSecret" -}}
+	{{ if .Values.core.oidc.existingClientSecretName }}
+		{{- $existingSecret := lookup "v1" "Secret" .Release.Namespace .Values.core.oidc.existingClientSecretName -}}
+		{{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data .Values.core.oidc.existingClientSecretKey) -}}
+			{{- .Values.core.oidc.clientSecret | default (b64dec (index $existingSecret.data .Values.core.oidc.existingClientSecretKey)) -}}
+		{{- else -}}
+			{{- .Values.core.oidc.clientSecret | default "" -}}
+		{{- end -}}
+	{{- end -}}
+{{- end -}}
