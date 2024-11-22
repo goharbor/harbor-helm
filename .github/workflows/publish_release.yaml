@@ -23,9 +23,9 @@ jobs:
       - name: Publish Helm Chart
         run: |
           helm registry login registry-1.docker.io -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          helm push ${{ env.PACKAGE_PATH }} oci://registry-1.docker.io/${{ secrets.DOCKER_HUB_USERNAME }}
+          helm push ${{ env.PACKAGE_PATH }} oci://registry-1.docker.io/goharbor
           helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-          helm push ${{ env.PACKAGE_PATH }} oci://ghcr.io/${{ github.actor }}
+          helm push ${{ env.PACKAGE_PATH }} oci://ghcr.io/goharbor
       - name: Upload to chart repository
         run: |
           git config --global user.email "${{ github.event.repository.name }}@users.noreply.github.com"
