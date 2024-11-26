@@ -14,9 +14,6 @@ spec:
   revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
-    {{- if eq .Values.updateStrategy.type "Recreate" }}
-    rollingUpdate: null
-    {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
