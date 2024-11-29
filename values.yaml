@@ -565,6 +565,16 @@ core:
   startupProbe:
     enabled: true
     initialDelaySeconds: 10
+  ## Readiness probe values
+  readinessProbe:
+    failureThreshold: 2
+    periodSeconds: 10
+    timeoutSeconds: 1
+  ## Liveness probe values
+  livenessProbe:
+    failureThreshold: 2
+    periodSeconds: 10
+    timeoutSeconds: 1
   # resources:
   #  requests:
   #    memory: 256Mi

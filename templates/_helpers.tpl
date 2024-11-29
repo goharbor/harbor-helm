@@ -317,6 +317,20 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{- define "harbor.core.probe.httpGet" -}}
+httpGet:
+  path: /api/v2.0/ping
+  port: {{ template "harbor.core.containerPort" . }}
+  scheme: {{ include "harbor.component.scheme" . | upper }}
+{{- end -}}
+
+{{- define "harbor.core.probe" -}}
+failureThreshold: {{ .probe.failureThreshold }}
+periodSeconds: {{ .probe.periodSeconds }}
+timeoutSeconds: {{ .probe.timeoutSeconds }}
+{{ include "harbor.core.probe.httpGet" .Values }}
+{{- end -}}
+
 {{/* core component container port */}}
 {{- define "harbor.core.containerPort" -}}
   {{- if .Values.internalTLS.enabled -}}
