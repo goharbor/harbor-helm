@@ -15,10 +15,8 @@ sources:
 maintainers:
 - name: Yan Wang
   email: yan-yw.wang@broadcom.com
-- name: Wenkai Yin
-  email: wenkai.yin@broadcom.com
+- name: Stone Zhang
+  email: stone.zhang@broadcom.com
 - name: Miner Yang
   email: miner.yang@broadcom.com
-- name: Shengwen Yu
-  email: shengwen.yu@broadcom.com
 engine: gotpl
