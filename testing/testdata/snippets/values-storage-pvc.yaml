@@ -8,3 +8,4 @@ persistence:
         existingClaim: "pvc-jobservice"
     trivy:
       existingClaim: "pvc-trivy"
+

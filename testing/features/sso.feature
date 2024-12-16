@@ -37,4 +37,5 @@
             acpUser: <config.{{.acp.user}}>
             acpPassword: <config.{{.acp.password}}>
             timeout: 10m
+            headless: true
             """

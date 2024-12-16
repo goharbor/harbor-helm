@@ -4,3 +4,4 @@ oidc:
   clientSecret: "Z2l0bGFiLW9mZmljaWFsLTAK"
   issuer: "<config.{{.acp.baseURL}}>/dex"
 
+

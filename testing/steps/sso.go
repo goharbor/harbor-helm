@@ -21,6 +21,7 @@ type ssoParams struct {
 	ACPPassword string        `yaml:"acpPassword"`
 	URL         string        `yaml:"url"`
 	Timeout     time.Duration `yaml:"timeout"`
+	Headless    bool          `yaml:"headless"`
 }
 
 // InitializeSteps registers resource assertion and import steps
@@ -59,7 +60,7 @@ func checkSSo(ctx context.Context, params *godog.DocString) error {
 
 	// 启动浏览器
 	browser, err := pw.Chromium.Launch(playwright.BrowserTypeLaunchOptions{
-		Headless: playwright.Bool(false),
+		Headless: playwright.Bool(ssoParams.Headless),
 		Args:     []string{"--ignore-certificate-errors"},
 	})
 	if err != nil {
