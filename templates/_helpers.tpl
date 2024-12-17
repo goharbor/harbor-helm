@@ -609,7 +609,7 @@ app: "{{ template "harbor.name" . }}"
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
 {{- end -}}
 
-{{- define "harbor.admin.password"}}
+{{- define "harbor.admin.password" -}}
   {{- if not .Values.existingSecretAdminPassword }}
     {{ .Values.harborAdminPassword | b64enc }}
   {{- else -}}
@@ -620,4 +620,9 @@ app: "{{ template "harbor.name" . }}"
     {{- end }}
     {{ $password }}
   {{- end -}}
+{{- end -}}
+
+{{- define "harbor.image" -}}
+{{- $image := index .values.global.images .image -}}
+{{- printf "%s/%s:%s" .values.global.registry.address $image.repository $image.tag -}}
 {{- end -}}

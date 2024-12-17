@@ -70,7 +70,7 @@ spec:
       {{- end }}
       containers:
       - name: jobservice
-        image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.jobservice.repository }}:{{ .Values.global.images.jobservice.tag }}"
+        image: {{ include "harbor.image" (dict "values" .Values "image" "jobservice") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

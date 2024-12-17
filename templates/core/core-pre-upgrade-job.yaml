@@ -34,7 +34,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: core-job
-        image: {{ .Values.global.registry.address }}/{{ .Values.global.images.core.repository }}:{{ .Values.global.images.core.tag }}
+        image: {{ include "harbor.image" (dict "values" .Values "image" "core") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/harbor/harbor_core", "-mode=migrate"]
         envFrom:

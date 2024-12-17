@@ -73,7 +73,7 @@ spec:
       {{- end }}
       containers:
       - name: registry
-        image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.registryRegistry.repository }}:{{ .Values.global.images.registryRegistry.tag }}"
+        image: {{ include "harbor.image" (dict "values" .Values "image" "registry") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -204,7 +204,7 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       - name: registryctl
-        image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.registryController.repository }}:{{ .Values.global.images.registryController.tag }}"
+        image: {{ include "harbor.image" (dict "values" .Values "image" "registryController") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

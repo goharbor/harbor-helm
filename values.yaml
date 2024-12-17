@@ -17,7 +17,7 @@ global:
       tag: 2.12.0-3132f737
       support_arm: true
       thirdparty: true
-    registryRegistry:
+    registry:
       repository: devops/goharbor-registry-photon
       tag: 2.12.0-3132f737
       support_arm: true
@@ -189,6 +189,8 @@ persistence:
   # (this does not apply for PVCs that are created for internal database
   # and redis components, i.e. they are never deleted automatically)
   resourcePolicy: "keep"
+  # Setting host paths for persistent storage on nodes
+  # Leave empty to use dynamically provisioned PVs, or specify a path like /data/<component> to use hostPath
   hostPath:
     registry:
       path: ""
@@ -580,6 +582,7 @@ nginx:
   priorityClassName:
 
 portal:
+  # enable/disable swagger UI for in harbor portal
   swagger:
     enabled: true
   # set the service account to be used, default if left empty
@@ -673,7 +676,7 @@ core:
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one. Alternatively set existingSecret to use an existing secret
   # Must be a string of 16 chars.
-  secret: "0123456789ABCDEF"
+  secret: ""
   # Fill in the name of a kubernetes secret if you want to use your own
   # If using existingSecret, the key must be secret
   existingSecret: ""
@@ -691,7 +694,7 @@ core:
   # If tokenKey is set, the value of tokenCert must be set as a PEM-encoded certificate signed by tokenKey, and supplied as a multiline string, indented one more than tokenCert on the following line.
   tokenCert: |
   # The XSRF key. Will be generated automatically if it isn't specified
-  xsrfKey: "A3F7B4175EB3C1DA2F477685808422A5"
+  xsrfKey: ""
   # If using existingSecret, the key is defined by core.existingXsrfSecretKey
   existingXsrfSecret: ""
   # If using existingSecret, the key
@@ -757,7 +760,7 @@ jobservice:
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
-  secret: "0123456789ABCDEF"
+  secret: ""
   # Use an existing secret resource
   existingSecret: ""
   # Key within the existing secret for the job service secret
@@ -809,7 +812,7 @@ registry:
   # See: https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#http
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
-  secret: "0123456789ABCDEF"
+  secret: ""
   # Use an existing secret resource
   existingSecret: ""
   # Key within the existing secret for the registry service secret

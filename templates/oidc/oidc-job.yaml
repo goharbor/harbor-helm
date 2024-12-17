@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: curl
-          image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.nginx.repository }}:{{ .Values.global.images.nginx.tag }}"
+          image: {{ include "harbor.image" (dict "values" .Values "image" "nginx") }}
           command:
             - /bin/sh
             - -c

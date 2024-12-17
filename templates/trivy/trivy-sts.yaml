@@ -64,7 +64,7 @@ spec:
         - name: "change-permission"
           resources:
             {{ toYaml .Values.trivy.resources | nindent 12 }}
-          image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.initContainer.repository }}:{{ .Values.global.images.initContainer.tag }}"
+          image: {{ include "harbor.image" (dict "values" .Values "image" "initContainer") }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command: [ "/bin/sh" ]
           args: [ "-c", "mkdir -p /home/scanner/.cache && if ! stat -c '%u:%g' /home/scanner/.cache | grep -q '10000:10000'; then chown -R 10000:10000 /home/scanner/.cache; fi" ]
@@ -78,7 +78,7 @@ spec:
         - name: "init-offline-db"
           resources:
             {{ toYaml .Values.trivy.resources | nindent 12 }}
-          image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.trivyOfflineDB.repository }}:{{ .Values.global.images.trivyOfflineDB.tag }}"
+          image: {{ include "harbor.image" (dict "values" .Values "image" "trivyOfflineDB") }}
           imagePullPolicy: Always
           command: [ "/bin/sh" ]
           args:
@@ -103,7 +103,7 @@ spec:
       {{- end }}
       containers:
         - name: trivy
-          image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.trivy.repository }}:{{ .Values.global.images.trivy.tag }}"
+          image: {{ include "harbor.image" (dict "values" .Values "image" "trivy") }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           {{- if not (empty .Values.containerSecurityContext) }}
           securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}

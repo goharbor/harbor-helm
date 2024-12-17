@@ -59,7 +59,7 @@ spec:
 {{- end }}
       containers:
       - name: exporter
-        image: "{{ .Values.global.registry.address }}/{{ .Values.global.images.exporter.repository }}:{{ .Values.global.images.exporter.tag }}"
+        image: {{ include "harbor.image" (dict "values" .Values "image" "exporter") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
