@@ -1,0 +1,313 @@
+suite: ExporterDeployment
+
+tests:
+  - it: PodLabels
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        podLabels:
+          test.label: test-label
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["test.label"]
+          value: test-label
+
+  - it: PodAnnotations
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        podAnnotations:
+          test.annotation: test-annotation
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["test.annotation"]
+          value: test-annotation
+
+  - it: NoReplicas
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        replicas: 0
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 0
+
+  - it: MultipleReplicas
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        replicas: 2
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
+
+  - it: ServiceAccounts
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        serviceAccountName: testServiceAccount
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: testServiceAccount
+
+  - it: ImagePullSecrets
+    set:
+      metrics:
+        enabled: true
+      imagePullSecrets:
+        - name: test-secret-1
+        - name: test-secret-2
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.imagePullSecrets
+          count: 2
+      - equal:
+          path: spec.template.spec.imagePullSecrets
+          value:
+            - name: test-secret-1
+            - name: test-secret-2
+
+  - it: TopologySpreadConstraints
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: topology.kubernetes.io/zone
+            whenUnsatisfiable: ScheduleAnyway
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.topologySpreadConstraints
+          count: 1
+      - contains:
+          path: spec.template.spec.topologySpreadConstraints
+          content:
+              labelSelector:
+                matchLabels:
+                  app: harbor
+                  component: exporter
+                  release: RELEASE-NAME
+              maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: ScheduleAnyway
+
+  - it: ContainerImage
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        image:
+          repository: test-repository/test-image
+          tag: 1.0.0
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: test-repository/test-image:1.0.0
+
+  - it: ExistingSecretAdminPassword
+    set:
+      metrics:
+        enabled: true
+      existingSecretAdminPassword: HARBOR_ADMIN_PASSWORD
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: HARBOR_ADMIN_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          value: HARBOR_ADMIN_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.key
+          value: HARBOR_ADMIN_PASSWORD
+
+  - it: InternalTLS
+    set:
+      metrics:
+        enabled: true
+      internalTLS:
+        enabled: true
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].name
+          value: core-internal-certs
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].mountPath
+          value: /etc/harbor/ssl/core
+
+  - it: DBCredentials
+    set:
+      metrics:
+        enabled: true
+      database:
+        external:
+          existingSecret: db-secret-name
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: HARBOR_DATABASE_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          value: db-secret-name
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.key
+          value: password
+
+  - it: ContainerSecurityContext
+    set:
+      metrics:
+        enabled: true
+      containerSecurityContext:
+        privileged: true
+        allowPrivilegeEscalation: true
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+        capabilities:
+          drop:
+            - All
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.privileged
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.seccompProfile.type
+          value: RuntimeDefault
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: All
+
+  - it: Resources
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 500Mi
+            cpu: 200m
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 256Mi
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 200m
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 500Mi
+
+  - it: NodeSelector
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        nodeSelector:
+          node.selector/tier: test-node-selector
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector["node.selector/tier"]
+          value: test-node-selector
+
+  - it: Affinity
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        affinity:
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: test-affinity
+                      operator: In
+                      values:
+                        - S1
+                topologyKey: topology.kubernetes.io/zone
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key
+          value: test-affinity
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator
+          value: In
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0]
+          value: S1
+      - equal:
+          path: spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey
+          value: topology.kubernetes.io/zone
+
+  - it: Tolerations
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        tolerations:
+          - effect: NoSchedule
+            key: test-label
+            value: test
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations[0].effect
+          value: NoSchedule
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: test-label
+      - equal:
+          path: spec.template.spec.tolerations[0].value
+          value: test
+
+  - it: PriorityClassName
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        priorityClassName: test-priority
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.priorityClassName
+          value: test-priority

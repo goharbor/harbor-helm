@@ -22,4 +22,4 @@ jobs:
 
       - name: Run unit tests
         run:
-          helm unittest -f 'test/unittest/*.yaml' .
+          helm unittest -f 'test/unittest/*/*.yaml' .
