@@ -1,0 +1,73 @@
+core:
+  resources:
+    request:
+      cpu: 100m
+      memory: 256Mi
+    limit:
+      cpu: 100m
+      memory: 256Mi
+
+jobservice:
+  resources:
+    request:
+      cpu: 100m
+      memory: 256Mi
+    limit:
+      cpu: 100m
+      memory: 256Mi
+
+registry:
+  registry:
+    resources:
+      request:
+        cpu: 100m
+        memory: 256Mi
+      limit:
+        cpu: 100m
+        memory: 256Mi
+  controller:
+    resources:
+      request:
+        cpu: 100m
+        memory: 256Mi
+      limit:
+        cpu: 100m
+        memory: 256Mi
+
+trivy:
+  resources:
+    request:
+      cpu: 200m
+      memory: 512Mi
+    limit:
+      cpu: 200m
+      memory: 512Mi
+
+database:
+  internal:
+    image:
+      repository: docker-mirrors.alauda.cn/goharbor/harbor-db
+  resources:
+    request:
+      cpu: 100m
+      memory: 256Mi
+    limit:
+      cpu: 100m
+      memory: 256Mi
+
+redis:
+  internal:
+    image:
+      repository: docker-mirrors.alauda.cn/goharbor/redis-photon
+    extraEnvVars:
+      - name: ALLOW_EMPTY_PASSWORD
+        value: "yes"
+  request:
+    cpu: 100m
+    memory: 256Mi
+  limit:
+    cpu: 100m
+    memory: 256Mi
+
+existingSecretAdminPassword: "harbor-password"
+existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD

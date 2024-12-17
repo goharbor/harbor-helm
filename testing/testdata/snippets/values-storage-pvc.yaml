@@ -1,0 +1,11 @@
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      existingClaim: "pvc-registry"
+    jobservice:
+      jobLog:
+        existingClaim: "pvc-jobservice"
+    trivy:
+      existingClaim: "pvc-trivy"
+

@@ -42,6 +42,9 @@ metadata:
 {{ toYaml $ingress.labels | indent 4 }}
 {{- end }}
   annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
 {{ toYaml $ingress.annotations | indent 4 }}
 {{- if .Values.internalTLS.enabled }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"

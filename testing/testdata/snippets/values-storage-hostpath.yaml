@@ -1,0 +1,21 @@
+persistence:
+  enabled: true
+  hostPath:
+    registry:
+      path: /tmp/harbor/registry
+    jobservice:
+      path: /tmp/harbor/jobservice
+    trivy:
+      path: /tmp/harbor/trivy
+
+registry:
+  nodeSelector:
+    kubernetes.io/hostname: <node.first>
+
+jobservice:
+  nodeSelector:
+    kubernetes.io/hostname: <node.first>
+
+trivy:
+  nodeSelector:
+    kubernetes.io/hostname: <node.first>

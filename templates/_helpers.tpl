@@ -118,7 +118,14 @@ app: "{{ template "harbor.name" . }}"
       {{- .Values.database.internal.password -}}
     {{- end -}}
   {{- else -}}
-    {{- .Values.database.external.password -}}
+    {{- $password := .Values.database.external.password -}}
+    {{- if .Values.database.external.existingSecret -}}
+      {{- $passwordSecret := (lookup "v1" "Secret" .Release.Namespace .Values.database.external.existingSecret) }}
+      {{- if and $passwordSecret ( index $passwordSecret.data "POSTGRES_PASSWORD" | default "") -}}
+        {{- $password = index $passwordSecret.data "POSTGRES_PASSWORD" | b64dec -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $password -}}
   {{- end -}}
 {{- end -}}
 
@@ -173,7 +180,12 @@ app: "{{ template "harbor.name" . }}"
 
 
 {{- define "harbor.redis.pwdfromsecret" -}}
-  {{- (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD  | b64dec }}
+    {{- $password := "" -}}
+    {{- $passwordSecret := (lookup "v1" "Secret" .Release.Namespace .Values.redis.external.existingSecret) }}
+    {{- if and $passwordSecret ( index $passwordSecret.data "REDIS_PASSWORD" | default "") -}}
+      {{- $password = index $passwordSecret.data "REDIS_PASSWORD" | b64dec -}}
+    {{- end -}}
+    {{- $password -}}
 {{- end -}}
 
 {{- define "harbor.redis.cred" -}}
@@ -248,6 +260,19 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
+{{- define "harbor.registry.password" -}}
+  {{- if not .Values.registry.credentials.existingSecret }}
+    {{ .Values.registry.credentials.password | b64enc }}
+  {{- else -}}
+    {{- $password := "" -}}
+    {{- $passwordSecret := (lookup "v1" "Secret" .Release.Namespace .Values.registry.credentials.existingSecret) }}
+    {{- if and $passwordSecret ( index $passwordSecret.data .Values.registry.credentials.existingSecretKey | default "") -}}
+      {{- $password = index $passwordSecret.data .Values.registry.credentials.existingSecretKey -}}
+    {{- end -}}
+    {{- $password -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.portal" -}}
   {{- printf "%s-portal" (include "harbor.fullname" .) -}}
 {{- end -}}
@@ -286,6 +311,10 @@ app: "{{ template "harbor.name" . }}"
 
 {{- define "harbor.exporter" -}}
   {{- printf "%s-exporter" (include "harbor.fullname" .) -}}
+{{- end -}}
+
+{{- define "harbor.oidc" -}}
+  {{- printf "%s-oidc" (include "harbor.fullname" .) -}}
 {{- end -}}
 
 {{- define "harbor.ingress" -}}
@@ -578,4 +607,22 @@ app: "{{ template "harbor.name" . }}"
 {{/* Allow KubeVersion to be overridden. */}}
 {{- define "harbor.ingress.kubeVersion" -}}
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
+{{- end -}}
+
+{{- define "harbor.admin.password" -}}
+  {{- if not .Values.existingSecretAdminPassword }}
+    {{ .Values.harborAdminPassword | b64enc }}
+  {{- else -}}
+    {{- $passwordSecret := (lookup "v1" "Secret" $.Release.Namespace .Values.existingSecretAdminPassword) }}
+    {{- $password := "" -}}
+    {{- if $passwordSecret -}}
+      {{- $password = index $passwordSecret.data .Values.existingSecretAdminPasswordKey | default "" }}
+    {{- end }}
+    {{ $password }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "harbor.image" -}}
+{{- $image := index .values.global.images .image -}}
+{{- printf "%s/%s:%s" .values.global.registry.address $image.repository $image.tag -}}
 {{- end -}}

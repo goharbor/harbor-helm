@@ -1,0 +1,12 @@
+expose:
+  type: ingress
+  tls:
+    enabled: true
+    certSource: "secret"
+    secret:
+      secretName: "test-tls-cert"
+  ingress:
+    hosts:
+      core: test-ingress-https.example.com
+
+externalURL: https://test-ingress-https.example.com

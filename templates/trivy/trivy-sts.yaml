@@ -12,6 +12,9 @@ metadata:
 spec:
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
+  {{- if .Values.trivy.podManagementPolicy }}
+  podManagementPolicy: {{ .Values.trivy.podManagementPolicy }}
+  {{- end }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -57,13 +60,50 @@ spec:
             component: trivy
 {{- end }}
 {{- end }}
-      {{- with .Values.trivy.initContainers }}
       initContainers:
+        - name: "change-permission"
+          resources:
+            {{ toYaml .Values.trivy.resources | nindent 12 }}
+          image: {{ include "harbor.image" (dict "values" .Values "image" "initContainer") }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: [ "/bin/sh" ]
+          args: [ "-c", "mkdir -p /home/scanner/.cache && if ! stat -c '%u:%g' /home/scanner/.cache | grep -q '10000:10000'; then chown -R 10000:10000 /home/scanner/.cache; fi" ]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /home/scanner/.cache
+              subPath: {{ .Values.persistence.persistentVolumeClaim.trivy.subPath }}
+      {{- if .Values.trivy.offline }}
+        - name: "init-offline-db"
+          resources:
+            {{ toYaml .Values.trivy.resources | nindent 12 }}
+          image: {{ include "harbor.image" (dict "values" .Values "image" "trivyOfflineDB") }}
+          imagePullPolicy: Always
+          command: [ "/bin/sh" ]
+          args:
+            - '-c'
+            - >-
+              if [[ ! -f '/home/scanner/.cache/trivy/db/metadata.json' || "$(jq .Version /home/scanner/.cache/trivy/db/metadata.json)" != "2" ]]; then
+                  echo 'Install offline db'
+                  rm -rf /home/scanner/.cache/trivy/db
+                  mkdir -p /home/scanner/.cache/trivy/db
+                  tar -zxf trivy-offline.db.tgz -C /home/scanner/.cache/trivy/db
+              fi;
+              chown -R 10000:10000 /home/scanner/.cache
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /home/scanner/.cache
+              subPath: {{ .Values.persistence.persistentVolumeClaim.trivy.subPath }}
+      {{- end }}
+      {{- with .Values.trivy.initContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: trivy
-          image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+          image: {{ include "harbor.image" (dict "values" .Values "image" "trivy") }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           {{- if not (empty .Values.containerSecurityContext) }}
           securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}
@@ -171,7 +211,7 @@ spec:
             failureThreshold: 3
           resources:
 {{ toYaml .Values.trivy.resources | indent 12 }}
-      {{- if or (or .Values.internalTLS.enabled .Values.caBundleSecretName) (or (not .Values.persistence.enabled) $trivy.existingClaim) }}
+      {{- if or (or .Values.internalTLS.enabled .Values.caBundleSecretName) (or (not .Values.persistence.enabled) (not $trivy.storageClass)) }}
       volumes:
       {{- if .Values.internalTLS.enabled }}
       - name: trivy-internal-certs
@@ -181,13 +221,18 @@ spec:
       {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolume" . | indent 6 }}
       {{- end }}
-      {{- if not .Values.persistence.enabled }}
+      {{- if .Values.persistence.enabled }}
       - name: "data"
-        emptyDir: {}
-      {{- else if $trivy.existingClaim }}
-      - name: "data"
+      {{- if .Values.persistence.hostPath.trivy.path }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath.trivy.path }}
+          type: DirectoryOrCreate
+      {{- else }}
         persistentVolumeClaim:
           claimName: {{ $trivy.existingClaim }}
+      {{- end }}
+      {{- else }}
+        emptyDir: { }
       {{- end }}
       {{- end }}
     {{- with .Values.trivy.nodeSelector }}
@@ -205,7 +250,7 @@ spec:
     {{- if .Values.trivy.priorityClassName }}
       priorityClassName: {{ .Values.trivy.priorityClassName }}
     {{- end }}
-{{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
+{{- if and .Values.persistence.enabled $trivy.storageClass }}
   volumeClaimTemplates:
   - metadata:
       name: data

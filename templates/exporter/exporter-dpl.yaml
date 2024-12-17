@@ -59,7 +59,7 @@ spec:
 {{- end }}
       containers:
       - name: exporter
-        image: {{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}
+        image: {{ include "harbor.image" (dict "values" .Values "image" "exporter") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -79,21 +79,6 @@ spec:
             name: "{{ template "harbor.exporter" . }}-env"
         - secretRef:
             name: "{{ template "harbor.exporter" . }}"
-        env:
-        {{- if .Values.database.external.existingSecret }}
-        - name: HARBOR_DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.database.external.existingSecret }}
-              key: password
-        {{- end }}
-        {{- if .Values.existingSecretAdminPassword }}
-        - name: HARBOR_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.existingSecretAdminPassword }}
-              key: {{ .Values.existingSecretAdminPasswordKey }}
-        {{- end }}
 {{- if .Values.exporter.resources }}
         resources:
 {{ toYaml .Values.exporter.resources | indent 10 }}

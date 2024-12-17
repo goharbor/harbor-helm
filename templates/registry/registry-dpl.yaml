@@ -73,7 +73,7 @@ spec:
       {{- end }}
       containers:
       - name: registry
-        image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
+        image: {{ include "harbor.image" (dict "values" .Values "image" "registry") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -128,13 +128,6 @@ spec:
           value: /etc/harbor/ssl/registry/tls.crt
         - name: INTERNAL_TLS_TRUST_CA_PATH
           value: /etc/harbor/ssl/registry/ca.crt
-        {{- end }}
-        {{- if .Values.redis.external.existingSecret }}
-        - name: REGISTRY_REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.redis.external.existingSecret }}
-              key: REDIS_PASSWORD
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
         - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
@@ -211,7 +204,7 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       - name: registryctl
-        image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
+        image: {{ include "harbor.image" (dict "values" .Values "image" "registryController") }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -284,13 +277,6 @@ spec:
           value: /etc/harbor/ssl/registry/tls.crt
         - name: INTERNAL_TLS_TRUST_CA_PATH
           value: /etc/harbor/ssl/registry/ca.crt
-        {{- end }}
-        {{- if .Values.redis.external.existingSecret }}
-        - name: REGISTRY_REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.redis.external.existingSecret }}
-              key: REDIS_PASSWORD
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
         - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
@@ -374,8 +360,14 @@ spec:
           name: "{{ template "harbor.registry" . }}"
       - name: registry-data
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
+        {{- if .Values.persistence.hostPath.registry.path }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath.registry.path }}
+          type: DirectoryOrCreate
+        {{- else }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.persistentVolumeClaim.registry.existingClaim | default (include "harbor.registry" .) }}
+        {{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}

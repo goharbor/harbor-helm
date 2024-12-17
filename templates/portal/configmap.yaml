@@ -58,6 +58,14 @@ data:
             location /devcenter-api-2.0 {
                 try_files $uri $uri/ /swagger-ui-index.html;
             }
+            {{- if not .Values.portal.swagger.enabled }}
+            location = /swagger.json {
+                return 404;
+            }
+            location = /swagger.yaml {
+                return 404;
+            }
+            {{- end }}
             location / {
                 try_files $uri $uri/ /index.html;
             }

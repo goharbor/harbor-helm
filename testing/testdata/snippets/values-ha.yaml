@@ -1,0 +1,20 @@
+core:
+  replicas: 2
+portal:
+  replicas: 2
+jobservice:
+  replicas: 2
+registry:
+  replicas: 2
+trivy:
+  replicas: 2
+
+expose:
+  type: ingress
+  tls:
+    enabled: false
+  ingress:
+    hosts:
+      core: test-ingress-ha.example.com
+
+externalURL: http://test-ingress-ha.example.com

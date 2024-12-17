@@ -1,0 +1,61 @@
+core:
+  resources:
+    request:
+      cpu: 100m
+      memory: 256Mi
+    limit:
+      cpu: 200m
+      memory: 512Mi
+
+jobservice:
+  resources:
+    request:
+      cpu: 100m
+      memory: 256Mi
+    limit:
+      cpu: 200m
+      memory: 512Mi
+
+registry:
+  registry:
+    resources:
+      request:
+        cpu: 100m
+        memory: 256Mi
+      limit:
+        cpu: 200m
+        memory: 512Mi
+  controller:
+    resources:
+      request:
+        cpu: 100m
+        memory: 256Mi
+      limit:
+        cpu: 200m
+        memory: 512Mi
+
+trivy:
+  resources:
+    request:
+      cpu: 200m
+      memory: 512Mi
+    limit:
+      cpu: 200m
+      memory: 512Mi
+
+database:
+  resources:
+    request:
+      cpu: 100m
+      memory: 256Mi
+    limit:
+      cpu: 200m
+      memory: 512Mi
+
+redis:
+  request:
+    cpu: 100m
+    memory: 256Mi
+  limit:
+    cpu: 200m
+    memory: 512Mi
