@@ -10,7 +10,7 @@ metadata:
     component: trivy
     app.kubernetes.io/component: trivy
 spec:
-  {{- if .Values.trivy.autoscaling.enabled }}
+  {{- if not .Values.trivy.autoscaling.enabled }}
   replicas: {{ .Values.trivy.replicas }}
   {{- end }}
   serviceName: {{  template "harbor.trivy" . }}
