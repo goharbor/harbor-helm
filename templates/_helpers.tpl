@@ -173,7 +173,12 @@ app: "{{ template "harbor.name" . }}"
 
 
 {{- define "harbor.redis.pwdfromsecret" -}}
-  {{- (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD  | b64dec }}
+  {{- $existingSecret := lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret) -}}
+  {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "REDIS_PASSWORD") -}}
+  {{ $secret.data.REDIS_PASSWORD | b64dec }}
+  {{- else -}}
+  {{- "" -}}
+  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.redis.cred" -}}
