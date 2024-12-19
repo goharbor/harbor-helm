@@ -67,8 +67,9 @@ spec:
             component: registry
 {{- end }}
 {{- end }}
-      {{- with .Values.registry.initContainers }}
       initContainers:
+      {{- include "harbor.registry.permission" . | nindent 8 }}
+      {{- with .Values.registry.initContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:

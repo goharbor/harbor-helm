@@ -64,8 +64,9 @@ spec:
             component: jobservice
 {{- end }}
 {{- end }}
-      {{- with .Values.jobservice.initContainers }}
       initContainers:
+      {{- include "harbor.jobservice.permission" . | nindent 8 }}
+      {{- with .Values.jobservice.initContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:

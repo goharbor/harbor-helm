@@ -35,6 +35,8 @@ registry:
         memory: 256Mi
 
 trivy:
+  skipUpdate: true
+  offlineScan: true
   resources:
     request:
       cpu: 200m

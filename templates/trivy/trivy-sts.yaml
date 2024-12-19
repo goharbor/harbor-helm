@@ -61,43 +61,8 @@ spec:
 {{- end }}
 {{- end }}
       initContainers:
-        - name: "change-permission"
-          resources:
-            {{ toYaml .Values.trivy.resources | nindent 12 }}
-          image: {{ include "harbor.image" (dict "values" .Values "image" "initContainer") }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
-          command: [ "/bin/sh" ]
-          args: [ "-c", "mkdir -p /home/scanner/.cache && if ! stat -c '%u:%g' /home/scanner/.cache | grep -q '10000:10000'; then chown -R 10000:10000 /home/scanner/.cache; fi" ]
-          securityContext:
-            runAsUser: 0
-          volumeMounts:
-            - name: data
-              mountPath: /home/scanner/.cache
-              subPath: {{ .Values.persistence.persistentVolumeClaim.trivy.subPath }}
-      {{- if .Values.trivy.offline }}
-        - name: "init-offline-db"
-          resources:
-            {{ toYaml .Values.trivy.resources | nindent 12 }}
-          image: {{ include "harbor.image" (dict "values" .Values "image" "trivyOfflineDB") }}
-          imagePullPolicy: Always
-          command: [ "/bin/sh" ]
-          args:
-            - '-c'
-            - >-
-              if [[ ! -f '/home/scanner/.cache/trivy/db/metadata.json' || "$(jq .Version /home/scanner/.cache/trivy/db/metadata.json)" != "2" ]]; then
-                  echo 'Install offline db'
-                  rm -rf /home/scanner/.cache/trivy/db
-                  mkdir -p /home/scanner/.cache/trivy/db
-                  tar -zxf trivy-offline.db.tgz -C /home/scanner/.cache/trivy/db
-              fi;
-              chown -R 10000:10000 /home/scanner/.cache
-          securityContext:
-            runAsUser: 0
-          volumeMounts:
-            - name: data
-              mountPath: /home/scanner/.cache
-              subPath: {{ .Values.persistence.persistentVolumeClaim.trivy.subPath }}
-      {{- end }}
+      {{- include "harbor.trivy.permission" . | nindent 8 }}
+      {{- include "harbor.trivy.offilineDB" . | nindent 8 }}
       {{- with .Values.trivy.initContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

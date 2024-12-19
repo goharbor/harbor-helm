@@ -626,3 +626,97 @@ app: "{{ template "harbor.name" . }}"
 {{- $image := index .values.global.images .image -}}
 {{- printf "%s/%s:%s" .values.global.registry.address $image.repository $image.tag -}}
 {{- end -}}
+
+{{- define "harbor.jobservice.permission" -}}
+{{- $mountPath := "/var/log/jobs" }}
+{{ $subPath := .Values.persistence.persistentVolumeClaim.jobservice.subPath }}
+- name: change-permission
+  image: {{ include "harbor.image" (dict "values" .Values "image" "initContainer") }}
+  imagePullPolicy: {{ .Values.imagePullPolicy }}
+  {{- if .Values.jobservice.resources }}
+  resources:
+    {{- toYaml .Values.jobservice.resources | nindent 4 }}
+  {{- end }}
+  command: ["/bin/sh"]
+  args: ["-c", "if ! stat -c '%u:%g' {{ $mountPath }} | grep -q '10000:10000'; then chown -R 10000:10000 {{ $mountPath }}; fi"]
+  securityContext:
+    runAsUser: 0
+  volumeMounts:
+  - name: job-logs
+    mountPath: {{ $mountPath }}
+    subPath: {{ $subPath }}
+{{- end -}}
+
+{{- define "harbor.registry.permission" -}}
+{{- $mountPath := .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
+{{ $subPath := .Values.persistence.persistentVolumeClaim.registry.subPath }}
+- name: change-permission
+  image: {{ include "harbor.image" (dict "values" .Values "image" "initContainer") }}
+  imagePullPolicy: {{ .Values.imagePullPolicy }}
+  {{- if .Values.registry.registry.resources }}
+  resources:
+    {{- toYaml .Values.registry.registry.resources | nindent 4 }}
+  {{- end }}
+  command: ["/bin/sh"]
+  args: ["-c", "if ! stat -c '%u:%g' {{ $mountPath }} | grep -q '10000:10000'; then chown -R 10000:10000 {{ $mountPath }}; fi"]
+  securityContext:
+    runAsUser: 0
+  volumeMounts:
+  - name: registry-data
+    mountPath: {{ $mountPath }}
+    subPath: {{ $subPath }}
+{{- end -}}
+
+{{- define "harbor.trivy.permission" -}}
+{{- $mountPath := "/home/scanner/.cache" }}
+{{ $subPath := .Values.persistence.persistentVolumeClaim.trivy.subPath }}
+- name: "change-permission"
+  image: {{ include "harbor.image" (dict "values" .Values "image" "initContainer") }}
+  imagePullPolicy: {{ .Values.imagePullPolicy }}
+  {{- if .Values.trivy.resources }}
+  resources:
+    {{- toYaml .Values.trivy.resources | nindent 4 }}
+  {{- end }}
+  command: ["/bin/sh"]
+  args:
+    - '-c'
+    - >-
+      if ! stat -c '%u:%g' {{ $mountPath }} | grep -q '10000:10000'; then
+        chown -R 10000:10000 {{ $mountPath }};
+      fi;
+  securityContext:
+    runAsUser: 0
+  volumeMounts:
+  - name: data
+    mountPath: {{ $mountPath }}
+    subPath: {{ $subPath }}
+{{- end -}}
+
+{{- define "harbor.trivy.offilineDB"}}
+{{- $mountPath := "/home/scanner/.cache" }}
+{{ $subPath := .Values.persistence.persistentVolumeClaim.trivy.subPath }}
+{{- if .Values.trivy.offlineScan }}
+- name: "init-offline-db"
+  resources:
+    {{ toYaml .Values.trivy.resources | nindent 4 }}
+  image: {{ include "harbor.image" (dict "values" .Values "image" "trivyOfflineDB") }}
+  imagePullPolicy: Always
+  command: [ "/bin/sh" ]
+  args:
+    - '-c'
+    - >-
+      if [[ ! -f '{{ $mountPath }}/trivy/db/metadata.json' || "$(jq .Version {{ $mountPath }}/trivy/db/metadata.json)" != "2" ]]; then
+          echo 'Install offline db'
+          rm -rf {{ $mountPath }}/trivy/db
+          mkdir -p {{ $mountPath }}/trivy/db
+          tar -zxf trivy-offline.db.tgz -C {{ $mountPath }}/trivy/db
+      fi;
+      chown -R 10000:10000 {{ $mountPath }}
+  securityContext:
+    runAsUser: 0
+  volumeMounts:
+    - name: data
+      mountPath: {{ $mountPath }}
+      subPath: {{ .Values.persistence.persistentVolumeClaim.trivy.subPath }}
+{{- end }}
+{{- end }}
