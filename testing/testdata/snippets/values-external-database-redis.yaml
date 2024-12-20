@@ -1,0 +1,15 @@
+database:
+  external:
+    host: harbor-database
+    port: "5432"
+    sslmode: require
+    username: harbor
+    existingSecret: harbor-database
+  type: external
+
+redis:
+  external:
+    addr: "harbor-redis:6379"
+    existingSecret: harbor-redis
+  type: external
+
