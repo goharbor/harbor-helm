@@ -172,30 +172,35 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
-{{- define "harbor.redis.password" -}}
+{{- define "harbor.redis.username" -}}
   {{- with .Values.redis }}
-    {{- ternary "" .external.password (eq .type "internal") }}
+    {{- ternary "" (.external.username) (eq .type "internal") }}
   {{- end }}
 {{- end -}}
 
+{{- define "harbor.redis.password" -}}
+  {{- with .Values.redis }}
+    {{- ternary "" (include "harbor.redis.external.password" $) (eq .type "internal") }}
+  {{- end }}
+{{- end -}}
 
-{{- define "harbor.redis.pwdfromsecret" -}}
-    {{- $password := "" -}}
+{{- define "harbor.redis.external.password" -}}
+  {{- if .Values.redis.external.existingSecret }}
+    {{- $password := "key not exist" -}}
     {{- $passwordSecret := (lookup "v1" "Secret" .Release.Namespace .Values.redis.external.existingSecret) }}
     {{- if and $passwordSecret ( index $passwordSecret.data "REDIS_PASSWORD" | default "") -}}
       {{- $password = index $passwordSecret.data "REDIS_PASSWORD" | b64dec -}}
     {{- end -}}
     {{- $password -}}
+  {{- else }}
+    {{- .Values.redis.external.password }}
+  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.redis.cred" -}}
-  {{- with .Values.redis }}
-    {{- if (and (eq .type "external" ) (.external.existingSecret)) }}
-      {{- printf ":%s@" (include "harbor.redis.pwdfromsecret" $) }}
-    {{- else }}
-      {{- ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
-    {{- end }}
-  {{- end }}
+    {{- $username := (include "harbor.redis.username" $) }}
+    {{- $password := (include "harbor.redis.password" $) }}
+    {{- ternary "" (printf "%s:%s@" ($username | urlquery) ($password | urlquery)) (and (not $username) (not $password)) }}
 {{- end -}}
 
 /*scheme://[:password@]host:port[/master_set]*/
