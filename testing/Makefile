@@ -6,7 +6,7 @@ ARCH ?= amd64
 BIN ?= ./bin
 
 build:
-	GOOS=linux GOARCH=$(ARCH) go test -c -o "$(BIN)/gitlab.test" ./
+	GOOS=linux GOARCH=$(ARCH) go test -c -o "$(BIN)/harbor.test" ./
 
 generate:
 	@bash hack/generate-values-snippet.sh
@@ -14,7 +14,7 @@ generate:
 create-testing-ns:
 	kubectl create ns bdd-testing || true
 
-TAGS ?= gitlab-chart-deploy-ha
+TAGS ?= @harbor-chart-deploy-network-http
 test: create-testing-ns
 	$(TEST_COMMAND) $(GODOG_ARGS) --godog.tags=$(TAGS)
 
