@@ -3,7 +3,7 @@ module harbor
 go 1.23.2
 
 require (
-	github.com/AlaudaDevops/bdd v0.0.0-20241226103831-6a8e75e8a4d1
+	github.com/AlaudaDevops/bdd v0.0.0-20241231035955-656c79925f17
 	github.com/cucumber/godog v0.15.0
 	github.com/playwright-community/playwright-go v0.4901.0
 	go.uber.org/zap v1.27.0
