@@ -4,9 +4,10 @@ import (
 	"os"
 	"testing"
 
+	harbor "harbor/steps"
+
 	"github.com/AlaudaDevops/bdd"
 	"github.com/AlaudaDevops/bdd/steps"
-	harbor "harbor/steps"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -28,7 +29,7 @@ func TestMain(m *testing.M) {
 		WithOption(bdd.WithFeaturePaths("./features")).
 		WithExtensions(bdd.SharedClient(scheme)). // inject k8s client
 		WithSteps(steps.BuiltinSteps...).
-		WithSteps(harbor.SSOSteps{}).
+		WithSteps(harbor.Steps{}).
 		Run()
 
 	exitVal := m.Run()

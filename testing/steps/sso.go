@@ -3,17 +3,15 @@ package steps
 import (
 	"context"
 	"fmt"
-	"gopkg.in/yaml.v3"
 	"time"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/AlaudaDevops/bdd/logger"
 	"github.com/cucumber/godog"
 	"github.com/playwright-community/playwright-go"
 	"go.uber.org/zap"
 )
-
-type SSOSteps struct {
-}
 
 type ssoParams struct {
 	BaseURL     string        `yaml:"acpURL"`
@@ -22,12 +20,6 @@ type ssoParams struct {
 	URL         string        `yaml:"url"`
 	Timeout     time.Duration `yaml:"timeout"`
 	Headless    bool          `yaml:"headless"`
-}
-
-// InitializeSteps registers resource assertion and import steps
-func (cs SSOSteps) InitializeSteps(ctx context.Context, scenarioCtx *godog.ScenarioContext) context.Context {
-	scenarioCtx.Step(`^SSO 测试通过$`, checkSSo)
-	return ctx
 }
 
 func checkSSo(ctx context.Context, params *godog.DocString) error {
@@ -157,7 +149,7 @@ func loginACP(ctx context.Context, page playwright.Page, params ssoParams) error
 	}
 
 	// 等待 Devops 文本出现
-	if err := page.GetByText("Devops").WaitFor(); err != nil {
+	if err := page.GetByText(params.ACPUser).WaitFor(); err != nil {
 		return fmt.Errorf("等待 Devops 文本出现失败: %v", err)
 	}
 

@@ -23,14 +23,15 @@
             - testdata/snippets/values-storage-sc.yaml
             - testdata/snippets/values-ha.yaml
             """
-        那么 "harbor" 可以正常访问
+        那么 "harbor-ha" 组件检查通过
+        并且 "harbor" 可以正常访问
             """
             url: http://test-ingress-ha.example.com
             timeout: 10m
             """
         并且 资源检查通过
-            | kind        | apiVersion | name                   | path            | value |
-            | Deployment  | apps/v1    | harbor-ha-core         | $.spec.replicas | 2     |
-            | Deployment  | apps/v1    | harbor-ha-registry     | $.spec.replicas | 2     |
-            | Deployment  | apps/v1    | harbor-ha-jobservice   | $.spec.replicas | 2     |
-            | StatefulSet | apps/v1    | harbor-ha-trivy        | $.spec.replicas | 2     |
+            | kind        | apiVersion | name                 | path            | value |
+            | Deployment  | apps/v1    | harbor-ha-core       | $.spec.replicas | 2     |
+            | Deployment  | apps/v1    | harbor-ha-registry   | $.spec.replicas | 2     |
+            | Deployment  | apps/v1    | harbor-ha-jobservice | $.spec.replicas | 2     |
+            | StatefulSet | apps/v1    | harbor-ha-trivy      | $.spec.replicas | 2     |
