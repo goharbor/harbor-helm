@@ -4,3 +4,4 @@ docs/*
 .gitignore
 CONTRIBUTING.md
 test/*
+testing/*

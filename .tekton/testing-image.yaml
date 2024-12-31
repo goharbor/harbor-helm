@@ -1,0 +1,48 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: harbor-test-image
+  annotations:
+    pipelinesascode.tekton.dev/max-keep-runs: "5"
+    pipelinesascode.tekton.dev/on-cel-expression: |-
+      target_branch.matches("^(main|release-.*|alauda-.*)$")
+spec:
+  pipelineRef:
+    name: harbor-test-image-pipeline
+
+  params:
+    - name: git-revision
+      value:
+        url: "{{ repo_url }}"
+        branch: "{{ source_branch }}"
+        commit: "{{ revision }}"
+    - name: test-image
+      value:
+        repo: build-harbor.alauda.cn/devops/harbor-chart-test
+
+  workspaces:
+    - name: source
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 1Gi
+    - name: basic-auth
+      secret:
+        secretName: "{{ git_auth_secret }}"
+    - name: dockerconfig
+      secret:
+        secretName: build-harbor.kauto.docfj
+    - name: gitversion-config
+      configMap:
+        name: gitversion-config
+
+  taskRunTemplate:
+    podTemplate:
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: "OnRootMismatch"

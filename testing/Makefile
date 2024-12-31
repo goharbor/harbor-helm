@@ -19,7 +19,7 @@ test: create-testing-ns
 	$(TEST_COMMAND) $(GODOG_ARGS) --godog.tags=$(TAGS)
 
 test-smoke: create-testing-ns
-	$(TEST_COMMAND) $(GODOG_ARGS) --godog.tags="@test"
+	$(TEST_COMMAND) $(GODOG_ARGS) --godog.tags="@smoke && ~@e2e"
 
 test-all: create-testing-ns
 	$(TEST_COMMAND) $(GODOG_ARGS) --godog.tags="~@e2e"

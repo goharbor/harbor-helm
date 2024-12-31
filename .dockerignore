@@ -1,0 +1,9 @@
+.vscode
+.idea
+.tekton
+tests
+.git
+testing/go.work*
+testing/allure*
+testing/config.yaml
+testing/output
