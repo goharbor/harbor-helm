@@ -995,8 +995,9 @@ database:
     username: "user"
     password: "password"
     coreDatabase: "registry"
-    # if using existing secret, the key must be "POSTGRESQL_PASSWORD"
+    # if using existing secret, the key must be "POSTGRES_PASSWORD"
     existingSecret: ""
+    existingSecretKey: "POSTGRES_PASSWORD"
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
@@ -1078,6 +1079,7 @@ redis:
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD
     existingSecret: ""
+    existingSecretKey: "REDIS_PASSWORD"
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels

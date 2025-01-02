@@ -121,8 +121,8 @@ app: "{{ template "harbor.name" . }}"
     {{- $password := .Values.database.external.password -}}
     {{- if .Values.database.external.existingSecret -}}
       {{- $passwordSecret := (lookup "v1" "Secret" .Release.Namespace .Values.database.external.existingSecret) }}
-      {{- if and $passwordSecret ( index $passwordSecret.data "POSTGRES_PASSWORD" | default "") -}}
-        {{- $password = index $passwordSecret.data "POSTGRES_PASSWORD" | b64dec -}}
+      {{- if and $passwordSecret ( index $passwordSecret.data .Values.database.external.existingSecretKey | default "") -}}
+        {{- $password = index $passwordSecret.data .Values.database.external.existingSecretKey | b64dec -}}
       {{- end -}}
     {{- end -}}
     {{- $password -}}
@@ -188,8 +188,8 @@ app: "{{ template "harbor.name" . }}"
   {{- if .Values.redis.external.existingSecret }}
     {{- $password := "key not exist" -}}
     {{- $passwordSecret := (lookup "v1" "Secret" .Release.Namespace .Values.redis.external.existingSecret) }}
-    {{- if and $passwordSecret ( index $passwordSecret.data "REDIS_PASSWORD" | default "") -}}
-      {{- $password = index $passwordSecret.data "REDIS_PASSWORD" | b64dec -}}
+    {{- if and $passwordSecret ( index $passwordSecret.data .Values.redis.external.existingSecretKey | default "") -}}
+      {{- $password = index $passwordSecret.data .Values.redis.external.existingSecretKey | b64dec -}}
     {{- end -}}
     {{- $password -}}
   {{- else }}
