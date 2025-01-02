@@ -22,8 +22,21 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
             script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH"),
             script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD")]) {
             script.sh """
-                # login Docker Hub to avoid the pull limit
-                docker login -u \${DOCKER_HUB_USERNAME} -p \${DOCKER_HUB_PASSWORD}
+                # Set proxy registry or docker credential to bypass Docker Hub rate limit
+                echo "PROXY_REGISTRY is \${PROXY_REGISTRY}"
+                if [ "\${PROXY_REGISTRY}" != "" ]; then
+                    # set deafult registry to a proxy registry
+                    echo '{
+                    "registry-mirrors": ["'"\${PROXY_REGISTRY}"'"]
+                    }' | sudo tee /etc/docker/daemon.json > /dev/null
+
+                    # Restart Docker to apply the changes
+                    sudo systemctl reset-failed docker.service
+                    sudo systemctl restart docker
+                else
+                    docker login -u \${DOCKER_HUB_USERNAME} -p \${DOCKER_HUB_PASSWORD}
+                fi
+
                 # build the image
                 docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
                 # clean up the namespace
