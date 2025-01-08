@@ -1,0 +1,14 @@
+suite: ExporterSvc
+
+tests:
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        exporter:
+          port: 1111
+    template: templates/exporter/exporter-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 1111
