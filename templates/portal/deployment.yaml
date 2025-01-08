@@ -8,7 +8,9 @@ metadata:
     component: portal
     app.kubernetes.io/component: portal
 spec:
+  {{- if not .Values.portal.autoscaling.enabled }}
   replicas: {{ .Values.portal.replicas }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.portal.revisionHistoryLimit }}
   selector:
     matchLabels:

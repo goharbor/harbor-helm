@@ -8,7 +8,9 @@ metadata:
     component: core
     app.kubernetes.io/component: core
 spec:
+  {{- if not .Values.core.autoscaling.enabled }}
   replicas: {{ .Values.core.replicas }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.core.revisionHistoryLimit }}
   selector:
     matchLabels:
