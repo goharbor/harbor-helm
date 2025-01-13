@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "harbor.registry" . }}"
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ template "harbor.namespace" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
