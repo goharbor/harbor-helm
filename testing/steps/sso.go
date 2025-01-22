@@ -129,7 +129,7 @@ func loginACP(ctx context.Context, page playwright.Page, params ssoParams) error
 	log.Info("等待登录表单出现...")
 	if _, err := page.WaitForSelector(".login-form", playwright.PageWaitForSelectorOptions{
 		State:   playwright.WaitForSelectorStateVisible,
-		Timeout: playwright.Float(10000),
+		Timeout: playwright.Float(30000),
 	}); err != nil {
 		return fmt.Errorf("等待登录表单: %v", err)
 	}
@@ -184,7 +184,7 @@ func loginHarbor(ctx context.Context, page playwright.Page, params ssoParams) er
 			log.Info("等待 Dex 按钮出现...")
 			if _, err := page.WaitForSelector("#log_oidc", playwright.PageWaitForSelectorOptions{
 				State:   playwright.WaitForSelectorStateVisible,
-				Timeout: playwright.Float(5000),
+				Timeout: playwright.Float(30000),
 			}); err == nil {
 				found = true
 				break
@@ -211,7 +211,7 @@ func loginHarbor(ctx context.Context, page playwright.Page, params ssoParams) er
 	// 等待 OIDC 表单
 	if _, err := page.WaitForSelector(`input[name="oidcUsername"]`, playwright.PageWaitForSelectorOptions{
 		State:   playwright.WaitForSelectorStateVisible,
-		Timeout: playwright.Float(10000),
+		Timeout: playwright.Float(30000),
 	}); err != nil {
 		return fmt.Errorf("等待 OIDC 表单失败: %v", err)
 	}
