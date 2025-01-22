@@ -35,10 +35,10 @@ apiVersion: dex.coreos.com/v1
 kind: OAuth2Client
 name: OIDC
 metadata:
-  name: orsxg5bnmrsxrs7sttsiiirdeu
+  name: orsxg5bnmrsxqllimfzge33szpzjzzeeeirsk
   namespace: cpaas-system
 alignPasswordDB: true
-id: test-dex
+id: test-dex-harbor
 public: false
 redirectURIs:
   - ${harbor_base_url}/c/oidc/callback

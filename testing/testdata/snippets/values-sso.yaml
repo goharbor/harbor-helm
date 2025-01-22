@@ -1,5 +1,5 @@
 oidc:
   enable: true
-  clientID: "test-dex"
+  clientID: "test-dex-harbor"
   clientSecret: "Z2l0bGFiLW9mZmljaWFsLTAK"
   issuer: "<config.{{.acp.baseUrl}}>/dex"
