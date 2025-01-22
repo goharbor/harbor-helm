@@ -56,6 +56,7 @@ ENV PATH=/tools/bin:$PATH
 ENV CI=true
 ENV LANG=zh_CN.UTF-8
 ENV LC_ALL=zh_CN.UTF-8
+ENV TEST_COMMAND="harbor.test"
 
 ENTRYPOINT ["harbor.test"]
 CMD ["--godog.concurrency=2", "--godog.format=allure", "--godog.tags=@smoke && ~@e2e"]

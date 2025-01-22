@@ -26,6 +26,7 @@ func init() {
 
 func TestMain(m *testing.M) {
 	bdd.New().
+		WithSuiteName("Harbor").
 		WithOption(bdd.WithFeaturePaths("./features")).
 		WithExtensions(bdd.SharedClient(scheme)). // inject k8s client
 		WithSteps(steps.BuiltinSteps...).

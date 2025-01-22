@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-jobservice
 spec:
+  storageClassName: <storage-class>
   accessModes:
     - ReadWriteMany
   resources:
@@ -15,6 +16,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-registry
 spec:
+  storageClassName: <storage-class>
   accessModes:
     - ReadWriteOnce
   resources:
@@ -27,6 +29,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-trivy
 spec:
+  storageClassName: <storage-class>
   accessModes:
     - ReadWriteOnce
   resources:

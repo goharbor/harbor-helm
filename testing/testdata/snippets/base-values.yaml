@@ -1,3 +1,9 @@
+persistence:
+  persistentVolumeClaim:
+    redis:
+      storageClass: <storage-class>
+    database:
+      storageClass: <storage-class>
 core:
   resources:
     request:
@@ -48,7 +54,8 @@ trivy:
 database:
   internal:
     image:
-      repository: docker-mirrors.alauda.cn/goharbor/harbor-db
+      repository: registry.alauda.cn:60080/devops/goharbor-harbor-db
+      tag: 2.12.0-074c4593
   resources:
     request:
       cpu: 100m
@@ -60,7 +67,8 @@ database:
 redis:
   internal:
     image:
-      repository: docker-mirrors.alauda.cn/goharbor/redis-photon
+      repository: registry.alauda.cn:60080/devops/goharbor-redis-photon
+      tag: 2.12.0-074c4593
     extraEnvVars:
       - name: ALLOW_EMPTY_PASSWORD
         value: "yes"

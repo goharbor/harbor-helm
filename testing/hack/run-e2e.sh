@@ -4,6 +4,9 @@ set -e
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source ${SCRIPT_DIR}/../testdata/script/common.sh
 
+default_test_command="go test -timeout=1h -v -count 1 ./"
+test_command=${TEST_COMMAND:-${default_test_command}}
+
 # Main execution starts here
 main() {
     create_temp_dir
@@ -30,7 +33,8 @@ main() {
 
     export KUBECONFIG=${kubeconfig_file}
     cd ${SCRIPT_DIR}/..
-    go test -timeout=1h -v -count 1 ./ ${GODOG_ARGS} --godog.tags="@e2e"
+    kubectl create ns bdd-testing || true
+    ${test_command} ${GODOG_ARGS} --godog.tags="@e2e"
 }
 
 # Execute the main function with all script arguments

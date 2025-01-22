@@ -40,16 +40,20 @@ func stepHarborResourceConditionCheck(ctx context.Context, instanceName string) 
 func getComponentCheck(instanceName, componentName string) resource.Assert {
 	return resource.Assert{
 		AssertBase: resource.AssertBase{
-			Name: instanceName + "-" + componentName,
+			Resource: resource.Resource{
+				Kind:       "Pod",
+				APIVersion: "v1",
+				Name:       instanceName + "-" + componentName,
+			},
 			PathValue: asserts.PathValue{
 				Path:  "$.status.conditions[?(@.type == 'Ready')][0].status",
 				Value: "True",
 			},
 		},
-		Kind:       "Pod",
-		APIVersion: "v1",
-		Interval:   10 * time.Second,
-		Timeout:    10 * time.Minute,
+		CheckTime: resource.CheckTime{
+			Interval: 10 * time.Second,
+			Timeout:  10 * time.Minute,
+		},
 	}
 }
 

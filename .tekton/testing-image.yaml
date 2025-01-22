@@ -3,22 +3,53 @@ kind: PipelineRun
 metadata:
   name: harbor-test-image
   annotations:
-    pipelinesascode.tekton.dev/max-keep-runs: "5"
+    pipelinesascode.tekton.dev/on-comment: "^((/test-all)|(/build-test-image)|(/test-multi.*\ build-test-image.*))"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: |-
       target_branch.matches("^(main|release-.*|alauda-.*)$")
 spec:
   pipelineRef:
-    name: harbor-test-image-pipeline
-
+    resolver: hub
+    params:
+      - name: catalog
+        value: alauda
+      - name: type
+        value: tekton
+      - name: kind
+        value: pipeline
+      - name: name
+        value: clone-image-build-test-scan
+      - name: version
+        value: "0.2"
   params:
+    - name: git-url
+      value: "{{ repo_url }}"
     - name: git-revision
+      value: "{{ source_branch }}"
+    - name: git-commit
+      value: "{{ revision }}"
+
+    - name: image-repository
+      value: build-harbor.alauda.cn/devops/harbor-ce-test
+
+    - name: dockerfile-path
+      value: Dockerfile
+
+    - name: context
+      value: "."
+
+    - name: upstreams
       value:
-        url: "{{ repo_url }}"
-        branch: "{{ source_branch }}"
-        commit: "{{ revision }}"
-    - name: test-image
-      value:
-        repo: build-harbor.alauda.cn/devops/harbor-chart-test
+        - |
+          repo-url: https://github.com/AlaudaDevops/devops-artifact.git
+          branch-name: {{ source_branch }}
+          yaml-file-path: ./values.yaml
+    - name: upstream-branch-condition
+      value: "^(main|master|release-.*|alauda-.*)$"
+    - name: upstream-secret
+      value: github-credentials
+    - name: ignore-trivy-scan
+      value: "true"
 
   workspaces:
     - name: source
