@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: {{ template "harbor.core" . }}
   namespace: {{ .Release.Namespace | quote }}
+  {{- with .Values.core.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: core
