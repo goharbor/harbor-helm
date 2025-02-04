@@ -555,6 +555,7 @@ portal:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   podDisruptionBudget:
     enabled: false
@@ -736,6 +737,7 @@ jobservice:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   # resources:
   #   requests:
   #     memory: 256Mi
@@ -856,6 +858,7 @@ registry:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   podDisruptionBudget:
     enabled: false
@@ -1230,6 +1233,7 @@ exporter:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   podDisruptionBudget:
     enabled: false
