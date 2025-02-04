@@ -519,6 +519,7 @@ portal:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
@@ -653,6 +654,7 @@ jobservice:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
@@ -730,6 +732,7 @@ registry:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   nodeSelector: {}
@@ -1040,6 +1043,7 @@ exporter:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
