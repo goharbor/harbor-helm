@@ -559,6 +559,11 @@ core:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Annotations to add to the harbor-core deployment's. Optional.
+  #
+  # If you are using reloader use the following annotation with your HABROR_SECRET_NAME
+  annotations: {}
+    # secret.reloader.stakater.com/reload: "<HABROR_SECRET_NAME>"
   replicas: 1
   revisionHistoryLimit: 10
   ## Startup probe values
