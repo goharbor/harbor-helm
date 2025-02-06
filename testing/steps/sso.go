@@ -149,8 +149,8 @@ func loginACP(ctx context.Context, page playwright.Page, params ssoParams) error
 	}
 
 	// 等待 Devops 文本出现
-	if err := page.GetByText(params.ACPUser).WaitFor(); err != nil {
-		return fmt.Errorf("等待 Devops 文本出现失败: %v", err)
+	if err := page.Locator(fmt.Sprintf("//acl-page-header//div[text()='%v']", params.ACPUser)).WaitFor(); err != nil {
+		return fmt.Errorf("等待 登录用户 文本出现失败: %v", err)
 	}
 
 	log.Info("acp 登录成功...")
