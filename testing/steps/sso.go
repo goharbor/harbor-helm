@@ -80,25 +80,22 @@ func checkSSo(ctx context.Context, params *godog.DocString) (context.Context, er
 	}
 
 	screenshotPath := "output/images/harbor-sso-screenshot.png"
-	var shouldAttachScreenshot bool
 	defer func() {
-		if shouldAttachScreenshot {
-			if _, err := page.Screenshot(playwright.PageScreenshotOptions{
-				Path: playwright.String(screenshotPath),
-			}); err != nil {
-				log.Error("截图失败", zap.Error(err))
+		if _, err := page.Screenshot(playwright.PageScreenshotOptions{
+			Path: playwright.String(screenshotPath),
+		}); err != nil {
+			log.Error("截图失败", zap.Error(err))
+		} else {
+			imageData, err := os.ReadFile(screenshotPath)
+			if err == nil {
+				ctx = godog.Attach(ctx, godog.Attachment{
+					Body:      imageData,
+					FileName:  "harbor-sso-screenshot.png",
+					MediaType: "image/png",
+				})
+				log.Info(fmt.Sprintf("保存截图成功: %s", screenshotPath))
 			} else {
-				imageData, err := os.ReadFile(screenshotPath)
-				if err == nil {
-					ctx = godog.Attach(ctx, godog.Attachment{
-						Body:      imageData,
-						FileName:  "harbor-sso-screenshot.png",
-						MediaType: "image/png",
-					})
-					log.Info(fmt.Sprintf("保存截图成功: %s", screenshotPath))
-				} else {
-					log.Error("无法读取截图文件", zap.Error(err))
-				}
+				log.Error("无法读取截图文件", zap.Error(err))
 			}
 		}
 	}()
@@ -106,18 +103,14 @@ func checkSSo(ctx context.Context, params *godog.DocString) (context.Context, er
 	// 执行登录流程
 	if err := loginACP(ctx, page, ssoParams); err != nil {
 		log.Error("ACP 登录失败", zap.Error(err))
-		shouldAttachScreenshot = true
 		return ctx, err
 	}
 
 	if err := loginHarbor(ctx, page, ssoParams); err != nil {
 		log.Error("Harbor 登录失败: %v", zap.Error(err))
-		shouldAttachScreenshot = true
 		return ctx, err
 	}
 
-	// 成功截图
-	shouldAttachScreenshot = true
 	return ctx, nil
 }
 
