@@ -3,6 +3,7 @@ package steps
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -22,12 +23,12 @@ type ssoParams struct {
 	Headless    bool          `yaml:"headless"`
 }
 
-func checkSSo(ctx context.Context, params *godog.DocString) error {
+func checkSSo(ctx context.Context, params *godog.DocString) (context.Context, error) {
 	log := logger.LoggerFromContext(ctx)
 
 	ssoParams := ssoParams{}
 	if err := yaml.Unmarshal([]byte(params.Content), &ssoParams); err != nil {
-		return err
+		return ctx, err
 	}
 
 	if ssoParams.Timeout == 0 {
@@ -39,14 +40,14 @@ func checkSSo(ctx context.Context, params *godog.DocString) error {
 		Browsers: []string{"chromium"},
 	}); err != nil {
 		log.Error("安装 playwright 失败", zap.Error(err))
-		return err
+		return ctx, err
 	}
 
 	// 初始化 playwright
 	pw, err := playwright.Run()
 	if err != nil {
 		log.Error("无法启动 playwright", zap.Error(err))
-		return err
+		return ctx, err
 	}
 	defer pw.Stop()
 
@@ -57,7 +58,7 @@ func checkSSo(ctx context.Context, params *godog.DocString) error {
 	})
 	if err != nil {
 		log.Error("无法启动浏览器", zap.Error(err))
-		return err
+		return ctx, err
 	}
 	defer browser.Close()
 
@@ -67,7 +68,7 @@ func checkSSo(ctx context.Context, params *godog.DocString) error {
 	})
 	if err != nil {
 		log.Error("创建浏览器上下文失败", zap.Error(err))
-		return err
+		return ctx, err
 	}
 	defer browserCtx.Close()
 
@@ -75,39 +76,42 @@ func checkSSo(ctx context.Context, params *godog.DocString) error {
 	page, err := browserCtx.NewPage()
 	if err != nil {
 		log.Error("创建新页面失败: %v", zap.Error(err))
-		return err
+		return ctx, err
 	}
+
+	screenshotPath := "output/images/harbor-sso-screenshot.png"
+	defer func() {
+		if _, err := page.Screenshot(playwright.PageScreenshotOptions{
+			Path: playwright.String(screenshotPath),
+		}); err != nil {
+			log.Error("截图失败", zap.Error(err))
+		} else {
+			imageData, err := os.ReadFile(screenshotPath)
+			if err == nil {
+				ctx = godog.Attach(ctx, godog.Attachment{
+					Body:      imageData,
+					FileName:  "harbor-sso-screenshot.png",
+					MediaType: "image/png",
+				})
+				log.Info(fmt.Sprintf("保存截图成功: %s", screenshotPath))
+			} else {
+				log.Error("无法读取截图文件", zap.Error(err))
+			}
+		}
+	}()
 
 	// 执行登录流程
 	if err := loginACP(ctx, page, ssoParams); err != nil {
 		log.Error("ACP 登录失败", zap.Error(err))
-		if _, err := page.Screenshot(playwright.PageScreenshotOptions{
-			Path: playwright.String("output/images/error-screenshot.png"),
-		}); err != nil {
-			log.Error("截图失败", zap.Error(err))
-		}
-		return err
+		return ctx, err
 	}
 
 	if err := loginHarbor(ctx, page, ssoParams); err != nil {
 		log.Error("Harbor 登录失败: %v", zap.Error(err))
-		if _, err := page.Screenshot(playwright.PageScreenshotOptions{
-			Path: playwright.String("output/images/error-screenshot.png"),
-		}); err != nil {
-			log.Error("截图失败: %v", zap.Error(err))
-		}
-		return err
+		return ctx, err
 	}
 
-	// 成功截图
-	if _, err := page.Screenshot(playwright.PageScreenshotOptions{
-		Path: playwright.String("output/images/success-screenshot.png"),
-	}); err != nil {
-		log.Error("截图失败: %v", zap.Error(err))
-		return err
-	}
-
-	return nil
+	return ctx, nil
 }
 
 func loginACP(ctx context.Context, page playwright.Page, params ssoParams) error {
@@ -149,8 +153,8 @@ func loginACP(ctx context.Context, page playwright.Page, params ssoParams) error
 	}
 
 	// 等待 Devops 文本出现
-	if err := page.GetByText(params.ACPUser).WaitFor(); err != nil {
-		return fmt.Errorf("等待 Devops 文本出现失败: %v", err)
+	if err := page.Locator(fmt.Sprintf("//acl-page-header//div[text()='%v']", params.ACPUser)).WaitFor(); err != nil {
+		return fmt.Errorf("等待 登录用户 文本出现失败: %v", err)
 	}
 
 	log.Info("acp 登录成功...")

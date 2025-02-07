@@ -35,6 +35,8 @@ acp:
   baseUrl: https://192.168.129.179 # acp 的 url
   token: xxxx # acp 的 token
   cluster: business-1 # 运行测试的集群名称
+  username: dailyt-admin 
+  password: 07Apples@
 ```
 将配置文件保存在 testing 目录下，文件名称为 config.yaml。（也可以保存在其他路径，然后通过 E2E_CONFIG 环境变量指定配置文件的路径）
 
