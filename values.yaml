@@ -173,14 +173,14 @@ persistence:
       annotations: {}
   # Define which storage backend is used for registry to store
   # images and charts. Refer to
-  # https://github.com/distribution/distribution/blob/main/docs/configuration.md#storage
+  # https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#storage
   # for the detail.
   imageChartStorage:
     # Specify whether to disable `redirect` for images and chart storage, for
     # backends which not supported it (such as using minio for `s3` storage type), please disable
     # it. To disable redirects, simply set `disableredirect` to `true` instead.
     # Refer to
-    # https://github.com/distribution/distribution/blob/main/docs/configuration.md#redirect
+    # https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#redirect
     # for the detail.
     disableredirect: false
     # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
@@ -543,6 +543,13 @@ portal:
   serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
 
 core:
   image:
@@ -580,6 +587,13 @@ core:
   serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   ## User settings configuration json string
   configureUserSettings:
   # The provider for updating project quota(usage), there are 2 options, redis or db.
@@ -611,6 +625,8 @@ core:
   # If tokenKey is set, the value of tokenCert must be set as a PEM-encoded certificate signed by tokenKey, and supplied as a multiline string, indented one more than tokenCert on the following line.
   tokenCert: |
   # The XSRF key. Will be generated automatically if it isn't specified
+  # While you specified, Please make sure it is 32 characters, otherwise would have validation issue at the harbor-core runtime
+  # https://github.com/goharbor/harbor/pull/21154 
   xsrfKey: ""
   # If using existingSecret, the key is defined by core.existingXsrfSecretKey
   existingXsrfSecret: ""
@@ -657,6 +673,13 @@ jobservice:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLoggers:
@@ -722,9 +745,16 @@ registry:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   # Secret is used to secure the upload state from client
   # and registry storage backend.
-  # See: https://github.com/distribution/distribution/blob/main/docs/configuration.md#http
+  # See: https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#http
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
   secret: ""
@@ -799,6 +829,13 @@ trivy:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  # containers to be run before the controller's container starts.
+  initContainers: []
+  # Example:
+  #
+  # - name: wait
+  #   image: busybox
+  #   command: [ 'sh', '-c', "sleep 20" ]
   # debugMode the flag to enable Trivy debug mode with more verbose scanning log
   debugMode: false
   # vulnType a comma-separated list of vulnerability types. Possible values are `os` and `library`.
@@ -843,7 +880,7 @@ trivy:
   # It would work if all the dependencies are in local.
   # This option doesn’t affect DB download. You need to specify skipUpdate as well as offlineScan in an air-gapped environment.
   offlineScan: false
-  # Comma-separated list of what security issues to detect. Possible values are `vuln`, `config` and `secret`. Defaults to `vuln`.
+  # Comma-separated list of what security issues to detect. Defaults to `vuln`.
   securityCheck: "vuln"
   # The duration to wait for scan completion
   timeout: 5m0s
@@ -876,6 +913,13 @@ database:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # containers to be run before the controller's container starts.
+    extrInitContainers: []
+    # Example:
+    #
+    # - name: wait
+    #   image: busybox
+    #   command: [ 'sh', '-c', "sleep 20" ]
     # The initial superuser password for internal database
     password: "changeit"
     # The size limit for Shared memory, pgSQL use it for shared_buffer
@@ -914,7 +958,7 @@ database:
   maxIdleConns: 100
   # The maximum number of open connections to the database per pod (core+exporter).
   # If it <= 0, then there is no limit on the number of open connections.
-  # Note: the default number of connections is 1024 for postgre of harbor.
+  # Note: the default number of connections is 1024 for harbor's postgres.
   maxOpenConns: 900
   ## Additional deployment annotations
   podAnnotations: {}
@@ -943,6 +987,13 @@ redis:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    # containers to be run before the controller's container starts.
+    initContainers: []
+    # Example:
+    #
+    # - name: wait
+    #   image: busybox
+    #   command: [ 'sh', '-c', "sleep 20" ]
     # # jobserviceDatabaseIndex defaults to "1"
     # # registryDatabaseIndex defaults to "2"
     # # trivyAdapterIndex defaults to "5"
