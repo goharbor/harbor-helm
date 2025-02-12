@@ -1,0 +1,178 @@
+suite: NginxHPA
+
+tests:
+  - it: Default
+    set:
+      nginx:
+        autoscaling:
+          enabled: true
+    template: templates/nginx/nginx-hpa.yaml
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 1
+      - equal:
+          path: spec.maxReplicas
+          value: 11
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 50
+      - equal:
+          path: spec.metrics[1].resource.target.averageUtilization
+          value: 50
+
+  - it: HpaAnnotations
+    set:
+      nginx:
+        autoscaling:
+          enabled: true
+          annotations: 
+            test.annotation: test
+    template: templates/nginx/nginx-hpa.yaml
+    asserts:
+      - equal:
+          path: metadata.annotations["test.annotation"]
+          value: test
+
+  - it: SpecifyReplicas
+    set:
+      nginx:
+        autoscaling:
+          enabled: true
+          minReplicas: 2
+          maxReplicas: 10
+    template: templates/nginx/nginx-hpa.yaml
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 2
+      - equal:
+          path: spec.maxReplicas
+          value: 10
+
+  - it: SpecifyUtilization
+    set:
+      nginx:
+        autoscaling:
+          enabled: true
+          targetMemoryUtilizationPercentage: 70
+          targetCPUUtilizationPercentage: 80
+    template: templates/nginx/nginx-hpa.yaml
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 70
+      - equal:
+          path: spec.metrics[1].resource.target.averageUtilization
+          value: 80
+
+  - it: AutoscalingTemplateSingle
+    set:
+      nginx:
+        autoscaling:
+          enabled: true
+        autoscalingTemplate:
+          - type: Pods
+            pods:
+              metric:
+                name: test-metric
+              target:
+                type: AverageValue
+                averageValue: 10000m
+    template: templates/nginx/nginx-hpa.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.metrics
+          count: 3
+      - equal:
+          path: spec.metrics[2].pods.metric.name
+          value: test-metric
+      - equal:
+          path: spec.metrics[2].pods.target.type
+          value: AverageValue
+      - equal:
+          path: spec.metrics[2].pods.target.averageValue
+          value: 10000m
+
+  - it: AutoscalingTemplateMultiple
+    set:
+      nginx:
+        autoscaling:
+          enabled: true
+        autoscalingTemplate:
+          - type: Pods
+            pods:
+              metric:
+                name: test-metric
+              target:
+                type: AverageValue
+                averageValue: 10000m
+          - type: Pods
+            pods:
+              metric:
+                name: test-metric-multiple
+              target:
+                type: AverageValue
+                averageValue: 500m
+    template: templates/nginx/nginx-hpa.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.metrics
+          count: 4
+      - equal:
+          path: spec.metrics[2].pods.metric.name
+          value: test-metric
+      - equal:
+          path: spec.metrics[2].pods.target.type
+          value: AverageValue
+      - equal:
+          path: spec.metrics[2].pods.target.averageValue
+          value: 10000m
+      - equal:
+          path: spec.metrics[3].pods.metric.name
+          value: test-metric-multiple
+      - equal:
+          path: spec.metrics[3].pods.target.type
+          value: AverageValue
+      - equal:
+          path: spec.metrics[3].pods.target.averageValue
+          value: 500m
+
+  - it: Behavior
+    set:
+      nginx:
+        autoscaling:
+          enabled: true
+          behavior:
+            scaleDown:
+              stabilizationWindowSeconds: 300
+              policies:
+              - type: Pods
+                value: 1
+                periodSeconds: 180
+            scaleUp:
+              stabilizationWindowSeconds: 600
+              policies:
+              - type: Pods
+                value: 2
+                periodSeconds: 60
+    template: templates/nginx/nginx-hpa.yaml
+    asserts:
+      - equal:
+          path: spec.behavior.scaleDown.stabilizationWindowSeconds
+          value: 300
+      - equal:
+          path: spec.behavior.scaleDown.policies[0].value
+          value: 1
+      - equal:
+          path: spec.behavior.scaleDown.policies[0].periodSeconds
+          value: 180
+      - equal:
+          path: spec.behavior.scaleUp.stabilizationWindowSeconds
+          value: 600
+      - equal:
+          path: spec.behavior.scaleUp.policies[0].value
+          value: 2
+      - equal:
+          path: spec.behavior.scaleUp.policies[0].periodSeconds
+          value: 60
