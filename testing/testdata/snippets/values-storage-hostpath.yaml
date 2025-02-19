@@ -10,12 +10,12 @@ persistence:
 
 registry:
   nodeSelector:
-    kubernetes.io/hostname: <node.first>
+    kubernetes.io/hostname: <node.name.first>
 
 jobservice:
   nodeSelector:
-    kubernetes.io/hostname: <node.first>
+    kubernetes.io/hostname: <node.name.first>
 
 trivy:
   nodeSelector:
-    kubernetes.io/hostname: <node.first>
+    kubernetes.io/hostname: <node.name.first>

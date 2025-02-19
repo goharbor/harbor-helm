@@ -13,9 +13,9 @@
         并且 命名空间 "harbor-sso" 已存在
         并且 已导入 "password" 资源: "./testdata/resources/secret-password.yaml"
         并且 执行 "sso 配置" 脚本成功
-            | command                                                                                                                                                              |
-            | bash ./testdata/script/prepare-sso-config.sh '<config.{{.acp.baseUrl}}>' '<config.{{.acp.token}}>' '<config.{{.acp.cluster}}>' 'http://<node.first>:<nodeport.http>' |
-            | mkdir -p output/images                                                                                                                                               |
+            | command                                                                                                                                                                 |
+            | bash ./testdata/script/prepare-sso-config.sh '<config.{{.acp.baseUrl}}>' '<config.{{.acp.token}}>' '<config.{{.acp.cluster}}>' 'http://<node.ip.first>:<nodeport.http>' |
+            | mkdir -p output/images                                                                                                                                                  |
         当 使用 helm 部署实例到 "harbor-sso" 命名空间
             """
             chartPath: ../
@@ -29,12 +29,12 @@
         那么 "harbor-sso" 组件检查通过
         并且 "harbor" 可以正常访问
             """
-            url: http://<node.first>:<nodeport.http>
+            url: http://<node.ip.first>:<nodeport.http>
             timeout: 10m
             """
         并且 SSO 测试通过
             """
-            url: http://<node.first>:<nodeport.http>
+            url: http://<node.ip.first>:<nodeport.http>
             acpURL: <config.{{.acp.baseUrl}}>
             acpUser: <config.{{.acp.username}}>
             acpPassword: <config.{{.acp.password}}>

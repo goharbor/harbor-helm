@@ -23,7 +23,7 @@
     那么 "harbor-sc" 组件检查通过
     并且 "harbor" 可以正常访问
       """
-      url: http://<node.first>:<nodeport.http>
+      url: http://<node.ip.first>:<nodeport.http>
       timeout: 10m
       """
     并且 Pod 资源检查通过
@@ -51,14 +51,14 @@
     那么 "harbor-hostpath" 组件检查通过
     并且 "harbor" 可以正常访问
       """
-      url: http://<node.first>:<nodeport.http>
+      url: http://<node.ip.first>:<nodeport.http>
       timeout: 10m
       """
     并且 Pod 资源检查通过
-      | name                       | path            | value        |
-      | harbor-hostpath-registry   | $.status.hostIP | <node.first> |
-      | harbor-hostpath-jobservice | $.status.hostIP | <node.first> |
-      | harbor-hostpath-trivy      | $.status.hostIP | <node.first> |
+      | name                       | path            | value           |
+      | harbor-hostpath-registry   | $.status.hostIP | <node.ip.first> |
+      | harbor-hostpath-jobservice | $.status.hostIP | <node.ip.first> |
+      | harbor-hostpath-trivy      | $.status.hostIP | <node.ip.first> |
 
   @automated
   @priority-high
@@ -79,7 +79,7 @@
     那么 "harbor-pvc" 组件检查通过
     并且 "harbor" 可以正常访问
       """
-      url: http://<node.first>:<nodeport.http>
+      url: http://<node.ip.first>:<nodeport.http>
       timeout: 10m
       """
     并且 Pod 资源检查通过

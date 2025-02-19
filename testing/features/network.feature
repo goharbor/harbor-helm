@@ -75,6 +75,6 @@
     那么 "harbor-nodeport" 组件检查通过
     并且 "harbor" 可以正常访问
       """
-      url: http://<node.first>:<nodeport.http>
+      url: http://<node.ip.first>:<nodeport.http>
       timeout: 10m
       """

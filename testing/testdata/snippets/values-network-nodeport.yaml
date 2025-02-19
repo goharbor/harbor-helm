@@ -7,4 +7,4 @@ expose:
         port: 80
         nodePort: <nodeport.http>
 
-externalURL: http://<node.first>:<nodeport.http>
+externalURL: http://<node.ip.first>:<nodeport.http>
