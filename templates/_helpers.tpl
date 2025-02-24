@@ -173,13 +173,19 @@ app: "{{ template "harbor.name" . }}"
 
 
 {{- define "harbor.redis.pwdfromsecret" -}}
-  {{- (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD  | b64dec }}
+  {{- if eq .Values.redis.type "external" -}}
+    {{- /* Skip secret lookup for external Redis and return empty string */ -}}
+    {{- printf "" -}}
+  {{- else -}}
+    {{- (lookup "v1" "Secret" .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD | b64dec -}}
+  {{- end -}}
 {{- end -}}
 
 {{- define "harbor.redis.cred" -}}
   {{- with .Values.redis }}
     {{- if (and (eq .type "external" ) (.external.existingSecret)) }}
-      {{- printf ":%s@" (include "harbor.redis.pwdfromsecret" $) }}
+      {{- /* For external Redis with existing secret, just include the secret reference */ -}}
+      {{- printf ":%s@" "${REDIS_PASSWORD}" -}}
     {{- else }}
       {{- ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
     {{- end }}
