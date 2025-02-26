@@ -5,7 +5,7 @@ go 1.23.3
 toolchain go1.23.4
 
 require (
-	github.com/AlaudaDevops/bdd v0.0.0-20250219024013-3dd0b3d5817b
+	github.com/AlaudaDevops/bdd v0.0.0-20250226055307-f591252dd536
 	github.com/cucumber/godog v0.15.0
 	github.com/playwright-community/playwright-go v0.4901.0
 	go.uber.org/zap v1.27.0
