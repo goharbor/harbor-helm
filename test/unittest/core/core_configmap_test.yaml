@@ -34,6 +34,21 @@ tests:
       - equal:
           path: data._REDIS_URL_HARBOR
           value: redis://192.168.0.2:6379/test-index?idle_timeout_seconds=30
+  
+  - it: RedisSentinelUrlHarborExternalTLS
+    set:
+      redis:
+        external:
+          harborDatabaseIndex: test-index
+          tlsOptions:
+            enable: true
+          sentinelMasterSet: "mymaster"
+        type: external
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data._REDIS_URL_HARBOR
+          value: rediss+sentinel://192.168.0.2:6379/mymaster/test-index?idle_timeout_seconds=30
 
   - it: CacheLayerDatabaseIndex
     set:
