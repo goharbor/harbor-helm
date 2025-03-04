@@ -841,6 +841,8 @@ trivy:
   severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
   # ignoreUnfixed the flag to display only fixed vulnerabilities
   ignoreUnfixed: false
+  # Specify policies to ignore when displaying vulnerabilities. Options are "none", "basic" and "advanced".
+  ignorePolicy: "none"
   # insecure the flag to skip verifying registry certificate
   insecure: false
   # gitHubToken the GitHub access token to download Trivy DB

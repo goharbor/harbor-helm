@@ -98,6 +98,10 @@ spec:
               value: {{ .Values.trivy.severity | quote }}
             - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
               value: {{ .Values.trivy.ignoreUnfixed | default false | quote }}
+            {{- if ne .Values.trivy.ignorePolicy "none" }}
+            - name: "SCANNER_TRIVY_IGNORE_POLICY"
+              value: "/home/scanner/policies/{{ .Values.trivy.ignorePolicy }}.rego"
+            {{- end }}
             - name: "SCANNER_TRIVY_SKIP_UPDATE"
               value: {{ .Values.trivy.skipUpdate | default false | quote }}
             - name: "SCANNER_TRIVY_SKIP_JAVA_DB_UPDATE"
@@ -148,6 +152,10 @@ spec:
           - name: trivy-internal-certs
             mountPath: /etc/harbor/ssl/trivy
           {{- end }}
+          {{- if ne .Values.trivy.ignorePolicy "none" }}
+          - name: policies
+            mountPath: /home/scanner/policies
+          {{- end }}
           {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 10 }}
           {{- end }}
@@ -189,6 +197,11 @@ spec:
         persistentVolumeClaim:
           claimName: {{ $trivy.existingClaim }}
       {{- end }}
+      {{- end }}
+      {{- if ne .Values.trivy.ignorePolicy "none" }}
+      - name: policies
+        configMap:
+          name: trivy-{{ .Values.trivy.ignorePolicy }}-policies
       {{- end }}
     {{- with .Values.trivy.nodeSelector }}
       nodeSelector:
