@@ -40,6 +40,16 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- with .Values.redis.internal.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{- range . }}
+      - {{ . | toYaml | indent 8 | trim }}
+        labelSelector:
+          matchLabels:
+{{ include "harbor.matchLabels" $ | indent 12 }}
+            component: redis
+{{- end }}
+{{- end }}
       automountServiceAccountToken: {{ .Values.redis.internal.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
       {{- with .Values.redis.internal.initContainers }}
@@ -123,4 +133,4 @@ spec:
         requests:
           storage: {{ $redis.size | quote }}
   {{- end -}}
-  {{- end -}}
+{{- end -}}
