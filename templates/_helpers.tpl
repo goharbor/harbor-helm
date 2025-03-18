@@ -227,12 +227,12 @@ app: "{{ template "harbor.name" . }}"
 
 
 
-/*scheme://[:password@]addr/db_index*/
+/*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForJobservice" -}}
   {{- with .Values.redis }}
     {{- $password := .external.password | default "" }}
     {{- $address := .external.addr | default "redis:6379" }}
-    {{- $index := .external.jobserviceDatabaseIndex | default "1" }}
+    {{- $index := printf "%d" (.external.jobserviceDatabaseIndex | default 1 | int) }}
     {{- $authPrefix := "" }}
     {{- if $password }}
       {{- $authPrefix = printf ":%s@" $password }}
