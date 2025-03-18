@@ -148,17 +148,15 @@ app: "{{ template "harbor.name" . }}"
 
 {{- define "harbor.redis.scheme" -}}
   {{- with .Values.redis }}
-    {{- if eq .type "external" -}}
-      {{- if not (not .external.sentinelMasterSet) -}}
-        {{- ternary "rediss+sentinel" "redis+sentinel" (.external.tlsOptions.enable) }}
-      {{- else -}}
-        {{- ternary "rediss" "redis" (.external.tlsOptions.enable) }}
-      {{- end -}}
-    {{- else -}}
-      {{ print "redis" }}
-    {{- end -}}
+    {{- $scheme := ternary "rediss" "redis" (.external.tlsOptions.enable) }}
+    {{- if and (eq .type "external") .external.sentinelMasterSet }}
+      {{- printf "%s+sentinel" $scheme }}
+    {{- else }}
+      {{- printf "%s" $scheme }}
+    {{- end }}
   {{- end }}
-{{- end -}}
+{{- end }}
+
 
 {{- define "harbor.redis.enableTLS" -}}
   {{- with .Values.redis }}
@@ -192,13 +190,18 @@ app: "{{ template "harbor.name" . }}"
 
 {{- define "harbor.redis.cred" -}}
   {{- with .Values.redis }}
-    {{- if (and (eq .type "external" ) (.external.existingSecret)) }}
-      {{- printf ":%s@" (include "harbor.redis.pwdfromsecret" $) }}
-    {{- else }}
-      {{- ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
+    {{- $authPrefix := "" }}
+    {{- if and (eq .type "external") .external.password }}
+      {{- if .external.sentinelMasterSet }}
+        {{- $authPrefix = printf "%s@" (urlquery .external.password) }}
+      {{- else }}
+        {{- $authPrefix = printf ":%s@" (urlquery .external.password) }}
+      {{- end }}
     {{- end }}
+    {{- printf "%s" $authPrefix }}
   {{- end }}
-{{- end -}}
+{{- end }}
+
 
 /*scheme://[:password@]host:port[/master_set]*/
 {{- define "harbor.redis.url" -}}
@@ -211,50 +214,93 @@ app: "{{ template "harbor.name" . }}"
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForCore" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "0" .external.coreDatabaseIndex (eq .type "internal") }}
-    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+    {{- $password := .external.password | default "" }}
+    {{- $address := .external.addr | default "redis:6379" }}
+    {{- $index := printf "%d" (.external.coreDatabaseIndex | default 0) }}
+    {{- $authPrefix := "" }}
+    {{- if $password }}
+      {{- $authPrefix = printf ":%s@" $password }}
+    {{- end }}
+    {{- printf "redis://%s%s/%s?idle_timeout_seconds=30" $authPrefix $address $index -}}
   {{- end }}
-{{- end -}}
+{{- end }}
+
+
 
 /*scheme://[:password@]addr/db_index*/
 {{- define "harbor.redis.urlForJobservice" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary .internal.jobserviceDatabaseIndex .external.jobserviceDatabaseIndex (eq .type "internal") }}
-    {{- printf "%s/%s" (include "harbor.redis.url" $) $index -}}
+    {{- $password := .external.password | default "" }}
+    {{- $address := .external.addr | default "redis:6379" }}
+    {{- $index := .external.jobserviceDatabaseIndex | default "1" }}
+    {{- $authPrefix := "" }}
+    {{- if $password }}
+      {{- $authPrefix = printf ":%s@" $password }}
+    {{- end }}
+    {{- printf "redis://%s%s/%s?idle_timeout_seconds=30" $authPrefix $address $index -}}
   {{- end }}
 {{- end -}}
+
 
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForRegistry" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
-    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+    {{- $password := .external.password | default "" }}
+    {{- $address := .external.addr | default "redis:6379" }}
+    {{- $index := .external.registryDatabaseIndex | default 2 | toString }}
+    {{- $authPrefix := "" }}
+    {{- if $password }}
+      {{- $authPrefix = printf ":%s@" $password }}
+    {{- end }}
+    {{- printf "redis://%s%s/%s?idle_timeout_seconds=30" $authPrefix $address $index -}}
   {{- end }}
 {{- end -}}
+
 
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForTrivy" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary .internal.trivyAdapterIndex .external.trivyAdapterIndex (eq .type "internal") }}
-    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+    {{- $password := .external.password | default "" }}
+    {{- $address := .external.addr | default "redis:6379" }}
+    {{- $index := .external.trivyAdapterIndex | default "5" }}
+    {{- $authPrefix := "" }}
+    {{- if $password }}
+      {{- $authPrefix = printf ":%s@" $password }}
+    {{- end }}
+    {{- printf "redis://%s%s/%s?idle_timeout_seconds=30" $authPrefix $address $index -}}
   {{- end }}
 {{- end -}}
+
 
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForHarbor" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary .internal.harborDatabaseIndex .external.harborDatabaseIndex (eq .type "internal") }}
-    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+    {{- $password := .external.password | default "" }}
+    {{- $address := .external.addr | default "redis:6379" }}
+    {{- $index := .external.harborDatabaseIndex | default "3" }}
+    {{- $authPrefix := "" }}
+    {{- if $password }}
+      {{- $authPrefix = printf ":%s@" $password }}
+    {{- end }}
+    {{- printf "redis://%s%s/%s?idle_timeout_seconds=30" $authPrefix $address $index -}}
   {{- end }}
-{{- end -}}
+{{- end }}
+
 
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForCache" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary .internal.cacheLayerDatabaseIndex .external.cacheLayerDatabaseIndex (eq .type "internal") }}
-    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+    {{- $password := .external.password | default "" }}
+    {{- $address := .external.addr | default "redis:6379" }}
+    {{- $index := .external.cacheLayerDatabaseIndex | default "4" }}
+    {{- $authPrefix := "" }}
+    {{- if $password }}
+      {{- $authPrefix = printf ":%s@" $password }}
+    {{- end }}
+    {{- printf "redis://%s%s/%s?idle_timeout_seconds=30" $authPrefix $address $index -}}
   {{- end }}
 {{- end -}}
+
 
 {{- define "harbor.redis.dbForRegistry" -}}
   {{- with .Values.redis }}
