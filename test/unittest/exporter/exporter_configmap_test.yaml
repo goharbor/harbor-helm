@@ -1,0 +1,117 @@
+suite: ExporterConfigMap
+
+tests:
+  - it: ProxyJobservice
+    set:
+      metrics:
+        enabled: true
+      proxy:
+        httpProxy: 1.1.1.1
+        httpsProxy: 2.2.2.2
+        noProxy: 127.0.0.1,localhost,.local,.internal
+        components:
+          - jobservice
+    template: templates/exporter/exporter-cm-env.yaml
+    asserts:
+      - equal:
+          path: data.HTTP_PROXY
+          value: 1.1.1.1
+      - equal:
+          path: data.HTTPS_PROXY
+          value: 2.2.2.2
+      - equal:
+          path: data.NO_PROXY
+          value: RELEASE-NAME-harbor-core,RELEASE-NAME-harbor-jobservice,RELEASE-NAME-harbor-database,RELEASE-NAME-harbor-registry,RELEASE-NAME-harbor-portal,RELEASE-NAME-harbor-trivy,RELEASE-NAME-harbor-exporter,127.0.0.1,localhost,.local,.internal
+
+  - it: ProxyNoJobservice
+    set:
+      metrics:
+        enabled: true
+      proxy:
+        httpProxy: 1.1.1.1
+        httpsProxy: 2.2.2.2
+        noProxy: 127.0.0.1,localhost,.local,.internal
+        components:
+          - testComponent
+    template: templates/exporter/exporter-cm-env.yaml
+    asserts:
+      - notExists:
+          path: data.HTTP_PROXY
+      - notExists:
+          path: data.HTTPS_PROXY
+      - notExists:
+          path: data.NO_PROXY
+
+  - it: FullSecrets
+    set:
+      metrics:
+        enabled: true
+        exporter:
+          path: /testEndpoint
+          port: 1111
+      exporter:
+        cacheDuration: 30
+        cacheCleanInterval: 1000
+      logLevel: debug
+      database:
+        maxIdleConns: 100
+        maxOpenConns: 50
+    template: templates/exporter/exporter-cm-env.yaml
+    asserts:
+      - equal:
+          path: data.LOG_LEVEL
+          value: debug
+      - equal:
+          path: data.HARBOR_EXPORTER_PORT
+          value: "1111"
+      - equal:
+          path: data.HARBOR_EXPORTER_METRICS_PATH
+          value: /testEndpoint
+      - equal:
+          path: data.HARBOR_EXPORTER_METRICS_ENABLED
+          value: "true"
+      - equal:
+          path: data.HARBOR_EXPORTER_CACHE_TIME
+          value: "30"
+      - equal:
+          path: data.HARBOR_EXPORTER_CACHE_CLEAN_INTERVAL
+          value: "1000"
+      - equal:
+          path: data.HARBOR_REDIS_URL
+          value: redis://RELEASE-NAME-harbor-redis:6379/1
+      - equal:
+          path: data.HARBOR_REDIS_NAMESPACE
+          value: harbor_job_service_namespace
+      - equal:
+          path: data.HARBOR_REDIS_TIMEOUT
+          value: "3600"
+      - equal:
+          path: data.HARBOR_SERVICE_SCHEME
+          value: http
+      - equal:
+          path: data.HARBOR_SERVICE_HOST
+          value: RELEASE-NAME-harbor-core
+      - equal:
+          path: data.HARBOR_SERVICE_PORT
+          value: "80"
+      - equal:
+          path: data.HARBOR_DATABASE_HOST
+          value: RELEASE-NAME-harbor-database
+      - equal:
+          path: data.HARBOR_DATABASE_PORT
+          value: "5432"
+      - equal:
+          path: data.HARBOR_DATABASE_USERNAME
+          value: postgres
+      - equal:
+          path: data.HARBOR_DATABASE_DBNAME
+          value: registry
+      - equal:
+          path: data.HARBOR_DATABASE_SSLMODE
+          value: disable
+      - equal:
+          path: data.HARBOR_DATABASE_MAX_IDLE_CONNS
+          value: "100"
+      - equal:
+          path: data.HARBOR_DATABASE_MAX_OPEN_CONNS
+          value: "50"

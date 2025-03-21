@@ -100,7 +100,6 @@ spec:
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
         {{- end }}
-        args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
             name: "{{ template "harbor.registry" . }}"
