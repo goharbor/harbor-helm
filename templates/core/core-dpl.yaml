@@ -157,6 +157,9 @@ spec:
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
+        {{- with .Values.core.volumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
         - name: config
           mountPath: /etc/core/app.conf
           subPath: app.conf
@@ -189,6 +192,9 @@ spec:
 {{ toYaml .Values.core.resources | indent 10 }}
 {{- end }}
       volumes:
+      {{- with .Values.core.volumes }}
+        {{- toYaml . | nindent 6}}
+      {{- end }}
       - name: config
         configMap:
           name: {{ template "harbor.core" . }}
