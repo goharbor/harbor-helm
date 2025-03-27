@@ -482,6 +482,7 @@ containerSecurityContext:
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
   image:
+    registry: docker.io
     repository: goharbor/nginx-photon
     tag: dev
   # set the service account to be used, default if left empty
@@ -513,6 +514,7 @@ nginx:
 
 portal:
   image:
+    registry: docker.io
     repository: goharbor/harbor-portal
     tag: dev
   # set the service account to be used, default if left empty
@@ -553,6 +555,7 @@ portal:
 
 core:
   image:
+    registry: docker.io
     repository: goharbor/harbor-core
     tag: dev
   # set the service account to be used, default if left empty
@@ -642,6 +645,7 @@ core:
 
 jobservice:
   image:
+    registry: docker.io
     repository: goharbor/harbor-jobservice
     tag: dev
   # set the service account to be used, default if left empty
@@ -705,6 +709,7 @@ jobservice:
 registry:
   registry:
     image:
+      registry: docker.io
       repository: goharbor/registry-photon
       tag: dev
     # resources:
@@ -714,6 +719,7 @@ registry:
     extraEnvVars: []
   controller:
     image:
+      registry: docker.io
       repository: goharbor/harbor-registryctl
       tag: dev
     # resources:
@@ -793,6 +799,8 @@ trivy:
   # enabled the flag to enable Trivy scanner
   enabled: true
   image:
+    # registry for the Trivy adapter image
+    registry: docker.io
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
@@ -888,6 +896,7 @@ database:
   type: internal
   internal:
     image:
+      registry: docker.io
       repository: goharbor/harbor-db
       tag: dev
     # set the service account to be used, default if left empty
@@ -968,6 +977,7 @@ redis:
   type: internal
   internal:
     image:
+      registry: docker.io
       repository: goharbor/redis-photon
       tag: dev
     # set the service account to be used, default if left empty
@@ -1038,6 +1048,7 @@ redis:
 
 exporter:
   image:
+    registry: docker.io
     repository: goharbor/harbor-exporter
     tag: dev
   serviceAccountName: ""
