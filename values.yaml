@@ -1008,6 +1008,14 @@ redis:
     addr: "192.168.0.2:6379"
     # The name of the set of Redis instances to monitor, it must be set to support redis+sentinel
     sentinelMasterSet: ""
+    # TLS configuration for redis connection
+    # only server-authentication is supported, mTLS for redis connection is not supported
+    # tls connection will be disable by default
+    # Once `tlsOptions.enable` set as true, tls/ssl connection will be used for redis
+    # Please set the `caBundleSecretName` in this configuration file which conatins redis server rootCA if it is self-signed.
+    # The secret must contain keys named "ca.crt" which will be injected into the trust store
+    tlsOptions:
+      enable: false
     # The "coreDatabaseIndex" must be "0" as the library Harbor
     # used doesn't support configuring it
     # harborDatabaseIndex defaults to "0", but it can be configured to "6", this config is optional
