@@ -42,9 +42,23 @@ spec:
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{ if not .Values.openshift.active }}
       securityContext:
         runAsUser: 10000
         fsGroup: 10000
+{{- end }}
+{{- if .Values.jobservice.affinity }}
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - "{{ template "harbor.jobservice" . }}"
+            topologyKey: "kubernetes.io/hostname"
+{{- end -}}
 {{- if .Values.jobservice.serviceAccountName }}
       serviceAccountName: {{ .Values.jobservice.serviceAccountName }}
 {{- end -}}
@@ -70,7 +84,11 @@ spec:
       {{- end }}
       containers:
       - name: jobservice
-        image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -123,9 +141,6 @@ spec:
 {{- with .Values.jobservice.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
-        {{- if not (empty .Values.containerSecurityContext) }}
-        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
-        {{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.jobservice" . }}-env"

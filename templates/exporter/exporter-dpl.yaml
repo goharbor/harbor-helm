@@ -9,6 +9,11 @@ metadata:
     component: exporter
     app.kubernetes.io/component: exporter
 spec:
+{{- if not .Values.openshift.active }}
+  securityContext:
+    runAsUser: 10000
+    fsGroup: 10000
+{{- end }}
   replicas: {{ .Values.exporter.replicas }}
   revisionHistoryLimit: {{ .Values.exporter.revisionHistoryLimit }}
   selector:
@@ -36,9 +41,6 @@ spec:
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
 {{- if .Values.exporter.serviceAccountName }}
       serviceAccountName: {{ .Values.exporter.serviceAccountName }}
 {{- end -}}
@@ -59,7 +61,11 @@ spec:
 {{- end }}
       containers:
       - name: exporter
+{{ if not .Values.openshift.active }}
         image: {{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

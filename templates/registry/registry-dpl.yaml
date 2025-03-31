@@ -44,10 +44,6 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
-        fsGroupChangePolicy: OnRootMismatch
 {{- if .Values.registry.serviceAccountName }}
       serviceAccountName: {{ .Values.registry.serviceAccountName }}
 {{- end -}}
@@ -73,7 +69,11 @@ spec:
       {{- end }}
       containers:
       - name: registry
-        image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -211,7 +211,11 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       - name: registryctl
-        image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

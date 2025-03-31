@@ -1,0 +1,32 @@
+{{- if .Values.openshift.active }}
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: "{{ template "harbor.trivy" . }}"
+  labels:
+    build: "{{ template "harbor.trivy" . }}"
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'trivy-adapter-photon:dev'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Docker
+  postCommit: {}
+  source:
+    type: Dockerfile
+    dockerfile: |-
+      FROM goharbor/trivy-adapter-photon:dev
+      RUN chmod o+rwx /home/scanner/ && \
+          chmod o+rwx /home/scanner/*.sh && \
+          chmod o+rwx /etc/pki/tls/certs/ca-bundle.crt
+ 
+  triggers:
+    - type: ImageChange
+    - type: ConfigChange
+  runPolicy: Serial
+status: {}
+{{- end -}}
