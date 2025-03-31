@@ -36,9 +36,6 @@ spec:
 {{ toYaml .Values.core.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
 {{- if .Values.core.serviceAccountName }}
       serviceAccountName: {{ .Values.core.serviceAccountName }}
 {{- end -}}
@@ -64,7 +61,7 @@ spec:
       {{- end }}
       containers:
       - name: core
-        image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+        image: {{ .Values.openshiftregistry }}/{{ .Release.Namespace }}/{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
