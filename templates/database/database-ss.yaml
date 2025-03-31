@@ -31,9 +31,11 @@ spec:
 {{ toYaml .Values.database.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if not .Values.openshift.active }}
       securityContext:
         runAsUser: 999
         fsGroup: 999
+{{- end }}
 {{- if .Values.database.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
 {{- end -}}
@@ -49,7 +51,11 @@ spec:
       # use this init container to correct the permission
       # as "fsGroup" applied before the init container running, the container has enough permission to execute the command
       - name: "data-permissions-ensurer"
-        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
@@ -69,7 +75,11 @@ spec:
       {{- end }}
       containers:
       - name: database
-        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}

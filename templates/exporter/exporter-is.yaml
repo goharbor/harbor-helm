@@ -1,0 +1,10 @@
+{{- if .Values.openshift.active }}
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: "harbor-exporter"
+spec:
+  lookupPolicy:
+    local: false
+status: {}
+{{- end -}}

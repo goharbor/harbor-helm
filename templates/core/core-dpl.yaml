@@ -8,6 +8,11 @@ metadata:
     component: core
     app.kubernetes.io/component: core
 spec:
+{{- if not .Values.openshift.active }}
+  securityContext:
+    runAsUser: 10000
+    fsGroup: 10000
+{{- end }}
   replicas: {{ .Values.core.replicas }}
   revisionHistoryLimit: {{ .Values.core.revisionHistoryLimit }}
   selector:
@@ -36,9 +41,6 @@ spec:
 {{ toYaml .Values.core.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
 {{- if .Values.core.serviceAccountName }}
       serviceAccountName: {{ .Values.core.serviceAccountName }}
 {{- end -}}
@@ -64,7 +66,11 @@ spec:
       {{- end }}
       containers:
       - name: core
-        image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:

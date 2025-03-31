@@ -43,9 +43,6 @@ spec:
 {{- if .Values.trivy.serviceAccountName }}
       serviceAccountName: {{ .Values.trivy.serviceAccountName }}
 {{- end }}
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
       automountServiceAccountToken: {{ .Values.trivy.automountServiceAccountToken | default false }}
 {{- with .Values.trivy.topologySpreadConstraints}}
       topologySpreadConstraints:
@@ -63,7 +60,11 @@ spec:
       {{- end }}
       containers:
         - name: trivy
-          image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+{{ if not .Values.openshift.active }}
+          image: docker.io/goharbor/{{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+{{ else }}
+          image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+{{ end }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           {{- if not (empty .Values.containerSecurityContext) }}
           securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}

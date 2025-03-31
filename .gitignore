@@ -1,2 +1,4 @@
 charts/*
 requirements.lock
+values_*.yaml
+certs/*
