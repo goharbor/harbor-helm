@@ -110,7 +110,9 @@ expose:
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
 externalURL: https://test-harbor.rahtiapp.fi
-openshiftregistry: image-registry.openshift-image-registry.svc:5000
+
+openshift:
+  registry: image-registry.openshift-image-registry.svc:5000
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamically.
 # Specify another StorageClass in the "storageClass" or set "existingClaim"

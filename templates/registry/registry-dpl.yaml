@@ -69,7 +69,7 @@ spec:
       {{- end }}
       containers:
       - name: registry
-        image: {{ .Values.openshiftregistry }}/{{ .Release.Namespace }}/{{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -207,7 +207,7 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       - name: registryctl
-        image: {{ .Values.openshiftregistry }}/{{ .Release.Namespace }}/{{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

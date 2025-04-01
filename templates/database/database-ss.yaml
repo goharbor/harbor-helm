@@ -46,7 +46,7 @@ spec:
       # use this init container to correct the permission
       # as "fsGroup" applied before the init container running, the container has enough permission to execute the command
       - name: "data-permissions-ensurer"
-        image: {{ .Values.openshiftregistry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
@@ -66,7 +66,7 @@ spec:
       {{- end }}
       containers:
       - name: database
-        image: {{ .Values.openshiftregistry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}

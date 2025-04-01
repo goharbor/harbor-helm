@@ -79,7 +79,7 @@ spec:
       {{- end }}
       containers:
       - name: jobservice
-        image: {{ .Values.openshiftregistry }}/{{ .Release.Namespace }}/{{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
