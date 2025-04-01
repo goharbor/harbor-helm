@@ -112,6 +112,7 @@ expose:
 externalURL: https://test-harbor.rahtiapp.fi
 
 openshift:
+  active: false
   registry: image-registry.openshift-image-registry.svc:5000
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamically.

@@ -1,3 +1,4 @@
+{{- if .Values.openshift.active }}
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
@@ -28,3 +29,4 @@ spec:
     - type: ConfigChange
   runPolicy: Serial
 status: {}
+{{- end -}}
