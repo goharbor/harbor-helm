@@ -79,7 +79,11 @@ spec:
       {{- end }}
       containers:
       - name: jobservice
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
+{{ else }}
         image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:

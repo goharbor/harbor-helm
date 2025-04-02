@@ -46,7 +46,11 @@ spec:
       # use this init container to correct the permission
       # as "fsGroup" applied before the init container running, the container has enough permission to execute the command
       - name: "data-permissions-ensurer"
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ else }}
         image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
@@ -66,7 +70,11 @@ spec:
       {{- end }}
       containers:
       - name: database
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ else }}
         image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}

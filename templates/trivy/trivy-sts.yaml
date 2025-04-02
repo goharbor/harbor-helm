@@ -60,7 +60,11 @@ spec:
       {{- end }}
       containers:
         - name: trivy
+{{ if not .Values.openshift.active }}
+          image: docker.io/goharbor/{{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+{{ else }}
           image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+{{ end }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           {{- if not (empty .Values.containerSecurityContext) }}
           securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}

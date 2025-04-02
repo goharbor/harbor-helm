@@ -61,7 +61,11 @@ spec:
       {{- end }}
       containers:
       - name: core
+{{ if not .Values.openshift.active }}
+        image: docker.io/goharbor/{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+{{ else }}
         image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
