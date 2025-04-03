@@ -42,6 +42,11 @@ spec:
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{ if not .Values.openshift.active }}
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+{{- end }}
 {{- if .Values.jobservice.affinity }}
       affinity:
         podAffinity:

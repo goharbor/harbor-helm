@@ -8,6 +8,11 @@ metadata:
     component: core
     app.kubernetes.io/component: core
 spec:
+{{- if not .Values.openshift.active }}
+  securityContext:
+    runAsUser: 10000
+    fsGroup: 10000
+{{- end }}
   replicas: {{ .Values.core.replicas }}
   revisionHistoryLimit: {{ .Values.core.revisionHistoryLimit }}
   selector:

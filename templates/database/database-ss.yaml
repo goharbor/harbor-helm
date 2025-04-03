@@ -31,6 +31,11 @@ spec:
 {{ toYaml .Values.database.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if not .Values.openshift.active }}
+      securityContext:
+        runAsUser: 999
+        fsGroup: 999
+{{- end }}
 {{- if .Values.database.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.database.internal.serviceAccountName }}
 {{- end -}}
