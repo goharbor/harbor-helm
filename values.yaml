@@ -974,6 +974,8 @@ redis:
     serviceAccountName: ""
     # mount the service account token
     automountServiceAccountToken: false
+    # Path to data directory
+    dataPath: "/var/lib/redis"
     # resources:
     #  requests:
     #    memory: 256Mi
