@@ -332,6 +332,9 @@ spec:
         ports:
         - containerPort: {{ template "harbor.registryctl.containerPort" . }}
         volumeMounts:
+        {{- with .Values.registry.volumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
         - name: registry-data
           mountPath: {{ .Values.persistence.imageChartStorage.filesystem.rootdirectory }}
           subPath: {{ .Values.persistence.persistentVolumeClaim.registry.subPath }}
@@ -359,6 +362,9 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       volumes:
+      {{- with .Values.registry.volumes }}
+        {{- toYaml . | nindent 6}}
+      {{- end }}
       - name: registry-htpasswd
         secret:
           {{- if not .Values.registry.credentials.existingSecret }}
