@@ -12,9 +12,9 @@ kind: HTTPRoute
 metadata:
   name: "{{ template "harbor.route" . }}"
   namespace: {{ .Release.Namespace | quote }}
+{{- if $route.labels }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-{{- if $route.labels }}
 {{ toYaml $route.labels | indent 4 }}
 {{- end }}
 {{- if $route.annotations }}
@@ -23,8 +23,6 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
-  - group: gateway.networking.k8s.io
-    kind: Gateway
   {{- toYaml $route.parentRefs | nindent 2 }}
   hostnames: 
   {{- toYaml $route.hostnames | nindent 2 }}
@@ -33,27 +31,12 @@ spec:
     - path:
         type: {{ .path_type }}
         value: {{ .api_path }}
-    backendRefs:
-    - name: {{ template "harbor.core" . }}
-      namespace: {{ .Release.Namespace | quote }}
-      port: {{ template "harbor.core.servicePort" . }}
-  - matches:
     - path:
         type: {{ .path_type }}
         value: {{ .service_path }}
-    backendRefs:
-    - name: {{ template "harbor.core" . }}
-      namespace: {{ .Release.Namespace | quote }}
-      port: {{ template "harbor.core.servicePort" . }}
-  - matches:
     - path:
         type: {{ .path_type }}
         value: {{ .v2_path }}
-    backendRefs:
-    - name: {{ template "harbor.core" . }}
-      namespace: {{ .Release.Namespace | quote }}
-      port: {{ template "harbor.core.servicePort" . }}
-  - matches:
     - path:
         type: {{ .path_type }}
         value: {{ .controller_path }}
