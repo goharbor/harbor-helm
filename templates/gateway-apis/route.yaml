@@ -1,11 +1,11 @@
 {{- if eq .Values.expose.type "route" }}
 {{- $route := .Values.expose.route -}}
 {{- $_ := set . "path_type" "PathPrefix" -}}
-{{- $_ := set . "portal_path" "/*" -}}
-{{- $_ := set . "api_path" "/api/*" -}}
-{{- $_ := set . "service_path" "/service/*" -}}
-{{- $_ := set . "v2_path" "/v2/*" -}}
-{{- $_ := set . "controller_path" "/c/*" -}}
+{{- $_ := set . "portal_path" "/" -}}
+{{- $_ := set . "api_path" "/api/" -}}
+{{- $_ := set . "service_path" "/service/" -}}
+{{- $_ := set . "v2_path" "/v2/" -}}
+{{- $_ := set . "controller_path" "/c/" -}}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -23,6 +23,8 @@ metadata:
 {{- end }}
 spec:
   parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
   {{- toYaml $route.parentRefs | nindent 2 }}
   hostnames: 
   {{- toYaml $route.hostnames | nindent 2 }}
@@ -33,6 +35,7 @@ spec:
         value: {{ .api_path }}
     backendRefs:
     - name: {{ template "harbor.core" . }}
+      namespace: {{ .Release.Namespace | quote }}
       port: {{ template "harbor.core.servicePort" . }}
   - matches:
     - path:
@@ -40,6 +43,7 @@ spec:
         value: {{ .service_path }}
     backendRefs:
     - name: {{ template "harbor.core" . }}
+      namespace: {{ .Release.Namespace | quote }}
       port: {{ template "harbor.core.servicePort" . }}
   - matches:
     - path:
@@ -47,6 +51,7 @@ spec:
         value: {{ .v2_path }}
     backendRefs:
     - name: {{ template "harbor.core" . }}
+      namespace: {{ .Release.Namespace | quote }}
       port: {{ template "harbor.core.servicePort" . }}
   - matches:
     - path:
@@ -54,6 +59,7 @@ spec:
         value: {{ .controller_path }}
     backendRefs:
     - name: {{ template "harbor.core" . }}
+      namespace: {{ .Release.Namespace | quote }}
       port: {{ template "harbor.core.servicePort" . }}
   - matches:
     - path:
@@ -61,5 +67,6 @@ spec:
         value: {{ .portal_path }}
     backendRefs:
     - name: {{ template "harbor.portal" . }}
+      namespace: {{ .Release.Namespace | quote }}
       port: {{ template "harbor.portal.servicePort" . }}
 {{- end }}
