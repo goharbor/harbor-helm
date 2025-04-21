@@ -58,7 +58,7 @@ expose:
       #   kind: Gateway
     parentRefs: {}
       # - "harbor.example.com"
-    hostnames: []
+    hosts: []
   clusterIP:
     # The name of ClusterIP service
     name: harbor

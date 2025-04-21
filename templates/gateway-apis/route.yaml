@@ -25,7 +25,7 @@ spec:
   parentRefs:
   {{- toYaml $route.parentRefs | nindent 2 }}
   hostnames: 
-  {{- toYaml $route.hostnames | nindent 2 }}
+  {{- toYaml $route.hosts | nindent 2 }}
   rules:
   - matches:
     - path:

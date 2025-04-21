@@ -12,7 +12,7 @@ tests:
               group: gateway.networking.k8s.io
               sectionName: test-section
               kind: Gateway
-          hostnames:
+          hosts:
             - harbor.example.com
     template: templates/gateway-apis/route.yaml
     asserts:
@@ -22,6 +22,7 @@ tests:
       - equal:
           path: spec.parentRefs[0].name
           value: test-parent
+
   - it: Route Extra Annotations
     set:
       expose:
@@ -32,13 +33,14 @@ tests:
           parentRefs:
             - name: test-parent
               namespace: test-namespace
-          hostnames:
+          hosts:
             - harbor.example.com
     template: templates/gateway-apis/route.yaml
     asserts:
       - equal:
           path: metadata.annotations["test.annotation"]
           value: test-annotation
+
   - it: Route Extra Labels
     set:
       expose:
@@ -49,7 +51,7 @@ tests:
           parentRefs:
             - name: test-parent
               namespace: test-namespace
-          hostnames:
+          hosts:
             - harbor.example.com
     template: templates/gateway-apis/route.yaml
     asserts:
@@ -67,7 +69,7 @@ tests:
           parentRefs:
             - name: test-parent
               namespace: test-namespace
-          hostnames:
+          hosts:
             - harbor.example.com
     template: templates/gateway-apis/route.yaml
     asserts:
