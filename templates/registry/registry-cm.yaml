@@ -171,13 +171,14 @@ data:
       redirect:
         disable: {{ $storage.disableredirect }}
     redis:
-      addr: {{ template "harbor.redis.addr" . }}
+      addr: {{ template "harbor.redis.addrFor" (list "registry" .) }}
       {{- if eq "redis+sentinel" (include "harbor.redis.scheme" .) }}
       sentinelMasterSet: {{ template "harbor.redis.masterSet" . }}
       {{- end }}
       db: {{ template "harbor.redis.dbForRegistry" . }}
-      {{- if not (eq (include "harbor.redis.password" .) "") }}
-      password: {{ template "harbor.redis.password" . }}
+      {{- $pwd := (include "harbor.redis.passwordFor" (list "registry" .)) }}
+      {{- if ne $pwd "" }}
+      password: {{ $pwd }}
       {{- end }}
       readtimeout: 10s
       writetimeout: 10s
