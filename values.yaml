@@ -270,7 +270,7 @@ persistence:
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 # or give an existing secret for it
 # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
-# existingSecretAdminPassword:
+existingSecretAdminPassword: ""
 existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
 harborAdminPassword: "Harbor12345"
 
@@ -626,7 +626,7 @@ core:
   tokenCert: |
   # The XSRF key. Will be generated automatically if it isn't specified
   # While you specified, Please make sure it is 32 characters, otherwise would have validation issue at the harbor-core runtime
-  # https://github.com/goharbor/harbor/pull/21154 
+  # https://github.com/goharbor/harbor/pull/21154
   xsrfKey: ""
   # If using existingSecret, the key is defined by core.existingXsrfSecretKey
   existingXsrfSecret: ""
