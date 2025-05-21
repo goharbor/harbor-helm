@@ -55,6 +55,7 @@ jobs:
           df -h
           free -m
           mkdir -p /tmp/harbor
+          kubectl get pod -n default
           for name in core jobservice registry registryctl trivy portal redis database; do \
             kubectl -n default logs -l "component=$name" --all-containers > /tmp/harbor/$name.log ; \
           done
