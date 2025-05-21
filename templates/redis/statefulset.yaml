@@ -10,7 +10,7 @@ metadata:
     component: redis
     app.kubernetes.io/component: redis
 spec:
-  replicas: 1
+  replicas: {{ .Values.redis.internal.replicaCount | default 1 }}
   serviceName: {{ template "harbor.redis" . }}
   selector:
     matchLabels:
