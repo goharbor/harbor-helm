@@ -80,12 +80,12 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 # install harbor chart
                 docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
                     helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
-                        --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
+                        --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname}:8443,internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
             """
         }
 
         HarborInstance instance = new HarborInstance()
-        instance.coreServiceURL = "https://" + coreHostname
+        instance.coreServiceURL = "https://" + coreHostname + ":8443"
         instance.adminPassword = "Harbor12345"
         instance.authMode = "database"
         instance.components = "trivy"

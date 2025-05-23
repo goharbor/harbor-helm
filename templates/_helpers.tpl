@@ -329,7 +329,7 @@ app: "{{ template "harbor.name" . }}"
 {{/* core component service port */}}
 {{- define "harbor.core.servicePort" -}}
   {{- if .Values.internalTLS.enabled -}}
-    {{- printf "443" -}}
+    {{- printf "8443" -}}
   {{- else -}}
     {{- printf "80" -}}
   {{- end -}}
