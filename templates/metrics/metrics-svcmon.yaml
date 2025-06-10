@@ -27,6 +27,9 @@ spec:
     relabelings:
 {{ toYaml .Values.metrics.serviceMonitor.relabelings | indent 4 }}
 {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
   selector:
     matchLabels: {{ include "harbor.matchLabels" . | nindent 6 }}
 {{- end }}
