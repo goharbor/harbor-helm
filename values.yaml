@@ -408,8 +408,12 @@ metrics:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # Configure ServiceMonitor namespace. If not set, the default namespace will use the release namespace.
+    # namespace: ""
     # Scrape interval. If not set, the Prometheus default scrape interval is used.
     interval: ""
+    # Scrape interval timeout. If not set, the Prometheus default scrape interval timeout is used.
+    scrapeTimeout: ""
     # Metric relabel configs to apply to samples before ingestion.
     metricRelabelings:
       []
