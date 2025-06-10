@@ -1,0 +1,6 @@
+{{- if .Values.sa.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.sa.name }}
+{{- end }}

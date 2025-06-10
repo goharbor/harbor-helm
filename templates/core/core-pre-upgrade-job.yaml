@@ -51,7 +51,7 @@ spec:
         {{- end }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
-        {{- end }}               
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf
