@@ -1066,3 +1066,6 @@ exporter:
   #   whenUnsatisfiable: DoNotSchedule
   cacheDuration: 23
   cacheCleanInterval: 14400
+
+# Extra K8s manifests to deploy
+extraObjects: []
