@@ -15,6 +15,9 @@ spec:
     {{- if .Values.metrics.serviceMonitor.interval }}
     interval: {{ .Values.metrics.serviceMonitor.interval }}
     {{- end }}
+    {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+    {{- end }}
     honorLabels: true
 {{- if .Values.metrics.serviceMonitor.metricRelabelings }}
     metricRelabelings:
