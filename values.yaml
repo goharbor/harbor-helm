@@ -48,6 +48,17 @@ expose:
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
     # ingress-specific labels
     labels: {}
+  route:
+    labels: {}
+    annotations: {}
+      # - name: envoy-internal
+      #   namespace: networking
+      #   sectionName: https
+      #   group: gateway.networking.k8s.io
+      #   kind: Gateway
+    parentRefs: {}
+      # - "harbor.example.com"
+    hosts: []
   clusterIP:
     # The name of ClusterIP service
     name: harbor
