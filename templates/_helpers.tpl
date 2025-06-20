@@ -589,6 +589,10 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
+{{- define "harbor.jobservice.maxjobdurationInSeconds" -}}
+  {{- mul (default 24 .Values.jobservice.max_job_duration_hours) 3600 }}
+{{- end -}}
+
 {{/* Allow KubeVersion to be overridden. */}}
 {{- define "harbor.ingress.kubeVersion" -}}
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}

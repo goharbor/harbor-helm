@@ -678,6 +678,10 @@ jobservice:
   #   image: busybox
   #   command: [ 'sh', '-c', "sleep 20" ]
   maxJobWorkers: 10
+  # Maximum hours of task duration in job service, default 24 hours
+  # Once expired, job can't be seen on the Jobservice Dashboard
+  # This config will also overwrite reaper.max_update_hours
+  # max_job_duration_hours: 24
   # The logger for jobs: "file", "database" or "stdout"
   jobLoggers:
     - file
@@ -689,8 +693,7 @@ jobservice:
     webhook_job_max_retry: 3
     webhook_job_http_client_timeout: 3 # in seconds
   reaper:
-    # the max time to wait for a task to finish, if unfinished after max_update_hours, the task will be mark as error, but the task will continue to run, default value is 24
-    max_update_hours: 24
+    # max_update_hours will be removed for config and will keep same value as max_job_duration_hours
     # the max time for execution in running state without new task created
     max_dangling_hours: 168
   # Secret is used when job service communicates with other components.
