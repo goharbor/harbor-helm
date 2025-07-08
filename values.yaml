@@ -48,6 +48,12 @@ expose:
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
     # ingress-specific labels
     labels: {}
+
+  # Sets the IP family policy for the nginx service to be able to configure dual-stack; see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services).
+  ipFamilyPolicy: ""
+  # A list of IP families for the nginx service that should be supported, in the order in which they should be applied to ClusterIP. Can be "IPv4" and/or "IPv6".
+  ipFamilies: []
+
   clusterIP:
     # The name of ClusterIP service
     name: harbor
@@ -336,6 +342,11 @@ ipFamily:
   # ipv4Enabled set to true if ipv4 is enabled in cluster, currently it affected the nginx related component
   ipv4:
     enabled: true
+
+  # Sets the IP family policy for services to be able to configure dual-stack; see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services).
+  policy: ""
+  # A list of IP families for services that should be supported, in the order in which they should be applied to ClusterIP. Can be "IPv4" and/or "IPv6".
+  families: []
 
 imagePullPolicy: IfNotPresent
 
@@ -1035,6 +1046,10 @@ redis:
   podAnnotations: {}
   ## Additional deployment labels
   podLabels: {}
+  # Sets the IP family policy for the redis service to be able to configure dual-stack; see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services).
+  ipFamilyPolicy: ""
+  # A list of IP families for the redis service that should be supported, in the order in which they should be applied to ClusterIP. Can be "IPv4" and/or "IPv6".
+  ipFamilies: []
 
 exporter:
   image:

@@ -20,6 +20,12 @@ spec:
   {{- if .Values.expose.clusterIP.staticClusterIP }}
   clusterIP: {{ .Values.expose.clusterIP.staticClusterIP }}
   {{- end }}
+  {{- if or .Values.expose.ipFamilyPolicy .Values.ipFamily.policy }}
+  ipFamilyPolicy: {{ ternary .Values.expose.ipFamilyPolicy .Values.ipFamily.policy (not (empty .Values.expose.ipFamilyPolicy)) }}
+  {{- end }}
+  {{- if or .Values.expose.ipFamilies .Values.ipFamily.families }}
+  ipFamilies: {{ toYaml (ternary .Values.expose.ipFamilies .Values.ipFamily.families (not (empty .Values.expose.ipFamilies))) | nindent 4 }}
+  {{- end }}
   ports:
     - name: http
       port: {{ $clusterIP.ports.httpPort }}
