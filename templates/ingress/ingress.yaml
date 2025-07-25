@@ -61,72 +61,73 @@ spec:
   - secretName: {{ template "harbor.tlsCoreSecretForIngress" . }}
     {{- if $ingress.hosts.core }}
     hosts:
-    - {{ $ingress.hosts.core }}
+    {{- range $host := $ingress.hosts.core }}
+    - {{ $host }}
+    {{- end }}
     {{- end }}
   {{- end }}
   rules:
+  {{- range $host := $ingress.hosts.core }}
   - http:
       paths:
-{{- if semverCompare "<1.19-0" (include "harbor.ingress.kubeVersion" .) }}
-      - path: {{ .api_path }}
+      {{- if semverCompare "<1.19-0" (include "harbor.ingress.kubeVersion" $) }}
+      - path: {{ $.api_path }}
         backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .service_path }}
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.service_path }}
         backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .v2_path }}
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.v2_path }}
         backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .controller_path }}
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.controller_path }}
         backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .portal_path }}
+          serviceName: {{ template "harbor.core" $ }}
+          servicePort: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.portal_path }}
         backend:
-          serviceName: {{ template "harbor.portal" . }}
-          servicePort: {{ template "harbor.portal.servicePort" . }}
-{{- else }}
-      - path: {{ .api_path }}
-        pathType: {{ .path_type }}
-        backend:
-          service:
-            name: {{ template "harbor.core" . }}
-            port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .service_path }}
-        pathType: {{ .path_type }}
+          serviceName: {{ template "harbor.portal" $ }}
+          servicePort: {{ template "harbor.portal.servicePort" $ }}
+      {{- else }}
+      - path: {{ $.api_path }}
+        pathType: {{ $.path_type }}
         backend:
           service:
-            name: {{ template "harbor.core" . }}
+            name: {{ template "harbor.core" $ }}
             port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .v2_path }}
-        pathType: {{ .path_type }}
+              number: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.service_path }}
+        pathType: {{ $.path_type }}
         backend:
           service:
-            name: {{ template "harbor.core" . }}
+            name: {{ template "harbor.core" $ }}
             port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .controller_path }}
-        pathType: {{ .path_type }}
+              number: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.v2_path }}
+        pathType: {{ $.path_type }}
         backend:
           service:
-            name: {{ template "harbor.core" . }}
+            name: {{ template "harbor.core" $ }}
             port:
-              number: {{ template "harbor.core.servicePort" . }}
-      - path: {{ .portal_path }}
-        pathType: {{ .path_type }}
+              number: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.controller_path }}
+        pathType: {{ $.path_type }}
         backend:
           service:
-            name: {{ template "harbor.portal" . }}
+            name: {{ template "harbor.core" $ }}
             port:
-              number: {{ template "harbor.portal.servicePort" . }}
-{{- end }}
-    {{- if $ingress.hosts.core }}
-    host: {{ $ingress.hosts.core }}
-    {{- end }}
-
+              number: {{ template "harbor.core.servicePort" $ }}
+      - path: {{ $.portal_path }}
+        pathType: {{ $.path_type }}
+        backend:
+          service:
+            name: {{ template "harbor.portal" $ }}
+            port:
+              number: {{ template "harbor.portal.servicePort" $ }}
+      {{- end }}
+    host: {{ $host}}
+  {{- end }}
 {{- end }}
