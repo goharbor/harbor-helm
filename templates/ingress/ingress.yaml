@@ -68,7 +68,8 @@ spec:
   {{- end }}
   rules:
   {{- range $host := $ingress.hosts.core }}
-  - http:
+  - host: {{ $host }}
+    http:
       paths:
       {{- if semverCompare "<1.19-0" (include "harbor.ingress.kubeVersion" $) }}
       - path: {{ $.api_path }}
@@ -128,6 +129,5 @@ spec:
             port:
               number: {{ template "harbor.portal.servicePort" $ }}
       {{- end }}
-    host: {{ $host}}
   {{- end }}
 {{- end }}
