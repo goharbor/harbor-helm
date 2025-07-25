@@ -19,7 +19,7 @@ func (i *IngressTestSuite) TestIngress() {
 func TestIngressTestSuite(t *testing.T) {
 	suite.Run(t, &IngressTestSuite{
 		BaseTestSuite: NewBaseTestSuite(map[string]string{
-			"expose.ingress.hosts.core": "harbor.local",
+			"expose.ingress.hosts.core": "{harbor.local}",
 			"externalURL":               "https://harbor.local",
 		}),
 	})
