@@ -511,6 +511,7 @@ nginx:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  annotations: {}
   revisionHistoryLimit: 10
   # resources:
   #  requests:
