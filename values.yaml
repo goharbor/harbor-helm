@@ -489,6 +489,7 @@ nginx:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  annotations: {}
   revisionHistoryLimit: 10
   # resources:
   #  requests:
