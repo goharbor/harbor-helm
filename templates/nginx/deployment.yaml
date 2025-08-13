@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: {{ template "harbor.nginx" . }}
   namespace: {{ .Release.Namespace | quote }}
+  {{- with .Values.nginx.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: nginx
