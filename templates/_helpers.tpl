@@ -306,6 +306,10 @@ app: "{{ template "harbor.name" . }}"
   {{- printf "%s-ingress" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{- define "harbor.route" -}}
+  {{- printf "%s-route" (include "harbor.fullname" .) -}}
+{{- end -}}
+
 {{- define "harbor.noProxy" -}}
   {{- printf "%s,%s,%s,%s,%s,%s,%s,%s" (include "harbor.core" .) (include "harbor.jobservice" .) (include "harbor.database" .) (include "harbor.registry" .) (include "harbor.portal" .) (include "harbor.trivy" .) (include "harbor.exporter" .) .Values.proxy.noProxy -}}
 {{- end -}}
