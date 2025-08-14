@@ -7,6 +7,12 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
+  {{- if or .Values.redis.ipFamilyPolicy .Values.ipFamily.policy }}
+  ipFamilyPolicy: {{ ternary .Values.redis.ipFamilyPolicy .Values.ipFamily.policy (not (empty .Values.redis.ipFamilyPolicy)) }}
+  {{- end }}
+  {{- if or .Values.redis.ipFamilies .Values.ipFamily.families }}
+  ipFamilies: {{ toYaml (ternary .Values.redis.ipFamilies .Values.ipFamily.families (not (empty .Values.redis.ipFamilies))) | nindent 4 }}
+  {{- end }}
   ports:
     - port: 6379
   selector:
