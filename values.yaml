@@ -1,4 +1,5 @@
 expose:
+  enabled: true
   # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
   # and fill the information in the corresponding section
   type: ingress
@@ -479,8 +480,9 @@ containerSecurityContext:
     drop:
       - ALL
 
-# If service exposed via "ingress", the Nginx will not be used
+# If service exposed via "ingress", or not enabled the Nginx will not be used
 nginx:
+  enabled: true
   image:
     repository: goharbor/nginx-photon
     tag: dev
