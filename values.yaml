@@ -1031,6 +1031,20 @@ redis:
     password: ""
     # If using existingSecret, the key must be REDIS_PASSWORD
     existingSecret: ""
+    # service-specific redis connection configuration
+    # all fields are optional, if not set, each service falls back to the global configuration
+    services:
+      core:
+        addr: ""
+        username: ""
+        password: ""
+        # If using existingSecret, the key must be REDIS_PASSWORD
+        existingSecret: ""
+      jobservice: {}
+      registry: {}
+      trivyAdapter: {}
+      harbor: {}
+      cacheLayer: {}
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
