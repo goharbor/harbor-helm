@@ -348,6 +348,11 @@ ipFamily:
   ipv4:
     enabled: true
 
+  # Sets the IP family policy for services to be able to configure dual-stack; see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services).
+  policy: ""
+  # A list of IP families for services that should be supported, in the order in which they should be applied to ClusterIP. Can be "IPv4" and/or "IPv6".
+  families: []
+
 imagePullPolicy: IfNotPresent
 
 # Use this set to assign a list of default pullSecrets
