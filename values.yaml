@@ -28,7 +28,7 @@ expose:
       secretName: "empty"
   ingress:
     hosts:
-      core: test-harbor.rahtiapp.fi
+      core: core.harbor.domain
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
@@ -109,7 +109,7 @@ expose:
 # the IP address of k8s node
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://test-harbor.rahtiapp.fi
+externalURL: https://core.harbor.domain
 
 openshift:
   active: true
