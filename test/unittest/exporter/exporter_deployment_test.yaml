@@ -98,14 +98,14 @@ tests:
       - contains:
           path: spec.template.spec.topologySpreadConstraints
           content:
-              labelSelector:
-                matchLabels:
-                  app: harbor
-                  component: exporter
-                  release: RELEASE-NAME
-              maxSkew: 1
-              topologyKey: topology.kubernetes.io/zone
-              whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                app: harbor
+                component: exporter
+                release: RELEASE-NAME
+            maxSkew: 1
+            topologyKey: topology.kubernetes.io/zone
+            whenUnsatisfiable: ScheduleAnyway
 
   - it: ContainerImage
     set:
@@ -311,3 +311,104 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: test-priority
+
+  - it: ExtraEnvVars
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        extraEnvVars:
+          - name: EXAMPLE_ENV_VAR
+            valueFrom:
+              secretKeyRef:
+                name: example-secret
+                key: example-key
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: EXAMPLE_ENV_VAR
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          value: example-secret
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.key
+          value: example-key
+
+  - it: ExtraEnvVarsExistingSecretAdminPassword
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        extraEnvVars:
+          - name: EXAMPLE_ENV_VAR
+            valueFrom:
+              secretKeyRef:
+                name: example-secret
+                key: example-key
+      existingSecretAdminPassword: HARBOR_ADMIN_PASSWORD
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 2
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: HARBOR_ADMIN_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          value: HARBOR_ADMIN_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.key
+          value: HARBOR_ADMIN_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: EXAMPLE_ENV_VAR
+      - equal:
+          path: spec.template.spec.containers[0].env[1].valueFrom.secretKeyRef.name
+          value: example-secret
+      - equal:
+          path: spec.template.spec.containers[0].env[1].valueFrom.secretKeyRef.key
+          value: example-key
+
+  - it: ExtraEnvVarsExtDatabase
+    set:
+      metrics:
+        enabled: true
+      exporter:
+        extraEnvVars:
+          - name: EXAMPLE_ENV_VAR
+            valueFrom:
+              secretKeyRef:
+                name: example-secret
+                key: example-key
+      database:
+        type: external
+        external:
+          existingSecret: database-creds
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 2
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: HARBOR_DATABASE_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          value: database-creds
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.key
+          value: password
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: EXAMPLE_ENV_VAR
+      - equal:
+          path: spec.template.spec.containers[0].env[1].valueFrom.secretKeyRef.name
+          value: example-secret
+      - equal:
+          path: spec.template.spec.containers[0].env[1].valueFrom.secretKeyRef.key
+          value: example-key
