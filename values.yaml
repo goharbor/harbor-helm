@@ -1056,7 +1056,7 @@ redis:
     # username field can be an empty string, and it will be authenticated against the default user
     username: ""
     password: ""
-    # If using existingSecret, the key must be REDIS_PASSWORD
+    # If using existingSecret, the key must be REDIS_PASSWORD, if ACL mode enabled, also inlcudes data of username, the keys must be REDIS_USERNAME
     existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}
