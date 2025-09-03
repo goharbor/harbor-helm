@@ -883,8 +883,19 @@ trivy:
   skipUpdate: false
   # skipJavaDBUpdate If the flag is enabled you have to manually download the `trivy-java.db` file and mount it in the
   # `/home/scanner/.cache/trivy/java-db/trivy-java.db` path
-  #
   skipJavaDBUpdate: false
+  # The dbRepository and javaDBRepository flags can take multiple values, improving reliability when downloading databases.
+  # Databases are downloaded in priority order until one is successful.
+  # An attempt to download from the next repository is only made if a temporary error is received (e.g. status 429 or 5xx).
+  #
+  # OCI repository(ies) to retrieve the trivy vulnerability database in order of priority
+  dbRepository:
+    - "mirror.gcr.io/aquasec/trivy-db"
+    - "ghcr.io/aquasecurity/trivy-db"
+  # OCI repository(ies) to retrieve the Java trivy vulnerability database in order of priority
+  javaDBRepository:
+    - "mirror.gcr.io/aquasec/trivy-java-db"
+    - "ghcr.io/aquasecurity/trivy-java-db"
   # The offlineScan option prevents Trivy from sending API requests to identify dependencies.
   #
   # Scanning JAR files and pom.xml may require Internet access for better detection, but this option tries to avoid it.
