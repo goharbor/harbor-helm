@@ -1,4 +1,4 @@
-{{- if or (eq .Values.expose.type "clusterIP") (eq .Values.expose.type "nodePort") (eq .Values.expose.type "loadBalancer") }}
+{{- if or (eq .Values.expose.type "ClusterIP") (eq .Values.expose.type "NodePort") (eq .Values.expose.type "LoadBalancer") }}
 apiVersion: v1
 kind: Service
 metadata:
