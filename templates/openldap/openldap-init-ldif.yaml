@@ -1,0 +1,185 @@
+{{- if .Values.ldap.local }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openldap-init-ldif
+data:
+  00-base.ldif: |
+    dn: dc=example,dc=org
+    objectClass: top
+    objectClass: dcObject
+    objectClass: organization
+    o: Example Organization
+    dc: example
+  01-base.ldif: |
+    dn: ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: idm
+    
+    dn: OU=Users,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: Users
+    
+    dn: ou=External,ou=Users,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: External
+    
+    dn: ou=Academic,ou=External,ou=Users,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: Academic
+    
+    dn: OU=Projects,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: Projects
+    
+    dn: ou=External,ou=Projects,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: External
+    
+    dn: ou=Internal,ou=Projects,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: Internal
+    
+    dn: ou=Academic,ou=External,ou=Projects,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: Academic
+    
+    dn: ou=Commercial,ou=External,ou=Projects,ou=idm,dc=example,dc=org
+    objectClass: organizationalUnit
+    ou: Commercial
+
+  02-CSCPrjActiveServices.ldif: |
+    dn: cn=test,cn=schema,cn=config
+    changetype: add
+    olcAttributeTypes: ( 2.25.247072656268950430024439664556757516066
+      NAME 'CSCPrjActiveServices'
+      DESC 'The visibility of the object'
+      EQUALITY caseIgnoreMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      USAGE userApplications )
+    objectClass: olcSchemaConfig
+    
+    #
+    # CSCPrjPriResp: cn=agonzale,ou=agonzale_set,ou=academic,ou=external,ou=users,ou
+    #
+
+    dn: cn=test2,cn=schema,cn=config
+    changetype: add
+    olcObjectclasses: ( 1.3.6.1.4.1.42.2.27.4.2.1
+            NAME ( 'CSCProject' )
+            DESC 'CSCProject object'
+            SUP top
+            AUXILIARY
+            MAY ( cn $ CSCPrjActiveServices ) )
+    objectClass: olcSchemaConfig
+
+  03-CSCUserName.ldif: |
+    dn: cn=test2,cn=schema,cn=config
+    changetype: add
+    olcAttributeTypes: ( 2.25.247072656268950430024439664556757516166
+      NAME 'CSCUserName'
+      DESC 'The CSC user name'
+      EQUALITY caseIgnoreMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      USAGE userApplications )
+    objectClass: olcSchemaConfig
+    
+    dn: cn=test2,cn=schema,cn=config
+    changetype: add
+    olcObjectclasses: ( 1.3.6.1.4.1.42.2.27.4.2.3
+            NAME ( 'CSCUser' )
+            DESC 'CSCUser object'
+            SUP top
+            AUXILIARY
+            MAY ( cn $ CSCUserName $ mail ) )
+    objectClass: olcSchemaConfig
+
+  05-project.ldif: |
+    # extended LDIF
+    #
+    # LDAPv3
+    # base <OU=Projects,ou=idm,dc=example,dc=org> with scope subtree
+    # filter: CSCPrjActiveServices=Rahti01
+    # requesting: memberUid objectClass gidNumber
+    #
+    dn: CN=project001,OU=Academic,OU=External,OU=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    CSCPrjActiveServices: HARBOR01
+    memberUid: agonzale
+    gidNumber: 77887
+    
+    dn: CN=project101,ou=Academic,ou=External,ou=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    CSCPrjActiveServices: HARBOR01
+    gidNumber: 37999
+    
+    dn: CN=project201,ou=Commercial,ou=External,ou=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    CSCPrjActiveServices: HARBOR01
+    gidNumber: 47444
+    
+    dn: CN=project301,ou=Internal,ou=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    memberUid: admin
+    CSCPrjActiveServices: HARBOR01
+    gidNumber: 35854
+    
+    dn: CN=helm,ou=Internal,ou=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    gidNumber: 535345
+    
+    memberUid: admin
+    CSCPrjActiveServices: HARBOR01
+    gidNumber: 35854
+    
+    dn: CN=myproject,ou=Internal,ou=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    CSCPrjActiveServices: HARBOR01
+    memberUid: admin
+    gidNumber: 35854
+    
+    dn: CN=noppe-public-images,ou=Internal,ou=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    CSCPrjActiveServices: HARBOR01
+    memberUid: admin
+    gidNumber: 35854
+    
+    dn: CN=library,ou=Internal,ou=Projects,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: posixGroup
+    objectClass: CSCProject
+    CSCPrjActiveServices: HARBOR01
+    memberUid: admin
+    gidNumber: 35854
+
+  10-users.ldif: |
+    dn: ou=agonzale_set,ou=Academic,ou=External,ou=Users,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: organizationalUnit
+    ou: agonzale_set
+    
+    dn: CN=agonzale,ou=agonzale_set,OU=Academic,OU=External,OU=Users,ou=idm,dc=example,dc=org
+    changetype: add
+    objectClass: person
+    objectClass: CSCUser
+    sn:: R29uesOhbGVVIMOBbHZZcmV6
+    memberOf: cn=project301,ou=internal,ou=projects,ou=idm,dc=example,dc=org
+    memberOf: cn=project101,ou=academic,ou=external,ou=projects,ou=idm,dc=example,dc=org
+    memberOf: cn=project201,ou=commercial,ou=external,ou=projects,ou=idm,dc=example,dc=org
+    CSCUserName: agonzale
+    mail: alvaro.gonzalez@csc.fi
+{{- end -}}

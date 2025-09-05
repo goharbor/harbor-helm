@@ -1088,3 +1088,10 @@ exporter:
   #   whenUnsatisfiable: DoNotSchedule
   cacheDuration: 23
   cacheCleenInterval: 14400
+
+ldap:
+  local: true
+  sync:
+    enabled: true
+    image: docker.io/lvarin/harbor-ldaps-sync:latest
+    git: http://github.com/lvarin/harbor-ldaps-sync

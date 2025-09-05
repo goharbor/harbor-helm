@@ -1,0 +1,65 @@
+{{- if .Values.ldap.sync.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: harbor-ldaps-sync
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 4
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+          - env:
+            - name: HARBOR_HOST
+              value: https://{{ .Values.expose.ingress.hosts.core }}/api/v2.0
+            - name: HARBOR_USER
+              valueFrom:
+                secretKeyRef:
+                  key: HARBOR_USER
+                  name: harbor-sync
+            - name: HARBOR_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: HARBOR_PASS
+                  name: harbor-sync
+            - name: LDAP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: LDAP_HOST
+                  name: harbor-sync
+            - name: LDAP_PORT
+              value: "1389"
+            - name: LDAP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: LDAP_USER
+                  name: harbor-sync
+            - name: LDAP_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: LDAP_PASS
+                  name: harbor-sync
+            - name: LOG_LEVEL
+              value: DEBUG
+            image: {{ .Values.ldap.sync.image }}
+            imagePullPolicy: Always
+            name: harbor-sync
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+  schedule: '*/1 * * * *'
+  successfulJobsHistoryLimit: 3
+  suspend: false
+status: {}
+{{- end -}}
