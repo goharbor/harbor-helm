@@ -1,0 +1,62 @@
+{{- if .Values.ldap.local }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openldap
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: openldap
+    spec:
+      volumes:
+        - name: ldap-data
+          persistentVolumeClaim:
+            claimName: openldap-pvc
+        - name: init-ldif
+          configMap:
+            name: openldap-init-ldif
+        - name: schema-ldif
+          configMap:
+            name: openldap-schema-ldif
+      containers:
+        - name: openldap
+          image: image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/openldap-okd:latest
+          env:
+            - name: LDAP_PORT_NUMBER
+              value: "1389"
+            - name: LDAP_LDAPS_PORT_NUMBER
+              value: "1636"
+            - name: LDAP_ADMIN_USERNAME
+              value: admin
+            - name: LDAP_ADMIN_PASSWORD
+              value: adminpassword
+            - name: LDAP_USERS
+              value: customuser
+            - name: LDAP_PASSWORDS
+              value: custompassword
+            - name: LDAP_ROOT
+              value: dc=example,dc=org
+            - name: LDAP_ADMIN_DN
+              value: cn=admin,dc=example,dc=org
+            - name: LDAP_LOGLEVEL
+              value: "2"
+            - name: LDAP_CUSTOM_SCHEMA_DIR
+              value: /schemas
+            - name: BITNAMI_DEBUG
+              value: "true"
+          volumeMounts:
+            - name: ldap-data
+              mountPath: /bitnami/openldap
+            - name: init-ldif
+              mountPath: /ldifs/
+            - name: schema-ldif
+              mountPath: /schemas/
+      restartPolicy: Always
+{{- end -}}

@@ -1,0 +1,28 @@
+{{- if .Values.openshift.active }}
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: harbor-ldaps-sync
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'harbor-ldaps-sync:latest'
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: {{ .Values.ldap.sync.git }}
+    type: Git
+  strategy:
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+    type: Docker
+  successfulBuildsHistoryLimit: 5
+  triggers:
+    - type: ImageChange
+    - type: ConfigChange
+{{- end -}}
