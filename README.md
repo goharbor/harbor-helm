@@ -768,6 +768,19 @@ The following table lists the configurable parameters of the Harbor chart and th
 | `cache.enabled`                                                      | Enable cache layer or not                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `false`                                                                  |
 | `cache.expireHours`                                                  | The expire hours of cache layer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `24`                                                                     |
 
+
+### Harbor Kubernetes Version Compatibility Matrix
+
+The following is a list of the Test Kubernetes versions for each Harbor version. Generally, Harbor supporting Kubernetes version above v1.20+ . However we only test against 3 Kubernetes minor versions for each Harbor minor release. 
+
+| Harbor-Helm Version | Harbor App Version | Tested on Kubernetes version  |
+|---------------------|--------------------|-------------------------------|
+| 1.18                | v2.14              | 1.34.0, 1.33.4, 1.32.8        |
+| 1.17                | v2.13              | 1.31.1, 1.30.4, 1.29.8        |
+| 1.16                | v2.12              | 1.31.1, 1.30.4, 1.29.8        |
+
+
+
 [resources]: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
 [trivy]: https://github.com/aquasecurity/trivy
 [trivy-db]: https://github.com/aquasecurity/trivy-db
