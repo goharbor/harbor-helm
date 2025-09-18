@@ -13,12 +13,10 @@ sources:
 - https://github.com/goharbor/harbor
 - https://github.com/goharbor/harbor-helm
 maintainers:
-- name: Yan Wang
-  email: yan-yw.wang@broadcom.com
-- name: Wenkai Yin
-  email: wenkai.yin@broadcom.com
-- name: Miner Yang
-  email: miner.yang@broadcom.com
-- name: Shengwen Yu
-  email: shengwen.yu@broadcom.com
+- email: yan-yw.wang@broadcom.com
+  name: Yan Wang
+- email: stone.zhang@broadcom.com
+  name: Stone Zhang
+- email: miner.yang@broadcom.com
+  name: Miner Yang
 engine: gotpl
