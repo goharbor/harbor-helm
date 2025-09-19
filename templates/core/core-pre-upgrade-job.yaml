@@ -20,9 +20,9 @@ spec:
         component: migrator
     spec:
       restartPolicy: Never
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
+      {{- if not (empty .Values.securityContext) }}
+      securityContext: {{ .Values.securityContext | toYaml | nindent 8 }}
+      {{- end }}
 {{- if .Values.core.serviceAccountName }}
       serviceAccountName: {{ .Values.core.serviceAccountName }}
 {{- end -}}
