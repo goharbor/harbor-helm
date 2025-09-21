@@ -482,8 +482,15 @@ cache:
   # default keep cache for one day.
   expireHours: 24
 
+## set Security Context to comply with PSP restricted policy if necessary
+## securityContext:{} is initially an empty yaml that you could edit it on demand, we just filled with a common template for convenience
+securityContext:
+  runAsUser: 10000
+  fsGroup: 10000
+  fsGroupChangePolicy: OnRootMismatch
+
 ## set Container Security Context to comply with PSP restricted policy if necessary
-## each of the conatiner will apply the same security context
+## each of the container will apply the same security context
 ## containerSecurityContext:{} is initially an empty yaml that you could edit it on demand, we just filled with a common template for convenience
 containerSecurityContext:
   privileged: false
