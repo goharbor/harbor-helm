@@ -86,6 +86,9 @@ data:
         {{- if $storage.s3.multipartcopythresholdsize }}
         multipartcopythresholdsize: {{ $storage.s3.multipartcopythresholdsize }}
         {{- end }}
+        {{- if $storage.s3.forcepathstyle }}
+        forcepathstyle: {{ $storage.s3.forcepathstyle }}
+        {{- end }}
       {{- else if eq $type "swift" }}
       swift:
         authurl: {{ $storage.swift.authurl }}

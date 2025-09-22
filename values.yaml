@@ -242,6 +242,7 @@ persistence:
       #multipartcopychunksize: "33554432"
       #multipartcopymaxconcurrency: 100
       #multipartcopythresholdsize: "33554432"
+      #forcepathstyle: false
     swift:
       authurl: https://storage.myprovider.com/v3/auth
       username: username
