@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: "{{ template "harbor.portal" . }}"
   namespace: {{ .Release.Namespace | quote }}
+  {{- with .Values.portal.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: portal

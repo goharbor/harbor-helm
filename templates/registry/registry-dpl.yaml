@@ -5,6 +5,10 @@ kind: Deployment
 metadata:
   name: "{{ template "harbor.registry" . }}"
   namespace: {{ .Release.Namespace | quote }}
+  {{- with .Values.registry.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
