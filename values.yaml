@@ -498,7 +498,7 @@ containerSecurityContext:
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
   image:
-    repository: goharbor/nginx-photon
+    repository: docker.io/goharbor/nginx-photon
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -529,7 +529,7 @@ nginx:
 
 portal:
   image:
-    repository: goharbor/harbor-portal
+    repository: docker.io/goharbor/harbor-portal
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -569,7 +569,7 @@ portal:
 
 core:
   image:
-    repository: goharbor/harbor-core
+    repository: docker.io/goharbor/harbor-core
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -658,7 +658,7 @@ core:
 
 jobservice:
   image:
-    repository: goharbor/harbor-jobservice
+    repository: docker.io/goharbor/harbor-jobservice
     tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -721,7 +721,7 @@ jobservice:
 registry:
   registry:
     image:
-      repository: goharbor/registry-photon
+      repository: docker.io/goharbor/registry-photon
       tag: dev
     # resources:
     #  requests:
@@ -730,7 +730,7 @@ registry:
     extraEnvVars: []
   controller:
     image:
-      repository: goharbor/harbor-registryctl
+      repository: docker.io/goharbor/harbor-registryctl
       tag: dev
     # resources:
     #  requests:
@@ -810,7 +810,7 @@ trivy:
   enabled: true
   image:
     # repository the repository for Trivy adapter image
-    repository: goharbor/trivy-adapter-photon
+    repository: docker.io/goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: dev
   # set the service account to be used, default if left empty
@@ -915,7 +915,7 @@ database:
   type: internal
   internal:
     image:
-      repository: goharbor/harbor-db
+      repository: docker.io/goharbor/harbor-db
       tag: dev
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -995,7 +995,7 @@ redis:
   type: internal
   internal:
     image:
-      repository: goharbor/redis-photon
+      repository: docker.io/goharbor/redis-photon
       tag: dev
     # set the service account to be used, default if left empty
     serviceAccountName: ""
@@ -1065,7 +1065,7 @@ redis:
 
 exporter:
   image:
-    repository: goharbor/harbor-exporter
+    repository: docker.io/goharbor/harbor-exporter
     tag: dev
   serviceAccountName: ""
   # mount the service account token
