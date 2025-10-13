@@ -211,7 +211,7 @@ spec:
     {{- end }}
 {{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
-  - apiVersion: v1	
+  - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
       name: data
