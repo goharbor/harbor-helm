@@ -73,7 +73,7 @@ spec:
             port: {{ .Values.metrics.exporter.port }}
           initialDelaySeconds: 30
           periodSeconds: 10
-        args: ["-log-level", "{{ .Values.logLevel }}"]
+        args: ["-log-level", "{{ default .Values.logLevel .Values.exporter.logLevel }}"]
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.exporter" . }}-env"

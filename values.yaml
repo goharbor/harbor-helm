@@ -50,13 +50,15 @@ expose:
     labels: {}
   route:
     labels: {}
-    annotations: {}
+    annotations:
+      {}
       # - name: envoy-internal
       #   namespace: networking
       #   sectionName: https
       #   group: gateway.networking.k8s.io
       #   kind: Gateway
-    parentRefs: {}
+    parentRefs:
+      {}
       # - "harbor.example.com"
     hosts: []
   clusterIP:
@@ -577,6 +579,9 @@ core:
   automountServiceAccountToken: false
   replicas: 1
   revisionHistoryLimit: 10
+  # This logLevel will take precedence over the main key logLevel
+  # debug, info, warning, error or fatal
+  #logLevel: info
   ## Startup probe values
   startupProbe:
     enabled: true
@@ -666,6 +671,9 @@ jobservice:
   automountServiceAccountToken: false
   replicas: 1
   revisionHistoryLimit: 10
+  # This logLevel will take precedence over the main key logLevel
+  # debug, info, warning, error or fatal
+  #logLevel: info
   # resources:
   #   requests:
   #     memory: 256Mi
@@ -743,6 +751,9 @@ registry:
   automountServiceAccountToken: false
   replicas: 1
   revisionHistoryLimit: 10
+  # This logLevel will take precedence over the main key logLevel
+  # debug, info, warning, error or fatal
+  #logLevel: info
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -826,6 +837,9 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  # This logLevel will take precedence over the main key logLevel
+  # debug, info, warning, error or fatal
+  #logLevel: info
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
@@ -1072,6 +1086,9 @@ exporter:
   automountServiceAccountToken: false
   replicas: 1
   revisionHistoryLimit: 10
+  # This logLevel will take precedence over the main key logLevel
+  # debug, info, warning, error or fatal
+  #logLevel: info
   # resources:
   #  requests:
   #    memory: 256Mi

@@ -25,7 +25,7 @@ data:
     job_loggers:
       {{- if has "file" .Values.jobservice.jobLoggers }}
       - name: "FILE"
-        level: {{ .Values.logLevel | upper }}
+        level: "{{ default .Values.logLevel .Values.jobservice.logLevel }}"
         settings: # Customized settings of logger
           base_dir: "/var/log/jobs"
         sweeper:
@@ -35,13 +35,13 @@ data:
       {{- end }}
       {{- if has "database" .Values.jobservice.jobLoggers }}
       - name: "DB"
-        level: {{ .Values.logLevel | upper }}
+        level: "{{ default .Values.logLevel .Values.jobservice.logLevel }}"
         sweeper:
           duration: {{ .Values.jobservice.loggerSweeperDuration }} #days
       {{- end }}
       {{- if has "stdout" .Values.jobservice.jobLoggers }}
       - name: "STD_OUTPUT"
-        level: {{ .Values.logLevel | upper }}
+        level: "{{ default .Values.logLevel .Values.jobservice.logLevel }}"
       {{- end }}
     metric:
       enabled: {{ .Values.metrics.enabled }}
@@ -50,7 +50,7 @@ data:
     #Loggers for the job service
     loggers:
       - name: "STD_OUTPUT"
-        level: {{ .Values.logLevel | upper }}
+        level: "{{ default .Values.logLevel .Values.jobservice.logLevel }}"
     reaper:
       # the max time to wait for a task to finish, if unfinished after max_update_hours, the task will be mark as error, but the task will continue to run, default value is 24
       max_update_hours: {{ .Values.jobservice.reaper.max_update_hours }}
