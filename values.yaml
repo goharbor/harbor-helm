@@ -50,15 +50,13 @@ expose:
     labels: {}
   route:
     labels: {}
-    annotations:
-      {}
+    annotations: {}
       # - name: envoy-internal
       #   namespace: networking
       #   sectionName: https
       #   group: gateway.networking.k8s.io
       #   kind: Gateway
-    parentRefs:
-      {}
+    parentRefs: {}
       # - "harbor.example.com"
     hosts: []
   clusterIP:
