@@ -969,8 +969,16 @@ database:
     username: "user"
     password: "password"
     coreDatabase: "registry"
-    # if using existing secret, the key must be "password"
-    existingSecret: ""
+    # Use an external secret and provide key mappings
+    existingSecret:
+      enabled: false
+      name: "my-external-secret-name"
+      keys:
+        host: host
+        port: port
+        username: username
+        password: password
+        coreDatabase: dbName
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the

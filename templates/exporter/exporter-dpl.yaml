@@ -80,12 +80,40 @@ spec:
         - secretRef:
             name: "{{ template "harbor.exporter" . }}"
         env:
-        {{- if .Values.database.external.existingSecret }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: HARBOR_DATABASE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.host }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: HARBOR_DATABASE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.port }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: HARBOR_DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.username }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
         - name: HARBOR_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.database.external.existingSecret }}
-              key: password
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.password }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: HARBOR_DATABASE_DBNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.coreDatabase }}
         {{- end }}
         {{- if .Values.existingSecretAdminPassword }}
         - name: HARBOR_ADMIN_PASSWORD
