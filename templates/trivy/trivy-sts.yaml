@@ -78,7 +78,7 @@ spec:
               value: "{{ template "harbor.noProxy" . }}"
           {{- end }}
             - name: "SCANNER_LOG_LEVEL"
-              value: {{ .Values.logLevel | quote }}
+              value: "{{ default .Values.logLevel .Values.trivy.logLevel }}"
             - name: "SCANNER_TRIVY_CACHE_DIR"
               value: "/home/scanner/.cache/trivy"
             - name: "SCANNER_TRIVY_REPORTS_DIR"

@@ -31,7 +31,7 @@ data:
   WITH_TRIVY: {{ .Values.trivy.enabled | quote }}
   TRIVY_ADAPTER_URL: "{{ template "harbor.trivyAdapterURL" . }}"
   REGISTRY_STORAGE_PROVIDER_NAME: "{{ .Values.persistence.imageChartStorage.type }}"
-  LOG_LEVEL: "{{ .Values.logLevel }}"
+  LOG_LEVEL: "{{ default .Values.logLevel .Values.core.logLevel }}"
   CONFIG_PATH: "/etc/core/app.conf"
   CHART_CACHE_DRIVER: "redis"
   _REDIS_URL_CORE: "{{ template "harbor.redis.urlForCore" . }}"
@@ -41,7 +41,7 @@ data:
   {{- end }}
   {{- if or (and (eq .Values.redis.type "internal") .Values.redis.internal.cacheLayerDatabaseIndex) (and (eq .Values.redis.type "external") .Values.redis.external.cacheLayerDatabaseIndex) }}
   _REDIS_URL_CACHE_LAYER: "{{ template "harbor.redis.urlForCache" . }}"
-  {{- end }}  
+  {{- end }}
   PORTAL_URL: "{{ template "harbor.portalURL" . }}"
   REGISTRY_CONTROLLER_URL: "{{ template "harbor.registryControllerURL" . }}"
   REGISTRY_CREDENTIAL_USERNAME: "{{ .Values.registry.credentials.username }}"
@@ -86,7 +86,7 @@ data:
   CACHE_ENABLED: "true"
   CACHE_EXPIRE_HOURS: "{{ .Values.cache.expireHours }}"
   {{- end }}
-  
+
   {{- if .Values.core.quotaUpdateProvider }}
   QUOTA_UPDATE_PROVIDER: "{{ .Values.core.quotaUpdateProvider }}"
   {{- end }}
