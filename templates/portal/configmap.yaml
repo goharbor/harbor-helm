@@ -63,6 +63,9 @@ data:
             }
             location = /index.html {
                 add_header Cache-Control "no-store, no-cache, must-revalidate";
+                {{- with .Values.portal.contentSecurityPolicy }}
+                add_header Content-Security-Policy {{ . }}
+                {{- end }}
             }
         }
     }
