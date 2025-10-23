@@ -995,6 +995,11 @@ redis:
   # if external Redis is used, set "type" to "external"
   # and fill the connection information in "external" section
   type: internal
+  # If redis should be used by the registry.
+  # The registry has some bugs related to cache invalidation when deleting
+  # images, see https://github.com/distribution/distribution/issues/4269. If you
+  # encounter this bug, setting this value to false may help.
+  enabledForRegistry: true
   internal:
     image:
       repository: docker.io/goharbor/redis-photon

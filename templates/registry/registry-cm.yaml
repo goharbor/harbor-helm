@@ -154,8 +154,10 @@ data:
         rootdirectory: {{ $storage.oss.rootdirectory }}
         {{- end }}
       {{- end }}
+      {{- if .Values.redis.enabledForRegistry }}
       cache:
         layerinfo: redis
+      {{- end }}
       maintenance:
         uploadpurging:
           {{- if .Values.registry.upload_purging.enabled }}
@@ -170,6 +172,7 @@ data:
         enabled: true
       redirect:
         disable: {{ $storage.disableredirect }}
+    {{- if .Values.redis.enabledForRegistry }}
     redis:
       addr: {{ template "harbor.redis.addr" . }}
       {{- if eq "redis+sentinel" (include "harbor.redis.scheme" .) }}
@@ -187,6 +190,7 @@ data:
         maxidle: 100
         maxactive: 500
         idletimeout: 60s
+    {{- end }}
     http:
       addr: :{{ template "harbor.registry.containerPort" . }}
       relativeurls: {{ .Values.registry.relativeurls }}
