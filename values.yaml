@@ -507,6 +507,7 @@ nginx:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
+  annotations: {}
   revisionHistoryLimit: 10
   # resources:
   #  requests:
@@ -537,6 +538,7 @@ portal:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
@@ -577,6 +579,11 @@ core:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  # Annotations to add to the harbor-core deployment's. Optional.
+  #
+  # If you are using reloader use the following annotation with your HABROR_SECRET_NAME
+  annotations: {}
+    # secret.reloader.stakater.com/reload: "<HABROR_SECRET_NAME>"
   replicas: 1
   revisionHistoryLimit: 10
   ## Startup probe values
@@ -666,6 +673,7 @@ jobservice:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
@@ -743,6 +751,7 @@ registry:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   nodeSelector: {}
@@ -1072,6 +1081,7 @@ exporter:
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false
+  annotations: {}
   replicas: 1
   revisionHistoryLimit: 10
   # resources:
