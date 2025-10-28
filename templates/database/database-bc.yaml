@@ -1,4 +1,4 @@
-{{- if .Values.openshift.active }}
+{{- if and .Values.openshift.active (eq .Values.database.type "internal") }}
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
