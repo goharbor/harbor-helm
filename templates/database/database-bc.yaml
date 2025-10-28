@@ -9,7 +9,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'harbor-db:dev'
+      name: 'harbor-db:{{ .Values.database.internal.image.tag }}'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -19,7 +19,7 @@ spec:
   source:
     type: Dockerfile
     dockerfile: |-
-      FROM goharbor/harbor-db:dev
+      FROM goharbor/harbor-db:{{ .Values.database.internal.image.tag }}
       RUN chmod o+rwx /docker-entrypoint.sh && \
           chmod o+rwx /docker-healthcheck.sh
   triggers:
