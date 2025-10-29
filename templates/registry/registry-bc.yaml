@@ -9,7 +9,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'harbor-registryctl:dev'
+      name: 'harbor-registryctl:{{ .Values.registry.controller.image.tag }}'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -19,7 +19,7 @@ spec:
   source:
     type: Dockerfile
     dockerfile: |-
-      FROM goharbor/harbor-registryctl:dev
+      FROM goharbor/harbor-registryctl:{{ .Values.registry.controller.image.tag }}
       RUN chmod o+rwx /home/harbor/ && \
           chmod o+rwx /home/harbor/*.sh && \
           chmod o+rwx /etc/pki/tls/certs/ca-bundle.crt
