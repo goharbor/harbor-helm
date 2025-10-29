@@ -9,7 +9,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'registry-photon:dev'
+      name: 'registry-photon:{{ .Values.registry.registry.image.tag }}'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -19,7 +19,7 @@ spec:
   source:
     type: Dockerfile
     dockerfile: |-
-      FROM goharbor/registry-photon:dev
+      FROM goharbor/registry-photon:{{ .Values.registry.registry.image.tag }}
       RUN chmod o+rwx /home/harbor/ && \
           chmod o+rwx /home/harbor/*.sh && \
           chmod o+rwx /etc/pki/tls/certs/ca-bundle.crt

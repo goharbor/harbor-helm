@@ -9,7 +9,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'harbor-exporter:dev'
+      name: 'harbor-exporter:{{ .Values.exporter.image.tag }}'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -19,7 +19,7 @@ spec:
   source:
     type: Dockerfile
     dockerfile: |-
-      FROM goharbor/harbor-exporter:dev
+      FROM goharbor/harbor-exporter:{{ .Values.exporter.image.tag }}
       RUN chmod o+rwx /harbor/ && \
           chmod o+rwx /harbor/*.sh && \
           chmod o+rwx /etc/pki/tls/certs/ca-bundle.crt
