@@ -58,7 +58,11 @@ spec:
       {{- end }}
       containers:
       - name: portal
+{{ if not .Values.openshift.active }}
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
+{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
 {{- if .Values.portal.resources }}
         resources:

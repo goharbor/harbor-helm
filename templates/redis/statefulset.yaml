@@ -45,7 +45,11 @@ spec:
       {{- end }}
       containers:
       - name: redis
+{{ if not .Values.openshift.active }}
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+{{ else }}
+        image: {{ .Values.openshift.registry }}/{{ .Release.Namespace }}/{{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+{{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
