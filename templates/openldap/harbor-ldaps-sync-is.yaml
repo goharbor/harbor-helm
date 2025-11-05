@@ -1,9 +1,0 @@
-{{- if .Values.openshift.active }}
-apiVersion: image.openshift.io/v1
-kind: ImageStream
-metadata:
-  name: "harbor-ldaps-sync"
-spec:
-  lookupPolicy:
-    local: false
-{{- end -}}
