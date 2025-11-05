@@ -1,6 +1,2 @@
 charts/*
 requirements.lock
-values_*.yaml
-certs/*
-satama.oidc.yaml
-satama-test.oidc.yaml

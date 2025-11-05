@@ -98,14 +98,14 @@ tests:
       - contains:
           path: spec.template.spec.topologySpreadConstraints
           content:
-              labelSelector:
-                matchLabels:
-                  app: harbor
-                  component: exporter
-                  release: RELEASE-NAME
-              maxSkew: 1
-              topologyKey: topology.kubernetes.io/zone
-              whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                app: harbor
+                component: exporter
+                release: RELEASE-NAME
+            maxSkew: 1
+            topologyKey: topology.kubernetes.io/zone
+            whenUnsatisfiable: ScheduleAnyway
 
   - it: ContainerImage
     set:
