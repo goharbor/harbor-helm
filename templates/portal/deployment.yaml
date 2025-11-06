@@ -94,6 +94,13 @@ spec:
         {{- if .Values.internalTLS.enabled }}
         - name: portal-internal-certs
           mountPath: /etc/harbor/ssl/portal
+        {{- if .Values.portal.branding.enabled }}
+        - name: portal-branding
+          mountPath: /usr/share/nginx/html/setting.json
+          subPath: setting.json
+        - name: portal-branding
+          mountPath: /usr/share/nginx/html/images/company-logo-white.svg
+          subPath: company-logo-white.svg
         {{- end }}
       volumes:
       - name: portal-config
@@ -103,6 +110,10 @@ spec:
       - name: portal-internal-certs
         secret:
           secretName: {{ template "harbor.internalTLS.portal.secretName" . }}
+      {{- if .Values.portal.branding.enabled }}
+      - name: portal-branding
+        configMap:
+          name: {{ .Values.portal.branding.configMapName }}
       {{- end }}
     {{- with .Values.portal.nodeSelector }}
       nodeSelector:

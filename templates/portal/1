@@ -1,0 +1,12 @@
+{{- if .Values.portal.branding.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.portal.branding.configMapName }}
+data:
+  setting.json: |
+{{ .Files.Get "branding/setting.json" | indent 4 }}
+  company-logo.svg: |
+{{ .Files.Get "branding/company-logo-white.svg" | indent 4 }}
+{{- end }}
+
