@@ -43,6 +43,11 @@ spec:
 {{- if .Values.trivy.serviceAccountName }}
       serviceAccountName: {{ .Values.trivy.serviceAccountName }}
 {{- end }}
+{{- if not .Values.openshift.active }}
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+{{- end }}
       automountServiceAccountToken: {{ .Values.trivy.automountServiceAccountToken | default false }}
 {{- with .Values.trivy.topologySpreadConstraints}}
       topologySpreadConstraints:

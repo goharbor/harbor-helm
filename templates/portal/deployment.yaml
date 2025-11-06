@@ -34,6 +34,11 @@ spec:
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if not .Values.openshift.active }}
+      securityContext:
+        runAsUser: 10000
+        fsGroup: 10000
+{{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
