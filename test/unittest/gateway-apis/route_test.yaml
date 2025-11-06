@@ -1,0 +1,96 @@
+suite: GatewayApis
+
+tests:
+  - it: Route Exposure
+    set:
+      expose:
+        type: route
+        route:
+          parentRefs:
+            - name: test-parent
+              namespace: test-namespace
+              group: gateway.networking.k8s.io
+              sectionName: test-section
+              kind: Gateway
+          hosts:
+            - harbor.example.com
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - equal:
+          path: spec.hostnames[0]
+          value: harbor.example.com
+      - equal:
+          path: spec.parentRefs[0].name
+          value: test-parent
+
+  - it: Route Extra Annotations
+    set:
+      expose:
+        type: route
+        route:
+          annotations:
+            test.annotation: test-annotation
+          parentRefs:
+            - name: test-parent
+              namespace: test-namespace
+          hosts:
+            - harbor.example.com
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - equal:
+          path: metadata.annotations["test.annotation"]
+          value: test-annotation
+
+  - it: Route Extra Labels
+    set:
+      expose:
+        type: route
+        route:
+          labels:
+            test.label: test-label
+          parentRefs:
+            - name: test-parent
+              namespace: test-namespace
+          hosts:
+            - harbor.example.com
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["test.label"]
+          value: test-label
+
+  # Service Tests
+
+  - it: Route Service Exposure
+    set:
+      expose:
+        type: route
+        route:
+          parentRefs:
+            - name: test-parent
+              namespace: test-namespace
+          hosts:
+            - harbor.example.com
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: RELEASE-NAME-harbor-core
+      - equal:
+          path: spec.rules[1].backendRefs[0].name
+          value: RELEASE-NAME-harbor-portal
+      - equal:
+          path: spec.rules[0].matches[0].path.value
+          value: /api/
+      - equal:
+          path: spec.rules[0].matches[1].path.value
+          value: /service/
+      - equal:
+          path: spec.rules[0].matches[2].path.value
+          value: /v2/
+      - equal:
+          path: spec.rules[0].matches[3].path.value
+          value: /c/
+      - equal:
+          path: spec.rules[1].matches[0].path.value
+          value: /

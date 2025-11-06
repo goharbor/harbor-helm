@@ -1,5 +1,5 @@
 expose:
-  # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
+  # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort", "loadBalancer" or "route"
   # and fill the information in the corresponding section
   type: ingress
   tls:
@@ -48,6 +48,19 @@ expose:
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
     # ingress-specific labels
     labels: {}
+  route:
+    labels: {}
+    annotations: {}
+    # References to the parent gateways
+    parentRefs: []
+      # - name: envoy-internal
+      #   namespace: networking
+      #   sectionName: https
+      #   group: gateway.networking.k8s.io
+      #   kind: Gateway
+    # The hostnames for the HTTPRoute
+    hosts: []
+      # - "harbor.example.com"
   clusterIP:
     # The name of ClusterIP service
     name: harbor
@@ -340,6 +353,11 @@ ipFamily:
   ipv4:
     enabled: true
 
+  # Sets the IP family policy for services to be able to configure dual-stack; see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services).
+  policy: ""
+  # A list of IP families for services that should be supported, in the order in which they should be applied to ClusterIP. Can be "IPv4" and/or "IPv6".
+  families: []
+
 imagePullPolicy: IfNotPresent
 
 # Use this set to assign a list of default pullSecrets
@@ -553,6 +571,7 @@ portal:
   # - name: wait
   #   image: busybox
   #   command: [ 'sh', '-c', "sleep 20" ]
+
 core:
   image:
     repository: docker.io/goharbor/harbor-core
@@ -869,8 +888,19 @@ trivy:
   skipUpdate: false
   # skipJavaDBUpdate If the flag is enabled you have to manually download the `trivy-java.db` file and mount it in the
   # `/home/scanner/.cache/trivy/java-db/trivy-java.db` path
-  #
   skipJavaDBUpdate: false
+  # The dbRepository and javaDBRepository flags can take multiple values, improving reliability when downloading databases.
+  # Databases are downloaded in priority order until one is successful.
+  # An attempt to download from the next repository is only made if a temporary error is received (e.g. status 429 or 5xx).
+  #
+  # OCI repository(ies) to retrieve the trivy vulnerability database in order of priority
+  dbRepository:
+    - "mirror.gcr.io/aquasec/trivy-db"
+    - "ghcr.io/aquasecurity/trivy-db"
+  # OCI repository(ies) to retrieve the Java trivy vulnerability database in order of priority
+  javaDBRepository:
+    - "mirror.gcr.io/aquasec/trivy-java-db"
+    - "ghcr.io/aquasecurity/trivy-java-db"
   # The offlineScan option prevents Trivy from sending API requests to identify dependencies.
   #
   # Scanning JAR files and pom.xml may require Internet access for better detection, but this option tries to avoid it.

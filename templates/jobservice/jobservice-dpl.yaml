@@ -141,6 +141,9 @@ spec:
 {{- with .Values.jobservice.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.jobservice" . }}-env"

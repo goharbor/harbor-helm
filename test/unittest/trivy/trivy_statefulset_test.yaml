@@ -95,3 +95,22 @@ tests:
           count: 2
       - notExists:
           path: spec.volumeClaimTemplates
+  
+  - it: TrivyDBRepository
+    set:
+      trivy:
+        enabled: true
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[14].value
+          value: "mirror.gcr.io/aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db"
+      - equal:
+          path: spec.template.spec.containers[0].env[14].name
+          value: "SCANNER_TRIVY_DB_REPOSITORY"
+      - equal:
+          path: spec.template.spec.containers[0].env[15].value
+          value: "mirror.gcr.io/aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db"
+      - equal:
+          path: spec.template.spec.containers[0].env[15].name
+          value: "SCANNER_TRIVY_JAVA_DB_REPOSITORY"
