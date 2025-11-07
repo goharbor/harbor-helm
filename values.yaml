@@ -859,6 +859,9 @@ trivy:
   severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
   # ignoreUnfixed the flag to display only fixed vulnerabilities
   ignoreUnfixed: false
+  # ignorePolicy the OPA Rego script to filter vulnerabilities
+  # See https://trivy.dev/latest/docs/configuration/filtering/#by-rego for more details
+  ignorePolicy: ""
   # insecure the flag to skip verifying registry certificate
   insecure: false
   # gitHubToken the GitHub access token to download Trivy DB

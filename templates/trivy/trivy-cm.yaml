@@ -1,0 +1,12 @@
+{{- if and .Values.trivy.enabled .Values.trivy.ignorePolicy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "harbor.trivy" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+data:
+  policy.rego: |
+{{ .Values.trivy.ignorePolicy | indent 4 }}
+{{- end }}
