@@ -114,3 +114,29 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[15].name
           value: "SCANNER_TRIVY_JAVA_DB_REPOSITORY"
+
+  - it: TrivyIgnorePolicy
+    set:
+      trivy:
+        enabled: true
+        ignorePolicy: "OPA Rego script placeholder"
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[10].name
+          value: "SCANNER_TRIVY_IGNORE_POLICY"
+      - equal:
+          path: spec.template.spec.containers[0].env[10].value
+          value: "/home/scanner/opa/policy.rego"
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].name
+          value: "trivy-ignore-policy"
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 2
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: "trivy-ignore-policy"
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 1
