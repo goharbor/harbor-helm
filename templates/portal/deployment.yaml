@@ -90,6 +90,8 @@ spec:
           periodSeconds: 10
         ports:
         - containerPort: {{ template "harbor.portal.containerPort" . }}
+          name: {{ template "harbor.metricsPortName" . }}
+          protocol: TCP
         volumeMounts:
         - name: portal-config
           mountPath: /etc/nginx/nginx.conf

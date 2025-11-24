@@ -155,6 +155,9 @@ spec:
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
         {{- end }}
         ports:
+        - containerPort: {{ .Values.metrics.core.port }}
+          name: {{ template "harbor.metricsPortName" . }}
+          protocol: TCP
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
         - name: config
