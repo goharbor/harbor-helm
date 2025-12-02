@@ -43,7 +43,9 @@ oc adm policy add-scc-to-user anyuid -z default -n <harbor-namespace>
 
 #### For OpenShift 4.14+ (with seccomp profiles):
 
-OpenShift 4.14 and later enforce seccomp profiles. You need to create a custom SCC or use the following commands:
+OpenShift 4.14 and later enforce seccomp profiles. You need to create a custom SCC. You can either use the following commands or create a custom SCC YAML file.
+
+**Quick Method (using command line):**
 
 ```bash
 # Create a custom SCC with seccomp support
@@ -54,6 +56,53 @@ oc patch scc anyuid-seccomp --type=merge -p '{"seccompProfiles":["runtime/defaul
 
 # Assign the SCC to the default service account
 oc adm policy add-scc-to-user anyuid-seccomp -z default -n <harbor-namespace>
+```
+
+**Alternative Method (using YAML file):**
+
+Create a file named `harbor-scc.yaml`:
+
+```yaml
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: harbor-anyuid-seccomp
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegedContainer: false
+allowedCapabilities: null
+defaultAddCapabilities: null
+fsGroup:
+  type: RunAsAny
+priority: 10
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+- MKNOD
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: RunAsAny
+seccompProfiles:
+- runtime/default
+volumes:
+- configMap
+- downwardAPI
+- emptyDir
+- persistentVolumeClaim
+- projected
+- secret
+```
+
+Then apply it:
+
+```bash
+oc create -f harbor-scc.yaml
+oc adm policy add-scc-to-user harbor-anyuid-seccomp -z default -n <harbor-namespace>
 ```
 
 **Note**: The above configuration uses `anyuid` SCC. For production environments, review your security requirements and potentially create a more restrictive custom SCC based on Harbor's specific needs.
@@ -144,22 +193,34 @@ externalURL: https://harbor.your-domain.com
 
 ### Step 4: Configure Storage
 
+First, check available storage classes in your OpenShift cluster:
+
+```bash
+oc get storageclass
+```
+
+Common OpenShift storage classes include:
+- `gp2` or `gp3` (AWS EBS)
+- `thin` (vSphere)
+- `ocs-storagecluster-ceph-rbd` (OpenShift Container Storage/ODF)
+- `managed-premium` (Azure)
+
 Configure persistent storage for Harbor components:
 
 ```yaml
 persistence:
   persistentVolumeClaim:
     registry:
-      storageClass: "<your-storage-class>"
+      storageClass: "gp3"  # Replace with your storage class
       size: 100Gi
     database:
-      storageClass: "<your-storage-class>"
+      storageClass: "gp3"  # Replace with your storage class
       size: 10Gi
     redis:
-      storageClass: "<your-storage-class>"
+      storageClass: "gp3"  # Replace with your storage class
       size: 5Gi
     trivy:
-      storageClass: "<your-storage-class>"
+      storageClass: "gp3"  # Replace with your storage class
       size: 5Gi
 ```
 
