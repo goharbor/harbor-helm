@@ -43,22 +43,9 @@ oc adm policy add-scc-to-user anyuid -z default -n <harbor-namespace>
 
 #### For OpenShift 4.14+ (with seccomp profiles):
 
-OpenShift 4.14 and later enforce seccomp profiles. You need to create a custom SCC. You can either use the following commands or create a custom SCC YAML file.
+OpenShift 4.14 and later enforce seccomp profiles. You need to create a custom SCC. The recommended approach is to use a YAML file for better maintainability.
 
-**Quick Method (using command line):**
-
-```bash
-# Create a custom SCC with seccomp support
-oc get scc anyuid -o yaml | sed 's/anyuid/anyuid-seccomp/g;/uid:/d;/creationTimestamp/d;/generation/d;/resourceVersion/d' | oc create -f -
-
-# Add seccomp profile
-oc patch scc anyuid-seccomp --type=merge -p '{"seccompProfiles":["runtime/default"]}'
-
-# Assign the SCC to the default service account
-oc adm policy add-scc-to-user anyuid-seccomp -z default -n <harbor-namespace>
-```
-
-**Alternative Method (using YAML file):**
+**Recommended Method (using YAML file):**
 
 Create a file named `harbor-scc.yaml`:
 
@@ -105,9 +92,22 @@ oc create -f harbor-scc.yaml
 oc adm policy add-scc-to-user harbor-anyuid-seccomp -z default -n <harbor-namespace>
 ```
 
+**Alternative Quick Method (using command line):**
+
+```bash
+# Create a custom SCC with seccomp support
+oc get scc anyuid -o yaml | sed 's/anyuid/anyuid-seccomp/g;/uid:/d;/creationTimestamp/d;/generation/d;/resourceVersion/d' | oc create -f -
+
+# Add seccomp profile
+oc patch scc anyuid-seccomp --type=merge -p '{"seccompProfiles":["runtime/default"]}'
+
+# Assign the SCC to the default service account
+oc adm policy add-scc-to-user anyuid-seccomp -z default -n <harbor-namespace>
+```
+
 **Note**: The above configuration uses `anyuid` SCC. For production environments, review your security requirements and potentially create a more restrictive custom SCC based on Harbor's specific needs.
 
-Source: [Red Hat Solution 7064000](https://access.redhat.com/solutions/7064000)
+**Note**: The Red Hat Solution link above may require a Red Hat account to access. If you don't have access, the commands provided are based on this solution and should work for OpenShift 4.14+.
 
 ### Step 3: Create a values.yaml File
 
