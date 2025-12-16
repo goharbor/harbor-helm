@@ -604,3 +604,39 @@ app: "{{ template "harbor.name" . }}"
 {{- define "harbor.ingress.kubeVersion" -}}
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
 {{- end -}}
+
+{{/*
+Determine if the core secret should be created.
+Returns "true" if any data field would be populated, "false" if all fields use external secrets.
+*/}}
+{{- define "harbor.core.createSecret" -}}
+  {{- $needsSecretKey := not .Values.existingSecretSecretKey -}}
+  {{- $needsCoreSecret := not .Values.core.existingSecret -}}
+  {{- $needsTokenCert := not .Values.core.secretName -}}
+  {{- $needsAdminPassword := not .Values.existingSecretAdminPassword -}}
+  {{- $needsDbPassword := and (not .Values.database.external.existingSecret) (eq .Values.database.type "external") -}}
+  {{- $needsRegistryPassword := not .Values.registry.credentials.existingSecret -}}
+  {{- $needsCsrfKey := not .Values.core.existingXsrfSecret -}}
+  {{- $needsConfigOverwrite := .Values.core.configureUserSettings -}}
+  {{- $needsJaegerPassword := and .Values.trace.enabled (eq .Values.trace.provider "jaeger") -}}
+  {{- if or $needsSecretKey $needsCoreSecret $needsTokenCert $needsAdminPassword $needsDbPassword $needsRegistryPassword $needsCsrfKey $needsConfigOverwrite $needsJaegerPassword -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Determine if the jobservice secret should be created.
+Returns "true" if any data field would be populated, "false" if all fields use external secrets.
+*/}}
+{{- define "harbor.jobservice.createSecret" -}}
+  {{- $needsJobserviceSecret := not .Values.jobservice.existingSecret -}}
+  {{- $needsRegistryPassword := not .Values.registry.credentials.existingSecret -}}
+  {{- $needsJaegerPassword := and .Values.trace.enabled (eq .Values.trace.provider "jaeger") -}}
+  {{- if or $needsJobserviceSecret $needsRegistryPassword $needsJaegerPassword -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
+{{- end -}}
