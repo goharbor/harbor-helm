@@ -785,7 +785,7 @@ registry:
     # If using existingSecret, the key must be REGISTRY_PASSWD and REGISTRY_HTPASSWD
     existingSecret: ""
     # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
-    # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
+    # htpasswdString: "harbor_registry_user:$2a$05$IPnI.TSgP8ek1/ESjkULVemA.A3nSXPdN80ljsmcun7FtE3ViSYUq" # example string, bcrypt is the only accepted hashing algorithm in htpasswd here.
     htpasswdString: ""
   middleware:
     enabled: false
