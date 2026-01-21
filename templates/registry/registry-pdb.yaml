@@ -5,6 +5,10 @@ metadata:
   name: {{ template "harbor.registry" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   {{- if .Values.registry.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.registry.podDisruptionBudget.minAvailable }}

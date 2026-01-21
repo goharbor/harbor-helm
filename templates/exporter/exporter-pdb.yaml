@@ -5,6 +5,10 @@ metadata:
   name: {{ template "harbor.exporter" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   {{- if .Values.exporter.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.exporter.podDisruptionBudget.minAvailable }}

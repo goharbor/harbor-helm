@@ -5,6 +5,10 @@ metadata:
   name: {{ template "harbor.nginx" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   {{- if .Values.nginx.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.nginx.podDisruptionBudget.minAvailable }}
