@@ -7,6 +7,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
     app.kubernetes.io/component: jobservice
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.jobservice.replicas }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
@@ -40,6 +44,9 @@ spec:
 {{- end }}
 {{- if .Values.jobservice.podAnnotations }}
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:

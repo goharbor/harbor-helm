@@ -5,6 +5,10 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
 {{- if .Values.ipFamily.policy }}
   ipFamilyPolicy: {{ .Values.ipFamily.policy }}

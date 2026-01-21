@@ -6,6 +6,10 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 data:
   {{- if has "jobservice" .Values.proxy.components }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"

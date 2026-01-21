@@ -43,6 +43,9 @@ metadata:
 {{- end }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 {{- if .Values.internalTLS.enabled }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 {{- end }}

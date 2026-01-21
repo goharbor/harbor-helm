@@ -8,6 +8,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: exporter
     app.kubernetes.io/component: exporter
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.exporter.replicas }}
   revisionHistoryLimit: {{ .Values.exporter.revisionHistoryLimit }}
@@ -34,6 +38,9 @@ spec:
 {{- end }}
 {{- if .Values.exporter.podAnnotations }}
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:

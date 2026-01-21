@@ -17,14 +17,19 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
 {{ toYaml $route.labels | indent 4 }}
 {{- end }}
-{{- if $route.annotations }}
+{{- if or $route.annotations .Values.commonAnnotations }}
   annotations:
+{{- if $route.annotations }}
 {{ toYaml $route.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   parentRefs:
   {{- toYaml $route.parentRefs | nindent 2 }}
-  hostnames: 
+  hostnames:
   {{- toYaml $route.hosts | nindent 2 }}
   rules:
   - matches:

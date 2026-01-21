@@ -5,9 +5,14 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-{{- with .Values.core.serviceAnnotations }}
+{{- if or .Values.core.serviceAnnotations .Values.commonAnnotations }}
   annotations:
+  {{- with .Values.core.serviceAnnotations }}
   {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.commonAnnotations }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}
 spec:
 {{- if or (eq .Values.expose.ingress.controller "gce") (eq .Values.expose.ingress.controller "alb")  (eq .Values.expose.ingress.controller "f5-bigip") }}

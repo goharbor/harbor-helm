@@ -8,6 +8,10 @@ metadata:
 {{- if .Values.metrics.serviceMonitor.additionalLabels }}
 {{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
 {{- end }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   jobLabel: app.kubernetes.io/name
   endpoints:
