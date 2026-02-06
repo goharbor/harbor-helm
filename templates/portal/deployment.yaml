@@ -94,6 +94,11 @@ spec:
         - name: portal-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
+        {{- if .Values.portal.customization }}
+        - name: portal-config
+          mountPath: /usr/share/nginx/html/setting.json
+          subPath: setting.json
+        {{- end }}
         {{- if .Values.internalTLS.enabled }}
         - name: portal-internal-certs
           mountPath: /etc/harbor/ssl/portal

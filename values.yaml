@@ -576,6 +576,18 @@ portal:
   # - name: wait
   #   image: busybox
   #   command: [ 'sh', '-c', "sleep 20" ]
+  # Customization of the portal UI via setting.json
+  # Uncomment and set the values below to override the default portal appearance.
+  # customization:
+  #   headerBgColor:
+  #     darkMode: ""
+  #     lightMode: ""
+  #   loginBgImg: ""
+  #   loginTitle: ""
+  #   product:
+  #     name: ""
+  #     logo: ""
+  #     introduction: ""
 
 core:
   image:

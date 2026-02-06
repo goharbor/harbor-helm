@@ -6,6 +6,22 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 data:
+{{- if .Values.portal.customization }}
+  setting.json: |
+    {
+      "headerBgColor": {
+        "darkMode": {{ (default "" .Values.portal.customization.headerBgColor.darkMode) | quote }},
+        "lightMode": {{ (default "" .Values.portal.customization.headerBgColor.lightMode) | quote }}
+      },
+      "loginBgImg": {{ (default "" .Values.portal.customization.loginBgImg) | quote }},
+      "loginTitle": {{ (default "" .Values.portal.customization.loginTitle) | quote }},
+      "product": {
+        "name": {{ (default "" .Values.portal.customization.product.name) | quote }},
+        "logo": {{ (default "" .Values.portal.customization.product.logo) | quote }},
+        "introduction": {{ (default "" .Values.portal.customization.product.introduction) | quote }}
+      }
+    }
+{{- end }}
   nginx.conf: |+
     worker_processes auto;
     pid /tmp/nginx.pid;
