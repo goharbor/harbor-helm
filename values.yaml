@@ -532,6 +532,20 @@ nginx:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 300
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
+  ## Readiness probe values
+  readinessProbe:
+    initialDelaySeconds: 1
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
 
 portal:
   image:
@@ -569,6 +583,20 @@ portal:
   serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 300
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
+  ## Readiness probe values
+  readinessProbe:
+    initialDelaySeconds: 1
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
   # containers to be run before the controller's container starts.
   initContainers: []
   # Example:
@@ -595,6 +623,24 @@ core:
   startupProbe:
     enabled: true
     initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 360
+    successThreshold: 1
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 2
+    successThreshold: 1
+  ## Readiness probe values
+  readinessProbe:
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 2
+    successThreshold: 1
   # resources:
   #  requests:
   #    memory: 256Mi
@@ -691,6 +737,20 @@ jobservice:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 300
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
+  ## Readiness probe values
+  readinessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
@@ -749,6 +809,20 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
+    ## Liveness probe values
+    livenessProbe:
+      initialDelaySeconds: 300
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      successThreshold: 1
+    ## Readiness probe values
+    readinessProbe:
+      initialDelaySeconds: 1
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      successThreshold: 1
   controller:
     image:
       repository: docker.io/goharbor/harbor-registryctl
@@ -758,6 +832,20 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
+    ## Liveness probe values
+    livenessProbe:
+      initialDelaySeconds: 300
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      successThreshold: 1
+    ## Readiness probe values
+    readinessProbe:
+      initialDelaySeconds: 1
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      successThreshold: 1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -856,6 +944,20 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 10
+    successThreshold: 1
+  ## Readiness probe values
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
@@ -955,12 +1057,20 @@ database:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
-    # The timeout used in livenessProbe; 1 to 5 seconds
+    ## Liveness probe values
     livenessProbe:
+      initialDelaySeconds: 300
+      periodSeconds: 10
       timeoutSeconds: 1
-    # The timeout used in readinessProbe; 1 to 5 seconds
+      failureThreshold: 3
+      successThreshold: 1
+    ## Readiness probe values
     readinessProbe:
+      initialDelaySeconds: 1
+      periodSeconds: 10
       timeoutSeconds: 1
+      failureThreshold: 3
+      successThreshold: 1
     extraEnvVars: []
     nodeSelector: {}
     tolerations: []
@@ -1035,6 +1145,20 @@ redis:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    ## Liveness probe values
+    livenessProbe:
+      initialDelaySeconds: 300
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      successThreshold: 1
+    ## Readiness probe values
+    readinessProbe:
+      initialDelaySeconds: 1
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+      successThreshold: 1
     extraEnvVars: []
     nodeSelector: {}
     tolerations: []
@@ -1110,6 +1234,20 @@ exporter:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 300
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
+  ## Readiness probe values
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
   extraEnvVars: []
   podAnnotations: {}
   ## Additional deployment labels
