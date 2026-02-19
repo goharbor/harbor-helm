@@ -183,6 +183,79 @@ tests:
           path: spec.template.spec.containers[0].startupProbe.periodSeconds
           value: 10
 
+  - it: StartupProbeCustom
+    set:
+      core:
+        startupProbe:
+          enabled: true
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 100
+          successThreshold: 1
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.initialDelaySeconds
+          value: 20
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.periodSeconds
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.timeoutSeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.failureThreshold
+          value: 100
+
+  - it: LivenessProbeCustom
+    set:
+      core:
+        livenessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 5
+          successThreshold: 1
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.periodSeconds
+          value: 20
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.timeoutSeconds
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.failureThreshold
+          value: 5
+
+  - it: ReadinessProbeCustom
+    set:
+      core:
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 10
+          successThreshold: 1
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.periodSeconds
+          value: 15
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.timeoutSeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.failureThreshold
+          value: 10
+
   - it: ExistingSecretAdminPassword
     set:
       existingSecretAdminPassword: HARBOR_ADMIN_PASSWORD
