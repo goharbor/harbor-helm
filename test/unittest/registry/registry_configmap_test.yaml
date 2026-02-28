@@ -1,0 +1,95 @@
+suite: RegistryConfigMap
+
+tests:
+  - it: RendersConfigMapWithDefaultRedis
+    set:
+      persistence:
+        imageChartStorage:
+          type: filesystem
+          filesystem:
+            rootdirectory: /storage
+    template: templates/registry/registry-cm.yaml
+    asserts:
+      - equal:
+          path: kind
+          value: ConfigMap
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-harbor-registry
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "redis:"
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "username: \\\"\\\""
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "password: \\\"\\\""
+
+  - it: RedisInternalHasEmptyUsernameAndPassword
+    set:
+      redis:
+        type: internal
+      persistence:
+        imageChartStorage:
+          type: filesystem
+          filesystem:
+            rootdirectory: /storage
+    template: templates/registry/registry-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "addr: RELEASE-NAME-harbor-redis:6379"
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "username: \\\"\\\""
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "password: \\\"\\\""
+
+  - it: RedisExternalWithUsernameAndPassword
+    set:
+      redis:
+        type: external
+        external:
+          addr: "192.168.0.2:6379"
+          username: "redis-user"
+          password: "redis-secret"
+      persistence:
+        imageChartStorage:
+          type: filesystem
+          filesystem:
+            rootdirectory: /storage
+    template: templates/registry/registry-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "addr: 192\\.168\\.0\\.2:6379"
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "username: \\\"redis-user\\\""
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "password: \\\"redis-secret\\\""
+
+  - it: RedisExternalWithEmptyUsernameAndPassword
+    set:
+      redis:
+        type: external
+        external:
+          addr: "192.168.0.2:6379"
+          username: ""
+          password: ""
+      persistence:
+        imageChartStorage:
+          type: filesystem
+          filesystem:
+            rootdirectory: /storage
+    template: templates/registry/registry-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "username: \\\"\\\""
+      - matchRegex:
+          path: data["config.yml"]
+          pattern: "password: \\\"\\\""
