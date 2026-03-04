@@ -1,0 +1,30 @@
+suite: JobserviceConfigMapEnv
+
+tests:
+  - it: RegistryHttpClientTimeoutDefault
+    set: {}
+    template: templates/jobservice/jobservice-cm-env.yaml
+    asserts:
+      - equal:
+          path: data.REGISTRY_HTTP_CLIENT_TIMEOUT
+          value: "30"
+
+  - it: RegistryHttpClientTimeoutCustom
+    set:
+      jobservice:
+        registryHttpClientTimeout: 60
+    template: templates/jobservice/jobservice-cm-env.yaml
+    asserts:
+      - equal:
+          path: data.REGISTRY_HTTP_CLIENT_TIMEOUT
+          value: "60"
+
+  - it: RegistryHttpClientTimeoutZero
+    set:
+      jobservice:
+        registryHttpClientTimeout: 0
+    template: templates/jobservice/jobservice-cm-env.yaml
+    asserts:
+      - equal:
+          path: data.REGISTRY_HTTP_CLIENT_TIMEOUT
+          value: "0"

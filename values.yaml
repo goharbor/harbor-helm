@@ -738,6 +738,9 @@ jobservice:
   existingSecret: ""
   # Key within the existing secret for the job service secret
   existingSecretKey: JOBSERVICE_SECRET
+  # By default, the timeout is set to 30 minutes. This field only needs be re-configured if a longer request timeout is required. 
+  # the value assigned to timeout should be a number without min, e.g. registryHttpClientTimeout: 60 configures the timeout to 60 minutes
+  registryHttpClientTimeout: 30
 
 registry:
   registry:
