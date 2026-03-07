@@ -1,0 +1,63 @@
+suite: RegistryDeployment
+
+tests:
+  - it: ExternalRedisExistingSecretSetsRegistryRedisUsernameAndPassword
+    set:
+      redis:
+        type: external
+        external:
+          existingSecret: redis-auth-secret
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REGISTRY_REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_USERNAME
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REGISTRY_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_PASSWORD
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: REGISTRY_REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_USERNAME
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: REGISTRY_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_PASSWORD
+
+  - it: ExternalRedisUsernameFallbackSetsRegistryRedisUsername
+    set:
+      redis:
+        type: external
+        external:
+          username: fallback-user
+          existingSecret: ""
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REGISTRY_REDIS_USERNAME
+            value: fallback-user
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: REGISTRY_REDIS_USERNAME
+            value: fallback-user
