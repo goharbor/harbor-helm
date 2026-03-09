@@ -467,6 +467,27 @@ tests:
           path: spec.template.spec.volumes[3].secret.secretName
           value: ca-secret-name
 
+  - it: ExposeTLSNoneDoesNotRenderCaDownloadSecretVolume
+    set:
+      expose:
+        tls:
+          enabled: true
+          certSource: none
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 4
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[3].name
+          value: psc
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 4
+      - equal:
+          path: spec.template.spec.volumes[3].name
+          value: psc
+
   - it: NodeSelector
     set:
       core:
