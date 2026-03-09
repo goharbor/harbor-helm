@@ -187,24 +187,53 @@ app: "{{ template "harbor.name" . }}"
 
 
 {{- define "harbor.redis.usernamefromsecret" -}}
-  {{- $existingSecret := (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)) -}}
-  {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "REDIS_USERNAME") -}}
-    {{- printf "%s" ($existingSecret.data.REDIS_USERNAME | b64dec | trim ) }}
+  {{- $secretName := .Values.redis.external.existingSecret | default "" -}}
+  {{- if not $secretName -}}
+    {{- fail "Redis existing secret contract violation: set redis.external.existingSecret when resolving REDIS_USERNAME from secret" -}}
   {{- end -}}
+  {{- $existingSecret := (lookup "v1" "Secret"  .Release.Namespace $secretName) -}}
+  {{- if empty $existingSecret -}}
+    {{- fail (printf "Redis existing secret \"%s\" not found at template-time or not readable. Use runtime secretKeyRef flow, or set redis.external.username/password for local template-only rendering." $secretName) -}}
+  {{- end -}}
+  {{- if or (not (hasKey $existingSecret "data")) (not (hasKey $existingSecret.data "REDIS_USERNAME")) -}}
+    {{- fail (printf "Redis existing secret \"%s\" is missing required key REDIS_USERNAME" $secretName) -}}
+  {{- end -}}
+  {{- printf "%s" (index $existingSecret.data "REDIS_USERNAME" | b64dec | trim) -}}
 {{- end -}}
 
 {{- define "harbor.redis.pwdfromsecret" -}}
-  {{- (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD  | b64dec }}
+  {{- $secretName := .Values.redis.external.existingSecret | default "" -}}
+  {{- if not $secretName -}}
+    {{- fail "Redis existing secret contract violation: set redis.external.existingSecret when resolving REDIS_PASSWORD from secret" -}}
+  {{- end -}}
+  {{- $existingSecret := (lookup "v1" "Secret"  .Release.Namespace $secretName) -}}
+  {{- if empty $existingSecret -}}
+    {{- fail (printf "Redis existing secret \"%s\" not found at template-time or not readable. Use runtime secretKeyRef flow, or set redis.external.username/password for local template-only rendering." $secretName) -}}
+  {{- end -}}
+  {{- if or (not (hasKey $existingSecret "data")) (not (hasKey $existingSecret.data "REDIS_PASSWORD")) -}}
+    {{- fail (printf "Redis existing secret \"%s\" is missing required key REDIS_PASSWORD" $secretName) -}}
+  {{- end -}}
+  {{- index $existingSecret.data "REDIS_PASSWORD" | b64dec -}}
 {{- end -}}
 
 {{- define "harbor.redis.cred" -}}
   {{- with .Values.redis }}
-    {{- if (and (eq .type "external" ) (.external.existingSecret)) }}
-      {{- printf "%s:%s@" (include "harbor.redis.usernamefromsecret" $) (include "harbor.redis.pwdfromsecret" $) -}}
-    {{- else }}
+    {{- if and (eq .type "external" ) (not .external.existingSecret) }}
       {{- ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
+    {{- else }}
+      {{- printf "%s" "" -}}
     {{- end }}
   {{- end }}
+{{- end -}}
+
+{{- define "harbor.redis.credRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- if and (eq .type "external") .external.existingSecret -}}
+      {{- printf "$(REDIS_USERNAME):$(REDIS_PASSWORD)@" -}}
+    {{- else -}}
+      {{- include "harbor.redis.cred" $ -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
 
 /*scheme://[:password@]host:port[/master_set]*/
@@ -212,6 +241,13 @@ app: "{{ template "harbor.name" . }}"
   {{- with .Values.redis }}
     {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
     {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) (include "harbor.redis.cred" $) (include "harbor.redis.addr" $) $path -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "harbor.redis.urlRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
+    {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) (include "harbor.redis.credRuntimeRef" $) (include "harbor.redis.addr" $) $path -}}
   {{- end }}
 {{- end -}}
 
@@ -223,11 +259,25 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
+{{- define "harbor.redis.urlForCoreRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary "0" .external.coreDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.urlRuntimeRef" $) $index -}}
+  {{- end }}
+{{- end -}}
+
 /*scheme://[:password@]addr/db_index*/
 {{- define "harbor.redis.urlForJobservice" -}}
   {{- with .Values.redis }}
     {{- $index := ternary .internal.jobserviceDatabaseIndex .external.jobserviceDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s" (include "harbor.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "harbor.redis.urlForJobserviceRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.jobserviceDatabaseIndex .external.jobserviceDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s" (include "harbor.redis.urlRuntimeRef" $) $index -}}
   {{- end }}
 {{- end -}}
 
@@ -239,11 +289,25 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
+{{- define "harbor.redis.urlForRegistryRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.urlRuntimeRef" $) $index -}}
+  {{- end }}
+{{- end -}}
+
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForTrivy" -}}
   {{- with .Values.redis }}
     {{- $index := ternary .internal.trivyAdapterIndex .external.trivyAdapterIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "harbor.redis.urlForTrivyRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.trivyAdapterIndex .external.trivyAdapterIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.urlRuntimeRef" $) $index -}}
   {{- end }}
 {{- end -}}
 
@@ -255,11 +319,25 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
+{{- define "harbor.redis.urlForHarborRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.harborDatabaseIndex .external.harborDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.urlRuntimeRef" $) $index -}}
+  {{- end }}
+{{- end -}}
+
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "harbor.redis.urlForCache" -}}
   {{- with .Values.redis }}
     {{- $index := ternary .internal.cacheLayerDatabaseIndex .external.cacheLayerDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "harbor.redis.urlForCacheRuntimeRef" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.cacheLayerDatabaseIndex .external.cacheLayerDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "harbor.redis.urlRuntimeRef" $) $index -}}
   {{- end }}
 {{- end -}}
 

@@ -1084,9 +1084,16 @@ redis:
     # harborDatabaseIndex: "6"
     # cacheLayerDatabaseIndex: "7"
     # username field can be an empty string, and it will be authenticated against the default user
+    # Dev-only fallback when existingSecret is not set.
+    # For production/client-side render pipelines, prefer existingSecret with REDIS_USERNAME/REDIS_PASSWORD keys.
     username: ""
+    # Dev-only fallback when existingSecret is not set.
     password: ""
-    # If using existingSecret, the key must be REDIS_PASSWORD, if ACL mode enabled, also inlcudes data of username, the keys must be REDIS_USERNAME
+    # Runtime secretKeyRef contract for external Redis/Valkey auth.
+    # Required keys in the referenced secret:
+    # - REDIS_PASSWORD
+    # - REDIS_USERNAME (can be empty string when using Redis default user)
+    # If this is set, username/password values above are ignored.
     existingSecret: ""
   ## Additional deployment annotations
   podAnnotations: {}

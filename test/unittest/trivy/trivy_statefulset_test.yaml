@@ -95,7 +95,7 @@ tests:
           count: 2
       - notExists:
           path: spec.volumeClaimTemplates
-  
+
   - it: TrivyDBRepository
     set:
       trivy:
@@ -114,3 +114,44 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[15].name
           value: "SCANNER_TRIVY_JAVA_DB_REPOSITORY"
+
+  - it: ExternalRedisExistingSecretUsesRuntimeRedisUrlRefs
+    set:
+      redis:
+        type: external
+        external:
+          existingSecret: redis-auth-secret
+          trivyAdapterIndex: "9"
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_USERNAME
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_PASSWORD
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SCANNER_REDIS_URL
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@192.168.0.2:6379/9?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SCANNER_STORE_REDIS_URL
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@192.168.0.2:6379/9?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SCANNER_JOB_QUEUE_REDIS_URL
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@192.168.0.2:6379/9?idle_timeout_seconds=30

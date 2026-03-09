@@ -130,11 +130,19 @@ spec:
           value: /etc/harbor/ssl/registry/ca.crt
         {{- end }}
         {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: REDIS_USERNAME
         - name: REGISTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redis.external.existingSecret }}
               key: REDIS_PASSWORD
+        {{- else if .Values.redis.external.username }}
+        - name: REGISTRY_REDIS_USERNAME
+          value: {{ .Values.redis.external.username | quote }}
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
         - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
@@ -286,11 +294,19 @@ spec:
           value: /etc/harbor/ssl/registry/ca.crt
         {{- end }}
         {{- if .Values.redis.external.existingSecret }}
+        - name: REGISTRY_REDIS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: REDIS_USERNAME
         - name: REGISTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redis.external.existingSecret }}
               key: REDIS_PASSWORD
+        {{- else if .Values.redis.external.username }}
+        - name: REGISTRY_REDIS_USERNAME
+          value: {{ .Values.redis.external.username | quote }}
         {{- end }}
         {{- if .Values.persistence.imageChartStorage.azure.existingSecret }}
         - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY

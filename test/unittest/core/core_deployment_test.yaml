@@ -467,6 +467,27 @@ tests:
           path: spec.template.spec.volumes[3].secret.secretName
           value: ca-secret-name
 
+  - it: ExposeTLSNoneDoesNotRenderCaDownloadSecretVolume
+    set:
+      expose:
+        tls:
+          enabled: true
+          certSource: none
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].volumeMounts
+          count: 4
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[3].name
+          value: psc
+      - lengthEqual:
+          path: spec.template.spec.volumes
+          count: 4
+      - equal:
+          path: spec.template.spec.volumes[3].name
+          value: psc
+
   - it: NodeSelector
     set:
       core:
@@ -534,3 +555,38 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: test-priority
+
+  - it: ExternalRedisExistingSecretRuntimeRefs
+    set:
+      redis:
+        type: external
+        external:
+          existingSecret: redis-auth-secret
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_USERNAME
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_PASSWORD
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_CORE
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@192.168.0.2:6379/0?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_REG
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@192.168.0.2:6379/2?idle_timeout_seconds=30

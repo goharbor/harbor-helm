@@ -1,0 +1,40 @@
+suite: JobserviceDeployment
+
+tests:
+  - it: ExternalRedisExistingSecretRuntimeRefs
+    set:
+      redis:
+        type: external
+        external:
+          existingSecret: redis-auth-secret
+          cacheLayerDatabaseIndex: "7"
+      cache:
+        enabled: true
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_USERNAME
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-auth-secret
+                key: REDIS_PASSWORD
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_CORE
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@192.168.0.2:6379/0?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_CACHE_LAYER
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@192.168.0.2:6379/7?idle_timeout_seconds=30
