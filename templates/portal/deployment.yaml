@@ -7,6 +7,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: portal
     app.kubernetes.io/component: portal
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.portal.replicas }}
   revisionHistoryLimit: {{ .Values.portal.revisionHistoryLimit }}
@@ -29,9 +33,12 @@ spec:
 {{- else if and .Values.internalTLS.enabled (eq .Values.internalTLS.certSource "manual") }}
         checksum/tls: {{ include (print $.Template.BasePath "/portal/tls.yaml") . | sha256sum }}
 {{- end }}
-        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}  
+        checksum/configmap: {{ include (print $.Template.BasePath "/portal/configmap.yaml") . | sha256sum }}
 {{- if .Values.portal.podAnnotations }}
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:

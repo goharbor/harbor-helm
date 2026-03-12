@@ -5,6 +5,10 @@ metadata:
   name: {{ template "harbor.trivy" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   {{- if .Values.trivy.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.trivy.podDisruptionBudget.minAvailable }}

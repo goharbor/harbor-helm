@@ -5,6 +5,10 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 data:
   CORE_URL: "{{ template "harbor.coreURL" . }}"
   TOKEN_SERVICE_URL: "{{ template "harbor.tokenServiceURL" . }}"
@@ -17,7 +21,7 @@ data:
   JOBSERVICE_WEBHOOK_JOB_HTTP_CLIENT_TIMEOUT: "{{ .Values.jobservice.notification.webhook_job_http_client_timeout }}"
 
   LOG_LEVEL: "{{ .Values.logLevel }}"
-  
+
   {{- if has "jobservice" .Values.proxy.components }}
   HTTP_PROXY: "{{ .Values.proxy.httpProxy }}"
   HTTPS_PROXY: "{{ .Values.proxy.httpsProxy }}"

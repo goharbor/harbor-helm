@@ -9,6 +9,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: trivy
     app.kubernetes.io/component: trivy
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.trivy.replicas }}
   serviceName: {{  template "harbor.trivy" . }}
@@ -34,6 +38,9 @@ spec:
 {{- end }}
 {{- if .Values.trivy.podAnnotations }}
 {{ toYaml .Values.trivy.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
 {{- with .Values.imagePullSecrets }}
@@ -221,6 +228,9 @@ spec:
       {{- range $key, $value := $trivy.annotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
+{{- end }}
     spec:
       accessModes: [{{ $trivy.accessMode | quote }}]
       {{- if $trivy.storageClass }}

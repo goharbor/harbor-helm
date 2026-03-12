@@ -11,9 +11,14 @@ metadata:
 {{- if .Values.expose.clusterIP.labels }}
 {{ toYaml $clusterIP.labels | indent 4 }}
 {{- end }}
-{{- with $clusterIP.annotations }}
+{{- if or $clusterIP.annotations .Values.commonAnnotations }}
   annotations:
+{{- with $clusterIP.annotations }}
   {{- toYaml . | nindent 4 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   type: ClusterIP
