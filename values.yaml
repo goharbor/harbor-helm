@@ -670,6 +670,31 @@ core:
     deleteUser: false
     auditLogsCompliant: false
 
+  permittedRegistryTypesForProxyCache:
+    - docker-hub
+    - harbor
+    - azure-acr
+    - ali-acr
+    - aws-ecr
+    - google-gcr
+    - docker-registry
+    - github-ghcr
+    - jfrog-artifactory
+
+  replicationAdapterWhitelist:
+    - ali-acr
+    - aws-ecr
+    - azure-acr
+    - docker-hub
+    - docker-registry
+    - github-ghcr
+    - google-gcr
+    - harbor
+    - huawei-SWR
+    - jfrog-artifactory
+    - tencent-tcr
+    - volcengine-cr
+
 jobservice:
   image:
     repository: docker.io/goharbor/harbor-jobservice
