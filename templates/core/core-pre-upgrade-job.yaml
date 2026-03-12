@@ -30,7 +30,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      terminationGracePeriodSeconds: 120
+      terminationGracePeriodSeconds: {{ .Values.core.terminationGracePeriodSeconds }}
       containers:
       - name: core-job
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}

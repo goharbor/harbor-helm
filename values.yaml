@@ -669,6 +669,7 @@ core:
   gdpr:
     deleteUser: false
     auditLogsCompliant: false
+  terminationGracePeriodSeconds: 120
 
 jobservice:
   image:
@@ -741,6 +742,7 @@ jobservice:
   # By default, the timeout is set to 30 minutes. This field only needs be re-configured if a longer request timeout is required. 
   # the value assigned to timeout should be a number without min, e.g. registryHttpClientTimeout: 60 configures the timeout to 60 minutes
   registryHttpClientTimeout: 30
+  terminationGracePeriodSeconds: 120
 
 registry:
   registry:
@@ -805,6 +807,7 @@ registry:
   existingSecretKey: REGISTRY_HTTP_SECRET
   # If true, the registry returns relative URLs in Location headers. The client is responsible for resolving the correct URL.
   relativeurls: false
+  terminationGracePeriodSeconds: 120
   credentials:
     username: "harbor_registry_user"
     password: "harbor_registry_password"
@@ -994,6 +997,8 @@ database:
       #  requests:
       #    memory: 128Mi
       #    cpu: 100m
+      #
+    terminationGracePeriodSeconds: 120
   external:
     host: "192.168.0.1"
     port: "5432"
@@ -1061,6 +1066,7 @@ redis:
     trivyAdapterIndex: "5"
     # harborDatabaseIndex: "6"
     # cacheLayerDatabaseIndex: "7"
+    terminationGracePeriodSeconds: 120
   external:
     # support redis, redis+sentinel
     # addr for redis: <host_redis>:<port_redis>
