@@ -631,3 +631,13 @@ app: "{{ template "harbor.name" . }}"
 {{- define "harbor.ingress.kubeVersion" -}}
   {{- default .Capabilities.KubeVersion.Version .Values.expose.ingress.kubeVersionOverride -}}
 {{- end -}}
+
+{{/* 
+  Default image tag if not set.
+  If Chart.AppVersion starts with a digit (referencing a version), 
+  prefix it with 'v' to align helm app version with docker tag.
+*/}}
+{{- define "harbor.defaultImageTag" -}}
+  {{- $app := .Chart.AppVersion -}}
+  {{- ternary (printf "v%s" $app) $app (regexMatch "^[0-9]" $app) -}}
+{{- end -}}

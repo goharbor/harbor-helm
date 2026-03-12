@@ -63,7 +63,7 @@ spec:
       {{- end }}
       containers:
         - name: trivy
-          image: {{ .Values.trivy.image.repository }}:{{ .Values.trivy.image.tag }}
+          image: {{ .Values.trivy.image.repository }}:{{- default (include "harbor.defaultImageTag" .) .Values.trivy.image.tag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           {{- if not (empty .Values.containerSecurityContext) }}
           securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 12 }}
