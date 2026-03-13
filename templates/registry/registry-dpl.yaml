@@ -56,7 +56,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.registry.automountServiceAccountToken | default false }}
-      terminationGracePeriodSeconds: 120
+      terminationGracePeriodSeconds: {{ .Values.registry.terminationGracePeriodSeconds }}
 {{- with .Values.registry.topologySpreadConstraints}}
       topologySpreadConstraints:
 {{- range . }}

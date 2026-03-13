@@ -41,7 +41,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.redis.internal.automountServiceAccountToken | default false }}
-      terminationGracePeriodSeconds: 120
+      terminationGracePeriodSeconds: {{ .Values.redis.internal.terminationGracePeriodSeconds }}
       {{- with .Values.redis.internal.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
