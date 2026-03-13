@@ -594,7 +594,10 @@ core:
   ## Startup probe values
   startupProbe:
     enabled: true
+    path: /api/v2.0/ping
     initialDelaySeconds: 10
+    failureThreshold: 360
+    periodSeconds: 10
   # resources:
   #  requests:
   #    memory: 256Mi

@@ -69,12 +69,12 @@ spec:
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
           httpGet:
-            path: /api/v2.0/ping
+            path: {{ .Values.core.startupProbe.path }}
             scheme: {{ include "harbor.component.scheme" . | upper }}
             port: {{ template "harbor.core.containerPort" . }}
-          failureThreshold: 360
+          failureThreshold: {{ .Values.core.startupProbe.failureThreshold }}
           initialDelaySeconds: {{ .Values.core.startupProbe.initialDelaySeconds }}
-          periodSeconds: 10
+          periodSeconds: {{ .Values.core.startupProbe.periodSeconds }}
         {{- end }}
         livenessProbe:
           httpGet:
