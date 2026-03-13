@@ -10,7 +10,9 @@ metadata:
     component: registry
     app.kubernetes.io/component: registry
 spec:
+  {{- if not .Values.registry.autoscaling.enabled }}
   replicas: {{ .Values.registry.replicas }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
   strategy:
     type: {{ .Values.updateStrategy.type }}
