@@ -19,37 +19,38 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     // clean up the previously installed harbor chart
     void preInstall(){
         script.withCredentials([
-            script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH"),
             script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD")]) {
-            script.sh """
-                # Set proxy registry or docker credential to bypass Docker Hub rate limit
-                echo "PROXY_REGISTRY is \${PROXY_REGISTRY}"
-                if [ "\${PROXY_REGISTRY}" != "" ]; then
-                    # set deafult registry to a proxy registry
-                    echo '{
-                    "registry-mirrors": ["'"\${PROXY_REGISTRY}"'"]
-                    }' | sudo tee /etc/docker/daemon.json > /dev/null
+            script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
+                script.sh """
+                    # Set proxy registry or docker credential to bypass Docker Hub rate limit
+                    echo "PROXY_REGISTRY is \${PROXY_REGISTRY}"
+                    if [ "\${PROXY_REGISTRY}" != "" ]; then
+                        # set deafult registry to a proxy registry
+                        echo '{
+                        "registry-mirrors": ["'"\${PROXY_REGISTRY}"'"]
+                        }' | sudo tee /etc/docker/daemon.json > /dev/null
 
-                    # Restart Docker to apply the changes
-                    sudo systemctl reset-failed docker.service
-                    sudo systemctl restart docker
-                else
-                    docker login -u \${DOCKER_HUB_USERNAME} -p \${DOCKER_HUB_PASSWORD}
-                fi
+                        # Restart Docker to apply the changes
+                        sudo systemctl reset-failed docker.service
+                        sudo systemctl restart docker
+                    else
+                        docker login -u \${DOCKER_HUB_USERNAME} -p \${DOCKER_HUB_PASSWORD}
+                    fi
 
-                # build the image
-                docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
-                # clean up the namespace
-                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                    kubectl delete namespace ${namespace} --ignore-not-found --context ${context}
-                docker logout
-            """
-       }
+                    # build the image
+                    docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
+                    # clean up the namespace
+                    docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                        kubectl delete namespace ${namespace} --ignore-not-found --context ${context}
+                    docker logout
+                """
+            }
+        }
     }
 
     HarborInstance install(){
         // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
-        script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
+        script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
             // get the service type of the ingress controller
             ingressControllerServiceType = script.sh(
                 returnStdout: true,
@@ -102,7 +103,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     }
 
     void preTest(){
-        script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
+        script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
             script.import_trivy_db(script.env.KUBE_CONFIG_FILE_PATH, context, namespace, "")
         }
     }
@@ -111,7 +112,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
 def properties = {
     // read context names from the kube config file
     def names = []
-    withCredentials([file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
+    withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
         def kubeConfig = readYaml file: env.KUBE_CONFIG_FILE_PATH
         kubeConfig.contexts.each {
             names.add(it.name)
