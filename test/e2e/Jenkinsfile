@@ -139,4 +139,6 @@ settings.properties = properties
 settings.executor = new HarborChartFreshInstallPipelineExecutor(this)
 settings.caseSettings = caseSettings
 
-run_fresh_install_pipeline(settings)
+node('aws-ec2') {
+    run_fresh_install_pipeline(settings)
+}
