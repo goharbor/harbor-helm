@@ -16,95 +16,112 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
        this.coreHostname = "harbor.chart.local"
     }
 
+    private void onAwsEc2Node(Closure body) {
+        def labels = (script.env.NODE_LABELS ?: "").tokenize()
+        if (labels.contains("aws-ec2")) {
+            body.call()
+            return
+        }
+        script.node('aws-ec2') {
+            body.call()
+        }
+    }
+
     // clean up the previously installed harbor chart
     void preInstall(){
-        script.withCredentials([
-            script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD")]) {
-            script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
-                script.sh """
-                    # Set proxy registry or docker credential to bypass Docker Hub rate limit
-                    echo "PROXY_REGISTRY is \${PROXY_REGISTRY}"
-                    if [ "\${PROXY_REGISTRY}" != "" ]; then
-                        # set deafult registry to a proxy registry
-                        echo '{
-                        "registry-mirrors": ["'"\${PROXY_REGISTRY}"'"]
-                        }' | sudo tee /etc/docker/daemon.json > /dev/null
+        onAwsEc2Node {
+            script.withCredentials([
+                script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD")]) {
+                script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
+                    script.sh """
+                        # Set proxy registry or docker credential to bypass Docker Hub rate limit
+                        echo "PROXY_REGISTRY is \${PROXY_REGISTRY}"
+                        if [ "\${PROXY_REGISTRY}" != "" ]; then
+                            # set deafult registry to a proxy registry
+                            echo '{
+                            "registry-mirrors": ["'"\${PROXY_REGISTRY}"'"]
+                            }' | sudo tee /etc/docker/daemon.json > /dev/null
 
-                        # Restart Docker to apply the changes
-                        sudo systemctl reset-failed docker.service
-                        sudo systemctl restart docker
-                    else
-                        docker login -u \${DOCKER_HUB_USERNAME} -p \${DOCKER_HUB_PASSWORD}
-                    fi
+                            # Restart Docker to apply the changes
+                            sudo systemctl reset-failed docker.service
+                            sudo systemctl restart docker
+                        else
+                            docker login -u \${DOCKER_HUB_USERNAME} -p \${DOCKER_HUB_PASSWORD}
+                        fi
 
-                    # build the image
-                    docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
-                    # clean up the namespace
-                    docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                        kubectl delete namespace ${namespace} --ignore-not-found --context ${context}
-                    docker logout
-                """
+                        # build the image
+                        docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
+                        # clean up the namespace
+                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                            kubectl delete namespace ${namespace} --ignore-not-found --context ${context}
+                        docker logout
+                    """
+                }
             }
         }
     }
 
     HarborInstance install(){
-        // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
-        script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
-            // get the service type of the ingress controller
-            ingressControllerServiceType = script.sh(
-                returnStdout: true,
-                script: """
-                    docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                        sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.type}"'
-                """).trim()
-            // get the IP address of the ingress controller
-            if (ingressControllerServiceType == 'LoadBalancer') {
-                ingressControllerIP = script.sh(
+        HarborInstance instance = null
+        onAwsEc2Node {
+            // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
+            script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
+                // get the service type of the ingress controller
+                ingressControllerServiceType = script.sh(
                     returnStdout: true,
                     script: """
                         docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                            sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                            sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.type}"'
                     """).trim()
-            } else if (ingressControllerServiceType == 'NodePort') {
-                ingressControllerIP = script.sh(
-                    returnStdout: true,
-                    script: """
-                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                            sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
-                    """).trim()
+                // get the IP address of the ingress controller
+                if (ingressControllerServiceType == 'LoadBalancer') {
+                    ingressControllerIP = script.sh(
+                        returnStdout: true,
+                        script: """
+                            docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                                sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                        """).trim()
+                } else if (ingressControllerServiceType == 'NodePort') {
+                    ingressControllerIP = script.sh(
+                        returnStdout: true,
+                        script: """
+                            docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                                sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
+                        """).trim()
+                }
+                // install harbor chart
+                script.sh """
+                    # insert the hostAliases to run the replication test
+                    sed -i -r "s|    spec:|    spec:\\n      hostAliases:\\n      - ip: ${ingressControllerIP}\\n        hostnames:\\n        - ${coreHostname}|g" ./templates/core/core-dpl.yaml
+                    # install harbor chart
+                    docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
+                        helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
+                            --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
+                """
             }
-            // install harbor chart
-            script.sh """
-                # insert the hostAliases to run the replication test
-                sed -i -r "s|    spec:|    spec:\\n      hostAliases:\\n      - ip: ${ingressControllerIP}\\n        hostnames:\\n        - ${coreHostname}|g" ./templates/core/core-dpl.yaml
-                # install harbor chart
-                docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
-                    helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
-                        --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
+            instance = new HarborInstance()
+            instance.coreServiceURL = "https://" + coreHostname
+            instance.adminPassword = "Harbor12345"
+            instance.authMode = "database"
+            instance.components = "trivy"
+            instance.hostIPMappings = "${coreHostname}:${ingressControllerIP}"
+
+            script.currentBuild.description = """
+                Kubernetes: ${context}
+                Namespace: ${namespace}
+                Core Service: $instance.coreServiceURL
+                Ingress Controller IP: ${ingressControllerIP}
             """
         }
-
-        HarborInstance instance = new HarborInstance()
-        instance.coreServiceURL = "https://" + coreHostname
-        instance.adminPassword = "Harbor12345"
-        instance.authMode = "database"
-        instance.components = "trivy"
-        instance.hostIPMappings = "${coreHostname}:${ingressControllerIP}"
-
-        script.currentBuild.description = """
-            Kubernetes: ${context}
-            Namespace: ${namespace}
-            Core Service: $instance.coreServiceURL
-            Ingress Controller IP: ${ingressControllerIP}
-        """
 
         return instance
     }
 
     void preTest(){
-        script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
-            script.import_trivy_db(script.env.KUBE_CONFIG_FILE_PATH, context, namespace, "")
+        onAwsEc2Node {
+            script.withEnv(["KUBE_CONFIG_FILE_PATH=/root/.kube/config"]) {
+                script.import_trivy_db(script.env.KUBE_CONFIG_FILE_PATH, context, namespace, "")
+            }
         }
     }
 }
