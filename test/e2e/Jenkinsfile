@@ -20,7 +20,8 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     void preInstall(){
         script.withCredentials([
             script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH"),
-            script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD")]) {
+            script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD"),
+            script.usernamePassword(credentialsId: 'CNCF_S3_SECRET', usernameVariable: 's3_access_key', passwordVariable: 's3_secret_key')]) {
             script.sh """
                 # Set proxy registry or docker credential to bypass Docker Hub rate limit
                 echo "PROXY_REGISTRY is \${PROXY_REGISTRY}"
@@ -40,7 +41,20 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 # build the image
                 docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
                 # clean up the namespace
-                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
+                echo KUBE_CONFIG_FILE_PATH is \${KUBE_CONFIG_FILE_PATH}
+                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config \
+                    -e AWS_ACCESS_KEY_ID=\${s3_access_key} \
+                    -e AWS_SECRET_ACCESS_KEY=\${s3_secret_key} \
+                    -e AWS_REGION=\${AWS_REGION:-us-east-1} \
+                    -e AWS_DEFAULT_REGION=\${AWS_REGION:-us-east-1} \
+                    deployer:dev \
+                    aws sts get-caller-identity
+                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config \
+                    -e AWS_ACCESS_KEY_ID=\${s3_access_key} \
+                    -e AWS_SECRET_ACCESS_KEY=\${s3_secret_key} \
+                    -e AWS_REGION=\${AWS_REGION:-us-east-1} \
+                    -e AWS_DEFAULT_REGION=\${AWS_REGION:-us-east-1} \
+                    deployer:dev \
                     kubectl delete namespace ${namespace} --ignore-not-found --context ${context}
                 docker logout
             """
