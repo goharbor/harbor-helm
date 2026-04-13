@@ -9,6 +9,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: redis
     app.kubernetes.io/component: redis
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: 1
   serviceName: {{ template "harbor.redis" . }}
@@ -25,9 +29,14 @@ spec:
 {{- if .Values.redis.podLabels }}
 {{ toYaml .Values.redis.podLabels | indent 8 }}
 {{- end }}
-{{- if .Values.redis.podAnnotations }}
+{{- if or .Values.redis.podAnnotations .Values.commonAnnotations }}
       annotations:
+{{- if .Values.redis.podAnnotations }}
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
+{{- end }}
 {{- end }}
     spec:
       securityContext:
@@ -112,6 +121,9 @@ spec:
       {{- range $key, $value := $redis.annotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
+{{- end }}
     spec:
       accessModes: [{{ $redis.accessMode | quote }}]
       {{- if $redis.storageClass }}

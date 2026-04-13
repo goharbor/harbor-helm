@@ -9,6 +9,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: database
     app.kubernetes.io/component: database
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.database" . }}"
@@ -29,6 +33,9 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/database/database-secret.yaml") . | sha256sum }}
 {{- if .Values.database.podAnnotations }}
 {{ toYaml .Values.database.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:
@@ -149,6 +156,9 @@ spec:
       {{- range $key, $value := $database.annotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
+{{- end }}
     spec:
       accessModes: [{{ $database.accessMode | quote }}]
       {{- if $database.storageClass }}

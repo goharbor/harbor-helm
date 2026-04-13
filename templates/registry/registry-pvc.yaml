@@ -13,12 +13,15 @@ metadata:
   {{- if eq .Values.persistence.resourcePolicy "keep" }}
     helm.sh/resource-policy: keep
   {{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
     app.kubernetes.io/component: registry
 spec:
-  accessModes: 
+  accessModes:
     - {{ $registry.accessMode }}
   resources:
     requests:

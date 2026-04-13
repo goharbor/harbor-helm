@@ -7,6 +7,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: core
     app.kubernetes.io/component: core
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.core.replicas }}
   revisionHistoryLimit: {{ .Values.core.revisionHistoryLimit }}
@@ -34,6 +38,9 @@ spec:
 {{- end }}
 {{- if .Values.core.podAnnotations }}
 {{ toYaml .Values.core.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:

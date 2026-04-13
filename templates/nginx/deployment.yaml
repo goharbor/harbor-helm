@@ -8,6 +8,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: nginx
     app.kubernetes.io/component: nginx
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.nginx.replicas }}
   revisionHistoryLimit: {{ .Values.nginx.revisionHistoryLimit }}
@@ -35,6 +39,9 @@ spec:
       {{- end }}
 {{- if .Values.nginx.podAnnotations }}
 {{ toYaml .Values.nginx.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
 {{- if .Values.nginx.serviceAccountName }}

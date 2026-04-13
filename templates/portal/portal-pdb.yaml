@@ -5,6 +5,10 @@ metadata:
   name: {{ template "harbor.portal" . }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   {{- if .Values.portal.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.portal.podDisruptionBudget.minAvailable }}

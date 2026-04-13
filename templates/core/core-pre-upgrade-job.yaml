@@ -12,12 +12,19 @@ metadata:
     # job is considered part of the release.
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-weight": "-5"
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   template:
     metadata:
       labels:
 {{ include "harbor.matchLabels" . | indent 8 }}
         component: migrator
+{{- if .Values.commonAnnotations -}}
+      annotations:
+{{ toYaml .Values.commonAnnotations | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: Never
       securityContext:
@@ -51,7 +58,7 @@ spec:
         {{- end }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
-        {{- end }}               
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf

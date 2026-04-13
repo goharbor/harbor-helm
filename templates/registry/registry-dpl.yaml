@@ -9,6 +9,10 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
     app.kubernetes.io/component: registry
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.registry.replicas }}
   revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
@@ -42,6 +46,9 @@ spec:
 {{- end }}
 {{- if .Values.registry.podAnnotations }}
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.commonAnnotations }}
+{{ toYaml .Values.commonAnnotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:

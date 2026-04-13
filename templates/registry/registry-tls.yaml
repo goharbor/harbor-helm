@@ -7,6 +7,10 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+{{ toYaml .Values.commonAnnotations | indent 4 }}
+{{- end }}
 type: kubernetes.io/tls
 data:
   ca.crt: {{ (required "The \"internalTLS.trustCa\" is required!" .Values.internalTLS.trustCa) | b64enc | quote }}
