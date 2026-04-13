@@ -1,5 +1,5 @@
 expose:
-  # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
+  # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort", "loadBalancer" or "route"
   # and fill the information in the corresponding section
   type: ingress
   tls:
@@ -51,14 +51,16 @@ expose:
   route:
     labels: {}
     annotations: {}
+    # References to the parent gateways
+    parentRefs: []
       # - name: envoy-internal
       #   namespace: networking
       #   sectionName: https
       #   group: gateway.networking.k8s.io
       #   kind: Gateway
-    parentRefs: {}
-      # - "harbor.example.com"
+    # The hostnames for the HTTPRoute
     hosts: []
+      # - "harbor.example.com"
   clusterIP:
     # The name of ClusterIP service
     name: harbor
