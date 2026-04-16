@@ -548,6 +548,12 @@ nginx:
     successThreshold: 1
 
 portal:
+  # enabled the flag to enable Portal
+  enabled: true
+  # url overrides the URL core uses to reach the portal. When empty, it is
+  # auto-generated from the internal service name and scheme. Useful when
+  # portal.enabled is false and the portal is hosted externally.
+  url: ""
   image:
     repository: docker.io/goharbor/harbor-portal
     tag: dev

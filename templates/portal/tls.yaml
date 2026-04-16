@@ -1,4 +1,4 @@
-{{- if and .Values.internalTLS.enabled }}
+{{- if and .Values.portal.enabled .Values.internalTLS.enabled }}
 {{- if eq .Values.internalTLS.certSource "manual" }}
 apiVersion: v1
 kind: Secret
