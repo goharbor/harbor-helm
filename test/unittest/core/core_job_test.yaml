@@ -196,3 +196,29 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].command
           value: ["/harbor/harbor_core", "-mode=migrate"]
+
+  - it: Resources
+    set: 
+      enableMigrateHelmHook: true
+      core:
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 500Mi
+            cpu: 200m
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 256Mi
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 200m
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 500Mi

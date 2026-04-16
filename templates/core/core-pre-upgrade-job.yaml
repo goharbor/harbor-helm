@@ -56,6 +56,10 @@ spec:
         - name: config
           mountPath: /etc/core/app.conf
           subPath: app.conf
+{{- if .Values.core.resources }}
+        resources:
+{{ toYaml .Values.core.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: config
         configMap:
