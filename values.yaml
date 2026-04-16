@@ -960,6 +960,13 @@ trivy:
     failureThreshold: 3
     successThreshold: 1
   extraEnvVars: []
+  # defaultDataVolumeMount controls whether the default `data` volume is mounted at /home/scanner/.cache
+  # Set enabled to false when using extraVolumeMounts to override the cache and reports paths individually,
+  # to avoid mount conflicts with the parent path.
+  defaultDataVolumeMount:
+    enabled: true
+  extraVolumeMounts: []
+  extraVolumes: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
