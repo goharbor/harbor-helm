@@ -501,7 +501,8 @@ containerSecurityContext:
 nginx:
   image:
     repository: docker.io/goharbor/nginx-photon
-    tag: dev
+    # By default the version of the chart will be used as the tag
+    # tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -550,7 +551,8 @@ nginx:
 portal:
   image:
     repository: docker.io/goharbor/harbor-portal
-    tag: dev
+    # By default the version of the chart will be used as the tag
+    # tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -608,7 +610,8 @@ portal:
 core:
   image:
     repository: docker.io/goharbor/harbor-core
-    tag: dev
+    # By default the version of the chart will be used as the tag
+    # tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -719,7 +722,8 @@ core:
 jobservice:
   image:
     repository: docker.io/goharbor/harbor-jobservice
-    tag: dev
+    # By default the version of the chart will be used as the tag
+    # tag: dev
   replicas: 1
   podDisruptionBudget:
     enabled: false
@@ -804,7 +808,8 @@ registry:
   registry:
     image:
       repository: docker.io/goharbor/registry-photon
-      tag: dev
+      # By default the version of the chart will be used as the tag
+      # tag: dev
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -827,7 +832,8 @@ registry:
   controller:
     image:
       repository: docker.io/goharbor/harbor-registryctl
-      tag: dev
+      # By default the version of the chart will be used as the tag
+      # tag: dev
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -926,7 +932,8 @@ trivy:
     # repository the repository for Trivy adapter image
     repository: docker.io/goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: dev
+    # By default the version of the chart will be used as the tag
+    # tag: dev
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -1049,7 +1056,8 @@ database:
   internal:
     image:
       repository: docker.io/goharbor/harbor-db
-      tag: dev
+      # By default the version of the chart will be used as the tag
+      # tag: dev
     # set the service account to be used, default if left empty
     serviceAccountName: ""
     # mount the service account token
@@ -1137,7 +1145,8 @@ redis:
   internal:
     image:
       repository: docker.io/goharbor/redis-photon
-      tag: dev
+      # By default the version of the chart will be used as the tag
+      # tag: dev
     # set the service account to be used, default if left empty
     serviceAccountName: ""
     # mount the service account token
@@ -1221,7 +1230,8 @@ redis:
 exporter:
   image:
     repository: docker.io/goharbor/harbor-exporter
-    tag: dev
+    # By default the version of the chart will be used as the tag
+    # tag: dev
   serviceAccountName: ""
   # mount the service account token
   automountServiceAccountToken: false

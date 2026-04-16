@@ -48,7 +48,7 @@ spec:
       {{- end }}
       containers:
       - name: redis
-        image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+        image: {{ .Values.redis.internal.image.repository }}:{{- default (include "harbor.defaultImageTag" .) .Values.redis.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
