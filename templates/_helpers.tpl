@@ -490,7 +490,11 @@ app: "{{ template "harbor.name" . }}"
 
 {{/* PORTAL_URL */}}
 {{- define "harbor.portalURL" -}}
-  {{- printf "%s://%s" (include "harbor.component.scheme" .) (include "harbor.portal" .) -}}
+  {{- if .Values.portal.url -}}
+    {{- .Values.portal.url -}}
+  {{- else -}}
+    {{- printf "%s://%s" (include "harbor.component.scheme" .) (include "harbor.portal" .) -}}
+  {{- end -}}
 {{- end -}}
 
 {{/* REGISTRY_URL */}}
