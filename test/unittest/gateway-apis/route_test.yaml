@@ -71,6 +71,51 @@ tests:
           path: metadata.labels["test.label"]
           value: test-label
 
+  - it: Route Timeouts
+    set:
+      expose:
+        type: route
+        route:
+          parentRefs:
+            - name: test-parent
+              namespace: test-namespace
+          hosts:
+            - harbor.example.com
+          timeouts:
+            request: 300s
+            backendRequest: 120s
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - equal:
+          path: spec.rules[0].timeouts.request
+          value: 300s
+      - equal:
+          path: spec.rules[0].timeouts.backendRequest
+          value: 120s
+      - equal:
+          path: spec.rules[1].timeouts.request
+          value: 300s
+      - equal:
+          path: spec.rules[1].timeouts.backendRequest
+          value: 120s
+
+  - it: Route Without Timeouts
+    set:
+      expose:
+        type: route
+        route:
+          parentRefs:
+            - name: test-parent
+              namespace: test-namespace
+          hosts:
+            - harbor.example.com
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - notExists:
+          path: spec.rules[0].timeouts
+      - notExists:
+          path: spec.rules[1].timeouts
+
   # Service Tests
 
   - it: Route Service Exposure

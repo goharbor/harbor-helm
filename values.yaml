@@ -68,6 +68,8 @@ expose:
       #     add:
       #       - name: x-robots-tag
       #         value: noindex, nofollow
+    # route timeouts
+    timeouts: {}
   clusterIP:
     # The name of ClusterIP service
     name: harbor
