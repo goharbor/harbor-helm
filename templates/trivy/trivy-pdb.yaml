@@ -3,6 +3,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "harbor.trivy" . }}
+  namespace: {{ include "harbor.namespace" . | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:

@@ -11,7 +11,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: "{{ template "harbor.route" . }}"
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "harbor.namespace" . | quote }}
 {{- if $route.labels }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
@@ -42,7 +42,7 @@ spec:
         value: {{ .controller_path }}
     backendRefs:
     - name: {{ template "harbor.core" . }}
-      namespace: {{ .Release.Namespace | quote }}
+      namespace: {{ include "harbor.namespace" . | quote }}
       group: ""
       kind: Service
       weight: 1
@@ -53,7 +53,7 @@ spec:
         value: {{ .portal_path }}
     backendRefs:
     - name: {{ template "harbor.portal" . }}
-      namespace: {{ .Release.Namespace | quote }}
+      namespace: {{ include "harbor.namespace" . | quote }}
       group: ""
       kind: Service
       weight: 1

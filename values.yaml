@@ -1,3 +1,6 @@
+# Override the namespace to deploy Harbor into. Useful when you want to install Harbor as a subchart.
+namespaceOverride: null
+
 expose:
   # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort", "loadBalancer" or "route"
   # and fill the information in the corresponding section
