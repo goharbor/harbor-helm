@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: migration-job
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "harbor.namespace" . | quote }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: migrator
