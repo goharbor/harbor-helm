@@ -25,6 +25,15 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{/* Override the namespace to deploy Harbor into. Useful when you want to install Harbor as a subchart. */}}
+{{- define "harbor.namespace" -}}
+{{- if .Values.namespaceOverride -}}
+{{- .Values.namespaceOverride }}
+{{- else -}}
+{{- .Release.Namespace }}
+{{- end -}}
+{{- end -}}
+
 {{/* Helm required labels: legacy */}}
 {{- define "harbor.legacy.labels" -}}
 heritage: {{ .Release.Service }}
@@ -111,7 +120,7 @@ app: "{{ template "harbor.name" . }}"
 
 {{- define "harbor.database.rawPassword" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace (include "harbor.database" .) -}}
+    {{- $existingSecret := lookup "v1" "Secret" (include "harbor.namespace" .) (include "harbor.database" .) -}}
     {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "POSTGRES_PASSWORD") -}}
       {{- .Values.database.internal.password | default (index $existingSecret.data "POSTGRES_PASSWORD" | b64dec) -}}
     {{- else -}}
@@ -187,7 +196,7 @@ app: "{{ template "harbor.name" . }}"
 
 
 {{- define "harbor.redis.usernamefromsecret" -}}
-  {{- $existingSecret := (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)) -}}
+  {{- $existingSecret := (lookup "v1" "Secret" (include "harbor.namespace" .) (.Values.redis.external.existingSecret)) -}}
   {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "REDIS_USERNAME") -}}
     {{- printf "%s" ($existingSecret.data.REDIS_USERNAME | b64dec | trim ) }}
   {{- end -}}
@@ -206,7 +215,7 @@ app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
 {{- define "harbor.redis.pwdfromsecret" -}}
-  {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace (.Values.redis.external.existingSecret)) -}}
+  {{- $existingSecret := (lookup "v1" "Secret" (include "harbor.namespace" .) (.Values.redis.external.existingSecret)) -}}
   {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "REDIS_PASSWORD") -}}
     {{- printf "%s" ($existingSecret.data.REDIS_PASSWORD | b64dec | trim) -}}
   {{- end -}}
