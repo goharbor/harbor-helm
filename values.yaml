@@ -108,6 +108,8 @@ expose:
     # loadBalancer-specific labels
     labels: {}
     sourceRanges: []
+    # Optionally restrict which load-balancer controller claims this Service
+    loadBalancerClass: ""
 
 # The external URL for Harbor core service. It is used to
 # 1) populate the docker/helm commands showed on portal
