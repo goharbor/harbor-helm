@@ -4,10 +4,10 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "harbor.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
-  labels: {{ include "harbor.labels" . | nindent 4 }}
-{{- if .Values.metrics.serviceMonitor.additionalLabels }}
-{{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
-{{- end }}
+  labels:
+{{- $defaults := (include "harbor.labels" . | fromYaml) }}
+{{- $merged := merge (default dict .Values.metrics.serviceMonitor.additionalLabels) $defaults }}
+{{ toYaml $merged | indent 4 }}
 spec:
   jobLabel: app.kubernetes.io/name
   endpoints:
