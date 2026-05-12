@@ -47,6 +47,10 @@ spec:
       kind: Service
       weight: 1
       port: {{ template "harbor.core.servicePort" . }}
+    {{- with $route.timeouts }}
+    timeouts:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   - matches:
     - path:
         type: {{ .path_type }}
@@ -58,4 +62,8 @@ spec:
       kind: Service
       weight: 1
       port: {{ template "harbor.portal.servicePort" . }}
+    {{- with $route.timeouts }}
+    timeouts:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
 {{- end }}

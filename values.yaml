@@ -61,6 +61,8 @@ expose:
     # The hostnames for the HTTPRoute
     hosts: []
       # - "harbor.example.com"
+    # route timeouts
+    timeouts: {}
   clusterIP:
     # The name of ClusterIP service
     name: harbor
