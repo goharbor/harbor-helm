@@ -1136,7 +1136,7 @@ redis:
   type: internal
   internal:
     image:
-      repository: docker.io/goharbor/redis-photon
+      repository: docker.io/goharbor/valkey-photon
       tag: dev
     # set the service account to be used, default if left empty
     serviceAccountName: ""
