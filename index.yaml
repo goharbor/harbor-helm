@@ -28,6 +28,32 @@ entries:
     - harbor-1.19.0.tgz
     version: 1.19.0
   - apiVersion: v1
+    appVersion: 2.14.4
+    created: "2026-05-27T10:45:19.863761+08:00"
+    description: An open source trusted cloud native registry that stores, signs,
+      and scans content
+    digest: f74c4ac6858124d5efee577ff75364cdb05101e50ccabebfb4e85fbaf5fc4e40
+    home: https://goharbor.io
+    icon: https://raw.githubusercontent.com/goharbor/website/main/static/img/logos/harbor-icon-color.png
+    keywords:
+    - docker
+    - registry
+    - harbor
+    maintainers:
+    - email: yan-yw.wang@broadcom.com
+      name: Yan Wang
+    - email: stone.zhang@broadcom.com
+      name: Stone Zhang
+    - email: miner.yang@broadcom.com
+      name: Miner Yang
+    name: harbor
+    sources:
+    - https://github.com/goharbor/harbor
+    - https://github.com/goharbor/harbor-helm
+    urls:
+    - harbor-1.18.4.tgz
+    version: 1.18.4
+  - apiVersion: v1
     appVersion: 2.14.3
     created: "2026-03-18T07:54:07.226676799Z"
     description: An open source trusted cloud native registry that stores, signs,
@@ -2977,4 +3003,4 @@ entries:
     urls:
     - harbor-1.0.0.tgz
     version: 1.0.0
-generated: "2026-05-06T07:47:35.172615431Z"
+generated: "2026-05-27T10:45:19.86115+08:00"
