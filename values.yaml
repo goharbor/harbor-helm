@@ -61,6 +61,13 @@ expose:
     # The hostnames for the HTTPRoute
     hosts: []
       # - "harbor.example.com"
+    # HTTPRoute filters applied to every rule
+    filters: []
+      # - type: ResponseHeaderModifier
+      #   responseHeaderModifier:
+      #     add:
+      #       - name: x-robots-tag
+      #         value: noindex, nofollow
   clusterIP:
     # The name of ClusterIP service
     name: harbor
