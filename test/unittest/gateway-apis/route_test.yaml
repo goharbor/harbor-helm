@@ -14,6 +14,12 @@ tests:
               kind: Gateway
           hosts:
             - harbor.example.com
+          filters:
+            - type: ResponseHeaderModifier
+              responseHeaderModifier:
+                add:
+                  - name: x-robots-tag
+                    value: noindex, nofollow
     template: templates/gateway-apis/route.yaml
     asserts:
       - equal:
@@ -22,6 +28,12 @@ tests:
       - equal:
           path: spec.parentRefs[0].name
           value: test-parent
+      - equal:
+          path: spec.rules[0].filters[0].type
+          value: ResponseHeaderModifier
+      - equal:
+          path: spec.rules[1].filters[0].type
+          value: ResponseHeaderModifier
 
   - it: Route Extra Annotations
     set:
