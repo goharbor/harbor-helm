@@ -94,3 +94,30 @@ tests:
       - equal:
           path: spec.rules[1].matches[0].path.value
           value: /
+
+  - it: Route fails with a clear message when parentRefs is empty
+    set:
+      expose:
+        type: route
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: 'expose.route.parentRefs must be set when expose.type is "route": an HTTPRoute with no parentRefs attaches to no Gateway and cannot serve traffic.'
+
+  - it: Route renders with parentRefs set but hosts left empty
+    set:
+      expose:
+        type: route
+        route:
+          parentRefs:
+            - name: test-parent
+              namespace: test-namespace
+    template: templates/gateway-apis/route.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.parentRefs[0].name
+          value: test-parent
+      - notExists:
+          path: spec.hostnames

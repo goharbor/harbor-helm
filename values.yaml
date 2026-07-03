@@ -51,7 +51,8 @@ expose:
   route:
     labels: {}
     annotations: {}
-    # References to the parent gateways
+    # References to the parent gateways. Required when expose.type is "route":
+    # an HTTPRoute with no parentRefs attaches to no Gateway and cannot serve traffic.
     parentRefs: []
       # - name: envoy-internal
       #   namespace: networking
