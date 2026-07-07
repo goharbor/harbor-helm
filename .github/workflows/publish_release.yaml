@@ -8,6 +8,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,8 +25,8 @@ jobs:
         run: echo "PACKAGE_PATH=$(helm package . | awk '{print $NF}')" >> $GITHUB_ENV
       - name: Publish Helm Chart
         run: |
-          helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-          helm push ${{ env.PACKAGE_PATH }} oci://ghcr.io/$GITHUB_REPOSITORY_OWNER
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+          helm push ${{ env.PACKAGE_PATH }} oci://ghcr.io/${{ github.repository_owner }}
       - name: Upload to chart repository
         run: |
           git config --global user.email "${{ github.event.repository.name }}@users.noreply.github.com"
