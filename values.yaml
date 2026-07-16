@@ -388,7 +388,9 @@ secretKey: "not-a-secure-key"
 existingSecretSecretKey: ""
 
 # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
-# artifacts from/to the registries that cannot be reached directly
+# artifacts from/to the registries that cannot be reached directly.
+# Note: You can append `-registry` to the components list if you want to apply proxy settings
+# to the registry component, for example when using S3 with `disableredirect: true` and needing a proxy.
 proxy:
   httpProxy:
   httpsProxy:

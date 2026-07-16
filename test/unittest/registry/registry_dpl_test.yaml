@@ -1,0 +1,92 @@
+suite: RegistryDeployment
+tests:
+  - it: RegistryDeploymentWithoutProxy
+    set:
+      registry:
+        existingSecret: "some-secret"
+      proxy:
+        httpProxy: "http://proxy:8080"
+        httpsProxy: "https://proxy:8080"
+        noProxy: "127.0.0.1,localhost,.local,.internal"
+        components:
+          - core
+          - jobservice
+          - trivy
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: HTTP_PROXY
+            value: "http://proxy:8080"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: HTTPS_PROXY
+            value: "https://proxy:8080"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          any: true
+          content:
+            name: NO_PROXY
+      - notContains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: HTTP_PROXY
+            value: "http://proxy:8080"
+      - notContains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: HTTPS_PROXY
+            value: "https://proxy:8080"
+      - notContains:
+          path: spec.template.spec.containers[1].env
+          any: true
+          content:
+            name: NO_PROXY
+
+  - it: RegistryDeploymentWithProxy
+    set:
+      registry:
+        existingSecret: "some-secret"
+      proxy:
+        httpProxy: "http://proxy:8080"
+        httpsProxy: "https://proxy:8080"
+        noProxy: "127.0.0.1,localhost,.local,.internal"
+        components:
+          - core
+          - jobservice
+          - registry
+          - trivy
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: HTTP_PROXY
+            value: "http://proxy:8080"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: HTTPS_PROXY
+            value: "https://proxy:8080"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NO_PROXY
+            value: "RELEASE-NAME-harbor-core,RELEASE-NAME-harbor-jobservice,RELEASE-NAME-harbor-database,RELEASE-NAME-harbor-registry,RELEASE-NAME-harbor-portal,RELEASE-NAME-harbor-trivy,RELEASE-NAME-harbor-exporter,127.0.0.1,localhost,.local,.internal"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: HTTP_PROXY
+            value: "http://proxy:8080"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: HTTPS_PROXY
+            value: "https://proxy:8080"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: NO_PROXY
+            value: "RELEASE-NAME-harbor-core,RELEASE-NAME-harbor-jobservice,RELEASE-NAME-harbor-database,RELEASE-NAME-harbor-registry,RELEASE-NAME-harbor-portal,RELEASE-NAME-harbor-trivy,RELEASE-NAME-harbor-exporter,127.0.0.1,localhost,.local,.internal"
