@@ -936,6 +936,10 @@ trivy:
     repository: docker.io/goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: dev
+    # The image digest to pull.
+    # If set, it takes precedence over the image tag.
+    # Example: sha256:...
+    digest: ""
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
