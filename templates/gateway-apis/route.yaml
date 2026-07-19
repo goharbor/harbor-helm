@@ -22,10 +22,15 @@ metadata:
 {{ toYaml $route.annotations | indent 4 }}
 {{- end }}
 spec:
+  {{- if not $route.parentRefs }}
+    {{- fail "expose.route.parentRefs must be set when expose.type is \"route\": an HTTPRoute with no parentRefs attaches to no Gateway and cannot serve traffic." }}
+  {{- end }}
   parentRefs:
-  {{- toYaml $route.parentRefs | nindent 2 }}
+    {{- toYaml $route.parentRefs | nindent 4 }}
+  {{- with $route.hosts }}
   hostnames:
-  {{- toYaml $route.hosts | nindent 2 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   rules:
   - matches:
     - path:
