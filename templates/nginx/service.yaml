@@ -87,6 +87,9 @@ spec:
   {{- if $loadBalancer.IP }}
   loadBalancerIP: {{ $loadBalancer.IP }}
   {{- end }}
+  {{- if $loadBalancer.loadBalancerClass }}
+  loadBalancerClass: {{ $loadBalancer.loadBalancerClass }}
+  {{- end }}
   ports:
     - name: http
       port: {{ $loadBalancer.ports.httpPort }}
