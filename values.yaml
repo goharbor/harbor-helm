@@ -1112,6 +1112,8 @@ database:
       #    memory: 128Mi
       #    cpu: 100m
   external:
+    # host, port, username and coreDatabase are rendered with `tpl`, so they may
+    # contain template expressions, e.g. host: "{{ .Release.Name }}-postgresql".
     host: "192.168.0.1"
     port: "5432"
     username: "user"
