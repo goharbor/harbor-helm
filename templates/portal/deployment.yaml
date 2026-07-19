@@ -1,3 +1,4 @@
+{{- if .Values.portal.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -128,3 +129,4 @@ spec:
     {{- if .Values.portal.priorityClassName }}
       priorityClassName: {{ .Values.portal.priorityClassName }}
     {{- end }}
+{{- end }}

@@ -1,4 +1,4 @@
-{{- if and .Values.portal.podDisruptionBudget.enabled (gt (int .Values.portal.replicas) 1) }}
+{{- if and .Values.portal.enabled .Values.portal.podDisruptionBudget.enabled (gt (int .Values.portal.replicas) 1) }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
