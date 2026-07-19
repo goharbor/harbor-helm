@@ -819,6 +819,7 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
+    extraVolumeMounts: []
     ## Liveness probe values
     livenessProbe:
       initialDelaySeconds: 300
@@ -842,6 +843,7 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
+    extraVolumeMounts: []
     ## Liveness probe values
     livenessProbe:
       initialDelaySeconds: 300
@@ -866,6 +868,7 @@ registry:
     minAvailable: 1
     # maxUnavailable: 1
   revisionHistoryLimit: 10
+  extraVolumes: []
   nodeSelector: {}
   tolerations: []
   affinity: {}
