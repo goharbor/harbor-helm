@@ -1,0 +1,55 @@
+suite: MetricsServiceMonitor
+
+templates:
+  - templates/metrics/metrics-svcmon.yaml
+
+tests:
+  - it: DefaultLabelsRenderedOnce
+    set:
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+    asserts:
+      - equal:
+          path: metadata.labels.release
+          value: RELEASE-NAME
+      - equal:
+          path: metadata.labels.heritage
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: harbor
+
+  - it: AdditionalLabelsAreMergedNotAppended
+    set:
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          additionalLabels:
+            team: platform
+            environment: prod
+    asserts:
+      - equal:
+          path: metadata.labels.release
+          value: RELEASE-NAME
+      - equal:
+          path: metadata.labels.team
+          value: platform
+      - equal:
+          path: metadata.labels.environment
+          value: prod
+
+  - it: AdditionalLabelsOverrideChartDefaults
+    set:
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          additionalLabels:
+            release: kube-prometheus-stack
+    asserts:
+      - equal:
+          path: metadata.labels.release
+          value: kube-prometheus-stack
