@@ -81,6 +81,48 @@ spec:
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
+{{- if and .Values.metrics.enabled .Values.metrics.redis.enabled }}
+      - name: redis-exporter
+        image: {{ .Values.metrics.redis.image.repository }}:{{ .Values.metrics.redis.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if not (empty .Values.containerSecurityContext) }}
+        securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
+        args:
+        - --web.listen-address=:{{ .Values.metrics.redis.port }}
+        - --web.telemetry-path={{ .Values.metrics.redis.path }}
+        env:
+        - name: REDIS_ADDR
+          value: redis://localhost:6379
+{{- with .Values.metrics.redis.extraEnvVars }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.metrics.redis.port }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.metrics.redis.path }}
+            port: metrics
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.metrics.redis.path }}
+            port: metrics
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+          successThreshold: 1
+{{- if .Values.metrics.redis.resources }}
+        resources:
+{{ toYaml .Values.metrics.redis.resources | indent 10 }}
+{{- end }}
+{{- end }}
       {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data
