@@ -428,6 +428,20 @@ metrics:
   exporter:
     path: /metrics
     port: 8001
+  ## Redis/Valkey metrics exporter (sidecar on the internal redis StatefulSet).
+  ## Only applied when redis.type is "internal".
+  redis:
+    enabled: false
+    path: /metrics
+    port: 9121
+    image:
+      repository: docker.io/oliver006/redis_exporter
+      tag: v1.87.0
+    # resources:
+    #  requests:
+    #    memory: 64Mi
+    #    cpu: 50m
+    extraEnvVars: []
   ## Create prometheus serviceMonitor to scrape harbor metrics.
   ## This requires the monitoring.coreos.com/v1 CRD. Please see
   ## https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/getting-started.md
