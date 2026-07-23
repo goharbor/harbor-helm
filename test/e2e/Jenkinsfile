@@ -1,4 +1,4 @@
-@Library('harbor@main') _
+@Library('harbor@topic/stonezdj/switch_cluster') _
 import io.goharbor.*
 
 class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecutor implements Serializable {
@@ -19,7 +19,6 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     // clean up the previously installed harbor chart
     void preInstall(){
         script.withCredentials([
-            script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH"),
             script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD"),
             script.usernamePassword(credentialsId: 'CNCF_S3_SECRET', usernameVariable: 's3_access_key', passwordVariable: 's3_secret_key')]) {
             script.sh """
@@ -41,15 +40,16 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 # build the image
                 docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
                 # clean up the namespace
-                echo KUBE_CONFIG_FILE_PATH is \${KUBE_CONFIG_FILE_PATH}
-                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config \
+                docker run -i --rm -v /root/.kube/config:/root/.kube/config \
+                    -v /root/.aws:/root/.aws:ro \
                     -e AWS_ACCESS_KEY_ID=\${s3_access_key} \
                     -e AWS_SECRET_ACCESS_KEY=\${s3_secret_key} \
                     -e AWS_REGION=\${AWS_REGION:-us-east-1} \
                     -e AWS_DEFAULT_REGION=\${AWS_REGION:-us-east-1} \
                     deployer:dev \
                     aws sts get-caller-identity
-                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config \
+                docker run -i --rm -v /root/.kube/config:/root/.kube/config \
+                    -v /root/.aws:/root/.aws:ro \
                     -e AWS_ACCESS_KEY_ID=\${s3_access_key} \
                     -e AWS_SECRET_ACCESS_KEY=\${s3_secret_key} \
                     -e AWS_REGION=\${AWS_REGION:-us-east-1} \
@@ -62,41 +62,38 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     }
 
     HarborInstance install(){
-        // the scope of the credential is just inside the "withCredentials" block, so we need to call "withCredentials" again
-        script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
-            // get the service type of the ingress controller
-            ingressControllerServiceType = script.sh(
+        // get the service type of the ingress controller
+        ingressControllerServiceType = script.sh(
+            returnStdout: true,
+            script: """
+                docker run -i --rm -v /root/.kube/config:/root/.kube/config -v /root/.aws:/root/.aws:ro  deployer:dev \
+                    sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.type}"'
+            """).trim()
+        // get the IP address of the ingress controller
+        if (ingressControllerServiceType == 'LoadBalancer') {
+            ingressControllerIP = script.sh(
                 returnStdout: true,
                 script: """
-                    docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                        sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.type}"'
+                    docker run -i --rm -v /root/.kube/config:/root/.kube/config -v /root/.aws:/root/.aws:ro deployer:dev \
+                        sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
                 """).trim()
-            // get the IP address of the ingress controller
-            if (ingressControllerServiceType == 'LoadBalancer') {
-                ingressControllerIP = script.sh(
-                    returnStdout: true,
-                    script: """
-                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                            sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
-                    """).trim()
-            } else if (ingressControllerServiceType == 'NodePort') {
-                ingressControllerIP = script.sh(
-                    returnStdout: true,
-                    script: """
-                        docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config deployer:dev \
-                            sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
-                    """).trim()
-            }
-            // install harbor chart
-            script.sh """
-                # insert the hostAliases to run the replication test
-                sed -i -r "s|    spec:|    spec:\\n      hostAliases:\\n      - ip: ${ingressControllerIP}\\n        hostnames:\\n        - ${coreHostname}|g" ./templates/core/core-dpl.yaml
-                # install harbor chart
-                docker run -i --rm -w /workspace -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config -v \$(pwd):/workspace deployer:dev \
-                    helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
-                        --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0" .
-            """
+        } else if (ingressControllerServiceType == 'NodePort') {
+            ingressControllerIP = script.sh(
+                returnStdout: true,
+                script: """
+                    docker run -i --rm -v /root/.kube/config:/root/.kube/config -v /root/.aws:/root/.aws:ro deployer:dev \
+                        sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
+                """).trim()
         }
+        // install harbor chart
+        script.sh """
+            # insert the hostAliases to run the replication test
+            sed -i -r "s|    spec:|    spec:\\n      hostAliases:\\n      - ip: ${ingressControllerIP}\\n        hostnames:\\n        - ${coreHostname}|g" ./templates/core/core-dpl.yaml
+            # install harbor chart
+            docker run -i --rm -w /workspace -v /root/.kube/config:/root/.kube/config  -v /root/.aws:/root/.aws:ro -v \$(pwd):/workspace deployer:dev \
+                helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
+                    --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0,expose.ingress.className=nginx" .
+        """
 
         HarborInstance instance = new HarborInstance()
         instance.coreServiceURL = "https://" + coreHostname
@@ -116,9 +113,6 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     }
 
     void preTest(){
-        script.withCredentials([script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
-            script.import_trivy_db(script.env.KUBE_CONFIG_FILE_PATH, context, namespace, "")
-        }
     }
 }
 
