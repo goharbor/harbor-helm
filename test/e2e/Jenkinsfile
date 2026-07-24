@@ -1,4 +1,4 @@
-@Library('harbor@topic/stonezdj/switch_cluster') _
+@Library('harbor@main') _
 import io.goharbor.*
 
 class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecutor implements Serializable {
@@ -145,5 +145,6 @@ FreshInstallPipelineSettings settings = new FreshInstallPipelineSettings()
 settings.properties = properties
 settings.executor = new HarborChartFreshInstallPipelineExecutor(this)
 settings.caseSettings = caseSettings
+settings.node = 'with-eks-env'
 
 run_fresh_install_pipeline(settings)
