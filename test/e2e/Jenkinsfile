@@ -19,7 +19,6 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     // clean up the previously installed harbor chart
     void preInstall(){
         script.withCredentials([
-            script.file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH"),
             script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD"),
             script.usernamePassword(credentialsId: 'CNCF_S3_SECRET', usernameVariable: 's3_access_key', passwordVariable: 's3_secret_key')]) {
             script.sh """
@@ -41,15 +40,16 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 # build the image
                 docker build -t deployer:dev -f test/e2e/Dockerfile test/e2e
                 # clean up the namespace
-                echo KUBE_CONFIG_FILE_PATH is \${KUBE_CONFIG_FILE_PATH}
-                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config \
+                docker run -i --rm -v /root/.kube/config:/root/.kube/config \
+                    -v /root/.aws:/root/.aws:ro \
                     -e AWS_ACCESS_KEY_ID=\${s3_access_key} \
                     -e AWS_SECRET_ACCESS_KEY=\${s3_secret_key} \
                     -e AWS_REGION=\${AWS_REGION:-us-east-1} \
                     -e AWS_DEFAULT_REGION=\${AWS_REGION:-us-east-1} \
                     deployer:dev \
                     aws sts get-caller-identity
-                docker run -i --rm -v \${KUBE_CONFIG_FILE_PATH}:/root/.kube/config \
+                docker run -i --rm -v /root/.kube/config:/root/.kube/config \
+                    -v /root/.aws:/root/.aws:ro \
                     -e AWS_ACCESS_KEY_ID=\${s3_access_key} \
                     -e AWS_SECRET_ACCESS_KEY=\${s3_secret_key} \
                     -e AWS_REGION=\${AWS_REGION:-us-east-1} \
@@ -144,5 +144,6 @@ FreshInstallPipelineSettings settings = new FreshInstallPipelineSettings()
 settings.properties = properties
 settings.executor = new HarborChartFreshInstallPipelineExecutor(this)
 settings.caseSettings = caseSettings
+settings.node = 'with-eks-env'
 
 run_fresh_install_pipeline(settings)
