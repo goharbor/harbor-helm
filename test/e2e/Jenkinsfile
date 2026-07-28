@@ -92,7 +92,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
             # install harbor chart
             docker run -i --rm -w /workspace -v /root/.kube/config:/root/.kube/config  -v /root/.aws:/root/.aws:ro -v \$(pwd):/workspace deployer:dev \
                 helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
-                    --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,core.gcTimeWindowHours=0,expose.ingress.className=nginx" .
+                    --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,trivy.offlineScan=true,core.gcTimeWindowHours=0,expose.ingress.className=nginx" .
         """
 
         HarborInstance instance = new HarborInstance()
@@ -113,17 +113,16 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
     }
 
     void preTest(){
+        script.import_trivy_db("", "", namespace, "")
     }
 }
 
 def properties = {
     // read context names from the kube config file
     def names = []
-    withCredentials([file(credentialsId: "kubeconfig", variable: "KUBE_CONFIG_FILE_PATH")]) {
-        def kubeConfig = readYaml file: env.KUBE_CONFIG_FILE_PATH
-        kubeConfig.contexts.each {
-            names.add(it.name)
-        }
+    def kubeConfig = readYaml file: '/root/.kube/config'
+    kubeConfig.contexts.each {
+        names.add(it.name)
     }
     return [
         parameters([
