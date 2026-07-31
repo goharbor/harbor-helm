@@ -40,6 +40,8 @@ spec:
     - path:
         type: {{ .path_type }}
         value: {{ .controller_path }}
+    timeouts:
+      request: {{ $route.timeouts.request }}
 {{- with $route.filters }}
     filters:
     {{- toYaml . | nindent 4 }}
