@@ -62,6 +62,8 @@ expose:
     hosts: []
       # - "harbor.example.com"
     # HTTPRoute filters applied to every rule
+    timeouts:
+      request: 60s
     filters: []
       # - type: ResponseHeaderModifier
       #   responseHeaderModifier:
