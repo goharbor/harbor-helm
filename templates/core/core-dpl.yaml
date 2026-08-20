@@ -156,6 +156,13 @@ spec:
                 name: {{ .Values.core.existingXsrfSecret }}
                 key: {{ .Values.core.existingXsrfSecretKey }}
           {{- end }}
+          {{- if .Values.core.configureUserSettingsSecret.name }}
+          - name: CONFIG_OVERWRITE_JSON
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.core.configureUserSettingsSecret.name }}
+                key: {{ .Values.core.configureUserSettingsSecret.key }}
+          {{- end }}
 {{- with .Values.core.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
