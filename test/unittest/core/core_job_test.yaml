@@ -201,7 +201,7 @@ tests:
     set: 
       enableMigrateHelmHook: true
       core:
-        resources:
+        migrateHelmHookResources:
           requests:
             memory: 256Mi
             cpu: 100m

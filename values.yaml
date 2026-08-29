@@ -654,6 +654,11 @@ core:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  ## Resources used by `enableMigrateHelmHook: true` pre-upgrade database migration
+  # migrateHelmHookResources:
+  #   requests:
+  #     memory: 256Mi
+  #     cpu: 100m
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
