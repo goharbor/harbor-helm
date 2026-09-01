@@ -1220,8 +1220,14 @@ redis:
     # username field can be an empty string, and it will be authenticated against the default user
     username: ""
     password: ""
-    # If using existingSecret, the key must be REDIS_PASSWORD, if ACL mode enabled, also inlcudes data of username, the keys must be REDIS_USERNAME
+    # Use an existing Secret for runtime Redis authentication. This is safe for
+    # client-side rendering by Argo CD because Helm never reads the Secret.
+    # The credentials must be URL-safe because Harbor components use Redis URLs.
     existingSecret: ""
+    existingSecretPasswordKey: REDIS_PASSWORD
+    # Set this only when Redis ACL authentication uses a username stored in the
+    # Secret. Otherwise `username` above is used (empty means the default user).
+    existingSecretUsernameKey: ""
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels

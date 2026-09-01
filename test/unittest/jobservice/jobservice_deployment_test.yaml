@@ -1,0 +1,36 @@
+suite: JobserviceDeployment
+
+tests:
+  - it: ExternalRedisExistingSecret
+    set:
+      redis:
+        type: external
+        external:
+          addr: redis.example:6379
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+          existingSecretUsernameKey: username
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: username
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: JOB_SERVICE_POOL_REDIS_URL
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@redis.example:6379/1
+

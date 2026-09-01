@@ -1,6 +1,32 @@
 suite: ExporterDeployment
 
 tests:
+  - it: ExternalRedisExistingSecret
+    set:
+      metrics:
+        enabled: true
+      redis:
+        type: external
+        external:
+          addr: redis.example:6379
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: HARBOR_REDIS_URL
+            value: redis://:$(REDIS_PASSWORD)@redis.example:6379/1
+
   - it: PodLabels
     set:
       metrics:

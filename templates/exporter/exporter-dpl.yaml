@@ -100,6 +100,22 @@ spec:
               name: {{ .Values.existingSecretAdminPassword }}
               key: {{ .Values.existingSecretAdminPasswordKey }}
         {{- end }}
+        {{- if and (eq .Values.redis.type "external") .Values.redis.external.existingSecret }}
+        {{- if .Values.redis.external.existingSecretUsernameKey }}
+        - name: REDIS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: {{ .Values.redis.external.existingSecretUsernameKey }}
+        {{- end }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.redis.external.existingSecret }}
+              key: {{ .Values.redis.external.existingSecretPasswordKey }}
+        - name: HARBOR_REDIS_URL
+          value: {{ include "harbor.redis.runtimeURLForJobservice" . | quote }}
+        {{- end }}
         {{- with .Values.exporter.extraEnvVars }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
