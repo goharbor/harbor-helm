@@ -1,6 +1,46 @@
 suite: CoreJob
 
 tests:
+  - it: ExternalRedisExistingSecret
+    set:
+      enableMigrateHelmHook: true
+      redis:
+        type: external
+        external:
+          addr: redis.example:6379
+          sentinelMasterSet: harbor-master
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+          existingSecretUsernameKey: username
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: username
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_CORE
+            value: redis+sentinel://$(REDIS_USERNAME):$(REDIS_PASSWORD)@redis.example:6379/harbor-master/0?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_REG
+            value: redis+sentinel://$(REDIS_USERNAME):$(REDIS_PASSWORD)@redis.example:6379/harbor-master/2?idle_timeout_seconds=30
+
   - it: JobDefault
     set:
       enableMigrateHelmHook: true
