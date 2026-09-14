@@ -41,13 +41,41 @@ spec:
             name: "{{ template "harbor.core" . }}"
         - secretRef:
             name: "{{ template "harbor.core" . }}"
-        {{- if .Values.database.external.existingSecret }}
         env:
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.database.external.existingSecret }}
-                key: password
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: POSTGRESQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.host }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: POSTGRESQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.port }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: POSTGRESQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.username }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.password }}
+        {{- end }}
+        {{- if .Values.database.external.existingSecret.enabled }}
+        - name: POSTGRESQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.external.existingSecret.name }}
+              key: {{ .Values.database.external.existingSecret.keys.coreDatabase }}
         {{- end }}
         {{- if not (empty .Values.containerSecurityContext) }}
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
