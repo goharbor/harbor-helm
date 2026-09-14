@@ -89,7 +89,7 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- template "harbor.database" . }}
   {{- else -}}
-    {{- .Values.database.external.host -}}
+    {{- tpl (.Values.database.external.host | toString) $ -}}
   {{- end -}}
 {{- end -}}
 
@@ -97,7 +97,7 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "5432" -}}
   {{- else -}}
-    {{- .Values.database.external.port -}}
+    {{- tpl (.Values.database.external.port | toString) $ -}}
   {{- end -}}
 {{- end -}}
 
@@ -105,7 +105,7 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "postgres" -}}
   {{- else -}}
-    {{- .Values.database.external.username -}}
+    {{- tpl (.Values.database.external.username | toString) $ -}}
   {{- end -}}
 {{- end -}}
 
@@ -134,7 +134,7 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "registry" -}}
   {{- else -}}
-    {{- .Values.database.external.coreDatabase -}}
+    {{- tpl (.Values.database.external.coreDatabase | toString) $ -}}
   {{- end -}}
 {{- end -}}
 
@@ -142,7 +142,7 @@ app: "{{ template "harbor.name" . }}"
   {{- if eq .Values.database.type "internal" -}}
     {{- printf "%s" "disable" -}}
   {{- else -}}
-    {{- .Values.database.external.sslmode -}}
+    {{- tpl (.Values.database.external.sslmode | toString) $ -}}
   {{- end -}}
 {{- end -}}
 
