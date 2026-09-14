@@ -374,6 +374,27 @@ tests:
           path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
           value: xsrf-secret-key
 
+  - it: ConfigureUserSettingsFromExistingSecret
+    set:
+      core:
+        configureUserSettingsSecret:
+          name: harbor-oidc
+          key: CONFIG_OVERWRITE_JSON
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 3
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: CONFIG_OVERWRITE_JSON
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          value: harbor-oidc
+      - equal:
+          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          value: CONFIG_OVERWRITE_JSON
+
   - it: ExtraEnvVars
     set:
       core:

@@ -689,6 +689,13 @@ core:
   #   command: [ 'sh', '-c', "sleep 20" ]
   ## User settings configuration json string
   configureUserSettings:
+  # Use an existing secret key to set CONFIG_OVERWRITE_JSON instead of
+  # core.configureUserSettings. This is useful for sensitive values such as OIDC.
+  # When configureUserSettingsSecret.name is set, it takes precedence over
+  # core.configureUserSettings.
+  configureUserSettingsSecret:
+    name: ""
+    key: CONFIG_OVERWRITE_JSON
   # The provider for updating project quota(usage), there are 2 options, redis or db.
   # By default it is implemented by db but you can configure it to redis which
   # can improve the performance of high concurrent pushing to the same project,
