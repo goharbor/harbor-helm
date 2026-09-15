@@ -1,0 +1,19 @@
+# Values used to prove that a GitOps controller gets identical output from
+# independent, offline Helm renders. The referenced Secrets are intentionally
+# not created by this chart.
+expose:
+  tls:
+    enabled: false
+
+core:
+  existingSecret: harbor-internal-secrets
+  secretName: harbor-internal-secrets
+  existingXsrfSecret: harbor-internal-secrets
+
+jobservice:
+  existingSecret: harbor-internal-secrets
+
+registry:
+  existingSecret: harbor-internal-secrets
+  credentials:
+    existingSecret: harbor-registry-credentials

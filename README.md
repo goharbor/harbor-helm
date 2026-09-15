@@ -58,6 +58,48 @@ If Harbor is deployed behind the proxy, set it as the URL of proxy.
 
 #### Configure the other items listed in [configuration](#configuration) section
 
+#### Configure stable secrets for GitOps
+
+GitOps controllers such as Argo CD and Flux render Helm charts without access to
+the live cluster. Helm's `lookup` function therefore cannot reuse values from an
+existing release. If the chart generates random credentials, certificates, or an
+htpasswd entry, each render differs and the controller can repeatedly update
+Secrets and restart Harbor components.
+
+For deterministic rendering, create the Secrets separately and configure every
+generated value used by your deployment. A single Secret can hold Harbor's
+internal values with the following keys: `secret`, `JOBSERVICE_SECRET`,
+`REGISTRY_HTTP_SECRET`, `CSRF_KEY`, `tls.key`, and `tls.crt`.
+
+```yaml
+core:
+  existingSecret: harbor-internal-secrets
+  secretName: harbor-internal-secrets
+  existingXsrfSecret: harbor-internal-secrets
+
+jobservice:
+  existingSecret: harbor-internal-secrets
+
+registry:
+  existingSecret: harbor-internal-secrets
+  credentials:
+    existingSecret: harbor-registry-credentials
+```
+
+The registry credentials Secret must contain `REGISTRY_PASSWD` and
+`REGISTRY_HTPASSWD`. Alternatively, set a stable
+`registry.credentials.htpasswdString`; Helm's `htpasswd` function uses a random
+salt on every render.
+
+When public TLS is enabled, use `expose.tls.certSource: secret` and set
+`expose.tls.secret.secretName`. When internal TLS is enabled, use
+`internalTLS.certSource: secret` and configure each component Secret. The `auto`
+certificate sources also generate new certificates on every offline render.
+
+The chart does not create or rotate externally managed Secrets. Back them up and
+rotate related values together so all Harbor components continue to share the
+same credentials.
+
 ### Install the chart
 
 Install the Harbor helm chart with a release name `my-release`:

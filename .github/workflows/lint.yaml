@@ -45,3 +45,12 @@ jobs:
         working-directory: ./harbor
         run:
           helm template --set "expose.type=nodePort,expose.tls.auto.commonName=127.0.0.1" --output-dir $(mktemp -d -t output-XXXXXXXXXX) .
+
+      - name: Verify deterministic GitOps rendering
+        working-directory: ./harbor
+        run: |
+          first=$(mktemp -d -t harbor-first-XXXXXXXXXX)
+          second=$(mktemp -d -t harbor-second-XXXXXXXXXX)
+          helm template harbor . --namespace harbor --values test/gitops/values.yaml --output-dir "$first"
+          helm template harbor . --namespace harbor --values test/gitops/values.yaml --output-dir "$second"
+          diff --recursive "$first" "$second"
