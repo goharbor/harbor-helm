@@ -84,6 +84,10 @@ spec:
         - name: config
           mountPath: /etc/core/app.conf
           subPath: app.conf
+{{- if .Values.core.migrateHelmHookResources }}
+        resources:
+{{ toYaml .Values.core.migrateHelmHookResources | indent 10 }}
+{{- end }}
       volumes:
       - name: config
         configMap:

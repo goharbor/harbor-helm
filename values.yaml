@@ -51,7 +51,8 @@ expose:
   route:
     labels: {}
     annotations: {}
-    # References to the parent gateways
+    # References to the parent gateways. Required when expose.type is "route":
+    # an HTTPRoute with no parentRefs attaches to no Gateway and cannot serve traffic.
     parentRefs: []
       # - name: envoy-internal
       #   namespace: networking
@@ -68,6 +69,8 @@ expose:
       #     add:
       #       - name: x-robots-tag
       #         value: noindex, nofollow
+    # route timeouts
+    timeouts: {}
   clusterIP:
     # The name of ClusterIP service
     name: harbor
@@ -654,6 +657,11 @@ core:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
+  ## Resources used by `enableMigrateHelmHook: true` pre-upgrade database migration
+  # migrateHelmHookResources:
+  #   requests:
+  #     memory: 256Mi
+  #     cpu: 100m
   extraEnvVars: []
   nodeSelector: {}
   tolerations: []
