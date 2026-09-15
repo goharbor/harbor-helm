@@ -142,6 +142,32 @@ spec:
                 name: {{ .Values.database.external.existingSecret }}
                 key: password
           {{- end }}
+          {{- if and (eq .Values.redis.type "external") .Values.redis.external.existingSecret }}
+          {{- if .Values.redis.external.existingSecretUsernameKey }}
+          - name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.external.existingSecret }}
+                key: {{ .Values.redis.external.existingSecretUsernameKey }}
+          {{- end }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.external.existingSecret }}
+                key: {{ .Values.redis.external.existingSecretPasswordKey }}
+          - name: _REDIS_URL_CORE
+            value: {{ include "harbor.redis.runtimeURLForCore" . | quote }}
+          - name: _REDIS_URL_REG
+            value: {{ include "harbor.redis.runtimeURLForRegistry" . | quote }}
+          {{- if .Values.redis.external.harborDatabaseIndex }}
+          - name: _REDIS_URL_HARBOR
+            value: {{ include "harbor.redis.runtimeURLForHarbor" . | quote }}
+          {{- end }}
+          {{- if .Values.redis.external.cacheLayerDatabaseIndex }}
+          - name: _REDIS_URL_CACHE_LAYER
+            value: {{ include "harbor.redis.runtimeURLForCache" . | quote }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.registry.credentials.existingSecret }}
           - name: REGISTRY_CREDENTIAL_PASSWORD
             valueFrom:

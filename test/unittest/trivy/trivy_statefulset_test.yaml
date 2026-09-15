@@ -1,6 +1,41 @@
 suite: TrivyStatefulSet
 
 tests:
+  - it: ExternalRedisPasswordOnlyExistingSecret
+    set:
+      redis:
+        type: external
+        external:
+          addr: redis.example:6379
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+          existingSecretUsernameKey: ""
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SCANNER_REDIS_URL
+            value: redis://:$(REDIS_PASSWORD)@redis.example:6379/5?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SCANNER_STORE_REDIS_URL
+            value: redis://:$(REDIS_PASSWORD)@redis.example:6379/5?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SCANNER_JOB_QUEUE_REDIS_URL
+            value: redis://:$(REDIS_PASSWORD)@redis.example:6379/5?idle_timeout_seconds=30
+
   - it: PersistenceDisabled
     set:
       persistence:

@@ -1,5 +1,48 @@
 suite: RegistryDeployment
 tests:
+  - it: ExternalRedisExistingSecret
+    set:
+      redis:
+        type: external
+        external:
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+          existingSecretUsernameKey: username
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REGISTRY_REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: username
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REGISTRY_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: REGISTRY_REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: username
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: REGISTRY_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: password
+
   - it: RegistryDeploymentWithoutProxy
     set:
       registry:
