@@ -1,7 +1,7 @@
 suite: ExporterDeployment
 
 tests:
-  - it: ExternalRedisExistingSecret
+  - it: ExternalRedisPasswordOnlyExistingSecret
     set:
       metrics:
         enabled: true
@@ -11,6 +11,7 @@ tests:
           addr: redis.example:6379
           existingSecret: redis-credentials
           existingSecretPasswordKey: password
+          existingSecretUsernameKey: ""
     template: templates/exporter/exporter-dpl.yaml
     asserts:
       - contains:

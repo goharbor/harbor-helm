@@ -1233,9 +1233,10 @@ redis:
     # The credentials must be URL-safe because Harbor components use Redis URLs.
     existingSecret: ""
     existingSecretPasswordKey: REDIS_PASSWORD
-    # Set this only when Redis ACL authentication uses a username stored in the
-    # Secret. Otherwise `username` above is used (empty means the default user).
-    existingSecretUsernameKey: ""
+    # Defaults to the key used by previous chart versions for Redis ACL users.
+    # Set this to "" for a password-only Secret; `username` above is then used
+    # (an empty username means the default Redis user).
+    existingSecretUsernameKey: REDIS_USERNAME
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
