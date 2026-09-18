@@ -1,0 +1,70 @@
+suite: RedisService
+
+tests:
+  - it: MetricsPortExposedWhenEnabled
+    set:
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+    template: templates/redis/service.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.ports
+          count: 2
+      - equal:
+          path: spec.ports[1].name
+          value: http-metrics
+      - equal:
+          path: spec.ports[1].port
+          value: 9121
+
+  - it: MetricsPortNotExposedByDefault
+    template: templates/redis/service.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.ports
+          count: 1
+      - equal:
+          path: spec.ports[0].port
+          value: 6379
+
+  - it: MetricsPortUsesHttpsNameWithInternalTLS
+    set:
+      internalTLS:
+        enabled: true
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+    template: templates/redis/service.yaml
+    asserts:
+      - equal:
+          path: spec.ports[1].name
+          value: https-metrics
+
+  - it: MetricsPortCustomValue
+    set:
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+          port: 9122
+    template: templates/redis/service.yaml
+    asserts:
+      - equal:
+          path: spec.ports[1].port
+          value: 9122
+
+  - it: ServiceNotRenderedForExternalRedis
+    set:
+      redis:
+        type: external
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+    template: templates/redis/service.yaml
+    asserts:
+      - hasDocuments:
+          count: 0

@@ -1,0 +1,160 @@
+suite: RedisStatefulSet
+
+tests:
+  - it: RedisExporterSidecarEnabled
+    set:
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 2
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: redis-exporter
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: docker.io/oliver006/redis_exporter:v1.87.0
+      - equal:
+          path: spec.template.spec.containers[1].env[0].name
+          value: REDIS_ADDR
+      - equal:
+          path: spec.template.spec.containers[1].env[0].value
+          value: redis://localhost:6379
+      - equal:
+          path: spec.template.spec.containers[1].ports[0].name
+          value: metrics
+      - equal:
+          path: spec.template.spec.containers[1].ports[0].containerPort
+          value: 9121
+      - contains:
+          path: spec.template.spec.containers[1].args
+          content: --web.listen-address=:9121
+      - contains:
+          path: spec.template.spec.containers[1].args
+          content: --web.telemetry-path=/metrics
+
+  - it: RedisExporterSidecarDisabledByDefault
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: redis
+
+  - it: RedisExporterSidecarRequiresMetricsEnabled
+    set:
+      metrics:
+        enabled: false
+        redis:
+          enabled: true
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+
+  - it: RedisExporterCustomImage
+    set:
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+          image:
+            repository: example.com/redis_exporter
+            tag: custom
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: example.com/redis_exporter:custom
+
+  - it: RedisExporterResources
+    set:
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 50m
+            limits:
+              memory: 128Mi
+              cpu: 100m
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.cpu
+          value: 50m
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.memory
+          value: 64Mi
+      - equal:
+          path: spec.template.spec.containers[1].resources.limits.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[1].resources.limits.memory
+          value: 128Mi
+
+  - it: RedisExporterExtraEnvVars
+    set:
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+          extraEnvVars:
+            - name: REDIS_EXPORTER_INCL_SYSTEM_METRICS
+              value: "true"
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].env[1].name
+          value: REDIS_EXPORTER_INCL_SYSTEM_METRICS
+      - equal:
+          path: spec.template.spec.containers[1].env[1].value
+          value: "true"
+
+  - it: RedisExporterCustomPortAndPath
+    set:
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+          port: 9122
+          path: /custom-metrics
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].ports[0].containerPort
+          value: 9122
+      - contains:
+          path: spec.template.spec.containers[1].args
+          content: --web.listen-address=:9122
+      - contains:
+          path: spec.template.spec.containers[1].args
+          content: --web.telemetry-path=/custom-metrics
+      - equal:
+          path: spec.template.spec.containers[1].livenessProbe.httpGet.path
+          value: /custom-metrics
+      - equal:
+          path: spec.template.spec.containers[1].readinessProbe.httpGet.path
+          value: /custom-metrics
+
+  - it: RedisExporterNotRenderedForExternalRedis
+    set:
+      redis:
+        type: external
+      metrics:
+        enabled: true
+        redis:
+          enabled: true
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - hasDocuments:
+          count: 0

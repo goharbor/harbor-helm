@@ -15,6 +15,10 @@ spec:
   {{- end }}
   ports:
     - port: 6379
+{{- if and .Values.metrics.enabled .Values.metrics.redis.enabled }}
+    - name: {{ template "harbor.metricsPortName" . }}
+      port: {{ .Values.metrics.redis.port }}
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: redis
