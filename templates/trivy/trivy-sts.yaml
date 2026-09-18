@@ -92,8 +92,12 @@ spec:
             - name: "SCANNER_TRIVY_GITHUB_TOKEN"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
+                  name: {{ default (include "harbor.trivy" .) .Values.trivy.gitHubTokenExistingSecret }}
+                  {{- if .Values.trivy.gitHubTokenExistingSecret }}
+                  key: {{ .Values.trivy.gitHubTokenExistingSecretKey }}
+                  {{- else }}
                   key: gitHubToken
+                  {{- end }}
             - name: "SCANNER_TRIVY_SEVERITY"
               value: {{ .Values.trivy.severity | quote }}
             - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
