@@ -49,6 +49,13 @@ data:
         ""      $scheme;
       }
 
+      # $host drops a non-default port, and core's cross-origin check compares
+      # Origin against Host port included. Fall back to $host for Host-less requests.
+      map $http_host $forwarded_host {
+        default $http_host;
+        ""      $host;
+      }
+
       server {
         {{- if .Values.ipFamily.ipv4.enabled}}
         listen 8080;
@@ -81,7 +88,7 @@ data:
           proxy_ssl_verify        off;
           proxy_ssl_session_reuse on;
         {{- end }}
-          proxy_set_header Host $host;
+          proxy_set_header Host $forwarded_host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $x_forwarded_proto;
@@ -92,7 +99,7 @@ data:
 
         location /c/ {
           proxy_pass {{ $scheme }}://core/c/;
-          proxy_set_header Host $host;
+          proxy_set_header Host $forwarded_host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $x_forwarded_proto;
@@ -119,7 +126,7 @@ data:
 
         location /service/ {
           proxy_pass {{ $scheme }}://core/service/;
-          proxy_set_header Host $host;
+          proxy_set_header Host $forwarded_host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $x_forwarded_proto;
