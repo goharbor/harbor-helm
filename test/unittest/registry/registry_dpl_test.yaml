@@ -90,3 +90,22 @@ tests:
           content:
             name: NO_PROXY
             value: "RELEASE-NAME-harbor-core,RELEASE-NAME-harbor-jobservice,RELEASE-NAME-harbor-database,RELEASE-NAME-harbor-registry,RELEASE-NAME-harbor-portal,RELEASE-NAME-harbor-trivy,RELEASE-NAME-harbor-exporter,127.0.0.1,localhost,.local,.internal"
+  - it: UpdateStrategyRecreate
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.strategy.type
+          value: Recreate
+  - it: UpdateStrategyAsSpecified
+    set:
+      updateStrategy:
+        type: SpecifiedStrategy
+      persistence:
+        persistentVolumeClaim:
+          registry:
+            accessMode: NotReadWriteOnce
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.strategy.type
+          value: SpecifiedStrategy

@@ -13,10 +13,7 @@ spec:
   replicas: {{ .Values.registry.replicas }}
   revisionHistoryLimit: {{ .Values.registry.revisionHistoryLimit }}
   strategy:
-    type: {{ .Values.updateStrategy.type }}
-    {{- if eq .Values.updateStrategy.type "Recreate" }}
-    rollingUpdate: null
-    {{- end }}
+    {{- include "harbor.strategy" (dict "context" $ "comp" "registry") | nindent 4 }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}

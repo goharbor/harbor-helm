@@ -11,10 +11,7 @@ spec:
   replicas: {{ .Values.jobservice.replicas }}
   revisionHistoryLimit: {{ .Values.jobservice.revisionHistoryLimit }}
   strategy:
-    type: {{ .Values.updateStrategy.type }}
-    {{- if eq .Values.updateStrategy.type "Recreate" }}
-    rollingUpdate: null
-    {{- end }}
+    {{- include "harbor.strategy" (dict "context" $ "comp" "registry") | nindent 4 }}
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
