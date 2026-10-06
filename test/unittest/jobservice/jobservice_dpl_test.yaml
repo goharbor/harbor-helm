@@ -1,0 +1,21 @@
+suite: JobServiceDeployment
+tests:
+  - it: UpdateStrategyRecreate
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.strategy.type
+          value: Recreate
+  - it: UpdateStrategyAsSpecified
+    set:
+      updateStrategy:
+        type: SpecifiedStrategy
+      persistence:
+        persistentVolumeClaim:
+          registry:
+            accessMode: NotReadWriteOnce
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.strategy.type
+          value: SpecifiedStrategy
