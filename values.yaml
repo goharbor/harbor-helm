@@ -1109,11 +1109,6 @@ database:
     # https://github.com/goharbor/harbor/issues/15034
     shmSizeLimit: 512Mi
     initContainer:
-      migrator: {}
-      # resources:
-      #  requests:
-      #    memory: 128Mi
-      #    cpu: 100m
       permissions: {}
       # resources:
       #  requests:
