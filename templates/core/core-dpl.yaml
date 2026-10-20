@@ -98,6 +98,10 @@ spec:
           timeoutSeconds: {{ .Values.core.readinessProbe.timeoutSeconds }}
           failureThreshold: {{ .Values.core.readinessProbe.failureThreshold }}
           successThreshold: {{ .Values.core.readinessProbe.successThreshold }}
+        {{- with .Values.core.lifecycle }}
+        lifecycle:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.core" . }}"
