@@ -607,3 +607,25 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: test-priority
+
+  - it: NoLifecycleByDefault
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].lifecycle
+
+  - it: Lifecycle
+    set:
+      core:
+        lifecycle:
+          preStop:
+            sleep:
+              seconds: 30
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle
+          value:
+            preStop:
+              sleep:
+                seconds: 30
