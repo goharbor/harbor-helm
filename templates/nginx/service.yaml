@@ -80,6 +80,12 @@ spec:
 {{- end }}
 spec:
   type: LoadBalancer
+  {{- if $loadBalancer.loadBalancerClass }}
+  loadBalancerClass: {{ $loadBalancer.loadBalancerClass }}
+  {{- end }}
+  {{- if $loadBalancer.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ $loadBalancer.externalTrafficPolicy }}
+  {{- end }}
   {{- with $loadBalancer.sourceRanges }}
   loadBalancerSourceRanges:
     {{- toYaml . | nindent 4 }}
