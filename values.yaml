@@ -403,6 +403,18 @@ proxy:
     - jobservice
     - trivy
 
+# Extra Kubernetes objects to deploy together with the chart, for example an
+# ExternalSecret that creates the admin or TLS secret. Each item is either a YAML
+# object or a string, and is rendered with `tpl`, so it can use templates such as
+# {{ .Release.Name }}.
+extraObjects: []
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: "{{ .Release.Name }}-extra"
+#   data:
+#     key: value
+
 # Run the migration job via helm hook
 enableMigrateHelmHook: false
 
