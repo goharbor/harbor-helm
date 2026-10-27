@@ -1,0 +1,25 @@
+name: Helm unittest
+
+on:
+  pull_request:
+    types: [ "opened", "reopened", "synchronize" ]
+  push:
+    branches: [ "**" ]
+  workflow_dispatch: {}
+
+jobs:
+  helm-unittest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+      with:
+        version: v4.3.1 # renovate: datasource=github-releases depName=helm/helm
+    - env:
+        HELM_UNITTEST_VERSION: v1.2.1 # renovate: datasource=github-releases depName=helm-unittest/helm-unittest
+      name: Install helm-unittest
+      run: helm plugin install --verify=false --version "${HELM_UNITTEST_VERSION}" https://github.com/helm-unittest/helm-unittest
+    - name: Update helm dependencies
+      run: helm dependency update
+    - name: Execute helm unittests
+      run: helm unittest --strict --file 'test/unittests/**/*.yaml' .
