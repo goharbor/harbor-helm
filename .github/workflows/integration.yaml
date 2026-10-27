@@ -12,7 +12,7 @@ jobs:
         k8s_version: [v1.34.0, v1.33.4, v1.32.8]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.12.0
