@@ -66,6 +66,12 @@ Install the Harbor helm chart with a release name `my-release`:
 helm install my-release harbor/harbor
 ```
 
+The chart is also published as an OCI artifact to GitHub Container Registry, so it can be installed without adding the Helm repository:
+
+```bash
+helm install my-release oci://ghcr.io/goharbor/harbor --version <version>
+```
+
 ## Uninstallation
 
 To uninstall/delete the `my-release` deployment:
