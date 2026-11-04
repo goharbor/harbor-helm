@@ -607,3 +607,31 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: test-priority
+
+  - it: CoreSecretDefaultKey
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-harbor-core
+                key: secret
+
+  - it: CoreSecretExistingSecretKey
+    set:
+      core:
+        existingSecret: my-core-secret
+        existingSecretKey: core-secret
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: my-core-secret
+                key: core-secret
