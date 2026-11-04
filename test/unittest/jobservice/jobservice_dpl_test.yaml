@@ -1,0 +1,29 @@
+suite: JobserviceDeployment
+tests:
+  - it: CoreSecretDefaultKey
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-harbor-core
+                key: secret
+
+  - it: CoreSecretExistingSecretKey
+    set:
+      core:
+        existingSecret: my-core-secret
+        existingSecretKey: core-secret
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: my-core-secret
+                key: core-secret

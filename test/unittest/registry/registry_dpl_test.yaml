@@ -90,3 +90,19 @@ tests:
           content:
             name: NO_PROXY
             value: "RELEASE-NAME-harbor-core,RELEASE-NAME-harbor-jobservice,RELEASE-NAME-harbor-database,RELEASE-NAME-harbor-registry,RELEASE-NAME-harbor-portal,RELEASE-NAME-harbor-trivy,RELEASE-NAME-harbor-exporter,127.0.0.1,localhost,.local,.internal"
+
+  - it: RegistryCtlCoreSecretExistingSecretKey
+    set:
+      core:
+        existingSecret: my-core-secret
+        existingSecretKey: core-secret
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: my-core-secret
+                key: core-secret

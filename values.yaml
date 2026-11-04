@@ -702,8 +702,9 @@ core:
   # Must be a string of 16 chars.
   secret: ""
   # Fill in the name of a kubernetes secret if you want to use your own
-  # If using existingSecret, the key must be secret
+  # If using existingSecret, the key is defined by core.existingSecretKey
   existingSecret: ""
+  existingSecretKey: secret
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate and private key for token encryption/decryption.
   # The secret must contain keys named:

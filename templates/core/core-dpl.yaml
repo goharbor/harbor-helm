@@ -108,7 +108,11 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ default (include "harbor.core" .) .Values.core.existingSecret }}
+                {{- if .Values.core.existingSecret }}
+                key: {{ .Values.core.existingSecretKey }}
+                {{- else }}
                 key: secret
+                {{- end }}
           - name: JOBSERVICE_SECRET
             valueFrom:
               secretKeyRef:
