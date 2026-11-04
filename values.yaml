@@ -553,8 +553,8 @@ portal:
 
 core:
   image:
-    repository: goharbor/harbor-core
-    tag: v2.13.2
+    repository: firstfloor/harbor-core
+    tag: v2.15.4-cache-pwd
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
