@@ -607,8 +607,8 @@ portal:
 
 core:
   image:
-    repository: docker.io/goharbor/harbor-core
-    tag: v2.15.4
+    repository: docker.io/firstfloor/harbor-core
+    tag: v2.15.4-cache-pwd-redis
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # mount the service account token
@@ -645,7 +645,9 @@ core:
   #  requests:
   #    memory: 256Mi
   #    cpu: 100m
-  extraEnvVars: []
+  extraEnvVars:
+    - name: LOCAL_PASSWORD_VERIFY_CACHE_TYPE
+      value: "redis"
   nodeSelector: {}
   tolerations: []
   affinity: {}
