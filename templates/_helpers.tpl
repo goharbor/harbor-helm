@@ -25,6 +25,22 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{/*
+Full image repository for a component with optional registry override.
+Precedence: <component>.image.registry > global.imageRegistry > repository unchanged.
+When a registry is set, it replaces the registry/org prefix of the repository,
+e.g. docker.io/goharbor/harbor-core -> example.local/my_goharbor/harbor-core.
+*/}}
+{{- define "harbor.image" -}}
+{{- $registry := .image.registry | default .global | trimSuffix "/" -}}
+{{- $repository := .image.repository -}}
+{{- if $registry -}}
+{{- printf "%s/%s" $registry (splitList "/" $repository | last) -}}
+{{- else -}}
+{{- $repository -}}
+{{- end -}}
+{{- end -}}
+
 {{/* Helm required labels: legacy */}}
 {{- define "harbor.legacy.labels" -}}
 heritage: {{ .Release.Service }}
