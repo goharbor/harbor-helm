@@ -102,7 +102,7 @@ data:
           proxy_ssl_verify        off;
           proxy_ssl_session_reuse on;
         {{- end }}
-          proxy_set_header Host $host;
+          proxy_set_header Host $http_host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $x_forwarded_proto;
@@ -115,7 +115,7 @@ data:
 
         location /c/ {
           proxy_pass {{ $scheme }}://core/c/;
-          proxy_set_header Host $host;
+          proxy_set_header Host $http_host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto $x_forwarded_proto;

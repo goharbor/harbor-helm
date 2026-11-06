@@ -1,0 +1,23 @@
+suite: NginxConfigMap
+
+tests:
+  - it: HttpForwardsHostWithPortToCore
+    set:
+      expose:
+        type: nodePort
+        tls:
+          enabled: false
+    template: templates/nginx/configmap-http.yaml
+    asserts:
+      - matchRegex:
+          path: data["nginx.conf"]
+          pattern: 'map \$http_host \$forwarded_host \{\s+default \$http_host;\s+""\s+\$host;\s+\}'
+      - matchRegex:
+          path: data["nginx.conf"]
+          pattern: 'location /api/ \{[^}]*proxy_set_header Host \$forwarded_host;'
+      - matchRegex:
+          path: data["nginx.conf"]
+          pattern: 'location /c/ \{[^}]*proxy_set_header Host \$forwarded_host;'
+      - matchRegex:
+          path: data["nginx.conf"]
+          pattern: 'location /service/ \{[^}]*proxy_set_header Host \$forwarded_host;'
