@@ -33,4 +33,10 @@ data:
   HARBOR_DATABASE_SSLMODE: "{{ template "harbor.database.sslmode" . }}"
   HARBOR_DATABASE_MAX_IDLE_CONNS: "{{ .Values.database.maxIdleConns }}"
   HARBOR_DATABASE_MAX_OPEN_CONNS: "{{ .Values.database.maxOpenConns }}"
+  {{- with .Values.database.connMaxLifetime }}
+  HARBOR_DATABASE_CONN_MAX_LIFETIME: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.database.connMaxIdleTime }}
+  HARBOR_DATABASE_CONN_MAX_IDLE_TIME: {{ . | quote }}
+  {{- end }}
 {{- end}}

@@ -1142,6 +1142,12 @@ database:
   # If it <= 0, then there is no limit on the number of open connections.
   # Note: the default number of connections is 1024 for harbor's postgres.
   maxOpenConns: 900
+  # The maximum amount of time a connection may be reused (core+exporter), as a
+  # Go duration string such as "5m" or "1h". Harbor uses 5m when it is not set.
+  # connMaxLifetime: 5m
+  # The maximum amount of time a connection may be idle (core+exporter), as a
+  # Go duration string. If it <= 0, connections are not closed for being idle.
+  # connMaxIdleTime: 0
   ## Additional deployment annotations
   podAnnotations: {}
   ## Additional deployment labels
