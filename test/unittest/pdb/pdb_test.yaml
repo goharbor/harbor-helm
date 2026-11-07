@@ -1,0 +1,205 @@
+suite: PodDisruptionBudget
+
+tests:
+  - it: core renders only maxUnavailable when it is set
+    set:
+      core:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+          maxUnavailable: 1
+    template: templates/core/core-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: core renders minAvailable by default
+    set:
+      core:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+    template: templates/core/core-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
+
+  - it: exporter renders only maxUnavailable when it is set
+    set:
+      exporter:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+          maxUnavailable: 1
+    template: templates/exporter/exporter-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: exporter renders minAvailable by default
+    set:
+      exporter:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+    template: templates/exporter/exporter-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
+
+  - it: jobservice renders only maxUnavailable when it is set
+    set:
+      jobservice:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+          maxUnavailable: 1
+    template: templates/jobservice/jobservice-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: jobservice renders minAvailable by default
+    set:
+      jobservice:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+    template: templates/jobservice/jobservice-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
+
+  - it: nginx renders only maxUnavailable when it is set
+    set:
+      nginx:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+          maxUnavailable: 1
+    template: templates/nginx/nginx-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: nginx renders minAvailable by default
+    set:
+      nginx:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+    template: templates/nginx/nginx-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
+
+  - it: portal renders only maxUnavailable when it is set
+    set:
+      portal:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+          maxUnavailable: 1
+    template: templates/portal/portal-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: portal renders minAvailable by default
+    set:
+      portal:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+    template: templates/portal/portal-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
+
+  - it: registry renders only maxUnavailable when it is set
+    set:
+      registry:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+          maxUnavailable: 1
+    template: templates/registry/registry-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: registry renders minAvailable by default
+    set:
+      registry:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+    template: templates/registry/registry-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
+
+  - it: trivy renders only maxUnavailable when it is set
+    set:
+      trivy:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+          maxUnavailable: 1
+    template: templates/trivy/trivy-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: trivy renders minAvailable by default
+    set:
+      trivy:
+        replicas: 2
+        podDisruptionBudget:
+          enabled: true
+    template: templates/trivy/trivy-pdb.yaml
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
