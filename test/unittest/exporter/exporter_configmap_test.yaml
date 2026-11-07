@@ -115,3 +115,29 @@ tests:
       - equal:
           path: data.HARBOR_DATABASE_MAX_OPEN_CONNS
           value: "50"
+  - it: DatabaseConnMaxLifetimeAndIdleTime
+    set:
+      metrics:
+        enabled: true
+      database:
+        connMaxLifetime: 1h
+        connMaxIdleTime: 10m
+    template: templates/exporter/exporter-cm-env.yaml
+    asserts:
+      - equal:
+          path: data.HARBOR_DATABASE_CONN_MAX_LIFETIME
+          value: 1h
+      - equal:
+          path: data.HARBOR_DATABASE_CONN_MAX_IDLE_TIME
+          value: 10m
+
+  - it: DatabaseConnMaxLifetimeAndIdleTimeUnset
+    set:
+      metrics:
+        enabled: true
+    template: templates/exporter/exporter-cm-env.yaml
+    asserts:
+      - notExists:
+          path: data.HARBOR_DATABASE_CONN_MAX_LIFETIME
+      - notExists:
+          path: data.HARBOR_DATABASE_CONN_MAX_IDLE_TIME

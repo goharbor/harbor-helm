@@ -193,3 +193,24 @@ tests:
       - equal:
           path: data.QUOTA_UPDATE_PROVIDER
           value: "3"
+  - it: DatabaseConnMaxLifetimeAndIdleTime
+    set:
+      database:
+        connMaxLifetime: 1h
+        connMaxIdleTime: 10m
+    template: templates/core/core-cm.yaml
+    asserts:
+      - equal:
+          path: data.POSTGRESQL_CONN_MAX_LIFETIME
+          value: 1h
+      - equal:
+          path: data.POSTGRESQL_CONN_MAX_IDLE_TIME
+          value: 10m
+
+  - it: DatabaseConnMaxLifetimeAndIdleTimeUnset
+    template: templates/core/core-cm.yaml
+    asserts:
+      - notExists:
+          path: data.POSTGRESQL_CONN_MAX_LIFETIME
+      - notExists:
+          path: data.POSTGRESQL_CONN_MAX_IDLE_TIME
