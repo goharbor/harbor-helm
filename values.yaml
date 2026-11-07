@@ -522,6 +522,7 @@ nginx:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
+    # maxUnavailable takes precedence over minAvailable when set
     # maxUnavailable: 1
   revisionHistoryLimit: 10
   # resources:
@@ -571,6 +572,7 @@ portal:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
+    # maxUnavailable takes precedence over minAvailable when set
     # maxUnavailable: 1
   revisionHistoryLimit: 10
   # resources:
@@ -629,6 +631,7 @@ core:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
+    # maxUnavailable takes precedence over minAvailable when set
     # maxUnavailable: 1
   revisionHistoryLimit: 10
   ## Startup probe values
@@ -741,6 +744,7 @@ jobservice:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
+    # maxUnavailable takes precedence over minAvailable when set
     # maxUnavailable: 1
   revisionHistoryLimit: 10
 
@@ -872,6 +876,7 @@ registry:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
+    # maxUnavailable takes precedence over minAvailable when set
     # maxUnavailable: 1
   revisionHistoryLimit: 10
   nodeSelector: {}
@@ -953,6 +958,7 @@ trivy:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
+    # maxUnavailable takes precedence over minAvailable when set
     # maxUnavailable: 1
 
   resources:
@@ -1246,6 +1252,7 @@ exporter:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
+    # maxUnavailable takes precedence over minAvailable when set
     # maxUnavailable: 1
   revisionHistoryLimit: 10
   # resources:

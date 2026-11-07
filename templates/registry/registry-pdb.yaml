@@ -6,11 +6,10 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
-  {{- if .Values.registry.podDisruptionBudget.minAvailable }}
-  minAvailable: {{ .Values.registry.podDisruptionBudget.minAvailable }}
-  {{- end }}
   {{- if .Values.registry.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.registry.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.registry.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.registry.podDisruptionBudget.minAvailable }}
   {{- end }}
   selector:
     matchLabels:
