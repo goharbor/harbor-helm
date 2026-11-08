@@ -92,7 +92,7 @@ spec:
             - name: "SCANNER_TRIVY_GITHUB_TOKEN"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
+                  name: {{ template "harbor.trivy.secretName" . }}
                   key: gitHubToken
             - name: "SCANNER_TRIVY_SEVERITY"
               value: {{ .Values.trivy.severity | quote }}
@@ -125,17 +125,17 @@ spec:
             - name: "SCANNER_REDIS_URL"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
+                  name: {{ template "harbor.trivy.secretName" . }}
                   key: redisURL
             - name: "SCANNER_STORE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
+                  name: {{ template "harbor.trivy.secretName" . }}
                   key: redisURL
             - name: "SCANNER_JOB_QUEUE_REDIS_URL"
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "harbor.trivy" . }}
+                  name: {{ template "harbor.trivy.secretName" . }}
                   key: redisURL
 {{- with .Values.trivy.extraEnvVars }}
 {{- toYaml . | nindent 12 }}
