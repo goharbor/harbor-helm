@@ -1,0 +1,89 @@
+{{- if .Values.policies.enabled }}
+{{- /*
+  Harbor keeps tag retention and the GC schedule in its database and only
+  exposes them through its API. The payloads are rendered here from the values
+  and the policies CronJob applies them, which also reverts any change made in
+  the UI on the next run.
+*/}}
+{{- $retention := list }}
+{{- range .Values.policies.retention }}
+{{- $rules := list }}
+{{- range .rules }}
+{{- $params := dict }}
+{{- if ne .template "always" }}
+{{- $params = dict .template (int (required (printf "policies.retention rule %s needs a value" .template) .value)) }}
+{{- end }}
+{{- $rules = append $rules (dict
+      "disabled" false
+      "action" "retain"
+      "template" .template
+      "params" $params
+      "tag_selectors" (list (dict "kind" "doublestar" "decoration" "matches" "pattern" (.tags | default "**") "extras" (dict "untagged" (.untagged | default false) | toJson)))
+      "scope_selectors" (dict "repository" (list (dict "kind" "doublestar" "decoration" "repoMatches" "pattern" (.repositories | default "**"))))
+    ) }}
+{{- end }}
+{{- $retention = append $retention (dict
+      "project" .project
+      "policy" (dict
+        "algorithm" "or"
+        "rules" $rules
+        "trigger" (dict "kind" "Schedule" "settings" (dict "cron" (.schedule | default "")) "references" dict)
+        "scope" (dict "level" "project")
+      )
+    ) }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "harbor.fullname" . }}-policies
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: policies
+data:
+  retention.json: {{ $retention | toJson | quote }}
+  {{- with .Values.policies.gc }}
+  {{- if .enabled }}
+  gc.json: {{ dict "schedule" (dict "type" "Custom" "cron" .schedule) "parameters" (dict "delete_untagged" (ne .deleteUntagged false) "workers" (int (.workers | default 1))) | toJson | quote }}
+  {{- end }}
+  {{- end }}
+  apply.sh: |
+    #!/bin/sh
+    set -eu
+    API="${HARBOR_URL}/api/v2.0"
+    run() { if [ "$DRY_RUN" = true ]; then echo "  dry-run: $*"; else "$@"; fi; }
+    api() { curl -sSf -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" -H 'Content-Type: application/json' "$@"; }
+
+    # Retention: one policy per project, found through the project's
+    # retention_id metadata. Harbor only reschedules on a PUT when the cron
+    # changed, so updating an unchanged policy every run is a no-op.
+    jq -c '.[]' /config/retention.json | while read -r item; do
+      project=$(echo "$item" | jq -r .project)
+      meta=$(api -H 'X-Is-Resource-Name: true' "$API/projects/$project")
+      policy=$(echo "$item" | jq -c --argjson ref "$(echo "$meta" | jq .project_id)" '.policy | .scope.ref = $ref')
+      id=$(echo "$meta" | jq -r '.metadata.retention_id // empty')
+      if [ -z "$id" ]; then
+        echo "retention $project: creating"
+        run api -X POST "$API/retentions" -d "$policy"
+      else
+        echo "retention $project: updating policy $id"
+        run api -X PUT "$API/retentions/$id" -d "$(echo "$policy" | jq -c --argjson id "$id" '.id = $id')"
+      fi
+    done
+
+    # GC: a PUT deletes and recreates the schedule, so only write on a change.
+    if [ -f /config/gc.json ]; then
+      want=$(cat /config/gc.json)
+      have=$(api "$API/system/gc/schedule")
+      if [ -z "$(echo "$have" | jq -r '.schedule.cron // empty')" ]; then
+        echo "gc: creating schedule"
+        run api -X POST "$API/system/gc/schedule" -d "$want"
+      elif [ "$(echo "$have" | jq -c '[.schedule.cron, (.job_parameters | if . == null or . == "" then {} else fromjson end | .delete_untagged, .workers)]')" \
+           != "$(echo "$want" | jq -c '[.schedule.cron, .parameters.delete_untagged, .parameters.workers]')" ]; then
+        echo "gc: updating schedule"
+        run api -X PUT "$API/system/gc/schedule" -d "$want"
+      else
+        echo "gc: up to date"
+      fi
+    fi
+{{- end }}

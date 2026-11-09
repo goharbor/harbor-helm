@@ -1283,3 +1283,49 @@ exporter:
   #   whenUnsatisfiable: DoNotSchedule
   cacheDuration: 23
   cacheCleanInterval: 14400
+
+# Tag retention policies and the garbage collection schedule. Harbor stores
+# both in its database, so a CronJob applies them through the Harbor API as
+# the admin user. Each run creates or updates them to match these values, which
+# also reverts changes made in the UI.
+policies:
+  enabled: false
+  # When the CronJob applies the policies (Kubernetes cron, 5 fields)
+  schedule: "0 1 * * *"
+  # Log what would be created or updated without changing anything
+  dryRun: false
+  # Any image with sh, curl and jq
+  image:
+    repository: alpine/k8s
+    tag: 1.33.4
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # One retention policy per project. An artifact is kept if any rule keeps
+  # it; all others are deleted when the policy runs. Rule templates:
+  #   latestPushedK       keep the <value> most recently pushed
+  #   latestPulledN       keep the <value> most recently pulled
+  #   nDaysSinceLastPush  keep those pushed within the last <value> days
+  #   nDaysSinceLastPull  keep those pulled within the last <value> days
+  #   always              keep everything matched (no value)
+  # repositories and tags are doublestar patterns (default "**"); {a,b}
+  # matches either. untagged: true makes the rule also keep untagged artifacts.
+  # schedule is Harbor cron, 6 fields with seconds first; "" means manual only.
+  retention: []
+  # - project: library
+  #   schedule: "0 0 2 * * 0"
+  #   rules:
+  #     - template: latestPushedK
+  #       value: 10
+  #     - template: nDaysSinceLastPull
+  #       value: 30
+  #     - template: always
+  #       tags: "{latest,v1.2.3}"
+  # Retention only deletes artifacts; GC is what frees the registry storage.
+  # schedule is Harbor cron (6 fields).
+  gc:
+    enabled: false
+    schedule: "0 0 5 * * 0"
+    deleteUntagged: true
+    workers: 1
