@@ -1,0 +1,99 @@
+{{- if .Values.policies.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "harbor.fullname" . }}-policies
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: policies
+spec:
+  schedule: {{ .Values.policies.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 300
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+{{ include "harbor.matchLabels" . | indent 12 }}
+            component: policies
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsUser: 10000
+            fsGroup: 10000
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+          - name: policies
+            image: {{ .Values.policies.image.repository }}:{{ .Values.policies.image.tag }}
+            imagePullPolicy: {{ .Values.imagePullPolicy }}
+            command: ["/bin/sh", "/config/apply.sh"]
+            env:
+            - name: HARBOR_URL
+              value: {{ include "harbor.coreURL" . | quote }}
+            - name: HARBOR_USERNAME
+              value: admin
+            - name: HARBOR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  {{- if .Values.existingSecretAdminPassword }}
+                  name: {{ .Values.existingSecretAdminPassword }}
+                  key: {{ .Values.existingSecretAdminPasswordKey }}
+                  {{- else }}
+                  name: {{ template "harbor.core" . }}
+                  key: HARBOR_ADMIN_PASSWORD
+                  {{- end }}
+            - name: DRY_RUN
+              value: {{ .Values.policies.dryRun | quote }}
+            {{- if .Values.internalTLS.enabled }}
+            - name: CURL_CA_BUNDLE
+              value: /etc/harbor/ssl/core/ca.crt
+            {{- end }}
+            {{- if not (empty .Values.containerSecurityContext) }}
+            securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 14 }}
+            {{- end }}
+            {{- with .Values.policies.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            {{- if .Values.internalTLS.enabled }}
+            - name: core-internal-certs
+              mountPath: /etc/harbor/ssl/core
+              readOnly: true
+            {{- end }}
+          volumes:
+          - name: config
+            configMap:
+              name: {{ include "harbor.fullname" . }}-policies
+          {{- if .Values.internalTLS.enabled }}
+          - name: core-internal-certs
+            secret:
+              secretName: {{ template "harbor.internalTLS.core.secretName" . }}
+              items:
+              - key: ca.crt
+                path: ca.crt
+          {{- end }}
+          {{- with .Values.policies.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.policies.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.policies.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

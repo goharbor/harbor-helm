@@ -1,0 +1,108 @@
+suite: Policies
+
+tests:
+  - it: DisabledByDefault
+    templates:
+      - templates/policies/policies-cm.yaml
+      - templates/policies/policies-cronjob.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: RetentionAndGC
+    set:
+      policies:
+        enabled: true
+        retention:
+          - project: library
+            schedule: "0 0 2 * * 0"
+            rules:
+              - template: latestPushedK
+                value: 10
+              - template: always
+                tags: "{latest,v1}"
+                untagged: true
+        gc:
+          enabled: true
+    template: templates/policies/policies-cm.yaml
+    asserts:
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-harbor-policies
+      - equal:
+          path: data["retention.json"]
+          value: '[{"policy":{"algorithm":"or","rules":[{"action":"retain","disabled":false,"params":{"latestPushedK":10},"scope_selectors":{"repository":[{"decoration":"repoMatches","kind":"doublestar","pattern":"**"}]},"tag_selectors":[{"decoration":"matches","extras":"{\"untagged\":false}","kind":"doublestar","pattern":"**"}],"template":"latestPushedK"},{"action":"retain","disabled":false,"params":{},"scope_selectors":{"repository":[{"decoration":"repoMatches","kind":"doublestar","pattern":"**"}]},"tag_selectors":[{"decoration":"matches","extras":"{\"untagged\":true}","kind":"doublestar","pattern":"{latest,v1}"}],"template":"always"}],"scope":{"level":"project"},"trigger":{"kind":"Schedule","references":{},"settings":{"cron":"0 0 2 * * 0"}}},"project":"library"}]'
+      - equal:
+          path: data["gc.json"]
+          value: '{"parameters":{"delete_untagged":true,"workers":1},"schedule":{"cron":"0 0 5 * * 0","type":"Custom"}}'
+  - it: GCDisabled
+    set:
+      policies:
+        enabled: true
+    template: templates/policies/policies-cm.yaml
+    asserts:
+      - isNull:
+          path: data["gc.json"]
+  - it: RuleWithoutValue
+    set:
+      policies:
+        enabled: true
+        retention:
+          - project: library
+            rules:
+              - template: latestPushedK
+    template: templates/policies/policies-cm.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: policies.retention rule latestPushedK needs a value
+  - it: CronJobDefault
+    set:
+      policies:
+        enabled: true
+    template: templates/policies/policies-cronjob.yaml
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "0 1 * * *"
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[0].value
+          value: http://RELEASE-NAME-harbor-core:80
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef
+          value:
+            name: RELEASE-NAME-harbor-core
+            key: HARBOR_ADMIN_PASSWORD
+      - lengthEqual:
+          path: spec.jobTemplate.spec.template.spec.volumes
+          count: 1
+  - it: ExistingAdminSecret
+    set:
+      existingSecretAdminPassword: admin-secret
+      existingSecretAdminPasswordKey: password
+      policies:
+        enabled: true
+    template: templates/policies/policies-cronjob.yaml
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef
+          value:
+            name: admin-secret
+            key: password
+  - it: InternalTLS
+    set:
+      internalTLS:
+        enabled: true
+      policies:
+        enabled: true
+    template: templates/policies/policies-cronjob.yaml
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[0].value
+          value: https://RELEASE-NAME-harbor-core:443
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: CURL_CA_BUNDLE
+            value: /etc/harbor/ssl/core/ca.crt
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.volumes[1].secret.secretName
+          value: RELEASE-NAME-harbor-core-internal-tls
