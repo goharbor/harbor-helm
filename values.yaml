@@ -249,6 +249,7 @@ persistence:
       #skipverify: false
       #v4auth: true
       #chunksize: "5242880"
+      forcepathstyle: false
       #rootdirectory: /s3/object/name/prefix
       #storageclass: STANDARD
       #multipartcopychunksize: "33554432"
