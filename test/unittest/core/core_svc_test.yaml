@@ -80,5 +80,11 @@ tests:
     template: templates/core/core-svc.yaml
     asserts:
       - equal:
+          path: spec.ports[1].name
+          value: http-metrics
+      - equal:
           path: spec.ports[1].port
           value: 1111
+      - equal:
+          path: spec.ports[1].targetPort
+          value: http-metrics

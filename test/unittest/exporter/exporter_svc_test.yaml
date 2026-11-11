@@ -10,5 +10,11 @@ tests:
     template: templates/exporter/exporter-svc.yaml
     asserts:
       - equal:
+          path: spec.ports[0].name
+          value: http-metrics
+      - equal:
           path: spec.ports[0].port
           value: 1111
+      - equal:
+          path: spec.ports[0].targetPort
+          value: http-metrics

@@ -90,3 +90,18 @@ tests:
           content:
             name: NO_PROXY
             value: "RELEASE-NAME-harbor-core,RELEASE-NAME-harbor-jobservice,RELEASE-NAME-harbor-database,RELEASE-NAME-harbor-registry,RELEASE-NAME-harbor-portal,RELEASE-NAME-harbor-trivy,RELEASE-NAME-harbor-exporter,127.0.0.1,localhost,.local,.internal"
+
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        registry:
+          port: 1111
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].name
+          value: http-metrics
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].containerPort
+          value: 1111

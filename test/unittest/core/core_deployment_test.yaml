@@ -607,3 +607,18 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: test-priority
+
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        core:
+          port: 1111
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].name
+          value: http-metrics
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].containerPort
+          value: 1111
