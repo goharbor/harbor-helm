@@ -77,6 +77,27 @@ app: "{{ template "harbor.name" . }}"
   {{- end -}}
 {{- end -}}
 
+{{/*
+The data of the TLS Secret the chart generated before (expose.tls.certSource "auto"), and its
+"expires" annotation, as JSON, when it can be kept: it was made for the same host and is valid for more than 30 more days. Otherwise "{}",
+and the caller generates a new certificate. Without this, every helm upgrade made a new CA, and every
+client that trusts the old one stopped working. Called with a dict: "ctx" (.), "name", "host".
+*/}}
+{{- define "harbor.autoTLS.existing" -}}
+  {{- $secret := lookup "v1" "Secret" .ctx.Release.Namespace .name -}}
+  {{- $keep := dict -}}
+  {{- if $secret -}}
+    {{- $annotations := $secret.metadata.annotations | default dict -}}
+    {{- $data := $secret.data | default dict -}}
+    {{- $expires := index $annotations "harbor.goharbor.io/auto-tls-expires" | default "0" | atoi -}}
+    {{- $left := sub $expires (now | unixEpoch | atoi) -}}
+    {{- if and (eq (index $annotations "harbor.goharbor.io/auto-tls-host" | default "") .host) (index $data "tls.crt") (index $data "tls.key") (index $data "ca.crt") (gt $left 2592000) -}}
+      {{- $keep = dict "tls.crt" (index $data "tls.crt") "tls.key" (index $data "tls.key") "ca.crt" (index $data "ca.crt") "expires" (toString $expires) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $keep | toJson -}}
+{{- end -}}
+
 {{- define "harbor.autoGenCertForNginx" -}}
   {{- if and (eq (include "harbor.autoGenCert" .) "true") (ne .Values.expose.type "ingress") -}}
     {{- printf "true" -}}
