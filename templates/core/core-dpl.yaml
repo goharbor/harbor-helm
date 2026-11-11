@@ -164,6 +164,10 @@ spec:
         {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
+        {{- if .Values.metrics.enabled }}
+        - name: {{ template "harbor.metricsPortName" . }}
+          containerPort: {{ .Values.metrics.core.port }}
+        {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/core/app.conf

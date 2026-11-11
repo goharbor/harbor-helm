@@ -1,0 +1,20 @@
+suite: RegistrySvc
+
+tests:
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        registry:
+          port: 1111
+    template: templates/registry/registry-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[2].name
+          value: http-metrics
+      - equal:
+          path: spec.ports[2].port
+          value: 1111
+      - equal:
+          path: spec.ports[2].targetPort
+          value: http-metrics
