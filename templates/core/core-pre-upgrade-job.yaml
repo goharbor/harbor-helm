@@ -79,4 +79,11 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.core.dnsPolicy }}
+      dnsPolicy: {{ .Values.core.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.core.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{- end }}

@@ -1,0 +1,283 @@
+suite: PodDNS
+
+tests:
+  - it: nginx omits dnsPolicy and dnsConfig by default
+    set:
+      expose.type: clusterIP
+      expose.tls.enabled: false
+    template: templates/nginx/deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: nginx renders dnsPolicy and dnsConfig
+    set:
+      expose.type: clusterIP
+      expose.tls.enabled: false
+      nginx.dnsPolicy: ClusterFirst
+      nginx.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/nginx/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: portal omits dnsPolicy and dnsConfig by default
+    template: templates/portal/deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: portal renders dnsPolicy and dnsConfig
+    set:
+      portal.dnsPolicy: ClusterFirst
+      portal.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/portal/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: core omits dnsPolicy and dnsConfig by default
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: core renders dnsPolicy and dnsConfig
+    set:
+      core.dnsPolicy: ClusterFirst
+      core.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: core pre-upgrade job omits dnsPolicy and dnsConfig by default
+    set:
+      enableMigrateHelmHook: true
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: core pre-upgrade job renders dnsPolicy and dnsConfig
+    set:
+      enableMigrateHelmHook: true
+      core.dnsPolicy: ClusterFirst
+      core.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/core/core-pre-upgrade-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: jobservice omits dnsPolicy and dnsConfig by default
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: jobservice renders dnsPolicy and dnsConfig
+    set:
+      jobservice.dnsPolicy: ClusterFirst
+      jobservice.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: registry omits dnsPolicy and dnsConfig by default
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: registry renders dnsPolicy and dnsConfig
+    set:
+      registry.dnsPolicy: ClusterFirst
+      registry.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: trivy omits dnsPolicy and dnsConfig by default
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: trivy renders dnsPolicy and dnsConfig
+    set:
+      trivy.dnsPolicy: ClusterFirst
+      trivy.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: database omits dnsPolicy and dnsConfig by default
+    template: templates/database/database-ss.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: database renders dnsPolicy and dnsConfig
+    set:
+      database.internal.dnsPolicy: ClusterFirst
+      database.internal.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/database/database-ss.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: redis omits dnsPolicy and dnsConfig by default
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: redis renders dnsPolicy and dnsConfig
+    set:
+      redis.internal.dnsPolicy: ClusterFirst
+      redis.internal.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/redis/statefulset.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"
+
+  - it: exporter omits dnsPolicy and dnsConfig by default
+    set:
+      metrics.enabled: true
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsPolicy
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: exporter renders dnsPolicy and dnsConfig
+    set:
+      metrics.enabled: true
+      exporter.dnsPolicy: ClusterFirst
+      exporter.dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsPolicy
+          value: ClusterFirst
+      - equal:
+          path: spec.template.spec.dnsConfig
+          value:
+            options:
+              - name: ndots
+                value: "2"

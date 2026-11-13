@@ -544,6 +544,16 @@ nginx:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## The DNS policy for the pod. The cluster default applies when empty
+  dnsPolicy:
+  ## The DNS config for the pod, merged with the config generated from dnsPolicy
+  dnsConfig: {}
+  # Example:
+  #
+  # dnsConfig:
+  #   options:
+  #     - name: ndots
+  #       value: "2"
   ## Liveness probe values
   livenessProbe:
     initialDelaySeconds: 300
@@ -595,6 +605,10 @@ portal:
   serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## The DNS policy for the pod. The cluster default applies when empty
+  dnsPolicy:
+  ## The DNS config for the pod, merged with the config generated from dnsPolicy
+  dnsConfig: {}
   ## Liveness probe values
   livenessProbe:
     initialDelaySeconds: 300
@@ -680,6 +694,10 @@ core:
   serviceAnnotations: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## The DNS policy for the pod. The cluster default applies when empty
+  dnsPolicy:
+  ## The DNS config for the pod, merged with the config generated from dnsPolicy
+  dnsConfig: {}
   # containers to be run before the controller's container starts.
   initContainers: []
   # Example:
@@ -782,6 +800,10 @@ jobservice:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## The DNS policy for the pod. The cluster default applies when empty
+  dnsPolicy:
+  ## The DNS config for the pod, merged with the config generated from dnsPolicy
+  dnsConfig: {}
   # containers to be run before the controller's container starts.
   initContainers: []
   # Example:
@@ -889,6 +911,10 @@ registry:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## The DNS policy for the pod. The cluster default applies when empty
+  dnsPolicy:
+  ## The DNS config for the pod, merged with the config generated from dnsPolicy
+  dnsConfig: {}
   # containers to be run before the controller's container starts.
   initContainers: []
   # Example:
@@ -992,6 +1018,10 @@ trivy:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
+  ## The DNS policy for the pod. The cluster default applies when empty
+  dnsPolicy:
+  ## The DNS config for the pod, merged with the config generated from dnsPolicy
+  dnsConfig: {}
   # containers to be run before the controller's container starts.
   initContainers: []
   # Example:
@@ -1095,6 +1125,10 @@ database:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    ## The DNS policy for the pod. The cluster default applies when empty
+    dnsPolicy:
+    ## The DNS config for the pod, merged with the config generated from dnsPolicy
+    dnsConfig: {}
     # containers to be run before the controller's container starts.
     extrInitContainers: []
     # Example:
@@ -1183,6 +1217,10 @@ redis:
     affinity: {}
     ## The priority class to run the pod as
     priorityClassName:
+    ## The DNS policy for the pod. The cluster default applies when empty
+    dnsPolicy:
+    ## The DNS config for the pod, merged with the config generated from dnsPolicy
+    dnsConfig: {}
     # containers to be run before the controller's container starts.
     initContainers: []
     # Example:
@@ -1277,6 +1315,10 @@ exporter:
   topologySpreadConstraints: []
   ## The priority class to run the pod as
   priorityClassName:
+  ## The DNS policy for the pod. The cluster default applies when empty
+  dnsPolicy:
+  ## The DNS config for the pod, merged with the config generated from dnsPolicy
+  dnsConfig: {}
   # - maxSkew: 1
   #   topologyKey: topology.kubernetes.io/zone
   #   nodeTaintsPolicy: Honor

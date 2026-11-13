@@ -264,3 +264,10 @@ spec:
     {{- if .Values.core.priorityClassName }}
       priorityClassName: {{ .Values.core.priorityClassName }}
     {{- end }}
+    {{- if .Values.core.dnsPolicy }}
+      dnsPolicy: {{ .Values.core.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.core.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
