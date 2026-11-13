@@ -187,3 +187,10 @@ spec:
     {{- if .Values.jobservice.priorityClassName }}
       priorityClassName: {{ .Values.jobservice.priorityClassName }}
     {{- end }}
+    {{- if .Values.jobservice.dnsPolicy }}
+      dnsPolicy: {{ .Values.jobservice.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.jobservice.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -427,3 +427,10 @@ spec:
     {{- if .Values.registry.priorityClassName }}
       priorityClassName: {{ .Values.registry.priorityClassName }}
     {{- end }}
+    {{- if .Values.registry.dnsPolicy }}
+      dnsPolicy: {{ .Values.registry.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.registry.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
