@@ -1,0 +1,60 @@
+suite: ExtraObjects
+templates:
+  - templates/extra-objects.yaml
+
+tests:
+  - it: renders nothing by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders object items and templates them
+    set:
+      extraObjects:
+        - apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "{{ .Release.Name }}-extra"
+          data:
+            key: value
+    release:
+      name: myrel
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ConfigMap
+      - equal:
+          path: metadata.name
+          value: myrel-extra
+      - equal:
+          path: data.key
+          value: value
+
+  - it: renders string items
+    set:
+      extraObjects:
+        - |
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: "{{ .Release.Name }}-str"
+          stringData:
+            a: b
+        - apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: second
+    release:
+      name: myrel
+    asserts:
+      - hasDocuments:
+          count: 2
+      - equal:
+          path: metadata.name
+          value: myrel-str
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: second
+        documentIndex: 1
