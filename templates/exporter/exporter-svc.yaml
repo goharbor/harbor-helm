@@ -16,6 +16,7 @@ spec:
   ports:
     - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.exporter.port }}
+      targetPort: {{ template "harbor.metricsPortName" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: exporter

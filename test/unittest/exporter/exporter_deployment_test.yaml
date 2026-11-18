@@ -412,3 +412,18 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[1].valueFrom.secretKeyRef.key
           value: example-key
+
+  - it: MetricsPortName
+    set:
+      metrics:
+        enabled: true
+        exporter:
+          port: 1111
+    template: templates/exporter/exporter-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: http-metrics
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 1111

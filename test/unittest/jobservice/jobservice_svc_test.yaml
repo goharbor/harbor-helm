@@ -1,0 +1,20 @@
+suite: JobserviceSvc
+
+tests:
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        jobservice:
+          port: 1111
+    template: templates/jobservice/jobservice-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[1].name
+          value: http-metrics
+      - equal:
+          path: spec.ports[1].port
+          value: 1111
+      - equal:
+          path: spec.ports[1].targetPort
+          value: http-metrics

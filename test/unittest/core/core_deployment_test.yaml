@@ -607,3 +607,38 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: test-priority
+
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        core:
+          port: 1111
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].name
+          value: http-metrics
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].containerPort
+          value: 1111
+
+  - it: NamedContainerPortInternalTLSDisabled
+    set:
+      internalTLS:
+        enabled: false
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: http-web
+
+  - it: NamedContainerPortInternalTLSEnabled
+    set:
+      internalTLS:
+        enabled: true
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: https-web
