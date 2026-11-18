@@ -60,6 +60,9 @@ tests:
       - equal:
           path: spec.ports[0].name
           value: https-web
+      - equal:
+          path: spec.ports[0].targetPort
+          value: https-web
 
   - it: InternalTLSDisabled
     set:
@@ -69,6 +72,9 @@ tests:
     asserts:
       - equal:
           path: spec.ports[0].name
+          value: http-web
+      - equal:
+          path: spec.ports[0].targetPort
           value: http-web
 
   - it: ExposeMetricsPort

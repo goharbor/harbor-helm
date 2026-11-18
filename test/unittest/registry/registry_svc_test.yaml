@@ -18,3 +18,23 @@ tests:
       - equal:
           path: spec.ports[2].targetPort
           value: http-metrics
+
+  - it: RegistryTargetPortIsNamed
+    set:
+      internalTLS:
+        enabled: false
+    template: templates/registry/registry-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[0].targetPort
+          value: http-registry
+
+  - it: RegistryTargetPortIsNamedWithInternalTLS
+    set:
+      internalTLS:
+        enabled: true
+    template: templates/registry/registry-svc.yaml
+    asserts:
+      - equal:
+          path: spec.ports[0].targetPort
+          value: https-registry
