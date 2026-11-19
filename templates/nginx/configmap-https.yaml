@@ -19,6 +19,8 @@ data:
     }
 
     http {
+      server_tokens off;
+
       client_body_temp_path /tmp/client_body_temp;
       proxy_temp_path /tmp/proxy_temp;
       fastcgi_temp_path /tmp/fastcgi_temp;
@@ -57,7 +59,6 @@ data:
         listen [::]:8443 ssl;
         {{- end }}
     #    server_name harbordomain.com;
-        server_tokens off;
         # SSL
         ssl_certificate /etc/nginx/cert/tls.crt;
         ssl_certificate_key /etc/nginx/cert/tls.key;
