@@ -597,6 +597,7 @@ app: "{{ template "harbor.name" . }}"
   TRACE_OTEL_COMPRESSION: "{{ .Values.trace.otel.compression }}"
   TRACE_OTEL_INSECURE: "{{ .Values.trace.otel.insecure }}"
   TRACE_OTEL_TIMEOUT: "{{ .Values.trace.otel.timeout }}"
+  TRACE_OTEL_PROTOCOL: "{{ .Values.trace.otel.protocol | default "http" }}"
   {{- end }}
 {{- end -}}
 
