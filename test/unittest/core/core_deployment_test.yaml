@@ -263,15 +263,15 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 3
+          count: 4
       - equal:
-          path: spec.template.spec.containers[0].env[2].name
+          path: spec.template.spec.containers[0].env[3].name
           value: HARBOR_ADMIN_PASSWORD
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
           value: HARBOR_ADMIN_PASSWORD
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.key
           value: HARBOR_ADMIN_PASSWORD
 
   - it: InternalTLS
@@ -282,30 +282,30 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 6
-      - equal:
-          path: spec.template.spec.containers[0].env[2].name
-          value: INTERNAL_TLS_ENABLED
-      - equal:
-          path: spec.template.spec.containers[0].env[2].value
-          value: "true"
+          count: 7
       - equal:
           path: spec.template.spec.containers[0].env[3].name
-          value: INTERNAL_TLS_KEY_PATH
+          value: INTERNAL_TLS_ENABLED
       - equal:
           path: spec.template.spec.containers[0].env[3].value
-          value: /etc/harbor/ssl/core/tls.key
+          value: "true"
       - equal:
           path: spec.template.spec.containers[0].env[4].name
-          value: INTERNAL_TLS_CERT_PATH
+          value: INTERNAL_TLS_KEY_PATH
       - equal:
           path: spec.template.spec.containers[0].env[4].value
-          value: /etc/harbor/ssl/core/tls.crt
+          value: /etc/harbor/ssl/core/tls.key
       - equal:
           path: spec.template.spec.containers[0].env[5].name
-          value: INTERNAL_TLS_TRUST_CA_PATH
+          value: INTERNAL_TLS_CERT_PATH
       - equal:
           path: spec.template.spec.containers[0].env[5].value
+          value: /etc/harbor/ssl/core/tls.crt
+      - equal:
+          path: spec.template.spec.containers[0].env[6].name
+          value: INTERNAL_TLS_TRUST_CA_PATH
+      - equal:
+          path: spec.template.spec.containers[0].env[6].value
           value: /etc/harbor/ssl/core/ca.crt
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[4].name
@@ -323,15 +323,15 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 3
+          count: 4
       - equal:
-          path: spec.template.spec.containers[0].env[2].name
+          path: spec.template.spec.containers[0].env[3].name
           value: POSTGRESQL_PASSWORD
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
           value: db-secret-name
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.key
           value: password
 
   - it: RegistryCredentials
@@ -343,15 +343,15 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 3
+          count: 4
       - equal:
-          path: spec.template.spec.containers[0].env[2].name
+          path: spec.template.spec.containers[0].env[3].name
           value: REGISTRY_CREDENTIAL_PASSWORD
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
           value: registry-secret-name
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.key
           value: REGISTRY_PASSWD
 
   - it: XsrfCredentials
@@ -363,15 +363,15 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 3
+          count: 4
       - equal:
-          path: spec.template.spec.containers[0].env[2].name
+          path: spec.template.spec.containers[0].env[3].name
           value: CSRF_KEY
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
           value: xsrf-secret-name
       - equal:
-          path: spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.key
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.key
           value: xsrf-secret-key
 
   - it: ExtraEnvVars
@@ -384,12 +384,12 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 3
+          count: 4
       - equal:
-          path: spec.template.spec.containers[0].env[2].name
+          path: spec.template.spec.containers[0].env[3].name
           value: ENVVAR_NAME
       - equal:
-          path: spec.template.spec.containers[0].env[2].value
+          path: spec.template.spec.containers[0].env[3].value
           value: envvar_value
 
   - it: MultipleExtraEnvVars
@@ -404,18 +404,18 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 4
-      - equal:
-          path: spec.template.spec.containers[0].env[2].name
-          value: ENVVAR_NAME_1
-      - equal:
-          path: spec.template.spec.containers[0].env[2].value
-          value: envvar_value_1
+          count: 5
       - equal:
           path: spec.template.spec.containers[0].env[3].name
-          value: ENVVAR_NAME_2
+          value: ENVVAR_NAME_1
       - equal:
           path: spec.template.spec.containers[0].env[3].value
+          value: envvar_value_1
+      - equal:
+          path: spec.template.spec.containers[0].env[4].name
+          value: ENVVAR_NAME_2
+      - equal:
+          path: spec.template.spec.containers[0].env[4].value
           value: envvar_value_2
 
   - it: ContainerSecurityContext
@@ -607,3 +607,52 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: test-priority
+
+  - it: TokenServicePrivateKeyDefaultSecret
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: token-service-private-key
+            mountPath: /etc/core/token-service
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: TOKEN_PRIVATE_KEY_PATH
+            value: /etc/core/token-service/tls.key
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: token-service-private-key
+            secret:
+              secretName: RELEASE-NAME-harbor-core
+              items:
+                - key: tls.key
+                  path: tls.key
+
+  - it: TokenServicePrivateKeyExistingSecret
+    set:
+      core:
+        secretName: my-token-secret
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: token-service-private-key
+            mountPath: /etc/core/token-service
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: TOKEN_PRIVATE_KEY_PATH
+            value: /etc/core/token-service/tls.key
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: token-service-private-key
+            secret:
+              secretName: my-token-secret
+              items:
+                - key: tls.key
+                  path: tls.key

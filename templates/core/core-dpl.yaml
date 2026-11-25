@@ -118,6 +118,8 @@ spec:
                 {{- else }}
                 key: JOBSERVICE_SECRET
                 {{- end }}
+          - name: TOKEN_PRIVATE_KEY_PATH
+            value: /etc/core/token-service/tls.key
           {{- if .Values.existingSecretAdminPassword }}
           - name: HARBOR_ADMIN_PASSWORD
             valueFrom:
@@ -172,8 +174,7 @@ spec:
           mountPath: /etc/core/key
           subPath: key
         - name: token-service-private-key
-          mountPath: /etc/core/private_key.pem
-          subPath: tls.key
+          mountPath: /etc/core/token-service
         {{- if .Values.expose.tls.enabled }}
         - name: ca-download
           mountPath: /etc/core/ca
@@ -220,6 +221,9 @@ spec:
           {{- else }}
           secretName: {{ template "harbor.core" . }}
           {{- end }}
+          items:
+            - key: tls.key
+              path: tls.key
       {{- if .Values.expose.tls.enabled }}
       - name: ca-download
         secret:
