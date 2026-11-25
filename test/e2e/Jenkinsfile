@@ -2,6 +2,9 @@
 import io.goharbor.*
 
 class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecutor implements Serializable {
+    static final String KUBECONFIG_PATH = '/root/.kube/config'
+    static final String DEFAULT_CLUSTER_CHOICE = '(use kubeconfig current-context)'
+
     Script script
     String context
     String namespace
@@ -11,13 +14,29 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
 
     HarborChartFreshInstallPipelineExecutor(Script script) {
        this.script = script
-       this.context = script.params.cluster
        this.namespace = "harbor-chart"
        this.coreHostname = "harbor.chart.local"
     }
 
+    private String shellContext() {
+        return "'${context.replace("'", "'\"'\"'")}'"
+    }
+
     // clean up the previously installed harbor chart
     void preInstall(){
+        def kubeConfig = script.readYaml(file: KUBECONFIG_PATH)
+        context = script.params.cluster
+        if (!context || context == DEFAULT_CLUSTER_CHOICE) {
+            context = kubeConfig?.get('current-context')
+        }
+        if (!context) {
+            script.error("No current-context is set in ${KUBECONFIG_PATH}")
+        }
+        if (!kubeConfig?.contexts?.any { it.name == context }) {
+            script.error("Context '${context}' was not found in ${KUBECONFIG_PATH}")
+        }
+
+        String contextArg = shellContext()
         script.withCredentials([
             script.usernamePassword(credentialsId: "79e9fd98-cdf5-4f55-81fa-ecba01365534", usernameVariable: "DOCKER_HUB_USERNAME", passwordVariable: "DOCKER_HUB_PASSWORD"),
             script.usernamePassword(credentialsId: 'CNCF_S3_SECRET', usernameVariable: 's3_access_key', passwordVariable: 's3_secret_key')]) {
@@ -55,19 +74,20 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                     -e AWS_REGION=\${AWS_REGION:-us-east-1} \
                     -e AWS_DEFAULT_REGION=\${AWS_REGION:-us-east-1} \
                     deployer:dev \
-                    kubectl delete namespace ${namespace} --ignore-not-found --context ${context}
+                    kubectl delete namespace ${namespace} --ignore-not-found --context ${contextArg}
                 docker logout
             """
        }
     }
 
     HarborInstance install(){
+        String contextArg = shellContext()
         // get the service type of the ingress controller
         ingressControllerServiceType = script.sh(
             returnStdout: true,
             script: """
                 docker run -i --rm -v /root/.kube/config:/root/.kube/config -v /root/.aws:/root/.aws:ro  deployer:dev \
-                    sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.type}"'
+                    kubectl get svc ingress-nginx-controller --context ${contextArg} -n ingress-nginx -o 'jsonpath={.spec.type}'
             """).trim()
         // get the IP address of the ingress controller
         if (ingressControllerServiceType == 'LoadBalancer') {
@@ -75,14 +95,14 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
                 returnStdout: true,
                 script: """
                     docker run -i --rm -v /root/.kube/config:/root/.kube/config -v /root/.aws:/root/.aws:ro deployer:dev \
-                        sh -c 'host \$(kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"'
+                        sh -c 'host \$(kubectl get svc ingress-nginx-controller --context "\$1" -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") | awk "/has address/ { print \\\$4; exit }"' sh ${contextArg}
                 """).trim()
         } else if (ingressControllerServiceType == 'NodePort') {
             ingressControllerIP = script.sh(
                 returnStdout: true,
                 script: """
                     docker run -i --rm -v /root/.kube/config:/root/.kube/config -v /root/.aws:/root/.aws:ro deployer:dev \
-                        sh -c 'kubectl get svc ingress-nginx-controller --context ${context} -n ingress-nginx -o jsonpath="{.spec.externalIPs[0]}"'
+                        kubectl get svc ingress-nginx-controller --context ${contextArg} -n ingress-nginx -o 'jsonpath={.spec.externalIPs[0]}'
                 """).trim()
         }
         // install harbor chart
@@ -91,7 +111,7 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
             sed -i -r "s|    spec:|    spec:\\n      hostAliases:\\n      - ip: ${ingressControllerIP}\\n        hostnames:\\n        - ${coreHostname}|g" ./templates/core/core-dpl.yaml
             # install harbor chart
             docker run -i --rm -w /workspace -v /root/.kube/config:/root/.kube/config  -v /root/.aws:/root/.aws:ro -v \$(pwd):/workspace deployer:dev \
-                helm install harbor --kube-context ${context} -n ${namespace} --create-namespace \
+                helm install harbor --kube-context ${contextArg} -n ${namespace} --create-namespace \
                     --set "expose.ingress.hosts.core=${coreHostname},externalURL=https://${coreHostname},internalTLS.enabled=true,imagePullPolicy=Always,trivy.skipUpdate=true,trivy.offlineScan=true,core.gcTimeWindowHours=0,expose.ingress.className=nginx" .
         """
 
@@ -119,8 +139,8 @@ class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecut
 
 def properties = {
     // read context names from the kube config file
-    def names = []
-    def kubeConfig = readYaml file: '/root/.kube/config'
+    def names = [HarborChartFreshInstallPipelineExecutor.DEFAULT_CLUSTER_CHOICE]
+    def kubeConfig = readYaml file: HarborChartFreshInstallPipelineExecutor.KUBECONFIG_PATH
     kubeConfig.contexts.each {
         names.add(it.name)
     }
