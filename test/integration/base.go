@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -28,7 +29,7 @@ func init() {
 
 var (
 	client = &http.Client{
-		Timeout: 30*time.Second,
+		Timeout: 30 * time.Second,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,
@@ -64,11 +65,39 @@ type BaseTestSuite struct {
 	Options     *helm.Options
 	ReleaseName string
 	URL         string // the external URL of Harbor
+	CACertPath  string
 }
 
 func (b *BaseTestSuite) SetupSuite() {
 	helm.Install(b.T(), b.Options, "../..", b.ReleaseName)
+	b.loadRegistryCA()
 	b.waitUntilHealthy(b.URL)
+}
+
+// loadRegistryCA saves the chart's generated CA for imgpkg's registry requests.
+func (b *BaseTestSuite) loadRegistryCA() {
+	secretName := b.ReleaseName + "-ingress"
+	if b.Options.SetValues["expose.type"] != "" && b.Options.SetValues["expose.type"] != "ingress" {
+		secretName = b.ReleaseName + "-nginx"
+	}
+
+	output, err := exec.Command("kubectl", "-n", b.Options.KubectlOptions.Namespace,
+		"get", "secret", secretName, "-o", "json").CombinedOutput()
+	b.Require().NoError(err, "get generated TLS secret %s: %s", secretName, output)
+
+	var secret struct {
+		Data map[string][]byte `json:"data"`
+	}
+	b.Require().NoError(json.Unmarshal(output, &secret))
+	ca := secret.Data["ca.crt"]
+	b.Require().NotEmpty(ca, "generated TLS secret %s has no ca.crt", secretName)
+
+	file, err := ioutil.TempFile("", "harbor-registry-ca-*.crt")
+	b.Require().NoError(err)
+	b.CACertPath = file.Name()
+	_, err = file.Write(ca)
+	b.Require().NoError(err, "write generated registry CA")
+	b.Require().NoError(file.Close())
 }
 
 type overallStatus struct {
@@ -154,35 +183,37 @@ func (b *BaseTestSuite) TestPush() {
 	addr := strings.TrimPrefix(b.URL, "http://")
 	addr = strings.TrimPrefix(addr, "https://")
 
-	// push image
-	log.Print("pushing the image...")
-	cmdStr := fmt.Sprintf("docker pull hello-world:latest;docker tag hello-world:latest %s/library/hello-world:latest; docker login %s -u admin -p Harbor12345;docker push %s/library/hello-world:latest",
-		addr, addr, addr)
-	cmd := exec.Command("/bin/sh", "-c", cmdStr)
+	image := addr + "/library/hello-world:latest"
+	log.Print("copying the image into Harbor...")
+	cmd := exec.Command("imgpkg", "copy", "-i", "docker.io/library/hello-world:latest",
+		"--to-repo", addr+"/library/hello-world", "--registry-ca-cert-path", b.CACertPath)
+	cmd.Env = append(os.Environ(),
+		"IMGPKG_REGISTRY_HOSTNAME_0="+addr,
+		"IMGPKG_REGISTRY_USERNAME_0=admin",
+		"IMGPKG_REGISTRY_PASSWORD_0=Harbor12345")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	b.Require().Nil(err)
+	b.Require().NoError(cmd.Run(), "copy image into Harbor")
 
-	// delete image in local
-	log.Print("deleting the image in local")
-	cmdStr = fmt.Sprintf("docker rmi %s/library/hello-world:latest", addr)
-	cmd = exec.Command("/bin/sh", "-c", cmdStr)
+	log.Print("copying the image back from Harbor...")
+	archiveDir, err := ioutil.TempDir("", "harbor-image-*")
+	b.Require().NoError(err)
+	defer os.RemoveAll(archiveDir)
+	archive := filepath.Join(archiveDir, "hello-world.tar")
+	cmd = exec.Command("imgpkg", "copy", "-i", image,
+		"--to-tar", archive, "--registry-ca-cert-path", b.CACertPath)
+	cmd.Env = append(os.Environ(),
+		"IMGPKG_REGISTRY_HOSTNAME_0="+addr,
+		"IMGPKG_REGISTRY_USERNAME_0=admin",
+		"IMGPKG_REGISTRY_PASSWORD_0=Harbor12345")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	b.Require().Nil(err)
-
-	// pull image
-	log.Print("pull the image...")
-	cmdStr = fmt.Sprintf("docker pull %s/library/hello-world:latest", addr)
-	cmd = exec.Command("/bin/sh", "-c", cmdStr)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	b.Require().Nil(err)
+	b.Require().NoError(cmd.Run(), "copy image back from Harbor")
 }
 
 func (b *BaseTestSuite) TearDownSuite() {
 	helm.Delete(b.T(), b.Options, b.ReleaseName, true)
+	if b.CACertPath != "" {
+		b.Require().NoError(os.Remove(b.CACertPath))
+	}
 }
