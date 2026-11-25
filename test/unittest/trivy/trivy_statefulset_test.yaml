@@ -96,6 +96,38 @@ tests:
       - notExists:
           path: spec.volumeClaimTemplates
   
+  - it: GitHubTokenFromChartManagedSecret
+    set:
+      trivy:
+        enabled: true
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: "SCANNER_TRIVY_GITHUB_TOKEN"
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-harbor-trivy
+                key: gitHubToken
+
+  - it: GitHubTokenFromExistingSecret
+    set:
+      trivy:
+        enabled: true
+        gitHubTokenExistingSecret: my-github-token
+        gitHubTokenExistingSecretKey: token
+    template: templates/trivy/trivy-sts.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: "SCANNER_TRIVY_GITHUB_TOKEN"
+            valueFrom:
+              secretKeyRef:
+                name: my-github-token
+                key: token
+
   - it: TrivyDBRepository
     set:
       trivy:
