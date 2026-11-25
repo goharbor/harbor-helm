@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        k8s_version: [v1.34.0, v1.33.4, v1.32.8]
+        k8s_version: [v1.37.0, v1.36.4, v1.35.8]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -17,7 +17,7 @@ jobs:
       - name: Create kind cluster
         uses: helm/kind-action@v1.12.0
         with:
-          version: v0.30.0
+          version: v0.33.0
           node_image: kindest/node:${{ matrix.k8s_version }}
           cluster_name: kind-cluster-${{ matrix.k8s_version }}
           config: test/integration/kind-cluster.yaml
@@ -27,10 +27,18 @@ jobs:
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.2/deploy/static/provider/kind/deploy.yaml
           kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
 
-      - name: Set up Go 1.24
+      - name: Set up Go 1.27
         uses: actions/setup-go@v6
         with:
-          go-version: "1.24"
+          go-version: "1.27"
+          check-latest: true
+
+      - name: Install imgpkg
+        run: |
+          curl -fL --retry 3 https://github.com/carvel-dev/imgpkg/releases/download/v0.49.0/imgpkg-linux-amd64 -o "$RUNNER_TEMP/imgpkg"
+          # echo "ea4d83bc88d5c9c6deda3951a80f621ea16769b94d4815edb1078399fdd9a5c3  $RUNNER_TEMP/imgpkg" | sha256sum -c -
+          chmod +x "$RUNNER_TEMP/imgpkg"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
 
       - name: Cache go mod
         uses: actions/cache@v4
