@@ -1,6 +1,91 @@
 suite: CoreDeployment
 
 tests:
+  - it: ExternalRedisExistingSecret
+    set:
+      redis:
+        type: external
+        external:
+          addr: redis.example:6379
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+          existingSecretUsernameKey: username
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: username
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_CORE
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@redis.example:6379/0?idle_timeout_seconds=30
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_REG
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@redis.example:6379/2?idle_timeout_seconds=30
+
+  - it: ExternalRedisExistingSecretDefaultsToLegacyUsernameKey
+    set:
+      redis:
+        type: external
+        external:
+          addr: redis.example:6379
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-credentials
+                key: REDIS_USERNAME
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_CORE
+            value: redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@redis.example:6379/0?idle_timeout_seconds=30
+
+  - it: ExternalRedisPasswordOnlySecretCanOptOutOfUsernameKey
+    set:
+      redis:
+        type: external
+        external:
+          addr: redis.example:6379
+          username: default
+          existingSecret: redis-credentials
+          existingSecretPasswordKey: password
+          existingSecretUsernameKey: ""
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          any: true
+          content:
+            name: REDIS_USERNAME
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: _REDIS_URL_CORE
+            value: redis://default:$(REDIS_PASSWORD)@redis.example:6379/0?idle_timeout_seconds=30
+
   - it: PodLabels
     set:
       core:

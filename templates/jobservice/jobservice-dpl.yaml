@@ -126,6 +126,31 @@ spec:
                 name: {{ .Values.registry.credentials.existingSecret }}
                 key: REGISTRY_PASSWD
           {{- end }}
+          {{- if and (eq .Values.redis.type "external") .Values.redis.external.existingSecret }}
+          {{- if .Values.redis.external.existingSecretUsernameKey }}
+          - name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.external.existingSecret }}
+                key: {{ .Values.redis.external.existingSecretUsernameKey }}
+          {{- end }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.external.existingSecret }}
+                key: {{ .Values.redis.external.existingSecretPasswordKey }}
+          # Jobservice explicitly supports this env var as an override for config.yml.
+          - name: JOB_SERVICE_POOL_REDIS_URL
+            value: {{ include "harbor.redis.runtimeURLForJobservice" . | quote }}
+          {{- if .Values.cache.enabled }}
+          - name: _REDIS_URL_CORE
+            value: {{ include "harbor.redis.runtimeURLForCore" . | quote }}
+          {{- end }}
+          {{- if .Values.redis.external.cacheLayerDatabaseIndex }}
+          - name: _REDIS_URL_CACHE_LAYER
+            value: {{ include "harbor.redis.runtimeURLForCache" . | quote }}
+          {{- end }}
+          {{- end }}
 {{- with .Values.jobservice.extraEnvVars }}
 {{- toYaml . | nindent 10 }}
 {{- end }}
