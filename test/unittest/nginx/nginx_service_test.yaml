@@ -1,0 +1,29 @@
+suite: NginxService
+
+tests:
+  - it: renders LoadBalancer class and external traffic policy
+    set:
+      expose:
+        type: loadBalancer
+        loadBalancer:
+          loadBalancerClass: loxilb.io/loxilb
+          externalTrafficPolicy: Local
+    template: templates/nginx/service.yaml
+    asserts:
+      - equal:
+          path: spec.loadBalancerClass
+          value: loxilb.io/loxilb
+      - equal:
+          path: spec.externalTrafficPolicy
+          value: Local
+
+  - it: omits LoadBalancer class and external traffic policy when unset
+    set:
+      expose:
+        type: loadBalancer
+    template: templates/nginx/service.yaml
+    asserts:
+      - notExists:
+          path: spec.loadBalancerClass
+      - notExists:
+          path: spec.externalTrafficPolicy
