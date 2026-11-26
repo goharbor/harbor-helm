@@ -328,6 +328,11 @@ app: "{{ template "harbor.name" . }}"
   {{- printf "%s-trivy" (include "harbor.fullname" .) -}}
 {{- end -}}
 
+{{/* Secret the trivy adapter reads redisURL and gitHubToken from */}}
+{{- define "harbor.trivy.secretName" -}}
+  {{- .Values.trivy.existingSecret | default (include "harbor.trivy" .) -}}
+{{- end -}}
+
 {{- define "harbor.nginx" -}}
   {{- printf "%s-nginx" (include "harbor.fullname" .) -}}
 {{- end -}}
