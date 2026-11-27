@@ -90,3 +90,119 @@ tests:
           content:
             name: NO_PROXY
             value: "RELEASE-NAME-harbor-core,RELEASE-NAME-harbor-jobservice,RELEASE-NAME-harbor-database,RELEASE-NAME-harbor-registry,RELEASE-NAME-harbor-portal,RELEASE-NAME-harbor-trivy,RELEASE-NAME-harbor-exporter,127.0.0.1,localhost,.local,.internal"
+
+  - it: InitContainers
+    set:
+      registry:
+        initContainers:
+          - name: test
+            image: busybox
+            command: ["sh", "-c", "sleep 20"]
+            volumeMounts:
+              - name: extra-data
+                mountPath: /extra
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers
+          value:
+            - name: test
+              image: busybox
+              command:
+                - sh
+                - "-c"
+                - sleep 20
+              volumeMounts:
+                - name: extra-data
+                  mountPath: /extra
+
+  - it: NoExtraVolumesByDefault
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.initContainers
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: extra-data
+          any: true
+
+  - it: ExtraVolumesAndVolumeMounts
+    set:
+      registry:
+        extraVolumes:
+          - name: extra-data
+            emptyDir: {}
+          - name: custom-ca
+            configMap:
+              name: my-custom-ca
+        registry:
+          extraVolumeMounts:
+            - name: custom-ca
+              mountPath: /etc/custom-ca
+              readOnly: true
+        controller:
+          extraVolumeMounts:
+            - name: extra-data
+              mountPath: /extra
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: extra-data
+            emptyDir: {}
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: custom-ca
+            configMap:
+              name: my-custom-ca
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: custom-ca
+            mountPath: /etc/custom-ca
+            readOnly: true
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: extra-data
+            mountPath: /extra
+      - contains:
+          path: spec.template.spec.containers[1].volumeMounts
+          content:
+            name: extra-data
+            mountPath: /extra
+      - notContains:
+          path: spec.template.spec.containers[1].volumeMounts
+          content:
+            name: custom-ca
+            mountPath: /etc/custom-ca
+            readOnly: true
+
+  - it: ExtraVolumesWithInternalTLSAndCaBundle
+    set:
+      caBundleSecretName: my-ca-bundle
+      internalTLS:
+        enabled: true
+      registry:
+        extraVolumes:
+          - name: extra-data
+            emptyDir: {}
+        registry:
+          extraVolumeMounts:
+            - name: extra-data
+              mountPath: /extra
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: extra-data
+            emptyDir: {}
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: extra-data
+            mountPath: /extra
