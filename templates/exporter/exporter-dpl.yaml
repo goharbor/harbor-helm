@@ -149,4 +149,11 @@ spec:
     {{- if .Values.exporter.priorityClassName }}
       priorityClassName: {{ .Values.exporter.priorityClassName }}
     {{- end }}
+    {{- if .Values.exporter.dnsPolicy }}
+      dnsPolicy: {{ .Values.exporter.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.exporter.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{ end }}

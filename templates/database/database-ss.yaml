@@ -141,6 +141,13 @@ spec:
     {{- if .Values.database.internal.priorityClassName }}
       priorityClassName: {{ .Values.database.internal.priorityClassName }}
     {{- end }}
+    {{- if .Values.database.internal.dnsPolicy }}
+      dnsPolicy: {{ .Values.database.internal.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.database.internal.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
   {{- if and .Values.persistence.enabled (not $database.existingClaim) }}
   volumeClaimTemplates:
   - apiVersion: v1

@@ -211,6 +211,13 @@ spec:
     {{- if .Values.trivy.priorityClassName }}
       priorityClassName: {{ .Values.trivy.priorityClassName }}
     {{- end }}
+    {{- if .Values.trivy.dnsPolicy }}
+      dnsPolicy: {{ .Values.trivy.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.trivy.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
   - apiVersion: v1

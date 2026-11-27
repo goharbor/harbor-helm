@@ -136,4 +136,11 @@ spec:
     {{- if .Values.nginx.priorityClassName }}
       priorityClassName: {{ .Values.nginx.priorityClassName }}
     {{- end }}
+    {{- if .Values.nginx.dnsPolicy }}
+      dnsPolicy: {{ .Values.nginx.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.nginx.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{- end }}

@@ -106,6 +106,13 @@ spec:
     {{- if .Values.redis.internal.priorityClassName }}
       priorityClassName: {{ .Values.redis.internal.priorityClassName }}
     {{- end }}
+    {{- if .Values.redis.internal.dnsPolicy }}
+      dnsPolicy: {{ .Values.redis.internal.dnsPolicy }}
+    {{- end }}
+    {{- with .Values.redis.internal.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+    {{- end }}
   {{- if and .Values.persistence.enabled (not $redis.existingClaim) }}
   volumeClaimTemplates:
   - apiVersion: v1
