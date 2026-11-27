@@ -209,6 +209,9 @@ spec:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
+        {{- with .Values.registry.registry.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       - name: registryctl
         image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -356,6 +359,9 @@ spec:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
+        {{- with .Values.registry.controller.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       volumes:
       - name: registry-htpasswd
         secret:
@@ -411,6 +417,9 @@ spec:
       {{- end }}
       {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolume" . | indent 6 }}
+      {{- end }}
+      {{- with .Values.registry.extraVolumes }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
     {{- with .Values.registry.nodeSelector }}
       nodeSelector:

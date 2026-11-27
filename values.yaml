@@ -827,6 +827,12 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
+    # Additional volumeMounts for the registry container.
+    # Volumes referenced here must be defined in `registry.extraVolumes`.
+    extraVolumeMounts: []
+    # - name: custom-ca
+    #   mountPath: /etc/custom-ca
+    #   readOnly: true
     ## Liveness probe values
     livenessProbe:
       initialDelaySeconds: 300
@@ -850,6 +856,12 @@ registry:
     #    memory: 256Mi
     #    cpu: 100m
     extraEnvVars: []
+    # Additional volumeMounts for the registryctl container.
+    # Volumes referenced here must be defined in `registry.extraVolumes`.
+    extraVolumeMounts: []
+    # - name: custom-ca
+    #   mountPath: /etc/custom-ca
+    #   readOnly: true
     ## Liveness probe values
     livenessProbe:
       initialDelaySeconds: 300
@@ -889,14 +901,21 @@ registry:
   podLabels: {}
   ## The priority class to run the pod as
   priorityClassName:
-  # containers to be run before the controller's container starts.
+  ## containers to be run before the controller's container starts.
   initContainers: []
   # Example:
   #
   # - name: wait
   #   image: busybox
   #   command: [ 'sh', '-c', "sleep 20" ]
-  # Secret is used to secure the upload state from client
+  ## Additional volumes to add to the registry pod; useful to inject credentials when paired with `registry.registry.exraVolumeMounts` and `registry.registry.extraEnvVars`
+  extraVolumes: []
+  # Example:
+  #
+  # - name: custom-ca
+  #   configMap:
+  #     name: my-custom-ca
+  ## Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#http
   # If a secret key is not specified, Helm will generate one.
