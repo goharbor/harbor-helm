@@ -1,3 +1,11 @@
+global:
+  # When set, replaces the registry/org prefix of ALL component images,
+  # e.g. "example.local/my_goharbor" as a pull-through proxy for
+  # docker.io/goharbor. Leave empty to keep the image repositories below.
+  # A component can use a different registry via <component>.image.registry,
+  # which wins over this value.
+  imageRegistry: ""
+
 expose:
   # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort", "loadBalancer" or "route"
   # and fill the information in the corresponding section
@@ -512,6 +520,8 @@ containerSecurityContext:
 # If service exposed via "ingress", the Nginx will not be used
 nginx:
   image:
+    # image registry override for this component only, falls back to global.imageRegistry
+    registry: ""
     repository: docker.io/goharbor/nginx-photon
     tag: dev
   # set the service account to be used, default if left empty
@@ -561,6 +571,8 @@ nginx:
 
 portal:
   image:
+    # image registry override for this component only, falls back to global.imageRegistry
+    registry: ""
     repository: docker.io/goharbor/harbor-portal
     tag: dev
   # set the service account to be used, default if left empty
@@ -619,6 +631,8 @@ portal:
 
 core:
   image:
+    # image registry override for this component only, falls back to global.imageRegistry
+    registry: ""
     repository: docker.io/goharbor/harbor-core
     tag: dev
   # set the service account to be used, default if left empty
@@ -735,6 +749,8 @@ core:
 
 jobservice:
   image:
+    # image registry override for this component only, falls back to global.imageRegistry
+    registry: ""
     repository: docker.io/goharbor/harbor-jobservice
     tag: dev
   replicas: 1
@@ -820,6 +836,8 @@ jobservice:
 registry:
   registry:
     image:
+      # image registry override for this component only, falls back to global.imageRegistry
+      registry: ""
       repository: docker.io/goharbor/registry-photon
       tag: dev
     # resources:
@@ -843,6 +861,8 @@ registry:
       successThreshold: 1
   controller:
     image:
+      # image registry override for this component only, falls back to global.imageRegistry
+      registry: ""
       repository: docker.io/goharbor/harbor-registryctl
       tag: dev
     # resources:
@@ -941,6 +961,8 @@ trivy:
   enabled: true
   image:
     # repository the repository for Trivy adapter image
+    # image registry override for this component only, falls back to global.imageRegistry
+    registry: ""
     repository: docker.io/goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
     tag: dev
@@ -1065,6 +1087,8 @@ database:
   type: internal
   internal:
     image:
+      # image registry override for this component only, falls back to global.imageRegistry
+      registry: ""
       repository: docker.io/goharbor/harbor-db
       tag: dev
     # set the service account to be used, default if left empty
@@ -1153,6 +1177,8 @@ redis:
   type: internal
   internal:
     image:
+      # image registry override for this component only, falls back to global.imageRegistry
+      registry: ""
       repository: docker.io/goharbor/valkey-photon
       tag: dev
     # set the service account to be used, default if left empty
@@ -1237,6 +1263,8 @@ redis:
 
 exporter:
   image:
+    # image registry override for this component only, falls back to global.imageRegistry
+    registry: ""
     repository: docker.io/goharbor/harbor-exporter
     tag: dev
   serviceAccountName: ""

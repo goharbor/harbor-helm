@@ -1,0 +1,69 @@
+suite: GlobalRegistry
+
+tests:
+  - it: KeepsComponentRepositoryByDefault
+    set:
+      core:
+        image:
+          repository: test-repository/test-image
+          tag: 1.0.0
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: test-repository/test-image:1.0.0
+
+  - it: OverridesAllImagesWithGlobalRegistry
+    set:
+      global:
+        imageRegistry: example.local/my_goharbor
+      core:
+        image:
+          repository: docker.io/goharbor/harbor-core
+          tag: 1.0.0
+      registry:
+        registry:
+          image:
+            repository: docker.io/goharbor/registry-photon
+            tag: 1.0.0
+        controller:
+          image:
+            repository: docker.io/goharbor/harbor-registryctl
+            tag: 1.0.0
+    template: templates/registry/registry-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: example.local/my_goharbor/registry-photon:1.0.0
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: example.local/my_goharbor/harbor-registryctl:1.0.0
+
+  - it: PerComponentRegistryWinsOverGlobal
+    set:
+      global:
+        imageRegistry: example.local/my_goharbor
+      core:
+        image:
+          registry: quay.io/mirror
+          repository: docker.io/goharbor/harbor-core
+          tag: 1.0.0
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: quay.io/mirror/harbor-core:1.0.0
+
+  - it: TrimsTrailingSlashFromRegistry
+    set:
+      global:
+        imageRegistry: "example.local/my_goharbor/"
+      core:
+        image:
+          repository: docker.io/goharbor/harbor-core
+          tag: 1.0.0
+    template: templates/core/core-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: example.local/my_goharbor/harbor-core:1.0.0
