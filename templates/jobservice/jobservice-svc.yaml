@@ -19,6 +19,7 @@ spec:
 {{- if .Values.metrics.enabled }}
     - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.jobservice.port }}
+      targetPort: {{ template "harbor.metricsPortName" . }}
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}

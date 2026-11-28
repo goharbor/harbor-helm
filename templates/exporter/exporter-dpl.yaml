@@ -111,7 +111,8 @@ spec:
         securityContext: {{ .Values.containerSecurityContext | toYaml | nindent 10 }}
         {{- end }}
         ports:
-        - containerPort: {{ .Values.metrics.exporter.port }}
+        - name: {{ template "harbor.metricsPortName" . }}
+          containerPort: {{ .Values.metrics.exporter.port }}
         volumeMounts:
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}

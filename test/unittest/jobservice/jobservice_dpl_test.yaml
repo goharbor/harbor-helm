@@ -1,0 +1,17 @@
+suite: JobserviceDpl
+
+tests:
+  - it: ExposeMetricsPort
+    set:
+      metrics:
+        enabled: true
+        jobservice:
+          port: 1111
+    template: templates/jobservice/jobservice-dpl.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].name
+          value: http-metrics
+      - equal:
+          path: spec.template.spec.containers[0].ports[1].containerPort
+          value: 1111

@@ -22,10 +22,11 @@ spec:
   ports:
     - name: {{ ternary "https-web" "http-web" .Values.internalTLS.enabled }}
       port: {{ template "harbor.core.servicePort" . }}
-      targetPort: {{ template "harbor.core.containerPort" . }}
+      targetPort: {{ ternary "https-web" "http-web" .Values.internalTLS.enabled }}
 {{- if .Values.metrics.enabled}}
     - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.core.port }}
+      targetPort: {{ template "harbor.metricsPortName" . }}
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
